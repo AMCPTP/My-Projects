@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LEVIATHAN X | THE SINGULARITY</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #121212; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 420px; margin: auto; }
+        .panel { background: var(--card); border-radius: 25px; padding: 25px; border: 1px solid #222; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .target-view { font-size: 65px; font-weight: 900; margin: 10px 0; min-height: 80px; display: flex; align-items: center; justify-content: center; letter-spacing: -2px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { border: none; height: 80px; border-radius: 20px; font-size: 24px; font-weight: 800; cursor: pointer; color: #fff; transition: transform 0.1s; position: relative; }
+        .btn-p { background: linear-gradient(180deg, var(--p), #005bb5); border-bottom: 6px solid #003a75; }
+        .btn-b { background: linear-gradient(180deg, var(--b), #b51a14); border-bottom: 6px solid #75110d; }
+        .btn:active { transform: translateY(4px); border-bottom-width: 2px; }
+        .history-strip { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; border-bottom: 1px solid #222; }
+        .dot { min-width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 1px solid #333; }
+        .prob-container { width: 100%; height: 8px; background: #222; border-radius: 4px; margin: 20px 0; overflow: hidden; position: relative; }
+        #prob-fill { height: 100%; width: 50%; background: var(--gold); transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--gold); }
+        .meta-info { display: flex; justify-content: space-between; font-size: 13px; color: #555; font-weight: bold; margin-top: 10px; }
+        #status-tag { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:11px; color:var(--gold); letter-spacing:4px; font-weight:bold; margin-bottom:15px;">🔱 LEVIATHAN X : OMNI-ARCHIVE</div>
+
+    <div class="panel">
+        <div id="status-tag">SYSTEM INITIALIZING...</div>
+        <div id="target" class="target-view">READY</div>
+        
+        <div class="prob-container">
+            <div id="prob-fill"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div style="text-align:left;">
+                <div id="conf-percent" style="font-size:32px; font-weight:900; color:var(--gold);">0%</div>
+                <div style="font-size:10px; color:#444;">PROBABILITY SCALE</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="pattern-matches" style="font-size:14px; font-weight:bold; color:#666;">0 MATCHES</div>
+                <div id="volatility" style="font-size:10px; color:#333;">CALCULATING...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" style="padding: 20px;">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="add('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="add('B')">BANKER</button>
+        </div>
+        <div class="history-strip" id="history-flow"></div>
+        <div class="meta-info">
+            <span id="win-count">W: 0</span>
+            <span id="loss-count">L: 0</span>
+            <span id="net-profit" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#444; margin-top:20px;">
+            <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+            <span onclick="reset()" style="cursor:pointer; color:var(--b); padding:5px;">[ EMERGENCY RESET ]</span>
+        </div>
+    </div>
+
+    <div class="panel" style="padding:10px;">
+        <canvas id="chartView"></canvas>
+    </div>
+</div>
+
+<script>
+let history = [];
+let profitStack = [0];
+let wins = 0, loses = 0;
+let lastPrediction = null;
+let chart;
+
+// Initializing High-Performance Line Chart
+function initChart() {
+    const ctx = document.getElementById('chartView').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [0],
+            datasets: [{
+                data: [0], borderColor: '#ffcc00', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(255,204,0,0.03)'
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: '#1a1a1a' }, ticks: { color: '#444' } } } }
+    });
+}
+
+function add(side) {
+    if (lastPrediction) {
+        if (lastPrediction === side) { wins++; statsUpdate(1); }
+        else { loses++; statsUpdate(-1); }
+    }
+    history.push(side);
+    processEngine();
+    updateUI();
+}
+
+function statsUpdate(val) {
+    profitStack.push(profitStack[profitStack.length - 1] + val);
+}
+
+function processEngine() {
+    if (history.length < 5) {
+        document.getElementById('status-tag').innerText = "WAITING FOR ARCHIVE DATA...";
+        return;
+    }
+
+    let pWeight = 0, bWeight = 0;
+    let matches = 0;
+    const hLen = history.length;
+
+    // --- LEVIATHAN RECURSIVE SEARCH (Up to 15 Layers) ---
+    for (let layer = 2; layer <= 15; layer++) {
+        if (hLen < layer) break;
+        const currentPattern = history.slice(-layer).join("");
+        const importance = Math.pow(layer, 5); // d^5 Weighting
+
+        for (let i = 0; i < hLen - layer; i++) {
+            if (history.slice(i, i + layer).join("") === currentPattern) {
+                const result = history[i + layer];
+                if (result === 'P') pWeight += importance;
+                else if (result === 'B') bWeight += importance;
+                matches++;
+            }
+        }
+    }
+
+    // --- ARCHIVE BALANCE BIAS ---
+    const pTotal = history.filter(x => x === 'P').length;
+    const balanceFactor = hLen * 20; 
+    if (pTotal > hLen / 2) bWeight += balanceFactor; else pWeight += balanceFactor;
+
+    // --- CALCULATION ---
+    const totalWeight = pWeight + bWeight;
+    const probP = (pWeight / totalWeight) * 100;
+    const probB = (bWeight / totalWeight) * 100;
+
+    const target = document.getElementById('target');
+    const bar = document.getElementById('prob-fill');
+    const conf = document.getElementById('conf-percent');
+
+    // High-Precision Threshold (63.5%)
+    if (probP > 63.5 || probB > 63.5) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        const finalProb = probP > probB ? probP : probB;
+        
+        lastPrediction = side === "PLAYER" ? "P" : "B";
+        target.innerText = side;
+        target.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        conf.innerText = finalProb.toFixed(1) + "%";
+        bar.style.width = finalProb + "%";
+        bar.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        document.getElementById('status-tag').innerText = "V.MAX SIGNAL ACTIVE";
+        document.getElementById('status-tag').style.color = "#4cd964";
+        document.getElementById('pattern-matches').innerText = `${matches} MATCHES`;
+        document.getElementById('volatility').innerText = "STABLE PATTERN";
+    } else {
+        lastPrediction = null;
+        target.innerText = "WAIT";
+        target.style.color = "#222";
+        conf.innerText = "---";
+        bar.style.width = "50%";
+        bar.style.background = "#333";
+        document.getElementById('status-tag').innerText = "ANALYZING ARCHIVE...";
+        document.getElementById('status-tag').style.color = "var(--gold)";
+        document.getElementById('pattern-matches').innerText = "SCANNING...";
+        document.getElementById('volatility').innerText = "HIGH ENTROPY";
+    }
+}
+
+function updateUI() {
+    const box = document.getElementById('history-flow');
+    box.innerHTML = history.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+
+    document.getElementById('win-count').innerText = `W: ${wins}`;
+    document.getElementById('loss-count').innerText = `L: ${loses}`;
+    document.getElementById('net-profit').innerText = `NET: ${profitStack[profitStack.length-1]}`;
+
+    chart.data.labels = profitStack.map((_, i) => i);
+    chart.data.datasets[0].data = profitStack;
+    chart.update('none'); // Optimized update
+}
+
+function undo() {
+    if (history.length > 0) {
+        history.pop();
+        if (profitStack.length > 1) profitStack.pop();
+        processEngine();
+        updateUI();
+    }
+}
+
+function reset() {
+    if (confirm("TERMINATE ALL DATA?")) location.reload();
+}
+
+window.onload = initChart;
+</script>
+</body>
+</html>

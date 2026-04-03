@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HECTOR AI | THE SINGULARITY</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #050505; --card: #121214; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, system-ui; margin: 0; padding: 15px; }
+        .container { max-width: 440px; margin: auto; }
+        .main-display { background: var(--card); border-radius: 30px; padding: 30px; border: 1px solid #222; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); margin-bottom: 15px; position: relative; overflow: hidden; }
+        .target-text { font-size: 72px; font-weight: 900; margin: 15px 0; letter-spacing: -3px; height: 85px; display: flex; align-items: center; justify-content: center; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { border: none; height: 80px; border-radius: 20px; font-size: 26px; font-weight: 800; cursor: pointer; color: #fff; transition: 0.15s; }
+        .btn-p { background: linear-gradient(145deg, #007aff, #005bb5); box-shadow: 0 8px 0 #003a75; }
+        .btn-b { background: linear-gradient(145deg, #ff3b30, #b51a14); box-shadow: 0 8px 0 #75110d; }
+        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        .history-box { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #222; scrollbar-width: none; }
+        .dot { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 1px solid #333; }
+        .stat-bar { display: flex; justify-content: space-between; font-size: 12px; color: #555; padding-top: 10px; font-weight: bold; }
+        #prob-meter { width: 100%; height: 6px; background: #222; border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        #prob-fill { height: 100%; width: 50%; background: var(--gold); transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:11px; color:var(--gold); letter-spacing:4px; font-weight:900; margin-bottom:15px;">HECTOR ARCHIVE SINGULARITY</div>
+
+    <div class="main-display">
+        <div style="font-size:12px; color:#666; letter-spacing:1px; font-weight:bold;">NEXT PREDICTION VECTOR</div>
+        <div id="target" class="target-text" style="color:#222;">---</div>
+        
+        <div id="prob-meter"><div id="prob-fill"></div></div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div id="conf-val" style="font-size:24px; font-weight:900; color:var(--gold);">0%</div>
+            <div id="status-tag" style="font-size:10px; background:#222; padding:4px 12px; border-radius:20px; color:#888;">WAITING</div>
+        </div>
+        <div id="insight" style="font-size:11px; color:#444; margin-top:10px; line-height:1.4;">ป้อนประวัติเพื่อเริ่มการดึงข้อมูลจาก Archive</div>
+    </div>
+
+    <div class="main-display" style="padding: 20px;">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="feed('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="feed('B')">BANKER</button>
+        </div>
+        <div class="history-box" id="history-view"></div>
+        <div class="stat-bar">
+            <span id="win-l">WIN: 0</span>
+            <span id="loss-l">LOSS: 0</span>
+            <span id="profit-l" style="color:var(--gold)">PROFIT: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:#444; margin-top:20px;">
+            <span onclick="undo()" style="cursor:pointer;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--b);">[ RESET SYSTEM ]</span>
+        </div>
+    </div>
+
+    <div class="main-display" style="padding:10px;">
+        <canvas id="chart" height="140"></canvas>
+    </div>
+</div>
+
+<script>
+let history = [];
+let profitStack = [0];
+let wins = 0, loses = 0;
+let lastDecision = null;
+
+function feed(side) {
+    if(lastDecision) {
+        if(lastDecision === side) { wins++; profitStack.push(profitStack[profitStack.length-1]+1); }
+        else { loses++; profitStack.push(profitStack[profitStack.length-1]-1); }
+    }
+    history.push(side);
+    render();
+    hectorEngine();
+}
+
+function hectorEngine() {
+    if(history.length < 5) return;
+
+    let scoreP = 0, scoreB = 0;
+    const len = history.length;
+
+    // --- SINGULARITY PATTERN SCAN (Deep Search 2-10 Layers) ---
+    for(let d = 2; d <= 10; d++) {
+        if(len < d) break;
+        const currentPattern = history.slice(-d).join("");
+        const weight = Math.pow(d, 4); // โหดขั้นสุด: ให้น้ำหนักเลขฐาน 4 สำหรับชุดที่ยาวมาก
+
+        for(let i = 0; i < len - d; i++) {
+            if(history.slice(i, i + d).join("") === currentPattern) {
+                const result = history[i + d];
+                if(result === 'P') scoreP += weight;
+                else if(result === 'B') scoreB += weight;
+            }
+        }
+    }
+
+    // --- ENTROPY & MEAN REVERSION ---
+    const ratioP = history.filter(x => x === 'P').length / len;
+    const balanceBias = (len * 10); 
+    if(ratioP > 0.5) scoreB += balanceBias; else scoreP += balanceBias;
+
+    // --- DECISION LOGIC ---
+    const total = scoreP + scoreB;
+    const probP = (scoreP / total) * 100;
+    const probB = (scoreB / total) * 100;
+
+    let side = "WAIT";
+    let conf = 0;
+
+    // ตั้งเกณฑ์ความโหดที่ 62%
+    if(probP > 62) { side = "PLAYER"; conf = probP; }
+    else if(probB > 62) { side = "BANKER"; conf = probB; }
+
+    const targetEl = document.getElementById('target');
+    const fill = document.getElementById('prob-fill');
+    
+    if(side !== "WAIT") {
+        lastDecision = side === "PLAYER" ? "P" : "B";
+        targetEl.innerText = side;
+        targetEl.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        document.getElementById('conf-val').innerText = conf.toFixed(1) + "%";
+        fill.style.width = conf + "%";
+        fill.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        document.getElementById('status-tag').innerText = "STABLE";
+        document.getElementById('status-tag').style.color = "#4cd964";
+        document.getElementById('insight').innerText = "พบรูปแบบซ้ำซ้อนในระดับลึก (Critical Pattern Found)";
+    } else {
+        lastDecision = null;
+        targetEl.innerText = "SKIP";
+        targetEl.style.color = "#222";
+        document.getElementById('conf-val').innerText = "50/50";
+        fill.style.width = "50%";
+        fill.style.background = "#333";
+        document.getElementById('status-tag').innerText = "VOLATILE";
+        document.getElementById('status-tag').style.color = "var(--b)";
+        document.getElementById('insight').innerText = "ไพ่มีความผันผวนสูง หรือไม่พบรูปแบบที่เชื่อถือได้ในประวัติ";
+    }
+}
+
+function render() {
+    const box = document.getElementById('history-view');
+    box.innerHTML = history.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('win-l').innerText = `WIN: ${wins}`;
+    document.getElementById('loss-l').innerText = `LOSS: ${loses}`;
+    document.getElementById('profit-l').innerText = `PROFIT: ${profitStack[profitStack.length-1]}`;
+    updateChart();
+}
+
+let chart;
+function updateChart() {
+    const ctx = document.getElementById('chart').getContext('2d');
+    if(chart) chart.destroy();
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: profitStack.map((_, i) => i),
+            datasets: [{
+                data: profitStack, borderColor: '#ffcc00', borderWidth: 5, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(255,204,0,0.05)'
+            }]
+        },
+        options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#222'}}} }
+    });
+}
+
+function undo() { history.pop(); profitStack.pop(); render(); hectorEngine(); }
+</script>
+</body>
+</html>

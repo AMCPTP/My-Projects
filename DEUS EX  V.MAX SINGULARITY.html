@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEUS EX | STABLE V.MAX</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #111; --neon: #00ff41; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; text-align: center; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 400px; margin: auto; }
+        .panel { background: var(--card); border-radius: 25px; padding: 20px; border: 1px solid #222; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .target-view { font-size: 60px; font-weight: 900; margin: 10px 0; min-height: 70px; display: flex; align-items: center; justify-content: center; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { border: none; height: 75px; border-radius: 18px; font-size: 24px; font-weight: bold; cursor: pointer; color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,0.3); }
+        .btn-p { background: var(--p); }
+        .btn-b { background: var(--b); }
+        .btn:active { transform: translateY(3px); box-shadow: none; }
+        .history-flow { display: flex; gap: 5px; overflow-x: auto; padding: 10px 0; border-bottom: 1px solid #222; min-height: 35px; }
+        .dot { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 1px solid #333; }
+        #prob-bar { width: 0%; height: 6px; background: var(--neon); transition: 0.5s; border-radius: 3px; margin: 10px auto; box-shadow: 0 0 10px var(--neon); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3 style="color:var(--neon); letter-spacing:3px; font-size:14px;">DEUS EX: STABLE V.MAX</h3>
+
+    <div class="panel">
+        <div id="status-tag" style="font-size:10px; color:var(--gold);">READY TO SCAN</div>
+        <div id="target" class="target-view" style="color:#222;">WAIT</div>
+        <div id="prob-bar"></div>
+        <div id="confidence" style="font-size:24px; font-weight:bold; color:var(--neon);">0.0%</div>
+        <div id="matches" style="font-size:10px; color:#555; margin-top:5px;">AWAITING DATA...</div>
+    </div>
+
+    <div class="panel">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="inputData('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="inputData('B')">BANKER</button>
+        </div>
+        <div class="history-flow" id="h-box"></div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-top:15px; font-weight:bold;">
+            <span id="win-stat">W: 0</span>
+            <span id="loss-stat">L: 0</span>
+            <span id="profit-stat" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#333; margin-top:15px;">
+            <span onclick="undo()" style="cursor:pointer;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--b);">[ RESET SYSTEM ]</span>
+        </div>
+    </div>
+
+    <div class="panel" style="padding:10px;">
+        <canvas id="liveChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profits = [0];
+let wins = 0, loses = 0;
+let nextBet = null;
+let chart;
+
+function initChart() {
+    const ctx = document.getElementById('liveChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: [0], datasets: [{ data: [0], borderColor: '#00ff41', borderWidth: 3, pointRadius: 0, tension: 0.3 }] },
+        options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: '#222' } } } }
+    });
+}
+
+function inputData(side) {
+    if (nextBet) {
+        if (nextBet === side) { wins++; stats(1); }
+        else { loses++; stats(-1); }
+    }
+    archive.push(side);
+    renderUI();
+    runEngine();
+}
+
+function stats(val) {
+    profits.push(profits[profits.length - 1] + val);
+}
+
+function runEngine() {
+    if (archive.length < 5) return;
+
+    let pPower = 0, bPower = 0;
+    let matchCount = 0;
+    const len = archive.length;
+
+    // --- RECURSIVE ENGINE (12 LAYERS STABLE) ---
+    for (let d = 2; d <= 12; d++) {
+        if (len < d) break;
+        const pattern = archive.slice(-d).join("");
+        const weight = Math.pow(d, 4); 
+
+        for (let i = 0; i < len - d; i++) {
+            if (archive.slice(i, i + d).join("") === pattern) {
+                const result = archive[i + d];
+                if (result === 'P') pPower += weight;
+                else if (result === 'B') bPower += weight;
+                matchCount++;
+            }
+        }
+    }
+
+    const total = pPower + bPower;
+    const probP = (pPower / total) * 100;
+    const probB = (bPower / total) * 100;
+
+    const targetEl = document.getElementById('target');
+    const confEl = document.getElementById('confidence');
+    const bar = document.getElementById('prob-bar');
+
+    // Threshold โหด: 65% ขึ้นไป
+    if (probP > 65 || probB > 65) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        const val = Math.max(probP, probB);
+        
+        nextBet = side === "PLAYER" ? "P" : "B";
+        targetEl.innerText = side;
+        targetEl.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        confEl.innerText = val.toFixed(1) + "%";
+        bar.style.width = val + "%";
+        document.getElementById('status-tag').innerText = "V.MAX SIGNAL ACTIVE";
+        document.getElementById('matches').innerText = `${matchCount} MATCH POINTS FOUND`;
+    } else {
+        nextBet = null;
+        targetEl.innerText = "SKIP";
+        targetEl.style.color = "#222";
+        confEl.innerText = "---";
+        bar.style.width = "0%";
+        document.getElementById('status-tag').innerText = "SCANNING ARCHIVE...";
+        document.getElementById('matches').innerText = "INSUFFICIENT PATTERN";
+    }
+}
+
+function renderUI() {
+    const box = document.getElementById('h-box');
+    box.innerHTML = archive.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('win-stat').innerText = `W: ${wins}`;
+    document.getElementById('loss-stat').innerText = `L: ${loses}`;
+    document.getElementById('profit-stat').innerText = `NET: ${profits[profits.length-1]}`;
+    
+    chart.data.labels = profits.map((_, i) => i);
+    chart.data.datasets[0].data = profits;
+    chart.update();
+}
+
+function undo() {
+    if (archive.length > 0) {
+        archive.pop();
+        if (profits.length > 1) profits.pop();
+        renderUI();
+        runEngine();
+    }
+}
+
+window.onload = initChart;
+</script>
+</body>
+</html>

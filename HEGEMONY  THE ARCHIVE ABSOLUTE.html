@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HEGEMONY | THE ARCHIVE ABSOLUTE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #050505; --card: #111111; --green: #34c759; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px; overflow-x: hidden; user-select: none; }
+        .container { max-width: 440px; margin: auto; }
+        .master-box { background: var(--card); border-radius: 30px; padding: 30px; border: 1px solid #222; margin-bottom: 15px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .status-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 2px; color: #444; font-weight: 900; }
+        .target-display { font-size: 75px; font-weight: 900; margin: 15px 0; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -3px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { border: none; height: 85px; border-radius: 24px; font-size: 28px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; box-shadow: 0 8px 0 rgba(0,0,0,0.3); }
+        .btn-p { background: linear-gradient(180deg, var(--p), #004fb0); }
+        .btn-b { background: linear-gradient(180deg, var(--b), #b01a14); }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        .history-row { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; border-bottom: 1px solid #1a1a1a; }
+        .dot { min-width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 1px solid #333; }
+        .meter { width: 100%; height: 6px; background: #1a1a1a; border-radius: 3px; margin: 20px 0; overflow: hidden; }
+        #meter-fill { height: 100%; width: 50%; background: var(--gold); transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 0 20px var(--gold); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:10px; color:var(--gold); letter-spacing:5px; font-weight:900; margin-bottom:15px;">🔱 HEGEMONY : ABSOLUTE ENGINE</div>
+
+    <div class="master-box">
+        <div class="status-header">
+            <span id="sys-status">STANDBY</span>
+            <span id="pattern-id">SCANNING ARCHIVE...</span>
+        </div>
+        <div id="target" class="target-display">READY</div>
+        <div class="meter"><div id="meter-fill"></div></div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+                <div id="conf-val" style="font-size:35px; font-weight:900; color:var(--gold);">0%</div>
+                <div style="font-size:10px; color:#444;">PRECISION RATE</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="matches" style="font-size:14px; color:#666; font-weight:bold;">0 PTS</div>
+                <div id="trend" style="font-size:10px; color:#333;">NO DATA</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="master-box" style="padding: 20px;">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="record('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="record('B')">BANKER</button>
+        </div>
+        <div class="history-row" id="history-box"></div>
+        <div class="stats-grid">
+            <span id="w-count" style="color:var(--p)">W: 0</span>
+            <span id="l-count" style="color:var(--b)">L: 0</span>
+            <span id="profit" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#333; margin-top:20px;">
+            <span onclick="undo()" style="cursor:pointer;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--b);">[ TERMINATE ALL ]</span>
+        </div>
+    </div>
+
+    <div class="master-box" style="padding:10px;">
+        <canvas id="mainChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profitLog = [0];
+let wins = 0, loses = 0;
+let activePredict = null;
+let chart;
+
+function record(side) {
+    if(activePredict) {
+        if(activePredict === side) { wins++; statsUpdate(1); }
+        else { loses++; statsUpdate(-1); }
+    }
+    archive.push(side);
+    hegemonyEngine();
+    renderUI();
+}
+
+function statsUpdate(v) { profitLog.push(profitLog[profitLog.length-1] + v); }
+
+function hegemonyEngine() {
+    if(archive.length < 5) return;
+
+    let pPower = 0, bPower = 0;
+    let matchPts = 0;
+    const len = archive.length;
+
+    // --- ABSOLUTE PATTERN MINING (15 Layers Deep) ---
+    for(let d = 2; d <= 15; d++) {
+        if(len < d) break;
+        const currentPattern = archive.slice(-d).join("");
+        // Weighting: d^5 เพื่อให้ความสำคัญกับความยาวของเค้าไพ่ขั้นสูงสุด
+        const weight = Math.pow(d, 5);
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i+d).join("") === currentPattern) {
+                const next = archive[i+d];
+                if(next === 'P') pPower += weight;
+                else if(next === 'B') bPower += weight;
+                matchPts++;
+            }
+        }
+    }
+
+    // --- BIAS COMPENSATOR (Mean Reversion) ---
+    const pDensity = archive.filter(x => x === 'P').length / len;
+    const compensation = len * 50; 
+    if(pDensity > 0.5) bPower += compensation; else pPower += compensation;
+
+    // --- FINAL SYNERGY CALCULATION ---
+    const total = pPower + bPower;
+    const pRate = (pPower / total) * 100;
+    const bRate = (bPower / total) * 100;
+
+    const target = document.getElementById('target');
+    const fill = document.getElementById('meter-fill');
+    const conf = document.getElementById('conf-val');
+
+    // Threshold พิเศษ: ต้องแม่นยำเกิน 65% เท่านั้นถึงจะส่งสัญญาณ
+    if(pRate > 65 || bRate > 65) {
+        const side = pRate > bRate ? "PLAYER" : "BANKER";
+        const val = pRate > bRate ? pRate : bRate;
+        
+        activePredict = side === "PLAYER" ? "P" : "B";
+        target.innerText = side;
+        target.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        conf.innerText = val.toFixed(1) + "%";
+        fill.style.width = val + "%";
+        fill.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        document.getElementById('sys-status').innerText = "SIGNAL ACQUIRED";
+        document.getElementById('sys-status').style.color = "var(--green)";
+        document.getElementById('pattern-id').innerText = "STRUCTURAL MATCH FOUND";
+        document.getElementById('matches').innerText = `${matchPts} PTS`;
+        document.getElementById('trend').innerText = "STABLE ARCHIVE";
+    } else {
+        activePredict = null;
+        target.innerText = "ABORT";
+        target.style.color = "#1a1a1a";
+        conf.innerText = "---";
+        fill.style.width = "50%";
+        fill.style.background = "#222";
+        document.getElementById('sys-status').innerText = "SCANNING...";
+        document.getElementById('sys-status').style.color = "#444";
+        document.getElementById('pattern-id').innerText = "NO RELIABLE PATTERN";
+        document.getElementById('matches').innerText = "LOW PTS";
+        document.getElementById('trend').innerText = "HIGH VOLATILITY";
+    }
+}
+
+function renderUI() {
+    const box = document.getElementById('history-box');
+    box.innerHTML = archive.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+
+    document.getElementById('w-count').innerText = `W: ${wins}`;
+    document.getElementById('l-count').innerText = `L: ${loses}`;
+    document.getElementById('profit').innerText = `NET: ${profitLog[profitLog.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#ffcc00', borderWidth: 4, pointRadius: 0, tension: 0.4 }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}}} }
+        });
+    }
+    chart.data.labels = profitLog.map((_, i) => i);
+    chart.data.datasets[0].data = profitLog;
+    chart.update('none');
+}
+
+function undo() { archive.pop(); if(profitLog.length > 1) profitLog.pop(); hegemonyEngine(); renderUI(); }
+
+window.onload = renderUI;
+</script>
+</body>
+</html>

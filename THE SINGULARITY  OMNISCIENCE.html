@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE SINGULARITY | OMNISCIENCE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #030303; --card: #0d0d0d; --neon: #00fff2; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace, sans-serif; margin: 0; padding: 10px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 420px; margin: auto; }
+        
+        /* Master HUD */
+        .hud-panel { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid #1a1a1a; margin-bottom: 12px; position: relative; box-shadow: 0 0 40px rgba(0,255,242,0.05); }
+        .hud-panel::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
+
+        .signal-view { font-size: 70px; font-weight: 900; margin: 15px 0; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -3px; text-transform: uppercase; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn { border: none; height: 80px; border-radius: 20px; font-size: 26px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; position: relative; }
+        .btn-p { background: linear-gradient(180deg, var(--p), #00458f); border-bottom: 6px solid #002d5e; }
+        .btn-b { background: linear-gradient(180deg, var(--b), #a8130c); border-bottom: 6px solid #6e0c08; }
+        .btn:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .history-ribbon { display: flex; gap: 4px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; scrollbar-width: none; }
+        .dot { min-width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; border: 1px solid #222; }
+        
+        .meter { width: 100%; height: 4px; background: #111; border-radius: 2px; margin: 20px 0; overflow: hidden; }
+        #meter-fill { height: 100%; width: 0%; background: var(--neon); transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 0 15px var(--neon); }
+
+        .metrics { display: flex; justify-content: space-between; align-items: flex-end; }
+        .prob-val { font-size: 36px; font-weight: 900; color: var(--neon); line-height: 1; }
+        .status-chip { font-size: 9px; padding: 4px 10px; border-radius: 20px; background: #111; color: var(--gold); border: 1px solid #222; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:9px; color:var(--neon); letter-spacing:8px; font-weight:900; margin: 15px 0; opacity: 0.7;">SINGULARITY OMNISCIENCE V.MAX</div>
+
+    <div class="hud-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="sys-mode" class="status-chip">ANALYSIS INITIALIZED</span>
+            <span id="scan-depth" style="font-size:9px; color:#444;">DEPTH: 20-LAYER SCAN</span>
+        </div>
+
+        <div id="target" class="signal-view" style="color:#111;">READY</div>
+        
+        <div class="meter"><div id="meter-fill"></div></div>
+
+        <div class="metrics">
+            <div>
+                <div id="prob-display" class="prob-val">0.0%</div>
+                <div style="font-size:9px; color:#444; font-weight:900; margin-top:5px;">CONFIDENCE ARCHIVE</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="match-label" style="font-size:12px; font-weight:900; color:#666;">SCANNING...</div>
+                <div id="recovery-lvl" style="font-size:9px; color:var(--b); font-weight:bold;">RECOVERY: IDLE</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hud-panel" style="padding: 15px;">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="feed('P')">PLAYER</button>
+            <button class="btn btn-b" onclick="feed('B')">BANKER</button>
+        </div>
+        <div class="history-ribbon" id="h-view"></div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-top:15px; color:#555;">
+            <span id="w-stat">W: 0</span>
+            <span id="l-stat">L: 0</span>
+            <span id="p-stat" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#333; margin-top:20px;">
+            <span onclick="undo()" style="cursor:pointer;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--b);">[ TERMINATE DATA ]</span>
+        </div>
+    </div>
+
+    <div class="hud-panel" style="padding:10px;">
+        <canvas id="singularityChart" height="140"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profitLog = [0];
+let wins = 0, loses = 0;
+let lastMove = null;
+let chart;
+let recoveryWeight = 1.0;
+
+function feed(side) {
+    if(lastMove) {
+        if(lastMove === side) { 
+            wins++; 
+            logProfit(1); 
+            recoveryWeight = 1.0; // Reset weight on win
+        } else { 
+            loses++; 
+            logProfit(-1); 
+            recoveryWeight += 0.5; // Increase focus on loss (Recovery Mode)
+        }
+    }
+    archive.push(side);
+    renderHUD();
+    omniEngine();
+}
+
+function logProfit(val) { profitLog.push(profitLog[profitLog.length-1] + val); }
+
+function omniEngine() {
+    if(archive.length < 5) return;
+
+    let pScore = 0, bScore = 0;
+    let matchPts = 0;
+    const len = archive.length;
+
+    // --- OMNISCIENCE RECURSIVE SCAN (20 LAYERS) ---
+    for(let d = 2; d <= 20; d++) {
+        if(len < d) break;
+        const currentPattern = archive.slice(-d).join("");
+        const power = Math.pow(d, 5.5) * recoveryWeight; // Exponential power with recovery multiplier
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === currentPattern) {
+                const res = archive[i + d];
+                const recency = (i / len); // Weight more recent matches higher
+                if(res === 'P') pScore += (power * recency);
+                else if(res === 'B') bScore += (power * recency);
+                matchPts++;
+            }
+        }
+    }
+
+    // --- ENTROPY DENSITY BIAS ---
+    const bias = len * 50;
+    const pDensity = archive.filter(x => x === 'P').length / len;
+    if(pDensity > 0.52) bScore += bias; else if(pDensity < 0.48) pScore += bias;
+
+    const total = pScore + bScore;
+    const probP = (pScore / total) * 100;
+    const probB = (bScore / total) * 100;
+
+    const targetEl = document.getElementById('target');
+    const fill = document.getElementById('meter-fill');
+    const probEl = document.getElementById('prob-display');
+
+    // Threshold พิเศษ: 67% ขึ้นไปถึงจะส่งสัญญาณ (Extreme Confidence)
+    if(probP > 67 || probB > 67) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        const val = Math.max(probP, probB);
+        
+        lastMove = side === "PLAYER" ? "P" : "B";
+        targetEl.innerText = side;
+        targetEl.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        probEl.innerText = val.toFixed(1) + "%";
+        fill.style.width = val + "%";
+        fill.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        document.getElementById('sys-mode').innerText = recoveryWeight > 1 ? "RECOVERY OVERDRIVE" : "OMNISCIENCE ACTIVE";
+        document.getElementById('sys-mode').style.color = recoveryWeight > 1 ? "var(--gold)" : "var(--neon)";
+        document.getElementById('match-label').innerText = `${matchPts} SINGULARITIES`;
+        document.getElementById('recovery-lvl').innerText = `STRENGTH: ${recoveryWeight.toFixed(1)}X`;
+    } else {
+        lastMove = null;
+        targetEl.innerText = "WAIT";
+        targetEl.style.color = "#111";
+        probEl.innerText = "---";
+        fill.style.width = "0%";
+        document.getElementById('sys-mode').innerText = "SCANNING VORTEX...";
+        document.getElementById('match-label').innerText = "AWAITING DATA";
+        document.getElementById('recovery-lvl').innerText = "RECOVERY: IDLE";
+    }
+}
+
+function renderHUD() {
+    const box = document.getElementById('h-view');
+    box.innerHTML = archive.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('w-stat').innerText = `W: ${wins}`;
+    document.getElementById('l-stat').innerText = `L: ${loses}`;
+    document.getElementById('p-stat').innerText = `NET: ${profitLog[profitLog.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('singularityChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#00fff2', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0,255,242,0.02)' }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}, ticks:{color:'#333'}}} }
+        });
+    }
+    chart.data.labels = profitLog.map((_, i) => i);
+    chart.data.datasets[0].data = profitLog;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(profitLog.length > 1) profitLog.pop();
+        renderHUD();
+        omniEngine();
+    }
+}
+
+window.onload = renderHUD;
+</script>
+</body>
+</html>

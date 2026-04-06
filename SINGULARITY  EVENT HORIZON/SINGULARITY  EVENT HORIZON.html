@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SINGULARITY | EVENT HORIZON</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #050505; --neon: #00fff2; --safe: #00ff41; --danger: #ff0055; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; overflow: hidden; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 420px; margin: auto; }
+        
+        /* Master HUD */
+        .hud-panel { background: var(--card); border-radius: 40px; padding: 25px; border: 1px solid #151515; margin-bottom: 15px; position: relative; box-shadow: 0 0 50px rgba(0,255,242,0.05); }
+        .hud-panel::before { content: ""; position: absolute; inset: 0; border-radius: 40px; padding: 1.5px; background: linear-gradient(180deg, #333, transparent, #222); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; }
+
+        .signal-view { font-size: 90px; font-weight: 900; margin: 10px 0; height: 110px; display: flex; align-items: center; justify-content: center; letter-spacing: -6px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-master { border: none; height: 95px; border-radius: 30px; font-size: 32px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; position: relative; border-bottom: 8px solid rgba(0,0,0,0.5); }
+        .btn-p { background: linear-gradient(180deg, var(--p), #002d5e); }
+        .btn-b { background: linear-gradient(180deg, var(--b), #6e0c08); }
+        .btn-master:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .history-flow { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; border-bottom: 1px solid #111; }
+        .dot { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; border: 1px solid #222; }
+        
+        .load-ring { width: 100%; height: 6px; background: #111; border-radius: 3px; margin: 25px 0; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon), var(--safe)); transition: 1s cubic-bezier(0.1, 0.9, 0.1, 1); box-shadow: 0 0 20px var(--neon); }
+
+        .meta-data { display: flex; justify-content: space-between; align-items: flex-end; }
+        .percent { font-size: 50px; font-weight: 900; color: var(--neon); line-height: 0.8; letter-spacing: -2px; }
+        .status-chip { font-size: 10px; padding: 4px 12px; border-radius: 20px; background: #000; border: 1px solid #222; font-weight: 900; color: var(--safe); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:10px; color:#444; letter-spacing:10px; font-weight:900; margin: 15px 0;">EVENT HORIZON : ZERO POINT</div>
+
+    <div class="hud-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="sys-mode" class="status-chip">ANALYZING VOID</span>
+            <span id="chaos-meter" style="font-size:10px; color:var(--danger); font-weight:bold;">CHAOS: LOW</span>
+        </div>
+
+        <div id="target" class="signal-view" style="color:#111;">SCAN</div>
+        
+        <div class="load-ring"><div id="fill"></div></div>
+
+        <div class="meta-data">
+            <div>
+                <div id="prob-display" class="percent">0%</div>
+                <div style="font-size:10px; color:#333; font-weight:900; margin-top:5px;">STRATEGIC ACCURACY</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="phase-tag" style="font-size:12px; font-weight:900; color:#555;">STABLE PHASE</div>
+                <div id="matches" style="font-size:9px; color:var(--gold); font-weight:bold;">AWAITING DATA</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hud-panel" style="padding: 20px;">
+        <div class="control-grid">
+            <button class="btn-master btn-p" onclick="input('P')">P</button>
+            <button class="btn-master btn-b" onclick="input('B')">B</button>
+        </div>
+        <div class="history-flow" id="h-view"></div>
+        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:900; margin-top:20px; color:#444;">
+            <span id="win-ui">W: 0</span>
+            <span id="loss-ui">L: 0</span>
+            <span id="profit-ui" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#222; margin-top:25px;">
+            <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--danger); padding:5px;">[ PURGE ARCHIVE ]</span>
+        </div>
+    </div>
+
+    <div class="hud-panel" style="padding:10px;">
+        <canvas id="singularityChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profits = [0];
+let w = 0, l = 0, lossStreak = 0;
+let lastMove = null;
+let chart;
+
+function input(side) {
+    if(lastMove) {
+        if(lastMove === side) { w++; updateProfit(1); lossStreak = 0; }
+        else { l++; updateProfit(-1); lossStreak++; }
+    }
+    archive.push(side);
+    renderHUD();
+    singularityEngine();
+}
+
+function updateProfit(v) { profits.push(profits[profits.length-1] + v); }
+
+function singularityEngine() {
+    const len = archive.length;
+    if(len < 6) return;
+
+    let pPower = 0, bPower = 0;
+    let matchCount = 0;
+    
+    // --- DYNAMIC THRESHOLD LOGIC (จุดแก้ไขแพ้ติดกัน) ---
+    let threshold = 72; // เริ่มต้นที่ 72%
+    if(lossStreak === 1) threshold = 78;
+    if(lossStreak >= 2) threshold = 86; // ถ้าแพ้ 2 ครั้ง ต้องชัวร์ระดับ 86% เท่านั้นถึงจะเข้า
+
+    // --- RECURSIVE DEEP SCAN (32 LAYERS) ---
+    for(let d = 2; d <= 32; d++) {
+        if(len < d) break;
+        const pattern = archive.slice(-d).join("");
+        // Weighting Exponential + Recency Bias
+        const weight = Math.pow(d, 6.2);
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === pattern) {
+                const res = archive[i + d];
+                const recency = (i / len);
+                if(res === 'P') pPower += (weight * recency);
+                else if(res === 'B') bPower += (weight * recency);
+                matchCount++;
+            }
+        }
+    }
+
+    // --- TRANSITION & TREND PROTECTION ---
+    const last4 = archive.slice(-4).join("");
+    const isDragon = (last4 === "PPPP" || last4 === "BBBB");
+    if(isDragon) {
+        const side = archive[len-1];
+        if(side === 'P') pPower *= 2.5; else bPower *= 2.5;
+    }
+
+    const total = pPower + bPower;
+    const probP = (pPower / total) * 100;
+    const probB = (bPower / total) * 100;
+    const maxProb = Math.max(probP, probB);
+
+    const targetEl = document.getElementById('target');
+    const fill = document.getElementById('fill');
+    const probEl = document.getElementById('prob-display');
+    const modeEl = document.getElementById('sys-mode');
+
+    // --- FINAL DECISION LOGIC ---
+    if(maxProb > threshold && len > 10) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        lastMove = side === "PLAYER" ? "P" : "B";
+        
+        targetEl.innerText = side;
+        targetEl.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        probEl.innerText = maxProb.toFixed(1) + "%";
+        fill.style.width = maxProb + "%";
+        fill.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        modeEl.innerText = lossStreak > 0 ? "SECURE RECOVERY" : (isDragon ? "DRAGON RIDER" : "OPTIMAL ENTRY");
+        modeEl.style.color = lossStreak > 0 ? "var(--danger)" : "var(--safe)";
+        document.getElementById('phase-tag').innerText = maxProb > 85 ? "HIGH CONVICTION" : "STABLE PHASE";
+        document.getElementById('chaos-meter').innerText = "CHAOS: LOW";
+        document.getElementById('chaos-meter').style.color = "var(--safe)";
+    } else {
+        lastMove = null;
+        targetEl.innerText = "WAIT";
+        targetEl.style.color = "#111";
+        probEl.innerText = "---";
+        fill.style.width = "0%";
+        modeEl.innerText = "OBSERVING VOID";
+        modeEl.style.color = "#444";
+        document.getElementById('phase-tag').innerText = "UNCERTAIN PHASE";
+        document.getElementById('chaos-meter').innerText = "CHAOS: HIGH";
+        document.getElementById('chaos-meter').style.color = "var(--danger)";
+    }
+    document.getElementById('matches').innerText = `${matchCount} NODES FOUND`;
+}
+
+function renderHUD() {
+    const box = document.getElementById('h-view');
+    box.innerHTML = archive.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('win-ui').innerText = `W: ${w}`;
+    document.getElementById('loss-ui').innerText = `L: ${l}`;
+    document.getElementById('profit-ui').innerText = `NET: ${profits[profits.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('singularityChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#00fff2', borderWidth: 4, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0,255,242,0.02)' }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}, ticks:{color:'#333'}}} }
+        });
+    }
+    chart.data.labels = profits.map((_, i) => i);
+    chart.data.datasets[0].data = profits;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(profits.length > 1) profits.pop();
+        if(lossStreak > 0) lossStreak--;
+        renderHUD();
+        singularityEngine();
+    }
+}
+
+window.onload = renderHUD;
+</script>
+</body>
+</html>

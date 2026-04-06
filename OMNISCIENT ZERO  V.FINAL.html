@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNISCIENT ZERO | V.FINAL</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #0a0a0a; --neon: #00fff2; --danger: #ff2d55; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; overflow: hidden; user-select: none; }
+        .container { max-width: 420px; margin: auto; }
+        
+        .main-panel { background: var(--card); border-radius: 40px; padding: 30px; border: 1px solid #1a1a1a; margin-bottom: 15px; position: relative; box-shadow: 0 0 50px rgba(0,255,242,0.05); }
+        .main-panel::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
+
+        .signal-display { font-size: 85px; font-weight: 900; margin: 10px 0; height: 100px; display: flex; align-items: center; justify-content: center; letter-spacing: -6px; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { border: none; height: 90px; border-radius: 25px; font-size: 30px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; position: relative; }
+        .btn-p { background: linear-gradient(180deg, var(--p), #003a7a); border-bottom: 8px solid #00254d; }
+        .btn-b { background: linear-gradient(180deg, var(--b), #8a0e09); border-bottom: 8px solid #5c0906; }
+        .btn:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .h-scroll { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; border-bottom: 1px solid #111; }
+        .u { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; border: 1px solid #222; }
+        
+        .progress-bar { width: 100%; height: 6px; background: #111; border-radius: 3px; margin: 20px 0; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: var(--neon); transition: 0.8s cubic-bezier(0.1, 0.9, 0.1, 1); box-shadow: 0 0 20px var(--neon); }
+
+        .meta-row { display: flex; justify-content: space-between; align-items: flex-end; }
+        .prob-text { font-size: 48px; font-weight: 900; color: var(--neon); line-height: 0.8; }
+        .badge { font-size: 10px; padding: 4px 12px; border-radius: 20px; background: #111; border: 1px solid #222; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:9px; color:#555; letter-spacing:8px; font-weight:900; margin: 15px 0; text-transform: uppercase;">OMNISCIENT ZERO : V.FINAL ANALYTICS</div>
+
+    <div class="main-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="sys-status" class="badge" style="color:var(--neon)">ZERO CORE ONLINE</span>
+            <span id="loss-counter" style="font-size:10px; color:var(--danger); font-weight:bold;">LOSS STREAK: 0</span>
+        </div>
+
+        <div id="target" class="signal-display" style="color:#111;">READY</div>
+        
+        <div class="progress-bar"><div id="fill"></div></div>
+
+        <div class="meta-row">
+            <div>
+                <div id="prob-val" class="prob-text">0%</div>
+                <div style="font-size:10px; color:#333; font-weight:900; margin-top:5px;">OMNI-ACCURACY FLOW</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="trend-tag" style="font-size:12px; font-weight:900; color:#555;">STABLE</div>
+                <div id="match-tag" style="font-size:9px; color:var(--gold); font-weight:bold;">0 MATCHES</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-panel" style="padding: 20px;">
+        <div class="btn-grid">
+            <button class="btn btn-p" onclick="feed('P')">P</button>
+            <button class="btn btn-b" onclick="feed('B')">B</button>
+        </div>
+        <div class="h-scroll" id="h-view"></div>
+        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:900; margin-top:20px; color:#444;">
+            <span id="w-ui">W: 0</span>
+            <span id="l-ui">L: 0</span>
+            <span id="p-ui" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#222; margin-top:25px;">
+            <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--danger); padding:5px;">[ RESET SYSTEM ]</span>
+        </div>
+    </div>
+
+    <div class="main-panel" style="padding:10px;">
+        <canvas id="zeroChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profitStack = [0];
+let wins = 0, loses = 0, currentLossStreak = 0;
+let lastMove = null;
+let chart;
+
+function feed(side) {
+    if(lastMove) {
+        if(lastMove === side) { 
+            wins++; 
+            updateProfit(1); 
+            currentLossStreak = 0; 
+        } else { 
+            loses++; 
+            updateProfit(-1); 
+            currentLossStreak++; 
+        }
+    }
+    archive.push(side);
+    renderHUD();
+    zeroEngine();
+}
+
+function updateProfit(v) { profitStack.push(profitStack[profitStack.length-1] + v); }
+
+function zeroEngine() {
+    if(archive.length < 5) return;
+
+    let pWeight = 0, bWeight = 0;
+    let matchCount = 0;
+    const len = archive.length;
+
+    // --- ANTI-LOSS STREAK PROTECTION ---
+    // หากแพ้ติดต่อกัน ระบบจะเพิ่ม Threshold เพื่อความชัวร์ขึ้นเรื่อยๆ
+    let minThreshold = 70;
+    if(currentLossStreak === 1) minThreshold = 75;
+    if(currentLossStreak >= 2) minThreshold = 82; // โหดจัด บังคับให้รอจนกว่าจะชัวร์สุดๆ
+
+    // --- TRIPLE-WINDOW ARCHIVE SCAN (30 LAYERS) ---
+    for(let d = 2; d <= 30; d++) {
+        if(len < d) break;
+        const pattern = archive.slice(-d).join("");
+        let basePower = Math.pow(d, 6);
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === pattern) {
+                const res = archive[i + d];
+                const recency = (i / len); // ยิ่งใหม่ยิ่งแรง
+                if(res === 'P') pWeight += (basePower * recency);
+                else if(res === 'B') bWeight += (basePower * recency);
+                matchCount++;
+            }
+        }
+    }
+
+    // --- TREND DETECTION (Dragon & Ping-Pong) ---
+    const last3 = archive.slice(-3).join("");
+    if(last3 === "PPP" || last3 === "BBB") {
+        const trend = archive[len-1];
+        if(trend === 'P') pWeight *= 1.8; else bWeight *= 1.8; // Follow Trend
+    }
+
+    const total = pWeight + bWeight;
+    const probP = (pWeight / total) * 100;
+    const probB = (bWeight / total) * 100;
+
+    const targetEl = document.getElementById('target');
+    const fill = document.getElementById('fill');
+    const probEl = document.getElementById('prob-val');
+    const statusEl = document.getElementById('sys-status');
+
+    if(probP > minThreshold || probB > minThreshold) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        const val = Math.max(probP, probB);
+        
+        lastMove = side === "PLAYER" ? "P" : "B";
+        targetEl.innerText = side;
+        targetEl.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        probEl.innerText = val.toFixed(1) + "%";
+        fill.style.width = val + "%";
+        fill.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        statusEl.innerText = currentLossStreak > 0 ? "PROTECTION ACTIVE" : "ZERO CORE OPTIMIZED";
+        statusEl.style.color = currentLossStreak > 0 ? "var(--danger)" : "var(--neon)";
+        document.getElementById('trend-tag').innerText = (last3==="PPP"||last3==="BBB") ? "FOLLOWING" : "STABLE";
+        document.getElementById('match-tag').innerText = `${matchCount} MATCHES`;
+    } else {
+        lastMove = null;
+        targetEl.innerText = "WAIT";
+        targetEl.style.color = "#111";
+        probEl.innerText = "---";
+        fill.style.width = "0%";
+        statusEl.innerText = "SCANNING VORTEX...";
+        statusEl.style.color = "#444";
+        document.getElementById('trend-tag').innerText = "UNCERTAIN";
+        document.getElementById('match-tag').innerText = "FILTERING...";
+    }
+    document.getElementById('loss-counter').innerText = `LOSS STREAK: ${currentLossStreak}`;
+}
+
+function renderHUD() {
+    const box = document.getElementById('h-view');
+    box.innerHTML = archive.map(s => `<div class="u" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('w-ui').innerText = `W: ${wins}`;
+    document.getElementById('l-ui').innerText = `L: ${loses}`;
+    document.getElementById('p-ui').innerText = `NET: ${profitStack[profitStack.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('zeroChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#00fff2', borderWidth: 4, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0,255,242,0.03)' }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}, ticks:{color:'#333'}}} }
+        });
+    }
+    chart.data.labels = profitStack.map((_, i) => i);
+    chart.data.datasets[0].data = profitStack;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(profitStack.length > 1) profitStack.pop();
+        if(currentLossStreak > 0) currentLossStreak--;
+        renderHUD();
+        zeroEngine();
+    }
+}
+
+window.onload = renderHUD;
+</script>
+</body>
+</html>

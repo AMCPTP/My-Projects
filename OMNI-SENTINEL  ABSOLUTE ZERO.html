@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI-SENTINEL | ABSOLUTE ZERO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #070707; --neon: #00fff2; --safe: #34c759; --danger: #ff2d55; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 10px; overflow: hidden; user-select: none; }
+        .container { max-width: 420px; margin: auto; }
+        
+        .sentinel-panel { background: var(--card); border-radius: 40px; padding: 30px; border: 1px solid #1a1a1a; margin-bottom: 15px; position: relative; box-shadow: 0 0 60px rgba(0,255,242,0.08); overflow: hidden; }
+        .sentinel-panel::before { content: ""; position: absolute; top: -10%; left: -10%; width: 120%; height: 5px; background: linear-gradient(90deg, transparent, var(--neon), transparent); animation: sweep 3s linear infinite; }
+        @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .display-core { font-size: 85px; font-weight: 900; margin: 10px 0; height: 110px; display: flex; align-items: center; justify-content: center; letter-spacing: -6px; z-index: 1; position: relative; }
+        
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-core { border: none; height: 90px; border-radius: 25px; font-size: 32px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; border-bottom: 8px solid rgba(0,0,0,0.5); }
+        .btn-p { background: linear-gradient(180deg, var(--p), #003a7a); }
+        .btn-b { background: linear-gradient(180deg, var(--b), #8a0e09); }
+        .btn-core:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .ribbon { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; border-bottom: 1px solid #111; }
+        .unit { min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; border: 1px solid #222; }
+        
+        .track { width: 100%; height: 4px; background: #111; border-radius: 2px; margin: 20px 0; overflow: hidden; }
+        #bar { height: 100%; width: 0%; background: var(--neon); transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 20px var(--neon); }
+
+        .meta-stats { display: flex; justify-content: space-between; align-items: flex-end; }
+        .val-large { font-size: 46px; font-weight: 900; color: var(--neon); line-height: 0.8; }
+        .chip { font-size: 10px; padding: 4px 10px; border-radius: 12px; background: #111; font-weight: 900; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:9px; color:#444; letter-spacing:10px; font-weight:900; margin: 15px 0;">OMNI-SENTINEL : ABSOLUTE ZERO</div>
+
+    <div class="sentinel-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; z-index:1; position:relative;">
+            <span id="sys-status" class="chip" style="color:var(--safe)">SENTINEL CALIBRATED</span>
+            <span id="volatility" style="font-size:10px; color:var(--gold); font-weight:bold;">VOLATILITY: LOW</span>
+        </div>
+
+        <div id="target" class="display-core" style="color:#111;">STASIS</div>
+        
+        <div class="track"><div id="bar"></div></div>
+
+        <div class="meta-stats">
+            <div>
+                <div id="acc-ui" class="val-large">0%</div>
+                <div style="font-size:9px; color:#333; font-weight:900; margin-top:6px;">ABSOLUTE PRECISION</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="trend-ui" style="font-size:12px; font-weight:900; color:#555;">STABLE</div>
+                <div id="match-ui" style="font-size:9px; color:var(--neon); font-weight:bold;">DATA FEED: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sentinel-panel" style="padding: 20px;">
+        <div class="action-grid">
+            <button class="btn-core btn-p" onclick="push('P')">P</button>
+            <button class="btn-core btn-b" onclick="push('B')">B</button>
+        </div>
+        <div class="ribbon" id="h-view"></div>
+        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:900; margin-top:20px; color:#444;">
+            <span id="win-ui">W: 0</span>
+            <span id="loss-ui">L: 0</span>
+            <span id="net-ui" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#222; margin-top:25px;">
+            <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--danger); padding:5px;">[ HARD RESET ]</span>
+        </div>
+    </div>
+
+    <div class="sentinel-panel" style="padding:10px;">
+        <canvas id="absChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let netFlow = [0];
+let wins = 0, loses = 0, lStreak = 0;
+let nextMove = null;
+let chart;
+
+function push(s) {
+    if(nextMove) {
+        if(nextMove === s) { wins++; updateNet(1); lStreak = 0; }
+        else { loses++; updateNet(-1); lStreak++; }
+    }
+    archive.push(s);
+    render();
+    absEngine();
+}
+
+function updateNet(v) { netFlow.push(netFlow[netFlow.length-1] + v); }
+
+function absEngine() {
+    const len = archive.length;
+    if(len < 8) return;
+
+    let pW = 0, bW = 0, matches = 0;
+    
+    // --- ABSOLUTE THRESHOLD (จุดปิดจุดอ่อนแพ้ติดกัน) ---
+    let minT = 74; 
+    if(lStreak === 1) minT = 80;
+    if(lStreak >= 2) minT = 90; // ขั้นสูงสุด: ต้องมั่นใจ 90% ถึงจะออกตัว
+
+    // --- RECURSIVE PATTERN SEARCH (40 LAYERS) ---
+    for(let d = 2; d <= 40; d++) {
+        if(len < d) break;
+        const pat = archive.slice(-d).join("");
+        const power = Math.pow(d, 6.5);
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === pat) {
+                const res = archive[i + d];
+                const recency = (i / len);
+                if(res === 'P') pW += (power * recency);
+                else bW += (power * recency);
+                matches++;
+            }
+        }
+    }
+
+    // --- TRANSITION GUARD (ป้องกันรูปแบบอิ่มตัว) ---
+    const last5 = archive.slice(-5).join("");
+    const isStreak = (last5 === "PPPPP" || last5 === "BBBBB");
+    if(isStreak) {
+        const side = archive[len-1];
+        if(side === 'P') pW *= 2.2; else bW *= 2.2;
+    }
+
+    const total = pW + bW;
+    const probP = (pW / total) * 100;
+    const probB = (bW / total) * 100;
+    const maxP = Math.max(probP, probB);
+
+    const target = document.getElementById('target');
+    const bar = document.getElementById('bar');
+    const acc = document.getElementById('acc-ui');
+    const status = document.getElementById('sys-status');
+
+    // --- FINAL GATE ---
+    if(maxP > minT) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        nextMove = side === "PLAYER" ? "P" : "B";
+        
+        target.innerText = side;
+        target.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        acc.innerText = maxP.toFixed(1) + "%";
+        bar.style.width = maxP + "%";
+        bar.style.background = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        
+        status.innerText = lStreak > 0 ? "ABS RECOVERY" : (isStreak ? "TREND RIDE" : "ABSOLUTE ENTRY");
+        status.style.color = lStreak > 0 ? "var(--danger)" : "var(--neon)";
+        document.getElementById('volatility').innerText = "VOLATILITY: STABLE";
+        document.getElementById('volatility').style.color = "var(--safe)";
+    } else {
+        nextMove = null;
+        target.innerText = "WAIT";
+        target.style.color = "#111";
+        acc.innerText = "---";
+        bar.style.width = "0%";
+        status.innerText = "CALIBRATING...";
+        status.style.color = "#444";
+        document.getElementById('volatility').innerText = "VOLATILITY: HIGH";
+        document.getElementById('volatility').style.color = "var(--danger)";
+    }
+    document.getElementById('match-ui').innerText = `NODES: ${matches}`;
+}
+
+function render() {
+    const box = document.getElementById('h-view');
+    box.innerHTML = archive.map(s => `<div class="unit" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('win-ui').innerText = `W: ${wins}`;
+    document.getElementById('loss-ui').innerText = `L: ${loses}`;
+    document.getElementById('net-ui').innerText = `NET: ${netFlow[netFlow.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('absChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#00fff2', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0,255,242,0.02)' }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}, ticks:{color:'#333'}}} }
+        });
+    }
+    chart.data.labels = netFlow.map((_, i) => i);
+    chart.data.datasets[0].data = netFlow;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(netFlow.length > 1) netFlow.pop();
+        if(lStreak > 0) lStreak--;
+        render();
+        absEngine();
+    }
+}
+window.onload = render;
+</script>
+</body>
+</html>

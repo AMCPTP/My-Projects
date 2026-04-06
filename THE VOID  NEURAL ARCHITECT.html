@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE VOID | NEURAL ARCHITECT</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --gold: #ffcc00; --bg: #000; --card: #0a0a0a; --neon: #ff00ff; --cyan: #00ffff; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 10px; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 420px; margin: auto; }
+        
+        .void-panel { background: var(--card); border-radius: 40px; padding: 30px; border: 1px solid #1a1a1a; margin-bottom: 15px; position: relative; box-shadow: 0 0 50px rgba(255,0,255,0.05); overflow: hidden; }
+        .void-panel::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, var(--neon), transparent, var(--cyan), transparent); animation: rotate 10s linear infinite; opacity: 0.1; z-index: 0; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        .signal-display { font-size: 80px; font-weight: 900; margin: 10px 0; height: 110px; display: flex; align-items: center; justify-content: center; letter-spacing: -5px; z-index: 1; position: relative; text-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: relative; z-index: 1; }
+        .btn { border: none; height: 90px; border-radius: 25px; font-size: 30px; font-weight: 900; cursor: pointer; color: #fff; transition: 0.1s; border-bottom: 8px solid rgba(0,0,0,0.4); }
+        .btn-p { background: linear-gradient(180deg, var(--p), #003a7a); }
+        .btn-b { background: linear-gradient(180deg, var(--b), #8a0e09); }
+        .btn:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+        .history-wrap { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; scrollbar-width: none; }
+        .unit { min-width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+        
+        .load-bar { width: 100%; height: 6px; background: #111; border-radius: 3px; margin: 25px 0; overflow: hidden; position: relative; }
+        #fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon), var(--cyan)); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 20px var(--neon); }
+
+        .infographics { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; }
+        .percent-text { font-size: 45px; font-weight: 900; color: var(--cyan); line-height: 0.8; }
+        .status-tag { font-size: 10px; font-weight: 900; color: var(--neon); letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:10px; color:var(--cyan); letter-spacing:10px; font-weight:900; margin: 15px 0; opacity: 0.8;">THE VOID : NEURAL ARCHITECT</div>
+
+    <div class="void-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1;">
+            <span id="mode" class="status-tag">INITIALIZING NEURAL CORE</span>
+            <span id="matches" style="font-size:10px; color:#444; font-weight:bold;">AWAITING ARCHIVE</span>
+        </div>
+
+        <div id="target" class="signal-display" style="color:#1a1a1a;">VOID</div>
+        
+        <div class="load-bar"><div id="fill"></div></div>
+
+        <div class="infographics">
+            <div>
+                <div id="prob" class="percent-text">0%</div>
+                <div style="font-size:10px; color:#444; font-weight:900; margin-top:8px;">SIMULATION ACCURACY</div>
+            </div>
+            <div style="text-align:right;">
+                <div id="recovery-ui" style="font-size:12px; font-weight:900; color:#555;">STABLE</div>
+                <div id="ai-status" style="font-size:9px; color:#222; font-weight:bold;">CORE ACTIVE</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="void-panel" style="padding: 20px;">
+        <div class="grid">
+            <button class="btn btn-p" onclick="add('P')">P</button>
+            <button class="btn btn-b" onclick="add('B')">B</button>
+        </div>
+        <div class="history-wrap" id="h-flow"></div>
+        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold; margin-top:20px; color:#444;">
+            <span id="w-ui">W: 0</span>
+            <span id="l-ui">L: 0</span>
+            <span id="p-ui" style="color:var(--gold)">NET: 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:#333; margin-top:25px;">
+            <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="cursor:pointer; color:var(--b); padding:5px;">[ RESET VOID ]</span>
+        </div>
+    </div>
+
+    <div class="void-panel" style="padding:10px;">
+        <canvas id="voidChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+let archive = [];
+let profitStack = [0];
+let wins = 0, loses = 0;
+let lastGuess = null;
+let chart;
+let recoveryLvl = 1.0;
+
+function add(side) {
+    if(lastGuess) {
+        if(lastGuess === side) { 
+            wins++; 
+            updateProfit(1); 
+            recoveryLvl = 1.0;
+        } else { 
+            loses++; 
+            updateProfit(-1); 
+            recoveryLvl += 1.0; // แรงอาฆาตเพิ่มขึ้นเมื่อแพ้
+        }
+    }
+    archive.push(side);
+    renderUI();
+    voidEngine();
+}
+
+function updateProfit(v) { profitStack.push(profitStack[profitStack.length-1] + v); }
+
+function voidEngine() {
+    if(archive.length < 6) return;
+
+    let pWeight = 0, bWeight = 0;
+    let matchPoints = 0;
+    const len = archive.length;
+
+    // --- VOID RECURSION (30-LAYER DEEP SCAN) ---
+    for(let d = 2; d <= 30; d++) {
+        if(len < d) break;
+        const currentPattern = archive.slice(-d).join("");
+        // Weighting d^6 เพื่อเน้นรูปแบบยาวที่เคยเกิดขึ้น
+        let basePower = Math.pow(d, 6) * recoveryLvl;
+
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === currentPattern) {
+                const result = archive[i + d];
+                const recency = (i / len); // ยิ่งใหม่ยิ่งแรง
+                if(result === 'P') pWeight += (basePower * recency);
+                else if(result === 'B') bWeight += (basePower * recency);
+                matchPoints++;
+            }
+        }
+    }
+
+    const total = pWeight + bWeight;
+    const probP = (pWeight / total) * 100;
+    const probB = (bWeight / total) * 100;
+
+    const target = document.getElementById('target');
+    const fill = document.getElementById('fill');
+    const probUi = document.getElementById('prob');
+
+    // EXTREME THRESHOLD: 69% (เลขแห่งความสมดุล)
+    if(probP > 69 || probB > 69) {
+        const side = probP > probB ? "PLAYER" : "BANKER";
+        const val = Math.max(probP, probB);
+        
+        lastGuess = side === "PLAYER" ? "P" : "B";
+        target.innerText = side;
+        target.style.color = side === "PLAYER" ? "var(--p)" : "var(--b)";
+        probUi.innerText = val.toFixed(1) + "%";
+        fill.style.width = val + "%";
+        fill.style.background = `linear-gradient(90deg, ${side==='PLAYER'?'var(--p)':'var(--b)'}, var(--cyan))`;
+        
+        document.getElementById('mode').innerText = recoveryLvl > 1 ? "NEURAL RECOVERY ACTIVE" : "VOID ARCHITECT: OPTIMIZED";
+        document.getElementById('mode').style.color = recoveryLvl > 1 ? "var(--gold)" : "var(--cyan)";
+        document.getElementById('matches').innerText = `${matchPoints} MATCHES FOUND`;
+        document.getElementById('recovery-ui').innerText = recoveryLvl > 1 ? "RECOVERING..." : "STABLE";
+    } else {
+        lastGuess = null;
+        target.innerText = "WAIT";
+        target.style.color = "#1a1a1a";
+        probUi.innerText = "---";
+        fill.style.width = "0%";
+        document.getElementById('mode').innerText = "CALCULATING PROBABILITY...";
+        document.getElementById('matches').innerText = "LOW ARCHIVE DATA";
+    }
+}
+
+function renderUI() {
+    const box = document.getElementById('h-flow');
+    box.innerHTML = archive.map(s => `<div class="unit" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = box.scrollWidth;
+    
+    document.getElementById('w-ui').innerText = `W: ${wins}`;
+    document.getElementById('l-ui').innerText = `L: ${loses}`;
+    document.getElementById('p-ui').innerText = `NET: ${profitStack[profitStack.length-1]}`;
+    
+    if(!chart) {
+        const ctx = document.getElementById('voidChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [0], datasets: [{ data: [0], borderColor: '#00ffff', borderWidth: 4, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0,255,255,0.03)' }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{color:'#111'}, ticks:{color:'#333'}}} }
+        });
+    }
+    chart.data.labels = profitStack.map((_, i) => i);
+    chart.data.datasets[0].data = profitStack;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(profitStack.length > 1) profitStack.pop();
+        renderUI();
+        voidEngine();
+    }
+}
+
+window.onload = renderUI;
+</script>
+</body>
+</html>

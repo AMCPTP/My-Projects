@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SINGULARITY X | FIXED</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --neon: #00fff2; --bg: #000; --card: #0d0d0d; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 10px; overflow: hidden; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .panel { background: var(--card); border-radius: 30px; padding: 20px; border: 1px solid #222; margin-bottom: 10px; text-align: center; }
+        .signal { font-size: 70px; font-weight: 900; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -3px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { border: none; height: 80px; border-radius: 20px; font-size: 28px; font-weight: 900; color: #fff; cursor: pointer; active { transform: scale(0.95); } }
+        .btn-p { background: var(--p); box-shadow: 0 5px 0 #004a99; }
+        .btn-b { background: var(--b); box-shadow: 0 5px 0 #a3160d; }
+        .history { display: flex; gap: 5px; overflow-x: auto; padding: 10px 0; margin-top: 10px; }
+        .dot { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+        .stat-row { display: flex; justify-content: space-between; font-size: 12px; color: #555; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <div style="font-size: 9px; color: var(--neon); letter-spacing: 5px;">SINGULARITY X : OVERLORD</div>
+        <div id="target" class="signal" style="color: #222;">WAIT</div>
+        <div id="prob-ui" style="font-size: 30px; font-weight: 900; color: var(--neon);">0%</div>
+        <div id="status-msg" style="font-size: 10px; color: #444; margin-top: 5px;">AWAITING DATA INPUT</div>
+    </div>
+
+    <div class="panel">
+        <div class="btn-group">
+            <button class="btn btn-p" onclick="add('P')">P</button>
+            <button class="btn btn-b" onclick="add('B')">B</button>
+        </div>
+        <div class="history" id="h-view"></div>
+        <div class="stat-row">
+            <span id="win-ui">W: 0</span>
+            <span id="loss-ui">L: 0</span>
+            <span id="net-ui" style="color: #ffcc00;">NET: 0</span>
+        </div>
+        <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 10px;">
+            <span onclick="undo()" style="color: #666; padding: 5px;">[ UNDO ]</span>
+            <span onclick="location.reload()" style="color: #ff3b30; padding: 5px;">[ RESET ]</span>
+        </div>
+    </div>
+
+    <div class="panel" style="padding: 10px;">
+        <canvas id="chart" height="120"></canvas>
+    </div>
+
+<script>
+let archive = [];
+let netLog = [0];
+let wins = 0, loses = 0, lStreak = 0;
+let next = null;
+let chart;
+
+function add(s) {
+    if(next) {
+        if(next === s) { wins++; netLog.push(netLog[netLog.length-1]+1); lStreak = 0; }
+        else { loses++; netLog.push(netLog[netLog.length-1]-1); lStreak++; }
+    }
+    archive.push(s);
+    updateUI();
+    analyze();
+}
+
+function analyze() {
+    const len = archive.length;
+    if(len < 6) return;
+
+    let pW = 0, bW = 0;
+    let threshold = (lStreak >= 2) ? 90 : (lStreak === 1 ? 82 : 75);
+
+    // Deep Scan Algorithm (Optimized for Speed)
+    for(let d = 2; d <= 30; d++) {
+        if(len < d) break;
+        const pat = archive.slice(-d).join("");
+        const weight = Math.pow(d, 5);
+        for(let i = 0; i < len - d; i++) {
+            if(archive.slice(i, i + d).join("") === pat) {
+                if(archive[i + d] === 'P') pW += weight;
+                else bW += weight;
+            }
+        }
+    }
+
+    const total = pW + bW;
+    const probP = (pW / total) * 100;
+    const probB = (bW / total) * 100;
+    const maxP = Math.max(probP, probB);
+
+    const target = document.getElementById('target');
+    if(maxP > threshold) {
+        next = probP > probB ? 'P' : 'B';
+        target.innerText = next === 'P' ? 'PLAYER' : 'BANKER';
+        target.style.color = next === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob-ui').innerText = maxP.toFixed(1) + "%";
+        document.getElementById('status-msg').innerText = lStreak > 0 ? "RECOVERY MODE: ACTIVE" : "STABLE PREDICTION";
+    } else {
+        next = null;
+        target.innerText = "WAIT";
+        target.style.color = "#222";
+        document.getElementById('prob-ui').innerText = "---";
+        document.getElementById('status-msg').innerText = "UNCERTAIN DATA: OBSERVING";
+    }
+}
+
+function updateUI() {
+    document.getElementById('h-view').innerHTML = archive.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    document.getElementById('win-ui').innerText = `W: ${wins}`;
+    document.getElementById('loss-ui').innerText = `L: ${loses}`;
+    document.getElementById('net-ui').innerText = `NET: ${netLog[netLog.length-1]}`;
+    
+    if(!chart) {
+        chart = new Chart(document.getElementById('chart').getContext('2d'), {
+            type: 'line',
+            data: { labels: netLog.map((_,i)=>i), datasets: [{ data: netLog, borderColor: '#00fff2', borderWidth: 2, pointRadius: 0, tension: 0.3 }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{grid:{display:false}}} }
+        });
+    }
+    chart.data.labels = netLog.map((_,i)=>i);
+    chart.data.datasets[0].data = netLog;
+    chart.update('none');
+}
+
+function undo() {
+    if(archive.length > 0) {
+        archive.pop();
+        if(netLog.length > 1) netLog.pop();
+        if(lStreak > 0) lStreak--;
+        updateUI(); analyze();
+    }
+}
+window.onload = updateUI;
+</script>
+</body>
+</html>

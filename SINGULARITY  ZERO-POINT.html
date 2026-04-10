@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI-REAPER PERFECT</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; overflow: hidden; user-select: none; }
+        
+        .shell { max-width: 400px; margin: auto; border: 2px solid #222; border-radius: 30px; padding: 15px; background: #080808; }
+        .display { text-align: center; padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
+        
+        #target { font-size: 70px; font-weight: 900; height: 90px; display: flex; align-items: center; justify-content: center; margin: 5px 0; }
+        .bar-bg { width: 100%; height: 6px; background: #111; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        #bar-fill { height: 100%; width: 0%; background: var(--n); transition: 0.5s ease-out; }
+
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn { border: none; height: 90px; border-radius: 20px; font-size: 35px; font-weight: 900; color: #fff; cursor: pointer; touch-action: manipulation; }
+        .btn-p { background: var(--p); box-shadow: 0 6px 0 #004a99; }
+        .btn-b { background: var(--b); box-shadow: 0 6px 0 #a3160d; }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .history { display: flex; gap: 5px; overflow-x: auto; padding: 12px 0; margin-top: 10px; border-bottom: 1px solid #111; }
+        .dot { min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+        
+        .stats { display: flex; justify-content: space-between; font-size: 14px; margin-top: 15px; font-weight: bold; color: #555; }
+        .info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="shell">
+    <div style="text-align:center; font-size:9px; color:var(--n); letter-spacing:5px; margin-bottom:10px;">REAPER V.7 PERFECT</div>
+
+    <div class="display">
+        <div class="info">
+            <span id="mode" style="font-size:10px; color:var(--n); border:1px solid #222; padding:2px 8px; border-radius:10px;">SYSTEM READY</span>
+            <span id="nodes" style="font-size:10px; color:var(--g);">NODES: 0</span>
+        </div>
+        <div id="target" style="color:#1a1a1a;">WAIT</div>
+        <div class="bar-bg"><div id="bar-fill"></div></div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="prob" style="font-size:35px; font-weight:900; color:var(--n);">0%</span>
+            <span id="conf" style="font-size:12px; color:#444;">SCANNING...</span>
+        </div>
+    </div>
+
+    <div class="btn-row">
+        <button class="btn btn-p" onclick="h('P')">P</button>
+        <button class="btn btn-b" onclick="h('B')">B</button>
+    </div>
+
+    <div class="history" id="h-list"></div>
+
+    <div class="stats">
+        <span id="w-ui">W: 0</span>
+        <span id="l-ui">L: 0</span>
+        <span id="n-ui" style="color:var(--g)">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:11px; color:#333;">
+        <span onclick="undo()" style="padding:10px;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="padding:10px; color:var(--b);">[ RESET ]</span>
+    </div>
+</div>
+
+<script>
+let data = [];
+let wins = 0, loses = 0, streak = 0, net = 0;
+let next = null;
+
+// Function หลักที่ปุ่มเรียกใช้ - ปรับจูนให้ทำงานเร็วที่สุด
+function h(s) {
+    if (next) {
+        if (next === s) { wins++; net++; streak = 0; }
+        else { loses++; net--; streak++; }
+    }
+    data.push(s);
+    render();
+    core();
+}
+
+function core() {
+    const len = data.length;
+    if (len < 5) return;
+
+    let pS = 0, bS = 0, count = 0;
+    // ปรับ Threshold ตามระดับความเสี่ยง (แก้เกมอัตโนมัติ)
+    let limit = (streak >= 2) ? 92 : (streak === 1 ? 83 : 76);
+
+    // AI Pattern Matching - 45 Layers
+    for (let d = 2; d <= 45; d++) {
+        if (len < d) break;
+        const pat = data.slice(-d).join("");
+        const weight = Math.pow(d, 6.5);
+
+        for (let i = 0; i < len - d; i++) {
+            if (data.slice(i, i + d).join("") === pat) {
+                const recency = (i / len); // ให้ความสำคัญกับข้อมูลที่เพิ่งเกิดขึ้น
+                if (data[i + d] === 'P') pS += (weight * recency);
+                else bS += (weight * recency);
+                count++;
+            }
+        }
+    }
+
+    const total = pS + bS;
+    const probP = (pS / total) * 100;
+    const probB = (bS / total) * 100;
+    const max = Math.max(probP, probB);
+
+    const target = document.getElementById('target');
+    const fill = document.getElementById('bar-fill');
+    const mode = document.getElementById('mode');
+
+    if (max > limit) {
+        next = probP > probB ? 'P' : 'B';
+        target.innerText = next === 'P' ? 'PLAYER' : 'BANKER';
+        target.style.color = next === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob').innerText = max.toFixed(1) + "%";
+        fill.style.width = max + "%";
+        fill.style.background = next === 'P' ? 'var(--p)' : 'var(--b)';
+        
+        mode.innerText = streak > 0 ? "FORCE RECOVERY" : "TARGET LOCKED";
+        mode.style.color = streak > 0 ? "var(--b)" : "var(--n)";
+        document.getElementById('conf').innerText = max > 90 ? "CRITICAL KILL" : "HIGH ACCURACY";
+    } else {
+        next = null;
+        target.innerText = "WAIT";
+        target.style.color = "#1a1a1a";
+        document.getElementById('prob').innerText = "---";
+        fill.style.width = "0%";
+        mode.innerText = "SCANNING VOID";
+        mode.style.color = "#444";
+        document.getElementById('conf').innerText = "UNCERTAIN";
+    }
+    document.getElementById('nodes').innerText = "NODES: " + count;
+}
+
+function render() {
+    const box = document.getElementById('h-list');
+    box.innerHTML = data.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = 9999;
+    document.getElementById('w-ui').innerText = "W: " + wins;
+    document.getElementById('l-ui').innerText = "L: " + loses;
+    document.getElementById('n-ui').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (data.length > 0) {
+        data.pop();
+        if (streak > 0) streak--;
+        render(); core();
+    }
+}
+</script>
+</body>
+</html>

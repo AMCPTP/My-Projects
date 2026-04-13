@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REAPER FIXED STABLE</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --neon: #00fff2; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+        
+        .reaper-shell { max-width: 400px; margin: auto; border-radius: 35px; padding: 20px; background: #080808; border: 1px solid #222; position: relative; z-index: 1; }
+        
+        /* แก้ไขเลเยอร์ปุ่มให้กดง่าย */
+        .btn-layer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; position: relative; z-index: 999; }
+        .btn-k { border: none; height: 90px; border-radius: 22px; font-size: 38px; font-weight: 900; color: #fff; cursor: pointer; position: relative; z-index: 1000; transition: transform 0.05s; }
+        .btn-p { background: var(--p); border-bottom: 6px solid #004a99; }
+        .btn-b { background: var(--b); border-bottom: 6px solid #a3160d; }
+        .btn-k:active { transform: translateY(4px); border-bottom: none; }
+
+        #target-val { font-size: 75px; font-weight: 900; height: 95px; display: flex; align-items: center; justify-content: center; color: #1a1a1a; }
+        .h-row { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; margin-top: 10px; border-bottom: 1px solid #111; }
+        .dot { min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+<div class="reaper-shell">
+    <div style="text-align:center; font-size:9px; color:var(--neon); letter-spacing:4px; margin-bottom:15px;">FIXED STABLE : SUPREME ENGINE</div>
+
+    <div style="text-align:center;">
+        <div id="target-val">WAIT</div>
+        <div style="font-size:35px; font-weight:900; color:var(--neon);" id="prob-val">0%</div>
+        <div id="msg" style="font-size:10px; color:#444; margin-top:5px;">SYSTEM STANDBY</div>
+    </div>
+
+    <div class="btn-layer">
+        <button class="btn-k btn-p" onmousedown="handle('P')" ontouchstart="handle('P')">P</button>
+        <button class="btn-k btn-b" onmousedown="handle('B')" ontouchstart="handle('B')">B</button>
+    </div>
+
+    <div class="h-row" id="h-box"></div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:14px; font-weight:bold; color:#555;">
+        <span id="w-txt">W: 0</span>
+        <span id="l-txt">L: 0</span>
+        <span id="n-txt" style="color:#ffcc00;">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:11px;">
+        <span onclick="undo()" style="color:#333; cursor:pointer; padding:10px;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="color:var(--b); cursor:pointer; padding:10px;">[ RESET ]</span>
+    </div>
+</div>
+
+<script>
+let arch = [];
+let wins = 0, loses = 0, streak = 0, net = 0;
+let next = null;
+let lastProcess = 0;
+
+// แก้ไขฟังก์ชันการรับค่าให้กันการเบิ้ลและตอบสนองไว
+function handle(side) {
+    const now = Date.now();
+    if (now - lastProcess < 300) return; // ป้องกันการกดเบิ้ล
+    lastProcess = now;
+
+    if (next) {
+        if (next === side) { wins++; net++; streak = 0; }
+        else { loses++; net--; streak++; }
+    }
+    arch.push(side);
+    render();
+    engine();
+}
+
+function engine() {
+    const len = arch.length;
+    if (len < 6) return;
+
+    let pS = 0, bS = 0;
+    let limit = (streak >= 2) ? 95 : (streak === 1 ? 85 : 77);
+
+    // AI Core (รักษาความโหด 75 Layers)
+    for (let d = 2; d <= 75; d++) {
+        if (len < d) break;
+        const pat = arch.slice(-d).join("");
+        const power = Math.pow(d, 7.5);
+
+        for (let i = 0; i < len - d; i++) {
+            if (arch.slice(i, i + d).join("") === pat) {
+                const recency = Math.exp((i - len) / 8);
+                if (arch[i + d] === 'P') pS += (power * recency);
+                else bS += (power * recency);
+            }
+        }
+    }
+
+    const total = pS + bS;
+    const probP = (pS / total) * 100;
+    const probB = (bS / total) * 100;
+    const max = Math.max(probP, probB);
+
+    const target = document.getElementById('target-val');
+    if (max > limit) {
+        next = probP > probB ? 'P' : 'B';
+        target.innerText = next === 'P' ? 'PLAYER' : 'BANKER';
+        target.style.color = next === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob-val').innerText = max.toFixed(1) + "%";
+        document.getElementById('msg').innerText = streak > 0 ? "FORCE RECOVERY" : "SIGNAL DETECTED";
+    } else {
+        next = null;
+        target.innerText = "WAIT";
+        target.style.color = "#1a1a1a";
+        document.getElementById('prob-val').innerText = "---";
+        document.getElementById('msg').innerText = "UNCERTAIN PHASE";
+    }
+}
+
+function render() {
+    const box = document.getElementById('h-box');
+    box.innerHTML = arch.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = 9999;
+    document.getElementById('w-txt').innerText = "W: " + wins;
+    document.getElementById('l-txt').innerText = "L: " + loses;
+    document.getElementById('n-txt').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (arch.length > 0) {
+        arch.pop();
+        if (streak > 0) streak--;
+        render(); engine();
+    }
+}
+</script>
+</body>
+</html>

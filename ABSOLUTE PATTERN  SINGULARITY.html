@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ABSOLUTE PATTERN | SINGULARITY</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --neon: #00fff2; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 10px; overflow: hidden; }
+        .panel { max-width: 400px; margin: auto; border-radius: 30px; padding: 20px; background: #080808; border: 1px solid #1a1a1a; position: relative; }
+        
+        #display-sig { font-size: 75px; font-weight: 900; height: 100px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; position: relative; z-index: 10; }
+        .btn-k { border: none; height: 90px; border-radius: 20px; font-size: 38px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 6px solid rgba(0,0,0,0.5); }
+        .btn-p { background: var(--p); }
+        .btn-b { background: var(--b); }
+        .btn-k:active { transform: translateY(4px); border-bottom: none; }
+
+        .h-ribbon { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+        .dot { min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 1px solid #222; }
+        .stat-bar { display: flex; justify-content: space-between; font-size: 13px; margin-top: 15px; color: #555; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <div style="text-align:center; font-size:8px; color:var(--neon); letter-spacing:5px; margin-bottom:10px;">ABSOLUTE PATTERN MATCHING</div>
+
+    <div style="text-align:center;">
+        <div id="status-tag" style="font-size:10px; color:#444;">ANALYZING...</div>
+        <div id="display-sig" style="color:#111;">READY</div>
+        <div id="prob-val" style="font-size:35px; font-weight:900; color:var(--neon);">0%</div>
+    </div>
+
+    <div class="btn-zone">
+        <button class="btn-k btn-p" onmousedown="exec('P')" ontouchstart="exec('P')">P</button>
+        <button class="btn-k btn-b" onmousedown="exec('B')" ontouchstart="exec('B')">B</button>
+    </div>
+
+    <div class="h-ribbon" id="h-view"></div>
+
+    <div class="stat-bar">
+        <span id="win-ui">W: 0</span>
+        <span id="loss-ui">L: 0</span>
+        <span id="net-ui" style="color:#ffcc00;">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:10px;">
+        <span onclick="undo()" style="color:#333; cursor:pointer; padding:10px;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="color:var(--b); cursor:pointer; padding:10px;">[ ABS RESET ]</span>
+    </div>
+</div>
+
+<script>
+let arch = [];
+let wins = 0, loses = 0, streakL = 0, net = 0;
+let nextMove = null;
+let lastCall = 0;
+
+function exec(side) {
+    const t = Date.now();
+    if (t - lastCall < 300) return;
+    lastCall = t;
+
+    if (nextMove) {
+        if (nextMove === side) { wins++; net++; streakL = 0; }
+        else { loses++; net--; streakL++; }
+    }
+    arch.push(side);
+    render();
+    process();
+}
+
+function process() {
+    const len = arch.length;
+    if (len < 6) return;
+
+    let pWeight = 0, bWeight = 0;
+    // กำหนด Threshold ตามประวัติการแพ้ (ห้ามพลาดเกิน 2 ครั้ง)
+    let threshold = 80;
+    if (streakL === 1) threshold = 90;
+    if (streakL >= 2) threshold = 98; // โหมดมองขาดขั้นสุด
+
+    // สแกนประวัติย้อนหลังลึก 80 ชั้น
+    for (let d = 2; d <= 80; d++) {
+        if (len < d) break;
+        const pat = arch.slice(-d).join("");
+        const power = Math.pow(d, 8); // ให้น้ำหนักรูปแบบที่ตรงเป๊ะสูงมาก
+
+        for (let i = 0; i < len - d; i++) {
+            if (arch.slice(i, i + d).join("") === pat) {
+                // อ้างอิงประวัติที่เกิดขึ้นจริงเท่านั้น
+                const result = arch[i + d];
+                const recency = Math.exp((i - len) / 10);
+                if (result === 'P') pWeight += (power * recency);
+                else bWeight += (power * recency);
+            }
+        }
+    }
+
+    const total = pWeight + bWeight;
+    if (total === 0) return setWait();
+
+    const pP = (pWeight / total) * 100;
+    const pB = (bWeight / total) * 100;
+    const max = Math.max(pP, pB);
+
+    if (max >= threshold) {
+        nextMove = pP > pB ? 'P' : 'B';
+        const target = document.getElementById('display-sig');
+        target.innerText = nextMove === 'P' ? 'PLAYER' : 'BANKER';
+        target.style.color = nextMove === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob-val').innerText = max.toFixed(1) + "%";
+        document.getElementById('status-tag').innerText = streakL >= 2 ? "RECOVERY LOCK: 98%" : "PATTERN MATCHED";
+        document.getElementById('status-tag').style.color = streakL >= 2 ? "var(--b)" : "var(--neon)";
+    } else {
+        setWait();
+    }
+}
+
+function setWait() {
+    nextMove = null;
+    document.getElementById('display-sig').innerText = "WAIT";
+    document.getElementById('display-sig').style.color = "#111";
+    document.getElementById('prob-val').innerText = "---";
+    document.getElementById('status-tag').innerText = "NO MATCHING HISTORY";
+    document.getElementById('status-tag').style.color = "#444";
+}
+
+function render() {
+    document.getElementById('h-view').innerHTML = arch.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    document.getElementById('h-view').scrollLeft = 9999;
+    document.getElementById('win-ui').innerText = "W: " + wins;
+    document.getElementById('loss-ui').innerText = "L: " + loses;
+    document.getElementById('net-ui').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (arch.length > 0) {
+        arch.pop();
+        if (streakL > 0) streakL--;
+        render(); process();
+    }
+}
+</script>
+</body>
+</html>

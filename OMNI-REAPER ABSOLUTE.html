@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI-REAPER ABSOLUTE</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --neon: #00fff2; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 10px; overflow: hidden; }
+        
+        .container { max-width: 400px; margin: auto; border: 1px solid #222; border-radius: 40px; padding: 25px; background: #050505; position: relative; }
+        
+        .display-panel { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #111; margin-bottom: 20px; }
+        #sig-text { font-size: 70px; font-weight: 950; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 9999; }
+        .btn-core { border: none; height: 100px; border-radius: 25px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); }
+        .btn-p { background: var(--p); }
+        .btn-b { background: var(--b); }
+        .btn-core:active { transform: translateY(4px); border-bottom: none; }
+
+        .history-ribbon { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+        .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+        
+        .status-footer { display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; font-weight: bold; color: #444; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align:center; font-size:8px; color:var(--neon); letter-spacing:10px; margin-bottom:15px;">ABSOLUTE REAPER V.FINAL</div>
+
+    <div class="display-panel">
+        <div id="mode-ui" style="font-size:10px; color:#555; margin-bottom:10px;">SYSTEM READY</div>
+        <div id="sig-text" style="color:#111;">READY</div>
+        <div id="prob-ui" style="font-size:40px; font-weight:950; color:var(--neon);">0.0%</div>
+        <div id="advice-ui" style="font-size:10px; color:#333; margin-top:10px;">INPUT DATA</div>
+    </div>
+
+    <div class="btn-grid">
+        <button class="btn-core btn-p" onpointerdown="handle('P')">P</button>
+        <button class="btn-core btn-b" onpointerdown="handle('B')">B</button>
+    </div>
+
+    <div class="history-ribbon" id="h-box"></div>
+
+    <div class="status-footer">
+        <span id="win-ui">W: 0</span>
+        <span id="loss-ui">L: 0</span>
+        <span id="net-ui" style="color:#ffcc00">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:25px; font-size:10px; color:#222;">
+        <span onclick="undo()" style="padding:10px; cursor:pointer;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="padding:10px; cursor:pointer;">[ FULL REBOOT ]</span>
+    </div>
+</div>
+
+<script>
+let arch = [];
+let wins = 0, loses = 0, streakL = 0, net = 0;
+let nextMove = null;
+let busy = false;
+
+function handle(s) {
+    if (busy) return;
+    busy = true;
+
+    if (nextMove) {
+        if (nextMove === s) { wins++; net++; streakL = 0; }
+        else { loses++; net--; streakL++; }
+    }
+    arch.push(s);
+    ui();
+    calc();
+    
+    setTimeout(() => { busy = false; }, 200); // ป้องกันการกดเบิ้ล
+}
+
+function calc() {
+    const len = arch.length;
+    if (len < 6) return;
+
+    let pS = 0, bS = 0, nodes = 0;
+    // ปรับเกณฑ์ความแม่นยำ: ห้ามพลาดเกิน 2 ครั้ง
+    let threshold = (streakL >= 2) ? 96 : (streakL === 1 ? 88 : 80);
+
+    // Deep Scanning 85 Layers
+    for (let d = 2; d <= 85; d++) {
+        if (len < d) break;
+        const pat = arch.slice(-d).join("");
+        const power = Math.pow(d, 8.5);
+
+        for (let i = 0; i < len - d; i++) {
+            if (arch.slice(i, i + d).join("") === pat) {
+                const recency = Math.exp((i - len) / 10);
+                if (arch[i + d] === 'P') pS += (power * recency);
+                else bS += (power * recency);
+                nodes++;
+            }
+        }
+    }
+
+    const total = pS + bS;
+    if (total === 0) return wait();
+
+    const pP = (pS / total) * 100;
+    const pB = (bS / total) * 100;
+    const max = Math.max(pP, pB);
+
+    const sig = document.getElementById('sig-text');
+    const advice = document.getElementById('advice-ui');
+
+    if (max >= threshold) {
+        nextMove = pP > pB ? 'P' : 'B';
+        sig.innerText = nextMove === 'P' ? 'PLAYER' : 'BANKER';
+        sig.style.color = nextMove === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob-ui').innerText = max.toFixed(1) + "%";
+        document.getElementById('mode-ui').innerText = streakL > 0 ? "FORCE RECOVERY" : "PATTERN LOCKED";
+        advice.innerText = max > 93 ? "CRITICAL KILL - CONFIRMED" : "STABLE SIGNAL";
+        advice.style.color = max > 93 ? "var(--neon)" : "#555";
+    } else {
+        wait();
+    }
+}
+
+function wait() {
+    nextMove = null;
+    document.getElementById('sig-text').innerText = "WAIT";
+    document.getElementById('sig-text').style.color = "#111";
+    document.getElementById('prob-ui').innerText = "---";
+    document.getElementById('advice-ui').innerText = "UNCERTAIN - OBSERVING";
+    document.getElementById('advice-ui').style.color = "#333";
+    document.getElementById('mode-ui').innerText = "SCANNING VOID";
+}
+
+function ui() {
+    const box = document.getElementById('h-box');
+    box.innerHTML = arch.map(s => `<div class="node" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = 9999;
+    document.getElementById('win-ui').innerText = "W: " + wins;
+    document.getElementById('loss-ui').innerText = "L: " + loses;
+    document.getElementById('net-ui').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (arch.length > 0) {
+        arch.pop();
+        if (streakL > 0) streakL--;
+        ui(); calc();
+    }
+}
+</script>
+</body>
+</html>

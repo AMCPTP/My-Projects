@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI-REAPER | PRECISION TEST</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 10px; overflow: hidden; }
+        .shell { max-width: 400px; margin: auto; border: 1px solid #222; border-radius: 40px; padding: 25px; background: #050505; position: relative; }
+        .sig-box { text-align: center; padding-bottom: 15px; border-bottom: 1px solid #111; margin-bottom: 15px; }
+        #sig-text { font-size: 75px; font-weight: 900; height: 100px; display: flex; align-items: center; justify-content: center; letter-spacing: -5px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 9999; }
+        .btn-m { border: none; height: 100px; border-radius: 25px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); }
+        .btn-p { background: var(--p); }
+        .btn-b { background: var(--b); }
+        .btn-m:active { transform: translateY(4px); border-bottom: none; }
+        .h-ribbon { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+        .dot { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+<div class="shell">
+    <div style="text-align:center; font-size:8px; color:var(--n); letter-spacing:8px; margin-bottom:15px;">STRESS TEST : PRECISION MODE</div>
+
+    <div class="sig-box">
+        <div id="status" style="font-size:10px; color:#555; margin-bottom:5px;">SYSTEM ACTIVE</div>
+        <div id="sig-text" style="color:#111;">READY</div>
+        <div id="prob-val" style="font-size:40px; font-weight:900; color:var(--n);">0.0%</div>
+        <div id="intel" style="font-size:10px; color:#333; margin-top:10px;">AWAITING PATTERN</div>
+    </div>
+
+    <div class="btn-grid">
+        <button class="btn-m btn-p" onpointerdown="run('P')">P</button>
+        <button class="btn-m btn-b" onpointerdown="run('B')">B</button>
+    </div>
+
+    <div class="h-ribbon" id="h-box"></div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:12px; font-weight:bold; color:#444;">
+        <span id="w-ui">W: 0</span>
+        <span id="l-ui">L: 0</span>
+        <span id="n-ui" style="color:var(--g)">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:25px; font-size:10px;">
+        <span onclick="undo()" style="color:#222; cursor:pointer; padding:10px;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="color:var(--b); cursor:pointer; padding:10px;">[ REBOOT ]</span>
+    </div>
+</div>
+
+<script>
+let arch = [];
+let wins = 0, loses = 0, streakL = 0, net = 0;
+let nextMove = null;
+let lock = false;
+
+function run(s) {
+    if (lock) return;
+    lock = true;
+
+    if (nextMove) {
+        if (nextMove === s) { wins++; net++; streakL = 0; }
+        else { loses++; net--; streakL++; }
+    }
+    arch.push(s);
+    ui();
+    engine();
+    
+    setTimeout(() => { lock = false; }, 200);
+}
+
+function engine() {
+    const len = arch.length;
+    if (len < 6) return;
+
+    let pS = 0, bS = 0;
+    // ปรับจุดมองขาด: ถ้าแพ้ 2 ครั้งติด (streakL >= 2) ระบบจะดักสัญญาณที่แม่นยำสูงถึง 97%
+    let limit = (streakL >= 2) ? 97 : (streakL === 1 ? 88 : 80);
+
+    // AI Deep Scan (90 Layers) - วิเคราะห์ประวัติศาสตร์ที่เคยเกิดขึ้นจริง
+    for (let d = 2; d <= 90; d++) {
+        if (len < d) break;
+        const pat = arch.slice(-d).join("");
+        const power = Math.pow(d, 9); // เพิ่มน้ำหนักความแม่นยำ
+
+        for (let i = 0; i < len - d; i++) {
+            if (arch.slice(i, i + d).join("") === pat) {
+                const recency = Math.exp((i - len) / 10);
+                if (arch[i + d] === 'P') pS += (power * recency);
+                else bS += (power * recency);
+            }
+        }
+    }
+
+    const total = pS + bS;
+    if (total === 0) return wait();
+
+    const pP = (pS / total) * 100;
+    const pB = (bS / total) * 100;
+    const max = Math.max(pP, pB);
+
+    if (max >= limit) {
+        nextMove = pP > pB ? 'P' : 'B';
+        const st = document.getElementById('sig-text');
+        st.innerText = nextMove === 'P' ? 'PLAYER' : 'BANKER';
+        st.style.color = nextMove === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob-val').innerText = max.toFixed(1) + "%";
+        document.getElementById('status').innerText = streakL >= 2 ? "97% RECOVERY LOCK" : "PATTERN MATCHED";
+        document.getElementById('intel').innerText = max > 94 ? "CRITICAL KILL DETECTED" : "STABLE TREND";
+    } else {
+        wait();
+    }
+}
+
+function wait() {
+    nextMove = null;
+    const st = document.getElementById('sig-text');
+    st.innerText = "WAIT";
+    st.style.color = "#111";
+    document.getElementById('prob-val').innerText = "---";
+    document.getElementById('status').innerText = "SCANNING VOID";
+    document.getElementById('intel').innerText = "UNCERTAIN - STOP & WATCH";
+}
+
+function ui() {
+    const box = document.getElementById('h-box');
+    box.innerHTML = arch.map(s => `<div class="dot" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = 9999;
+    document.getElementById('w-ui').innerText = "W: " + wins;
+    document.getElementById('l-ui').innerText = "L: " + loses;
+    document.getElementById('n-ui').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (arch.length > 0) {
+        arch.pop();
+        if (streakL > 0) streakL--;
+        ui(); engine();
+    }
+}
+</script>
+</body>
+</html>

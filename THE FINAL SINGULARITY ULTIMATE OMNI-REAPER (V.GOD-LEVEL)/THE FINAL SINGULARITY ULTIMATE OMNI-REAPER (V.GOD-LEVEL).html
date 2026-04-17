@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI-REAPER | GOD-LEVEL</title>
+    <style>
+        :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+        body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', monospace; margin: 0; padding: 10px; overflow: hidden; }
+        .wrapper { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #050505; position: relative; box-shadow: 0 0 60px rgba(0,255,242,0.1); }
+        .display { text-align: center; border-bottom: 1px solid #111; padding-bottom: 20px; margin-bottom: 20px; }
+        #sig { font-size: 80px; font-weight: 950; height: 100px; display: flex; align-items: center; justify-content: center; letter-spacing: -5px; transition: 0.1s; }
+        .btn-layer { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 10000; }
+        .btn-k { border: none; height: 105px; border-radius: 28px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.6); }
+        .btn-p { background: linear-gradient(180deg, var(--p), #00336b); }
+        .btn-b { background: linear-gradient(180deg, var(--b), #7a0c08); }
+        .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+        .h-stream { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; scrollbar-width: none; }
+        .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div style="text-align:center; font-size:8px; color:#444; letter-spacing:10px; font-weight:900; margin-bottom:15px;">ABSOLUTE VISION : V.GOD-LEVEL</div>
+
+    <div class="display">
+        <div id="status-chip" style="font-size:10px; color:#555; letter-spacing:2px;">SCANNING FREQUENCY</div>
+        <div id="sig" style="color:#111;">READY</div>
+        <div id="prob" style="font-size:45px; font-weight:950; color:var(--n);">0.0%</div>
+        <div id="intel" style="font-size:10px; color:var(--g); margin-top:10px; font-weight:900;">AWAITING SIGNAL</div>
+    </div>
+
+    <div class="btn-layer">
+        <button class="btn-k btn-p" onpointerdown="input('P')">P</button>
+        <button class="btn-k btn-b" onpointerdown="input('B')">B</button>
+    </div>
+
+    <div class="h-stream" id="h-box"></div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:13px; font-weight:900; color:#444;">
+        <span id="win-ui">W: 0</span>
+        <span id="loss-ui">L: 0</span>
+        <span id="net-ui" style="color:var(--g)">NET: 0</span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:25px; font-size:10px; color:#333;">
+        <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+        <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--b);">[ ABSOLUTE PURGE ]</span>
+    </div>
+</div>
+
+<script>
+let arch = [];
+let wins = 0, loses = 0, streakL = 0, net = 0;
+let nextMove = null;
+let processing = false;
+
+function input(s) {
+    if (processing) return;
+    processing = true;
+
+    if (nextMove) {
+        if (nextMove === s) { wins++; net++; streakL = 0; }
+        else { loses++; net--; streakL++; }
+    }
+    arch.push(s);
+    renderUI();
+    omniEngine();
+    
+    setTimeout(() => { processing = false; }, 200);
+}
+
+function omniEngine() {
+    const len = arch.length;
+    if (len < 6) return;
+
+    let pS = 0, bS = 0;
+    // ปรับเกณฑ์ความมั่นใจขั้นสุด (มองขาดทุกสถานการณ์)
+    let threshold = (streakL >= 2) ? 97 : (streakL === 1 ? 88 : 80);
+
+    // AI Deep Analytics (90 Layers)
+    for (let d = 2; d <= 90; d++) {
+        if (len < d) break;
+        const pat = arch.slice(-d).join("");
+        const weight = Math.pow(d, 9); // เพิ่มน้ำหนักให้รูปแบบที่ตรงกันสูงมาก
+
+        for (let i = 0; i < len - d; i++) {
+            if (arch.slice(i, i + d).join("") === pat) {
+                const recency = Math.exp((i - len) / 10);
+                if (arch[i + d] === 'P') pS += (weight * recency);
+                else bS += (weight * recency);
+            }
+        }
+    }
+
+    const total = pS + bS;
+    if (total === 0) return wait();
+
+    const pP = (pS / total) * 100;
+    const pB = (bS / total) * 100;
+    const max = Math.max(pP, pB);
+
+    const sigText = document.getElementById('sig');
+    const intelText = document.getElementById('intel');
+
+    if (max >= threshold) {
+        nextMove = pP > pB ? 'P' : 'B';
+        sigText.innerText = nextMove === 'P' ? 'PLAYER' : 'BANKER';
+        sigText.style.color = nextMove === 'P' ? 'var(--p)' : 'var(--b)';
+        document.getElementById('prob').innerText = max.toFixed(1) + "%";
+        document.getElementById('status-chip').innerText = streakL > 0 ? "FORCE RECOVERY MODE" : "SIGNAL DETECTED";
+        intelText.innerText = max > 94 ? "CRITICAL KILL CONFIRMED" : "STABLE PATTERN";
+    } else {
+        wait();
+    }
+}
+
+function wait() {
+    nextMove = null;
+    const sigText = document.getElementById('sig');
+    sigText.innerText = "WAIT";
+    sigText.style.color = "#111";
+    document.getElementById('prob').innerText = "---";
+    document.getElementById('status-chip').innerText = "SCANNING VOID";
+    document.getElementById('intel').innerText = "UNCERTAIN PHASE - DO NOT PLAY";
+}
+
+function renderUI() {
+    const box = document.getElementById('h-box');
+    box.innerHTML = arch.map(s => `<div class="node" style="background:${s==='P'?'var(--p)':'var(--b)'}">${s}</div>`).join("");
+    box.scrollLeft = 9999;
+    document.getElementById('win-ui').innerText = "W: " + wins;
+    document.getElementById('loss-ui').innerText = "L: " + loses;
+    document.getElementById('net-ui').innerText = "NET: " + net;
+}
+
+function undo() {
+    if (arch.length > 0) {
+        arch.pop();
+        if (streakL > 0) streakL--;
+        renderUI(); omniEngine();
+    }
+}
+</script>
+</body>
+</html>

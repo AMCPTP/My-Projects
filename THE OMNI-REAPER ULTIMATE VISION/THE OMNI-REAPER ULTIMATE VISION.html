@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OMNI-REAPER | GOD-EYE</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+ body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #050505; position: relative; box-shadow: 0 0 50px rgba(0,255,242,0.1); }
+ 
+ /* Radar Display */
+ .radar { text-align: center; border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 70px; font-weight: 950; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; transition: 0.2s; }
+ 
+ .zone-status { display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 10px; font-weight: 900; }
+ .zone-item { padding: 4px 10px; border-radius: 15px; background: #111; border: 1px solid #222; }
+
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 10000; }
+ .btn-k { border: none; height: 95px; border-radius: 25px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+ .h-row { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+ .node { min-width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; border: 1px solid #222; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:8px; color:#444; letter-spacing:8px; margin-bottom:10px;">ULTIMATE VISION : GOD-EYE V.3</div>
+ 
+ <div class="radar">
+  <div class="zone-status">
+   <div id="z-hazard" class="zone-item">HAZARD: --</div>
+   <div id="z-trend" class="zone-item">TREND: --</div>
+   <div id="z-chaos" class="zone-item">CHAOS: --</div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:45px; font-weight:900; color:var(--n);">0.0%</div>
+  <div id="advice" style="font-size:11px; color:var(--g); margin-top:8px; font-weight:bold;">STANDBY</div>
+ </div>
+
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onpointerdown="cmd('P')">P</button>
+  <button class="btn-k btn-b" onpointerdown="cmd('B')">B</button>
+ </div>
+
+ <div class="h-row" id="h-box"></div>
+
+ <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px; font-weight:900; color:#333;">
+  <span id="w-ui">W: 0</span> <span id="l-ui">L: 0</span> <span id="n-ui" style="color:var(--g)">NET: 0</span>
+ </div>
+ 
+ <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:10px; color:#222;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--b);">[ RESET SYSTEM ]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, loss=0, net=0, streakL=0, nextMove=null;
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){ wins++; net++; streakL=0; }
+  else { loss++; net--; streakL++; }
+ }
+ arch.push(s); ui(); engine();
+}
+function engine(){
+ const len=arch.length; if(len<8) return;
+ let pW=0, bW=0, nodes=0;
+ let limit = (streakL>=2) ? 96 : (streakL===1 ? 88 : 82);
+
+ // วิเคราะห์ความแปรปรวน (Entropy/Chaos Detection)
+ let chaos = 0;
+ for(let i=len-1; i>len-6; i--) if(arch[i] !== arch[i-1]) chaos++;
+ document.getElementById('z-chaos').innerText = "CHAOS: "+(chaos/5*100).toFixed(0)+"%";
+ document.getElementById('z-chaos').style.color = chaos > 3 ? "var(--r)" : "var(--n)";
+
+ for(let d=2; d<=85; d++){
+  if(len<d) break;
+  const pat=arch.slice(-d).join('');
+  const weight=Math.pow(d, 9);
+  for(let i=0; i<len-d; i++){
+   if(arch.slice(i, i+d).join('')===pat){
+    const decay = Math.exp((i-len)/10);
+    if(arch[i+d]==='P') pW+=(weight*decay); else bW+=(weight*decay);
+    nodes++;
+   }
+  }
+ }
+ const total=pW+bW; if(total===0 || chaos > 4) return wait("DANGER: HIGH CHAOS");
+ const pP=(pW/total)*100, pB=(bW/total)*100, max=Math.max(pP,pB);
+ const sig=document.getElementById('sig'), adv=document.getElementById('advice');
+
+ if(max>=limit){
+  nextMove = pP>pB?'P':'B';
+  sig.innerText = nextMove==='P'?'PLAYER':'BANKER';
+  sig.style.color = nextMove==='P'?'var(--p)':'var(--b)';
+  document.getElementById('prob').innerText = max.toFixed(1)+'%';
+  adv.innerText = streakL>0?"RECOVERY MODE ACTIVATED":"SIGNAL CONFIRMED";
+  adv.style.color = streakL>0?"var(--r)":"var(--n)";
+  document.getElementById('z-hazard').innerText = "HAZARD: LOW";
+  document.getElementById('z-hazard').style.color = "var(--n)";
+ } else { wait("SIGNAL UNCERTAIN"); }
+}
+function wait(m){
+ nextMove=null; document.getElementById('sig').innerText="WAIT";
+ document.getElementById('sig').style.color="#111";
+ document.getElementById('prob').innerText="---";
+ document.getElementById('advice').innerText=m;
+ document.getElementById('advice').style.color="#444";
+ document.getElementById('z-hazard').innerText = "HAZARD: HIGH";
+ document.getElementById('z-hazard').style.color = "var(--r)";
+}
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=9999;
+ document.getElementById('w-ui').innerText="W: "+wins; document.getElementById('l-ui').innerText="L: "+loss;
+ document.getElementById('n-ui').innerText="NET: "+net;
+}
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; ui(); engine(); } }
+</script>
+</body>
+</html>

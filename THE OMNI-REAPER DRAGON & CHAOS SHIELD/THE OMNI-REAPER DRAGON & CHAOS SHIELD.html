@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DRAGON SHIELD | OMNI-REAPER</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; --w: #ffffff; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+ body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #050505; position: relative; box-shadow: 0 0 60px rgba(255, 0, 85, 0.1); }
+ 
+ .monitor { text-align: center; border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 70px; font-weight: 950; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; }
+ 
+ .guard-status { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+ .guard-item { padding: 6px; font-size: 9px; font-weight: 900; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; text-transform: uppercase; }
+
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 10000; }
+ .btn-k { border: none; height: 100px; border-radius: 25px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+ .h-row { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+ .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:8px; color:#444; letter-spacing:8px; margin-bottom:12px; font-weight:bold;">ANTI-DRAGON & CHAOS ENGINE</div>
+ 
+ <div class="monitor">
+  <div class="guard-status">
+   <div id="dragon-ui" class="guard-item">DRAGON: OFF</div>
+   <div id="chaos-ui" class="guard-item">CHAOS FILTER: OFF</div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:45px; font-weight:900; color:var(--n);">0.0%</div>
+  <div id="intel" style="font-size:11px; color:var(--g); margin-top:8px; font-weight:bold;">MONITORING HISTORY...</div>
+ </div>
+
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onpointerdown="cmd('P')">P</button>
+  <button class="btn-k btn-b" onpointerdown="cmd('B')">B</button>
+ </div>
+
+ <div class="h-row" id="h-box"></div>
+
+ <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px; font-weight:900; color:#333;">
+  <span id="w-ui">W: 0</span> <span id="l-ui">L: 0</span> <span id="n-ui" style="color:var(--g)">NET: 0</span>
+ </div>
+ 
+ <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:10px; color:#222;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--b);">[ SYSTEM REBOOT ]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, loss=0, net=0, streakL=0, nextMove=null;
+
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){ wins++; net++; streakL=0; }
+  else { loss++; net--; streakL++; }
+ }
+ arch.push(s); ui(); engine();
+}
+
+function engine(){
+ const len=arch.length; if(len<6) return;
+ 
+ // 1. ตรวจจับมังกร (Dragon Detection)
+ let currentStreak = 1;
+ for(let i=len-1; i>0; i--){
+  if(arch[i] === arch[i-1]) currentStreak++;
+  else break;
+ }
+ const dUI = document.getElementById('dragon-ui');
+ dUI.innerText = "STREAK: " + currentStreak;
+ dUI.style.color = currentStreak >= 4 ? "var(--r)" : "#555";
+
+ // 2. ตรวจจับความมั่ว (Chaos Detection)
+ let switches = 0;
+ const windowSize = 6;
+ if(len >= windowSize){
+  for(let i=len-1; i>len-windowSize; i--){
+   if(arch[i] !== arch[i-1]) switches++;
+  }
+ }
+ const cUI = document.getElementById('chaos-ui');
+ const chaosLevel = switches / (windowSize-1);
+ cUI.innerText = "CHAOS: " + (chaosLevel*100).toFixed(0) + "%";
+ cUI.style.color = chaosLevel > 0.7 ? "var(--r)" : "#555";
+
+ // 3. คำนวณความแม่นยำจากประวัติศาสตร์จริง
+ let pW=0, bW=0, matchCount=0;
+ let limit = (streakL >= 2) ? 98 : (streakL === 1 ? 92 : 86);
+ 
+ // ถ้ามั่วเกิน 80% บังคับหยุด
+ if(chaosLevel > 0.8) return wait("DANGER: CHAOS TOO HIGH");
+
+ for(let d=2; d<=95; d++){
+  if(len<d) break;
+  const pat=arch.slice(-d).join('');
+  const weight=Math.pow(d, 9.5);
+  for(let i=0; i<len-d; i++){
+   if(arch.slice(i, i+d).join('')===pat){
+    const decay = Math.exp((i-len)/12);
+    if(arch[i+d]==='P') pW+=(weight*decay); else bW+=(weight*decay);
+    matchCount++;
+   }
+  }
+ }
+
+ const total=pW+bW;
+ if(total===0 || matchCount < 4) return wait("NO RELIABLE HISTORY");
+
+ const pP=(pW/total)*100, pB=(bW/total)*100, max=Math.max(pP,pB);
+ const sig=document.getElementById('sig'), intel=document.getElementById('intel');
+
+ // 4. แสดงผลเมื่อโอกาสชนะสูงกว่าเกณฑ์
+ if(max>=limit){
+  nextMove = pP>pB?'P':'B';
+  // ถ้าเจอมังกรยาว ให้ระวังจุดตัด
+  if(currentStreak >= 5 && nextMove !== arch[len-1]) {
+     if(max < 94) return wait("DRAGON DETECTED: AVOID CUT");
+  }
+
+  sig.innerText = nextMove==='P'?'PLAYER':'BANKER';
+  sig.style.color = nextMove==='P'?'var(--p)':'var(--b)';
+  document.getElementById('prob').innerText = max.toFixed(1)+'%';
+  intel.innerText = streakL >= 2 ? "RECOVERY LOCK: 98%" : (currentStreak >= 4 ? "FOLLOW DRAGON" : "PATTERN MATCHED");
+  intel.style.color = currentStreak >= 4 ? "var(--g)" : "var(--n)";
+ } else {
+  wait("UNCERTAIN DATA");
+ }
+}
+
+function wait(m){
+ nextMove=null; document.getElementById('sig').innerText="WAIT";
+ document.getElementById('sig').style.color="#111";
+ document.getElementById('prob').innerText="---";
+ document.getElementById('intel').innerText=m;
+ document.getElementById('intel').style.color="#444";
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=9999;
+ document.getElementById('w-ui').innerText="W: "+wins; 
+ document.getElementById('l-ui').innerText="L: "+loss;
+ document.getElementById('n-ui').innerText="NET: "+net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; ui(); engine(); } }
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDGE READER PRO</title>
+<style>
+body{background:#050505;color:#fff;font-family:sans-serif;text-align:center;margin:0}
+.container{max-width:420px;margin:auto;padding:20px}
+button{width:45%;height:80px;font-size:30px;margin:5px;border:none;border-radius:10px;cursor:pointer}
+.p{background:#007aff}
+.b{background:#ff3b30}
+.card{margin-top:15px;padding:15px;border:1px solid #222;border-radius:10px}
+.history{display:flex;overflow-x:auto;margin-top:10px}
+.node{width:30px;height:30px;margin:2px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>EDGE READER PRO</h2>
+
+<button class="p" onclick="inputData('P')">P</button>
+<button class="b" onclick="inputData('B')">B</button>
+
+<div class="card">
+<div id="signal">WAIT</div>
+<div id="prob">--%</div>
+<div id="mode">SCANNING</div>
+<div id="decision">NO TRADE</div>
+</div>
+
+<div class="card">
+W: <span id="w">0</span> |
+L: <span id="l">0</span> |
+NET: <span id="net">0</span>
+</div>
+
+<div class="history" id="history"></div>
+
+<div style="margin-top:15px">
+<button onclick="undo()">UNDO</button>
+<button onclick="resetAll()">RESET</button>
+</div>
+</div>
+
+<script>
+let historyData=[];
+let wins=0,loss=0,net=0;
+let next=null;
+
+function inputData(x){
+ if(next!==null){
+  if(next===x){wins++;net++;}
+  else{loss++;net--;}
+ }
+ historyData.push(x);
+ analyze();
+ updateUI();
+}
+
+function analyze(){
+ if(historyData.length<12){resetSignal('DATA LOW');return}
+
+ let p=0,b=0;
+
+ // Pattern Core
+ for(let len=3;len<=12;len++){
+  let pat=historyData.slice(-len).join('');
+  for(let i=0;i<historyData.length-len;i++){
+   if(historyData.slice(i,i+len).join('')===pat){
+    let nextVal=historyData[i+len];
+    let weight=len*len;
+    if(nextVal==='P') p+=weight;
+    else b+=weight;
+   }
+  }
+ }
+
+ // Trend Strength
+ let streak=1;
+ for(let i=historyData.length-1;i>0;i--){
+  if(historyData[i]===historyData[i-1]) streak++;
+  else break;
+ }
+
+ // Chop Detector
+ let chop=0;
+ for(let i=historyData.length-1;i>1;i--){
+  if(historyData[i]!==historyData[i-1]) chop++;
+  else break;
+ }
+
+ // Decision Layer
+ let decision="WAIT";
+
+ if(chop>=4){
+  resetSignal('CHOP - SKIP');
+  return;
+ }
+
+ if(streak>=4){
+  decision="FOLLOW";
+  let last=historyData[historyData.length-1];
+  if(last==='P') p+=streak*6;
+  else b+=streak*6;
+ }
+
+ if(streak===2){
+  decision="WATCH"; // ยังไม่ชัด
+ }
+
+ if(streak===3){
+  decision="ENTRY"; // เริ่มเข้าได้
+ }
+
+ // Banker Edge
+ b*=1.06;
+
+ let total=p+b;
+ if(total<=0){resetSignal('NO EDGE');return}
+
+ let pProb=p/total;
+ let bProb=b/total;
+ let maxProb=Math.max(pProb,bProb);
+
+ let threshold=0.63;
+ if(decision==='FOLLOW') threshold=0.58;
+ if(decision==='ENTRY') threshold=0.60;
+
+ if(maxProb<threshold){
+  resetSignal('NO CLEAR EDGE');
+  return;
+ }
+
+ next = pProb>bProb?'P':'B';
+
+ document.getElementById('signal').innerText = next;
+ document.getElementById('prob').innerText = (maxProb*100).toFixed(1)+'%';
+ document.getElementById('mode').innerText = 'STREAK:'+streak+' | CHOP:'+chop;
+ document.getElementById('decision').innerText = decision;
+}
+
+function resetSignal(reason='WAIT'){
+ next=null;
+ document.getElementById('signal').innerText='WAIT';
+ document.getElementById('prob').innerText='--%';
+ document.getElementById('mode').innerText=reason;
+ document.getElementById('decision').innerText='NO TRADE';
+}
+
+function updateUI(){
+ document.getElementById('w').innerText=wins;
+ document.getElementById('l').innerText=loss;
+ document.getElementById('net').innerText=net;
+
+ let hDiv=document.getElementById('history');
+ hDiv.innerHTML='';
+ historyData.forEach(v=>{
+  let d=document.createElement('div');
+  d.className='node';
+  d.style.background = v==='P' ? '#007aff' : '#ff3b30';
+  d.innerText=v;
+  hDiv.appendChild(d);
+ });
+ hDiv.scrollLeft = hDiv.scrollWidth;
+}
+
+function undo(){
+ if(historyData.length===0) return;
+ historyData.pop();
+ resetSignal();
+ updateUI();
+}
+
+function resetAll(){
+ historyData=[];
+ wins=0;loss=0;net=0;
+ next=null;
+ resetSignal();
+ updateUI();
+}
+</script>
+</body>
+</html>

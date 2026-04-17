@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OMNI-REAPER | SINGULARITY</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+ body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #050505; position: relative; box-shadow: 0 0 50px rgba(0,255,242,0.1); }
+ .display { text-align: center; border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 75px; font-weight: 950; height: 95px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; transition: 0.2s; }
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 10000; }
+ .btn-k { border: none; height: 100px; border-radius: 25px; font-size: 45px; font-weight: 900; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+ .h-row { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+ .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1px solid #222; }
+ .meta { display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; font-weight: 900; color: #444; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:8px; color:#444; letter-spacing:8px; margin-bottom:10px;">SINGULARITY ANALYZER V.GOD</div>
+ <div class="display">
+  <div id="status-tag" style="font-size:10px; color:#555;">SCANNING VOID</div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:40px; font-weight:900; color:var(--n);">0.0%</div>
+  <div id="advice" style="font-size:10px; color:var(--g); margin-top:8px;">AWAITING DATA</div>
+ </div>
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onpointerdown="cmd('P')">P</button>
+  <button class="btn-k btn-b" onpointerdown="cmd('B')">B</button>
+ </div>
+ <div class="h-row" id="h-box"></div>
+ <div class="meta">
+  <span id="w-ui">W: 0</span>
+  <span id="l-ui">L: 0</span>
+  <span id="n-ui" style="color:var(--g)">NET: 0</span>
+ </div>
+ <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:10px; color:#222;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--b);">[ ABSOLUTE RESET ]</span>
+ </div>
+</div>
+<script>
+let arch=[]; let wins=0, loss=0, net=0, streakL=0, nextMove=null;
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){ wins++; net++; streakL=0; }
+  else { loss++; net--; streakL++; }
+ }
+ arch.push(s); ui(); engine();
+}
+function engine(){
+ const len=arch.length; if(len<8) return;
+ let pW=0, bW=0, nodes=0;
+ // แก้เกมเมื่อแพ้ (ยิ่งแพ้ ยิ่งต้องเป๊ะ)
+ let limit = (streakL>=2) ? 95 : (streakL===1 ? 87 : 78);
+ for(let d=2; d<=80; d++){
+  if(len<d) break;
+  const pat=arch.slice(-d).join('');
+  const weight=Math.pow(d, 8.5);
+  for(let i=0; i<len-d; i++){
+   if(arch.slice(i, i+d).join('')===pat){
+    const decay = Math.exp((i-len)/10); // ให้น้ำหนักข้อมูลล่าสุด
+    if(arch[i+d]==='P') pW+=(weight*decay); else bW+=(weight*decay);
+    nodes++;
+   }
+  }
+ }
+ const total=pW+bW; if(total===0) return wait();
+ const pP=(pW/total)*100, pB=(bW/total)*100, max=Math.max(pP,pB);
+ const sig=document.getElementById('sig'), adv=document.getElementById('advice');
+ if(max>=limit){
+  nextMove = pP>pB?'P':'B';
+  sig.innerText = nextMove==='P'?'PLAYER':'BANKER';
+  sig.style.color = nextMove==='P'?'var(--p)':'var(--b)';
+  document.getElementById('prob').innerText = max.toFixed(1)+'%';
+  document.getElementById('status-tag').innerText = streakL>0?"RECOVERY MODE":"PATTERN LOCKED";
+  adv.innerText = max>93?"CRITICAL KILL":"STABLE ENTRY";
+ } else { wait(); }
+}
+function wait(){
+ nextMove=null; document.getElementById('sig').innerText="WAIT";
+ document.getElementById('sig').style.color="#111";
+ document.getElementById('prob').innerText="---";
+ document.getElementById('status-tag').innerText="UNCERTAIN";
+ document.getElementById('advice').innerText="STAY - DO NOT ENTER";
+}
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=9999;
+ document.getElementById('w-ui').innerText="W: "+wins;
+ document.getElementById('l-ui').innerText="L: "+loss;
+ document.getElementById('n-ui').innerText="NET: "+net;
+}
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; ui(); engine(); } }
+</script>
+</body>
+</html>

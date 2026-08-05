@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEURAL APEX V4 FULL ENGINE</title>
+<style>
+body{font-family:Arial;background:#0f172a;color:#fff;max-width:1000px;margin:auto;padding:20px}
+.card{background:#1e293b;padding:15px;border-radius:14px;margin:10px 0}
+button{padding:14px 18px;margin:4px;border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer}
+.p{background:#0284c7}.b{background:#dc2626}.s{background:#475569}
+.signal{text-align:center;font-size:42px;font-weight:bold}
+.player{color:#38bdf8}.banker{color:#fb7185}.wait{color:#facc15}
+#history{display:flex;flex-wrap:wrap;gap:4px}
+.node{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>NEURAL APEX V4 FULL ENGINE</h1>
+
+<div class="card">
+<div id="signal" class="signal wait">WAIT</div>
+<div>Mode: <span id="mode">-</span></div>
+<div>Confidence: <span id="conf">0</span>%</div>
+<div>Entropy: <span id="entropy">0</span></div>
+<div>Win Rate: <span id="wr">0</span>%</div>
+</div>
+
+<div class="card">
+<button class="p" onclick="addResult('P')">PLAYER</button>
+<button class="b" onclick="addResult('B')">BANKER</button>
+<button class="s" onclick="undo()">UNDO</button>
+<button class="s" onclick="resetAll()">RESET</button>
+</div>
+
+<div class="card"><div id="history"></div></div>
+
+<script>
+let arch=[],wins=0,total=0,nextMove=null;
+
+function save(){
+ localStorage.setItem("neural_apex_v4_full",JSON.stringify({arch,wins,total,nextMove}));
+}
+function load(){
+ const d=JSON.parse(localStorage.getItem("neural_apex_v4_full")||"null");
+ if(!d) return;
+ arch=d.arch||[]; wins=d.wins||0; total=d.total||0; nextMove=d.nextMove||null;
+}
+
+function tableMode(){
+ const r=arch.slice(-20);
+ if(r.length<6) return "WAIT";
+ let sw=0;
+ for(let i=1;i<r.length;i++) if(r[i]!==r[i-1]) sw++;
+ let chop=sw/(r.length-1);
+ if(chop<0.35) return "TREND";
+ if(chop>0.65) return "CHOP";
+ return "MIXED";
+}
+
+function entropyScore(){
+ const r=arch.slice(-20);
+ if(r.length<5) return 0;
+ let p=r.filter(x=>x==="P").length/r.length;
+ let b=1-p;
+ return -(p*Math.log2(p||1)+b*Math.log2(b||1));
+}
+
+function transition2(){
+ let score={P:0,B:0};
+ if(arch.length<4) return score;
+ let current=arch[arch.length-2]+arch[arch.length-1];
+ for(let i=2;i<arch.length-1;i++){
+   let state=arch[i-2]+arch[i-1];
+   if(state===current) score[arch[i]]++;
+ }
+ return score;
+}
+
+function patternScore(){
+ let score={P:0,B:0},match=0;
+ for(let d=3; d<=Math.min(8,arch.length-1); d++){
+   let pat=arch.slice(-d).join("");
+   for(let i=0;i<arch.length-d;i++){
+      if(arch.slice(i,i+d).join("")===pat){
+        let nxt=arch[i+d];
+        if(nxt){ score[nxt]+=d*d; match++; }
+      }
+   }
+ }
+ return {score,match};
+}
+
+function virtualBacktest(){
+ if(total<10) return 60;
+ return (wins/Math.max(total,1))*100;
+}
+
+function analyze(){
+ if(arch.length<8) return null;
+
+ let mode=tableMode();
+ let entropy=entropyScore();
+ if(entropy>0.95) return null;
+
+ let patt=patternScore();
+ let trans=transition2();
+
+ let P=patt.score.P + trans.P*3;
+ let B=patt.score.B + trans.B*3;
+
+ if(mode==="TREND"){
+   let last=arch[arch.length-1];
+   if(last==="P") P+=10; else B+=10;
+ }
+
+ if(mode==="CHOP"){
+   let last=arch[arch.length-1];
+   if(last==="P") B+=10; else P+=10;
+ }
+
+ let totalScore=P+B;
+ if(totalScore<=0) return null;
+
+ let conf=Math.round((Math.max(P,B)/totalScore)*100);
+ if(conf<72) return null;
+ if(patt.match<3) return null;
+ if(virtualBacktest()<55) return null;
+
+ return {
+   move:P>B?"P":"B",
+   conf,
+   mode,
+   entropy:entropy.toFixed(3)
+ };
+}
+
+function addResult(v){
+ if(nextMove){
+   total++;
+   if(nextMove===v) wins++;
+ }
+ arch.push(v);
+ let r=analyze();
+ nextMove=r?r.move:null;
+ save();
+ render();
+}
+
+function render(){
+ let r=analyze();
+ const sig=document.getElementById("signal");
+
+ if(r){
+   sig.textContent=r.move==="P"?"PLAYER":"BANKER";
+   sig.className="signal "+(r.move==="P"?"player":"banker");
+   document.getElementById("conf").textContent=r.conf;
+   document.getElementById("mode").textContent=r.mode;
+   document.getElementById("entropy").textContent=r.entropy;
+ }else{
+   sig.textContent="WAIT";
+   sig.className="signal wait";
+   document.getElementById("conf").textContent="0";
+ }
+
+ document.getElementById("wr").textContent =
+   total?((wins/total)*100).toFixed(1):"0";
+
+ document.getElementById("history").innerHTML =
+ arch.map(x=>`<div class="node" style="background:${x==="P"?"#0284c7":"#dc2626"}">${x}</div>`).join("");
+}
+
+function undo(){
+ if(!arch.length) return;
+ arch.pop();
+ save();
+ render();
+}
+
+function resetAll(){
+ arch=[]; wins=0; total=0; nextMove=null;
+ localStorage.removeItem("neural_apex_v4_full");
+ render();
+}
+
+load();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>NEURAL APEX | PURE ANALYSIS</title>
+<style>
+  :root {
+    --p: #007aff;
+    --b: #ff3b30;
+    --n: #00fff2;
+    --g: #ffcc00;
+    --bg: #000;
+    --r: #ff0055;
+    --w: #fff;
+    --sub: #121212;
+    --soft: #8a8a8a;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    background: radial-gradient(circle at top, #111 0%, #000 42%);
+    color: var(--w);
+    margin: 0;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .shell {
+    max-width: 420px;
+    margin: auto;
+    border: 1px solid var(--sub);
+    border-radius: 34px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.98), rgba(0,0,0,1));
+    box-shadow: 0 0 100px rgba(0, 255, 242, 0.05);
+  }
+
+  .topline {
+    text-align: center;
+    font-size: 8px;
+    color: var(--n);
+    letter-spacing: 10px;
+    margin-bottom: 14px;
+    font-weight: 800;
+  }
+
+  .ai-core {
+    text-align: center;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--sub);
+    padding-bottom: 18px;
+  }
+
+  #sig {
+    font-size: 72px;
+    font-weight: 950;
+    height: 98px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -4px;
+    transition: 0.2s;
+    line-height: 1;
+  }
+
+  .subsig {
+    margin-top: -4px;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .data-item {
+    padding: 12px 6px;
+    background: #050505;
+    border: 1px solid var(--sub);
+    border-radius: 15px;
+    font-size: 8px;
+    font-weight: 900;
+    color: #666;
+    text-transform: uppercase;
+    min-height: 62px;
+  }
+
+  .val {
+    display: block;
+    font-size: 14px;
+    color: #c8c8c8;
+    margin-top: 5px;
+    font-weight: 800;
+  }
+
+  .btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 16px;
+  }
+
+  .btn-main {
+    border: none;
+    height: 104px;
+    border-radius: 28px;
+    font-size: 58px;
+    font-weight: 950;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.08s;
+    border-bottom: 8px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+
+  .btn-p { background: linear-gradient(180deg, #1d7fff, #0062d8); }
+  .btn-b { background: linear-gradient(180deg, #ff5c52, #d61b12); }
+
+  .btn-main:active {
+    transform: translateY(4px);
+    border-bottom-width: 2px;
+  }
+
+  .panel {
+    border: 1px solid var(--sub);
+    border-radius: 20px;
+    padding: 12px;
+    background: rgba(255,255,255,0.02);
+    margin-bottom: 14px;
+  }
+
+  .panel-title {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #7b7b7b;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 900;
+  }
+
+  .history-bar {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 0 4px;
+    min-height: 38px;
+  }
+
+  .node {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 950;
+    flex-shrink: 0;
+    color: white;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
+  }
+
+  .status-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #444;
+    flex-wrap: wrap;
+  }
+
+  .status-line span { white-space: nowrap; }
+
+  #msg {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--g);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-height: 14px;
+  }
+
+  .fineprint {
+    margin-top: 12px;
+    color: #666;
+    font-size: 9px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .mini {
+    border: 1px solid var(--sub);
+    background: #080808;
+    color: #bbb;
+    border-radius: 14px;
+    padding: 10px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .mini:active { transform: translateY(1px); }
+
+  .meter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .meter-box {
+    border: 1px solid var(--sub);
+    border-radius: 14px;
+    background: #060606;
+    padding: 10px 10px 9px;
+    text-align: left;
+  }
+
+  .meter-label {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #666;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .meter-value {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 950;
+    color: #fff;
+  }
+
+  .bar {
+    margin-top: 8px;
+    height: 7px;
+    border-radius: 99px;
+    background: #151515;
+    overflow: hidden;
+  }
+
+  .bar > div {
+    height: 100%;
+    width: 0%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--n), #fff);
+    transition: width .18s ease;
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topline">NEURAL ANALYSIS ENGINE</div>
+
+    <div class="ai-core">
+      <div class="data-grid">
+        <div class="data-item">STABILITY<span id="stab-v" class="val">--</span></div>
+        <div class="data-item">PATTERN MATCH<span id="match-v" class="val">0</span></div>
+        <div class="data-item">CONFIDENCE<span id="conf-v" class="val">0%</span></div>
+      </div>
+      <div id="sig" style="color:#111;">WAIT</div>
+      <div class="subsig">STATISTICAL SIGNAL ONLY</div>
+      <div id="msg">INITIALIZING ANALYZER...</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-main btn-p" onclick="cmd('P')">P</button>
+      <button class="btn-main btn-b" onclick="cmd('B')">B</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">HISTORY</div>
+      <div class="history-bar" id="h-box"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">MODEL QUALITY</div>
+      <div class="meter">
+        <div class="meter-box">
+          <div class="meter-label">BACKTEST ACCURACY</div>
+          <div class="meter-value" id="bt-v">0%</div>
+          <div class="bar"><div id="bt-bar"></div></div>
+        </div>
+        <div class="meter-box">
+          <div class="meter-label">EVIDENCE DEPTH</div>
+          <div class="meter-value" id="depth-v">0</div>
+          <div class="bar"><div id="depth-bar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="mini" onclick="undo()">UNDO</button>
+      <button class="mini" onclick="resetAll()">RESET</button>
+      <button class="mini" onclick="exportLog()">EXPORT</button>
+    </div>
+
+    <div class="status-line">
+      <span>SAMPLES: <span id="sample-v" style="color:#888">0</span></span>
+      <span>WIN_RATE: <span id="wr-v" style="color:var(--n)">0%</span></span>
+      <span>EDGE: <span id="edge-v" style="color:#fff">0</span></span>
+    </div>
+
+    <div class="fineprint">
+      ใช้เพื่อวิเคราะห์รูปแบบเชิงสถิติ ไม่ใช่การยืนยันผลลัพธ์ และไม่ควรฟันธงเมื่อข้อมูลยังน้อยหรือสัญญาณขัดกัน
+    </div>
+  </div>
+
+<script>
+let arch = [];
+let wins = 0;
+let totalIn = 0;
+let nextMove = null;
+let lastForecast = null;
+let forecastHistory = [];
+
+const W = {
+  recent: 0.42,
+  transition: 0.28,
+  pattern: 0.20,
+  streak: 0.10,
+  global: 0.12
+};
+
+function cmd(s) {
+  if (nextMove) {
+    totalIn++;
+    if (nextMove === s) wins++;
+  }
+  arch.push(s);
+  ui();
+  engine();
+}
+
+function getStability(data) {
+  if (data.length < 8) return 0;
+  let changes = 0;
+  const sub = data.slice(-12);
+  for (let i = 1; i < sub.length; i++) if (sub[i] !== sub[i - 1]) changes++;
+  return 1 - (changes / (sub.length - 1));
+}
+
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
+}
+
+function laplaceProb(countA, countB) {
+  const a = countA + 1;
+  const b = countB + 1;
+  return a / (a + b);
+}
+
+function scoreFromHistory(data) {
+  const s = { P: 0, B: 0 };
+  const len = data.length;
+  if (len < 2) return s;
+
+  // 1) Global frequency in recent window
+  const recent = data.slice(-24);
+  const cP = recent.filter(x => x === 'P').length;
+  const cB = recent.length - cP;
+  const pRecent = laplaceProb(cP, cB);
+  s.P += (pRecent - 0.5) * 2 * W.recent;
+  s.B += ((1 - pRecent) - 0.5) * 2 * W.recent;
+
+  // 2) Transition / Markov signal from last state
+  const last = data[len - 1];
+  const trans = { P: { P: 0, B: 0 }, B: { P: 0, B: 0 } };
+  for (let i = 0; i < len - 1; i++) trans[data[i]][data[i + 1]]++;
+  const tP = laplaceProb(trans[last].P, trans[last].B);
+  s.P += (tP - 0.5) * 2 * W.transition;
+  s.B += ((1 - tP) - 0.5) * 2 * W.transition;
+
+  // 3) Pattern matching on 2-5 length n-grams with recency decay
+  let matches = 0;
+  for (let d = 2; d <= Math.min(5, len - 1); d++) {
+    const pat = data.slice(-d).join('');
+    const weight = 1 / d;
+    for (let i = 0; i < len - d; i++) {
+      if (data.slice(i, i + d).join('') === pat) {
+        const nxt = data[i + d];
+        const recency = Math.exp((i - len) / 18);
+        const add = weight * recency;
+        s[nxt] += add * W.pattern;
+        matches++;
+      }
+    }
+  }
+
+  // 4) Streak reversal / continuation signal
+  const streak = getCurrentStreak(data);
+  if (streak >= 3) {
+    // long streaks usually deserve less confidence, but we can bias slightly toward reversal
+    const opposite = data[len - 1] === 'P' ? 'B' : 'P';
+    s[opposite] += Math.min(0.10 * streak, 0.35) * W.streak;
+  }
+
+  // 5) Global baseline with a mild recency bias
+  const allP = data.filter(x => x === 'P').length;
+  const allB = len - allP;
+  const pGlobal = laplaceProb(allP, allB);
+  const recencyWeight = Math.min(1, len / 80);
+  s.P += (pGlobal - 0.5) * 2 * W.global * recencyWeight;
+  s.B += ((1 - pGlobal) - 0.5) * 2 * W.global * recencyWeight;
+
+  return { scores: s, patternMatches: matches };
+}
+
+function getCurrentStreak(data) {
+  if (!data.length) return 0;
+  let streak = 1;
+  const last = data[data.length - 1];
+  for (let i = data.length - 2; i >= 0; i--) {
+    if (data[i] === last) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function entropy(data) {
+  if (data.length < 2) return 1;
+  const p = data.filter(x => x === 'P').length / data.length;
+  const q = 1 - p;
+  const safe = v => v <= 0 ? 0 : -v * Math.log2(v);
+  return safe(p) + safe(q);
+}
+
+function backtestAccuracy(data) {
+  const min = 10;
+  if (data.length < min) return { acc: 0, count: 0 };
+
+  let ok = 0;
+  let count = 0;
+  for (let i = min; i < data.length; i++) {
+    const slice = data.slice(0, i);
+    const pred = forecast(slice, true);
+    if (pred && pred.move) {
+      count++;
+      if (pred.move === data[i]) ok++;
+    }
+  }
+  return { acc: count ? ok / count : 0, count };
+}
+
+function forecast(data, silent = false) {
+  const len = data.length;
+  if (len < 8) return null;
+
+  const { scores, patternMatches } = scoreFromHistory(data);
+  const total = scores.P + scores.B;
+  if (!isFinite(total) || total <= 0) return null;
+
+  const pProb = scores.P / total;
+  const bProb = scores.B / total;
+  const best = pProb > bProb ? 'P' : 'B';
+  const bestProb = Math.max(pProb, bProb);
+  const edge = Math.abs(pProb - bProb);
+
+  // Confidence grows only when we have enough data and margin.
+  const depthFactor = Math.min(1, (len - 7) / 20);
+  const marginFactor = Math.min(1, edge * 4.0);
+  const confidence = (bestProb * 0.5 + marginFactor * 0.35 + depthFactor * 0.15);
+
+  if (!silent) {
+    document.getElementById('match-v').innerText = patternMatches;
+    document.getElementById('conf-v').innerText = Math.round(bestProb * 100) + '%';
+    document.getElementById('depth-v').innerText = len;
+    document.getElementById('depth-bar').style.width = Math.min(100, len * 2) + '%';
+  }
+
+  // Strong gating: do not output a signal unless it clears evidence and margin thresholds.
+  if (len < 12) return null;
+  if (patternMatches < 2) return null;
+  if (bestProb < 0.58) return null;
+  if (confidence < 0.72) return null;
+  if (edge < 0.14) return null;
+
+  return {
+    move: best,
+    pProb,
+    bProb,
+    confidence,
+    patternMatches,
+    edge
+  };
+}
+
+function engine() {
+  const sig = document.getElementById('sig');
+  const msg = document.getElementById('msg');
+  const stabV = document.getElementById('stab-v');
+  const wr = totalIn > 0 ? (wins / totalIn * 100).toFixed(0) : 0;
+  document.getElementById('wr-v').innerText = wr + '%';
+
+  const stab = getStability(arch);
+  stabV.innerText = arch.length < 8 ? '--' : (stab > 0.7 ? 'LINEAR' : stab < 0.35 ? 'CHAOS' : 'STABLE');
+  stabV.style.color = arch.length < 8 ? '#888' : (stab < 0.35 ? 'var(--r)' : 'var(--n)');
+
+  const ent = entropy(arch);
+  document.getElementById('edge-v').innerText = arch.length < 2 ? '0' : ent.toFixed(2);
+
+  const result = forecast(arch);
+  const bt = backtestAccuracy(arch);
+  document.getElementById('bt-v').innerText = bt.count ? Math.round(bt.acc * 100) + '%' : '0%';
+  document.getElementById('bt-bar').style.width = Math.min(100, bt.acc * 100) + '%';
+
+  if (result) {
+    nextMove = result.move;
+    lastForecast = result;
+    forecastHistory.push({ idx: arch.length, move: result.move });
+
+    sig.innerText = result.move === 'P' ? 'PLAYER' : 'BANKER';
+    sig.style.color = result.move === 'P' ? 'var(--p)' : 'var(--b)';
+    msg.innerText = `CONF ${Math.round(result.confidence * 100)}% | EDGE ${result.edge.toFixed(2)} | PATTERN OK`;
+    msg.style.color = 'var(--n)';
+  } else {
+    nextMove = null;
+    sig.innerText = 'WAIT';
+    sig.style.color = '#111';
+
+    let note = 'SCANNING DATA...';
+    if (arch.length < 12) note = 'NEED MORE SAMPLES';
+    else if (bt.count > 0 && bt.acc < 0.48) note = 'MODEL UNDERPERFORMING — NO SIGNAL';
+    else if (stab < 0.35) note = 'DATA TOO NOISY';
+    else if (ent > 0.95) note = 'DISTRIBUTION TOO BALANCED';
+
+    msg.innerText = note;
+    msg.style.color = arch.length < 12 ? '#444' : (note.includes('NO SIGNAL') ? 'var(--r)' : '#666');
+  }
+
+  document.getElementById('sample-v').innerText = arch.length;
+}
+
+function ui() {
+  const b = document.getElementById('h-box');
+  b.innerHTML = arch.map(v => `<div class="node" style="background:${v === 'P' ? 'var(--p)' : 'var(--b)'}">${v}</div>`).join('');
+  b.scrollLeft = b.scrollWidth;
+  document.getElementById('sample-v').innerText = arch.length;
+}
+
+function undo() {
+  if (arch.length > 0) {
+    arch.pop();
+    ui();
+    engine();
+  }
+}
+
+function resetAll() {
+  arch = [];
+  wins = 0;
+  totalIn = 0;
+  nextMove = null;
+  lastForecast = null;
+  forecastHistory = [];
+  ui();
+  engine();
+}
+
+function exportLog() {
+  const payload = {
+    history: arch.join(''),
+    samples: arch.length,
+    winRate: totalIn ? Number((wins / totalIn * 100).toFixed(2)) : 0,
+    lastForecast,
+    forecastHistory
+  };
+  const text = JSON.stringify(payload, null, 2);
+  navigator.clipboard?.writeText(text).catch(() => {});
+  alert('Exported JSON copied to clipboard if browser allowed it.');
+}
+
+engine();
+ui();
+</script>
+</body>
+</html>

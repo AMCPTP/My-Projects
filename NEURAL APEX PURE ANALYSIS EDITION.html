@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEURAL APEX | PURE ANALYSIS</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; --w: #fff; --sub: #121212; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+ body { background: var(--bg); color: var(--w); margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid var(--sub); border-radius: 40px; padding: 30px; background: #000; box-shadow: 0 0 100px rgba(0, 255, 242, 0.05); }
+ 
+ .ai-core { text-align: center; margin-bottom: 25px; border-bottom: 1px solid var(--sub); padding-bottom: 25px; }
+ #sig { font-size: 75px; font-weight: 950; height: 100px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; transition: 0.2s; }
+ 
+ .data-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+ .data-item { padding: 12px 5px; background: #050505; border: 1px solid var(--sub); border-radius: 15px; font-size: 8px; font-weight: 900; color: #444; text-transform: uppercase; }
+ .val { display: block; font-size: 14px; color: #888; margin-top: 5px; }
+
+ .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+ .btn-main { border: none; height: 110px; border-radius: 30px; font-size: 60px; font-weight: 950; color: #fff; cursor: pointer; transition: 0.1s; border-bottom: 8px solid rgba(0,0,0,0.5); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-main:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+ .history-bar { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid var(--sub); min-height: 65px; }
+ .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 950; flex-shrink: 0; }
+ 
+ .status-line { display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px; font-weight: 900; color: #333; }
+ #msg { text-align: center; margin-top: 15px; font-size: 10px; font-weight: bold; color: var(--g); letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+ <div style="text-align:center; font-size:8px; color:var(--n); letter-spacing:10px; margin-bottom:15px; font-weight:bold;">NEURAL ANALYSIS ENGINE</div>
+ 
+ <div class="ai-core">
+  <div class="data-grid">
+   <div class="data-item">STABILITY<span id="stab-v" class="val">--</span></div>
+   <div class="data-item">PATTERN MATCH<span id="match-v" class="val">0</span></div>
+   <div class="data-item">PROBABILITY<span id="conf-v" class="val">0%</span></div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="msg">INITIALIZING ANALYZER...</div>
+ </div>
+
+ <div class="btn-group">
+  <button class="btn-main btn-p" onclick="cmd('P')">P</button>
+  <button class="btn-main btn-b" onclick="cmd('B')">B</button>
+ </div>
+
+ <div class="history-bar" id="h-box"></div>
+
+ <div class="status-line">
+  <span>SAMPLES: <span id="sample-v" style="color:#888">0</span></span>
+  <span>WIN_RATE: <span id="wr-v" style="color:var(--n)">0%</span></span>
+  <span onclick="undo()" style="cursor:pointer; color:var(--r)">[UNDO]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, totalIn=0, nextMove=null;
+
+function cmd(s){
+ if(nextMove){
+  totalIn++;
+  if(nextMove === s) wins++;
+ }
+ arch.push(s); ui(); engine();
+}
+
+function getChaos(data){
+ if(data.length < 8) return 0;
+ let sw = 0; const sub = data.slice(-12);
+ for(let i=1; i<sub.length; i++) if(sub[i] !== sub[i-1]) sw++;
+ return sw / (sub.length - 1);
+}
+
+function analyze(){
+ const len = arch.length;
+ if(len < 6) return null;
+
+ let scores = { P: 0, B: 0 };
+ let matchCount = 0;
+
+ // Recursive Depth Scanning (สแกนรูปแบบซ้อนทับ 3 ถึง 12 ชั้น)
+ for(let d = 3; d <= Math.min(len-1, 12); d++){
+  const pat = arch.slice(-d).join('');
+  const weight = Math.pow(d, 4); // ยิ่งรูปแบบยาวยิ่งมีน้ำหนักการตัดสินใจสูง
+
+  for(let i=0; i < len - d; i++){
+   if(arch.slice(i, i+d).join('') === pat){
+    const res = arch[i+d];
+    // Time-Decay: ให้ความสำคัญกับเหตุการณ์ล่าสุด (Exponential Decay)
+    const recency = Math.exp((i - len) / 20);
+    scores[res] += (weight * recency);
+    matchCount++;
+   }
+  }
+ }
+
+ const total = scores.P + scores.B;
+ if(total === 0 || matchCount < 2) return null;
+
+ const pProb = (scores.P / total);
+ const bProb = (scores.B / total);
+ const confidence = Math.max(pProb, bProb);
+
+ document.getElementById('match-v').innerText = matchCount;
+ document.getElementById('conf-v').innerText = (confidence * 100).toFixed(0) + "%";
+
+ // ปรับเกณฑ์ความแม่นยำ: ต้องมีความมั่นใจสูงกว่า 75% ถึงจะปล่อยสัญญาณ
+ if(confidence >= 0.75) return pProb > bProb ? 'P' : 'B';
+ return null;
+}
+
+function engine(){
+ const sig = document.getElementById('sig');
+ const msg = document.getElementById('msg');
+ const stabV = document.getElementById('stab-v');
+ 
+ const chaos = getChaos(arch);
+ stabV.innerText = chaos > 0.8 ? "CHAOS" : (chaos < 0.3 ? "LINEAR" : "STABLE");
+ stabV.style.color = chaos > 0.8 ? "var(--r)" : "var(--n)";
+
+ let result = analyze();
+ if(result){
+  nextMove = result;
+  sig.innerText = result === 'P' ? 'PLAYER' : 'BANKER';
+  sig.style.color = result === 'P' ? 'var(--p)' : 'var(--b)';
+  msg.innerText = "MATCH FOUND IN HISTORY";
+  msg.style.color = "var(--n)";
+ } else {
+  nextMove = null;
+  sig.innerText = "WAIT";
+  sig.style.color = "#111";
+  msg.innerText = chaos > 0.8 ? "AVOID: UNSTABLE PATTERN" : "SCANNING DATA...";
+  msg.style.color = chaos > 0.8 ? "var(--r)" : "#444";
+ }
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=b.scrollWidth;
+ document.getElementById('sample-v').innerText = arch.length;
+ const wr = totalIn > 0 ? (wins/totalIn*100).toFixed(0) : 0;
+ document.getElementById('wr-v').innerText = wr + "%";
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); ui(); engine(); } }
+</script>
+</body>
+</html>

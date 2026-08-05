@@ -1,0 +1,485 @@
+/* ===========================
+   GLOBAL
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#10141d;
+    color:#ffffff;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+.container{
+    width:95%;
+    max-width:1700px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+header h1{
+    font-size:38px;
+    color:#FFD54F;
+}
+
+header p{
+    color:#bbbbbb;
+    margin-top:10px;
+}
+
+/* ===========================
+   CONTROL
+=========================== */
+
+.control-panel{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:25px;
+}
+
+.control-panel button{
+
+    width:140px;
+    height:50px;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:17px;
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+.control-panel button:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.9;
+}
+
+.player{
+    background:#1565C0;
+    color:white;
+}
+
+.banker{
+    background:#C62828;
+    color:white;
+}
+
+.tie{
+    background:#2E7D32;
+    color:white;
+}
+
+#undoBtn,
+#redoBtn{
+    background:#555;
+    color:white;
+}
+
+#resetBtn{
+    background:#000;
+    color:#FFD54F;
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.statistics{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+}
+
+.card{
+
+    background:#1b2230;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    text-align:center;
+
+    border:1px solid #2d3647;
+
+}
+
+.card h3{
+
+    color:#cccccc;
+
+    margin-bottom:12px;
+
+}
+
+.card span{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    color:#FFD54F;
+
+}
+
+/* ===========================
+   SECTION
+=========================== */
+
+section{
+
+    background:#1b2230;
+
+    padding:18px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    border:1px solid #2d3647;
+
+}
+
+section h2{
+
+    margin-bottom:15px;
+
+    color:#FFD54F;
+
+}
+
+/* ===========================
+   RECOMMEND
+=========================== */
+
+#recommendation{
+
+    font-size:34px;
+
+    text-align:center;
+
+    font-weight:bold;
+
+    margin:20px 0;
+
+    color:#4FC3F7;
+
+}
+
+#confidence,
+#risk{
+
+    text-align:center;
+
+    margin:10px;
+
+    font-size:18px;
+
+}
+
+/* ===========================
+   PATTERN
+=========================== */
+
+.pattern ul{
+
+    list-style:none;
+
+}
+
+.pattern li{
+
+    padding:10px;
+
+    border-bottom:1px solid #333;
+
+}
+
+/* ===========================
+   ROAD
+=========================== */
+
+.road-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(40,30px);
+
+    grid-auto-rows:30px;
+
+    gap:2px;
+
+    overflow:auto;
+
+    min-height:200px;
+
+}
+
+.bead-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(20,30px);
+
+    grid-auto-rows:30px;
+
+    gap:2px;
+
+    overflow:auto;
+
+    min-height:200px;
+
+}
+
+.cell{
+
+    width:30px;
+
+    height:30px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    border:1px solid #555;
+
+}
+
+.player-cell{
+
+    background:#1565C0;
+
+    color:white;
+
+}
+
+.banker-cell{
+
+    background:#C62828;
+
+    color:white;
+
+}
+
+.tie-cell{
+
+    background:#2E7D32;
+
+    color:white;
+
+}
+
+.empty{
+
+    background:#202836;
+
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+table td{
+
+    border:1px solid #333;
+
+    padding:10px;
+
+}
+
+.total{
+
+    background:#283593;
+
+    font-weight:bold;
+
+}
+
+/* ===========================
+   HISTORY
+=========================== */
+
+#historyList{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+}
+
+.history-item{
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:bold;
+
+}
+
+.history-player{
+
+    background:#1565C0;
+
+}
+
+.history-banker{
+
+    background:#C62828;
+
+}
+
+.history-tie{
+
+    background:#2E7D32;
+
+}
+
+/* ===========================
+   LOG
+=========================== */
+
+#systemLog{
+
+    width:100%;
+
+    background:#111;
+
+    color:#00FF00;
+
+    border:none;
+
+    padding:15px;
+
+    resize:vertical;
+
+    font-family:Consolas,monospace;
+
+}
+
+/* ===========================
+   SCROLLBAR
+=========================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#666;
+
+    border-radius:5px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#222;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:900px){
+
+    .road-grid{
+
+        grid-template-columns:repeat(20,30px);
+
+    }
+
+    .bead-grid{
+
+        grid-template-columns:repeat(10,30px);
+
+    }
+
+    .control-panel button{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    header h1{
+
+        font-size:28px;
+
+    }
+
+    #recommendation{
+
+        font-size:26px;
+
+    }
+
+    .card span{
+
+        font-size:26px;
+
+    }
+
+}

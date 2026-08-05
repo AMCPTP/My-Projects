@@ -1,0 +1,1 @@
+export function run(state){return {name:"cycle",player:0,banker:0,confidence:0,reason:[],heat:0};}

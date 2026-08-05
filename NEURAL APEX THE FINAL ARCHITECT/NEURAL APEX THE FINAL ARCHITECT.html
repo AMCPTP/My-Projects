@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEURAL APEX | FINAL ARCHITECT</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; --w: #fff; --sub: #1a1a1a; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', 'JetBrains Mono', monospace; }
+ body { background: var(--bg); color: var(--w); margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid var(--sub); border-radius: 40px; padding: 25px; background: radial-gradient(circle at 50% 0%, #111, #000); box-shadow: 0 0 120px rgba(0, 255, 242, 0.08); position: relative; }
+ 
+ .ai-core { text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--sub); padding-bottom: 20px; }
+ #sig { font-size: 70px; font-weight: 950; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+ 
+ .data-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+ .data-item { padding: 10px 5px; background: #080808; border: 1px solid var(--sub); border-radius: 14px; font-size: 8px; font-weight: 900; color: #555; text-transform: uppercase; }
+ .val { display: block; font-size: 13px; color: #aaa; margin-top: 5px; }
+
+ .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+ .btn-main { border: none; height: 110px; border-radius: 30px; font-size: 55px; font-weight: 950; color: #fff; cursor: pointer; transition: 0.1s; position: relative; overflow: hidden; }
+ .btn-p { background: var(--p); box-shadow: 0 8px 0 #0056b3; }
+ .btn-b { background: var(--b); box-shadow: 0 8px 0 #b32a22; }
+ .btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.5); }
+
+ .history-bar { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid var(--sub); min-height: 65px; scroll-behavior: smooth; }
+ .node { min-width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 950; flex-shrink: 0; animation: flare 0.3s ease-out; }
+ @keyframes flare { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+ .status-line { display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px; font-weight: 900; color: #444; }
+ #msg { text-align: center; margin-top: 15px; font-size: 10px; font-weight: bold; color: var(--g); letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+ <div style="text-align:center; font-size:7px; color:var(--n); letter-spacing:10px; margin-bottom:15px; font-weight:bold;">NEURAL APEX ARCHITECT</div>
+ 
+ <div class="ai-core">
+  <div class="data-grid">
+   <div class="data-item">EDGE RATIO<span id="edge-v" class="val">--%</span></div>
+   <div class="data-item">STABILITY<span id="stab-v" class="val">HIGH</span></div>
+   <div class="data-item">CONFIDENCE<span id="conf-v" class="val">0%</span></div>
+  </div>
+  <div id="sig" style="color:#151515;">WAIT</div>
+  <div id="msg">INITIALIZING NEURAL LAYERS...</div>
+ </div>
+
+ <div class="btn-group">
+  <button class="btn-main btn-p" onclick="cmd('P')">P</button>
+  <button class="btn-main btn-b" onclick="cmd('B')">B</button>
+ </div>
+
+ <div class="history-bar" id="h-box"></div>
+
+ <div class="status-line">
+  <span>NET: <span id="net-v" style="color:var(--g)">0</span></span>
+  <span>MODE: <span id="mode-v" style="color:var(--n)">NEURAL</span></span>
+  <span>L-STREAK: <span id="ls-v" style="color:var(--r)">0/2</span></span>
+ </div>
+ 
+ <div style="display:flex; justify-content:center; gap:20px; margin-top:25px; font-size:10px; font-weight:bold; color:#222;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">[ UNDO ]</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--r);">[ RESET ]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let net=0, streakL=0, nextMove=null, isPaused=false;
+
+function cmd(s){
+ if(nextMove && !isPaused){
+  if(nextMove === s) { net++; streakL = 0; isPaused = false; }
+  else { net--; streakL++; if(streakL >= 2) isPaused = true; }
+ } else if(isPaused) {
+  // วินัยหยุดดู: ตรวจสอบ Virtual Prediction (ทายในใจ)
+  let vPredict = apexEngine(true);
+  if(vPredict === s) { streakL = 0; isPaused = false; }
+ }
+ arch.push(s); ui(); engine();
+}
+
+function getEntropy(data){
+ if(data.length < 8) return 0;
+ let transitions = 0;
+ const sample = data.slice(-10);
+ for(let i=1; i<sample.length; i++) if(sample[i] !== sample[i-1]) transitions++;
+ return transitions / (sample.length - 1);
+}
+
+function apexEngine(silent = false){
+ const len = arch.length;
+ if(len < 8) return null;
+
+ // 1. Entropy Filter (ความเสถียรของขอน)
+ const entropy = getEntropy(arch);
+ if(!silent) {
+  const stabV = document.getElementById('stab-v');
+  stabV.innerText = entropy > 0.8 ? "CHAOS" : (entropy < 0.3 ? "LINEAR" : "STABLE");
+  stabV.style.color = entropy > 0.8 ? "var(--r)" : "var(--n)";
+ }
+ if(entropy > 0.85) return null;
+
+ // 2 & 3. Multi-Depth Scan & Exponential Time-Decay
+ let scores = { P: 0, B: 0 };
+ let totalMatches = 0;
+
+ // สแกนความลึกตั้งแต่ 3 ถึง 12 ตัว (หรือเท่าที่มี)
+ for(let depth = 3; depth <= Math.min(len-1, 12); depth++){
+  const currentPattern = arch.slice(-depth).join('');
+  // พลังของความลึก: ยิ่งรูปแบบยาวยิ่งมีน้ำหนักมหาศาล (depth^4)
+  const weightBase = Math.pow(depth, 4);
+
+  for(let i=0; i < len - depth; i++){
+   if(arch.slice(i, i + depth).join('') === currentPattern){
+    const outcome = arch[i + depth];
+    // Time-Decay: ประวัติล่าสุดมีค่ามากกว่าอดีต (Exponential)
+    const recencyWeight = Math.exp((i - len) / 18);
+    scores[outcome] += (weightBase * recencyWeight);
+    totalMatches++;
+   }
+  }
+ }
+
+ if(totalMatches < 3) return null;
+
+ const totalScore = scores.P + scores.B;
+ const pProb = scores.P / totalScore;
+ const bProb = scores.B / totalScore;
+ const confidence = Math.max(pProb, bProb);
+ const edge = Math.abs(pProb - bProb) * 100;
+
+ if(!silent){
+  document.getElementById('conf-v').innerText = (confidence * 100).toFixed(0) + "%";
+  document.getElementById('edge-v').innerText = edge.toFixed(1) + "%";
+ }
+
+ // 4. Final Decision Layer (Strict 80% Threshold)
+ // ต้องมีความมั่นใจเกิน 80% หรือมีความเหลื่อมล้ำของข้อมูล (Edge) สูงมาก
+ if(confidence >= 0.80 || (confidence >= 0.75 && edge > 20)){
+  return pProb > bProb ? 'P' : 'B';
+ }
+ return null;
+}
+
+function engine(){
+ const sig = document.getElementById('sig');
+ const msg = document.getElementById('msg');
+ const lsV = document.getElementById('ls-v');
+ const modeV = document.getElementById('mode-v');
+ 
+ lsV.innerText = streakL + "/2";
+ 
+ if(isPaused){
+  sig.innerText = "WAIT";
+  sig.style.color = "#151515";
+  msg.innerText = "CRITICAL ERROR: PAUSED FOR CALIBRATION";
+  msg.style.color = "var(--r)";
+  modeV.innerText = "OBSERVE";
+  modeV.style.color = "var(--g)";
+  return;
+ }
+
+ modeV.innerText = "NEURAL";
+ modeV.style.color = "var(--n)";
+
+ let decision = apexEngine();
+ if(decision){
+  nextMove = decision;
+  sig.innerText = decision === 'P' ? 'PLAYER' : 'BANKER';
+  sig.style.color = decision === 'P' ? 'var(--p)' : 'var(--b)';
+  msg.innerText = "HIGH-PROBABILITY PATTERN DETECTED";
+  msg.style.color = "var(--n)";
+ } else {
+  nextMove = null;
+  sig.innerText = "WAIT";
+  sig.style.color = "#151515";
+  msg.innerText = "SCANNING FOR RECURSIVE EDGE...";
+  msg.style.color = "#444";
+  document.getElementById('conf-v').innerText = "0%";
+  document.getElementById('edge-v').innerText = "0%";
+ }
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=b.scrollWidth;
+ document.getElementById('net-v').innerText = net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; isPaused=false; ui(); engine(); } }
+</script>
+</body>
+</html>

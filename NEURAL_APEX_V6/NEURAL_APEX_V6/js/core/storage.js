@@ -1,0 +1,1 @@
+export const Storage={save(){},load(){},reset(){},backup(){},restore(){}};

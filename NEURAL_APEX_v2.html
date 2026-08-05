@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEURAL APEX PURE ANALYSIS v2</title>
+<style>
+body{background:#000;color:#fff;font-family:Arial;padding:20px;max-width:420px;margin:auto}
+button{width:48%;height:90px;font-size:40px;font-weight:bold;border:none;border-radius:20px;color:#fff}
+.p{background:#007aff}.b{background:#ff3b30}
+#sig{font-size:48px;text-align:center;margin:20px 0}
+.node{display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;border-radius:8px;margin:2px}
+</style>
+</head>
+<body>
+
+<h2>NEURAL APEX v2</h2>
+<div id="sig">WAIT</div>
+
+<button class="p" onclick="cmd('P')">P</button>
+<button class="b" onclick="cmd('B')">B</button>
+
+<div style="margin-top:20px">
+Confidence: <span id="conf">0%</span><br>
+Matches: <span id="match">0</span><br>
+Win Rate: <span id="wr">0%</span>
+</div>
+
+<div id="history"></div>
+
+<script>
+let arch=[];
+let nextMove=null;
+let wins=0,total=0;
+
+function cmd(v){
+ if(nextMove){
+   total++;
+   if(nextMove===v) wins++;
+ }
+ arch.push(v);
+ engine();
+}
+
+function analyze(){
+ if(arch.length<8) return null;
+
+ let score={P:0,B:0};
+ let match=0;
+
+ for(let d=3; d<=10; d++){
+   let pat=arch.slice(-d).join("");
+   for(let i=0;i<arch.length-d;i++){
+      if(arch.slice(i,i+d).join("")===pat){
+         let res=arch[i+d];
+         if(res){
+            score[res]+=d*d;
+            match++;
+         }
+      }
+   }
+ }
+
+ document.getElementById("match").innerText=match;
+
+ let sum=score.P+score.B;
+ if(sum===0 || match<5) return null;
+
+ let p=score.P/sum;
+ let b=score.B/sum;
+ let conf=Math.max(p,b);
+
+ document.getElementById("conf").innerText=(conf*100).toFixed(0)+"%";
+
+ if(conf<0.80) return null;
+
+ return p>b?"P":"B";
+}
+
+function engine(){
+ nextMove=analyze();
+
+ let sig=document.getElementById("sig");
+
+ if(nextMove){
+   sig.innerText=nextMove==="P"?"PLAYER":"BANKER";
+ }else{
+   sig.innerText="WAIT";
+ }
+
+ document.getElementById("wr").innerText =
+ total ? ((wins/total)*100).toFixed(0)+"%" : "0%";
+
+ document.getElementById("history").innerHTML =
+ arch.map(x=>`<span class="node" style="background:${x==='P'?'#007aff':'#ff3b30'}">${x}</span>`).join("");
+}
+</script>
+
+</body>
+</html>

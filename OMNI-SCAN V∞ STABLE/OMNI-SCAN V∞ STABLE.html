@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNI-SCAN V∞ STABLE</title>
+<style>
+:root{--p:#007aff;--b:#ff3b30;--bg:#020202;--card:#0c0c0c}
+body{margin:0;background:var(--bg);color:#fff;font-family:monospace}
+.container{max-width:420px;margin:auto;padding:12px}
+.card{background:var(--card);border-radius:16px;padding:12px;margin-bottom:10px}
+.signal{font-size:30px;text-align:center}
+.prob,.conf{font-size:14px;text-align:center}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{height:80px;border:none;border-radius:14px;font-size:28px;color:#fff}
+.p{background:var(--p)}
+.b{background:var(--b)}
+.history{display:flex;overflow-x:auto;gap:4px;margin-top:8px}
+.node{min-width:26px;height:26px;border-radius:5px}
+.panel{display:flex;justify-content:space-between;font-size:12px;margin-top:8px}
+.ctrl{cursor:pointer;padding:6px;background:#111;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card">
+<div class="signal" id="signal">WAIT</div>
+<div class="prob" id="prob">---</div>
+<div class="conf" id="conf">CONF ---</div>
+</div>
+
+<div class="card">
+<div class="btns">
+<button class="btn p" onclick="cmd('P')">P</button>
+<button class="btn b" onclick="cmd('B')">B</button>
+</div>
+</div>
+
+<div class="card">
+<div class="history" id="history"></div>
+<div class="panel">
+<div>Win:<span id="win">0</span></div>
+<div>Loss:<span id="loss">0</span></div>
+<div>Net:<span id="net">0</span></div>
+</div>
+</div>
+
+<div class="card panel">
+<div class="ctrl" onclick="undo()">Undo</div>
+<div class="ctrl" onclick="reset()">Reset</div>
+</div>
+
+</div>
+
+<script>
+let arch=[];
+let nextMove=null;
+let win=0,loss=0,net=0;
+let lossStreak=0;
+let freeze=false;
+
+function cmd(s){
+ try{
+  if(nextMove && !freeze){
+   if(nextMove===s){win++;net++;lossStreak=0}
+   else{loss++;net--;lossStreak++}
+  }
+  arch.push(s);
+  render();
+  engine();
+ }catch(e){safeFail()}
+}
+
+function engine(){
+ try{
+  const len=arch.length;
+  if(len<8) return wait('WAIT');
+
+  if(lossStreak>=2){freeze=true; return wait('FREEZE');}
+
+  let pScore=0,bScore=0,match=0;
+
+  for(let d=2; d<=Math.min(12,len-1); d++){
+   const cur=arch.slice(-d).join('');
+   const weight=d*d*d;
+   for(let i=0;i<len-d;i++){
+    const his=arch.slice(i,i+d).join('');
+    if(cur===his){
+     const res=arch[i+d];
+     const recency=Math.exp((i-len)/20);
+     if(res==='P') pScore+=weight*recency;
+     else bScore+=weight*recency;
+     match++;
+    }
+   }
+  }
+
+  let chaos=0;
+  for(let i=len-1;i>1;i--){ if(arch[i]!==arch[i-1]) chaos++; }
+  if(chaos>len*0.65) return wait('CHAOS');
+
+  const last4=arch.slice(-4).join('');
+  if(last4==='PBPB'||last4==='BPBP') return wait('TRAP');
+
+  const total=pScore+bScore;
+  if(total===0||match<3) return wait('WAIT');
+
+  const pProb=pScore/total*100;
+  const bProb=bScore/total*100;
+  const edge=Math.abs(pProb-bProb);
+  const maxProb=Math.max(pProb,bProb);
+
+  let streak=1;
+  for(let i=len-1;i>0;i--){ if(arch[i]===arch[i-1]) streak++; else break; }
+
+  const conf=(edge*0.5)+(match*2)+(streak*3)-(chaos);
+
+  if(edge<15||maxProb<60||conf<20) return wait('SKIP');
+
+  nextMove = pProb>bProb?'P':'B';
+  freeze=false;
+
+  setSignal(nextMove,maxProb,conf);
+ }catch(e){safeFail()}
+}
+
+function setSignal(move,prob,conf){
+ document.getElementById('signal').innerText = move==='P'?'PLAYER':'BANKER';
+ document.getElementById('prob').innerText = prob.toFixed(1)+'%';
+ document.getElementById('conf').innerText = 'CONF '+conf.toFixed(1);
+}
+
+function wait(msg){
+ nextMove=null;
+ document.getElementById('signal').innerText=msg;
+ document.getElementById('prob').innerText='---';
+ document.getElementById('conf').innerText='CONF ---';
+}
+
+function render(){
+ const h=document.getElementById('history');
+ h.innerHTML = arch.map(x=>`<div class="node" style="background:${x==='P'?'#007aff':'#ff3b30'}"></div>`).join('');
+ h.scrollLeft=9999;
+ document.getElementById('win').innerText=win;
+ document.getElementById('loss').innerText=loss;
+ document.getElementById('net').innerText=net;
+}
+
+function undo(){
+ if(arch.length>0){
+  arch.pop();
+  render();
+  engine();
+ }
+}
+
+function reset(){
+ arch=[];win=0;loss=0;net=0;lossStreak=0;freeze=false;
+ render();
+ wait('RESET');
+}
+
+function safeFail(){
+ wait('ERROR SAFE');
+ console.error('SYSTEM ERROR - SAFE MODE');
+}
+</script>
+
+</body>
+</html>

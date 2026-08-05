@@ -1,0 +1,4502 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL APEX V5 ULTIMATE</title>
+
+    <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial, sans-serif;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+header h1{
+    font-size:40px;
+    color:#38bdf8;
+}
+
+header p{
+    color:#94a3b8;
+    margin-top:10px;
+}
+
+.responsible-use{
+    color:#fbbf24;
+    font-size:13px;
+    line-height:1.5;
+    text-align:center;
+    margin:0 auto 20px;
+    max-width:820px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:18px;
+    margin-bottom:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+
+h2{
+    margin-bottom:15px;
+    color:#f8fafc;
+}
+
+.signal-card{
+    text-align:center;
+}
+
+.signal{
+    font-size:60px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+.player{
+    color:#38bdf8;
+}
+
+.banker{
+    color:#fb7185;
+}
+
+.wait{
+    color:#facc15;
+}
+
+.signal-strength,
+.confidence{
+    font-size:20px;
+    margin-top:10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.grid div{
+    background:#334155;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.forecast-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.forecast-box{
+    background:#334155;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.forecast-title{
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+.heatmap{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.heat-row{
+    display:flex;
+    justify-content:space-between;
+    background:#334155;
+    padding:14px;
+    border-radius:12px;
+}
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+button{
+    flex:1;
+    border:none;
+    border-radius:14px;
+    padding:18px;
+    font-size:20px;
+    cursor:pointer;
+    color:white;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.player-btn{
+    background:#0284c7;
+}
+
+.banker-btn{
+    background:#dc2626;
+}
+
+.undo-btn{
+    background:#64748b;
+}
+
+.reset-btn{
+    background:#475569;
+}
+
+.history-grid{
+    display:grid;
+    grid-template-rows:repeat(6,34px);
+    grid-auto-flow:column;
+    grid-auto-columns:34px;
+    gap:6px;
+    overflow-x:auto;
+    padding-bottom:4px;
+}
+
+.node{
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+}
+
+.node-player{
+    background:#0284c7;
+}
+
+.node-banker{
+    background:#dc2626;
+}
+
+.node-tie{
+    background:#64748b;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.stats-grid div{
+    background:#334155;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.similarity-note{
+    color:#94a3b8;
+    font-size:13px;
+    line-height:1.5;
+    margin:-4px 0 15px;
+}
+
+.similar-examples{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:15px;
+}
+
+.similar-example{
+    align-items:center;
+    background:#334155;
+    border-left:4px solid #38bdf8;
+    border-radius:10px;
+    color:#cbd5e1;
+    display:flex;
+    font-size:14px;
+    justify-content:space-between;
+    padding:11px 13px;
+}
+
+.strong{
+    color:#22c55e;
+}
+
+.normal{
+    color:#38bdf8;
+}
+
+.weak{
+    color:#facc15;
+}
+
+.risk{
+    color:#ef4444;
+}
+
+.timing-status{
+    font-size:34px;
+    font-weight:bold;
+}
+
+.timing-reason{
+    font-size:15px;
+    color:#cbd5e1;
+    line-height:1.45;
+}
+
+@media(max-width:768px){
+
+    header h1{
+        font-size:28px;
+    }
+
+    .signal{
+        font-size:42px;
+    }
+
+    .forecast-grid{
+        grid-template-columns:1fr;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    button{
+        width:100%;
+    }
+
+}
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>NEURAL APEX V5 ULTIMATE</h1>
+        <p>History Analysis Dashboard</p>
+    </header>
+
+    <p class="responsible-use" role="note">
+        เครื่องมือนี้สรุปสถิติจากประวัติที่บันทึกไว้เท่านั้น ผลบาคาร่าเป็นแบบสุ่ม
+        จึงไม่สามารถทำนายหรือรับประกันผลได้ ใช้เพื่อการศึกษาและกำหนดงบประมาณที่ยอมรับการสูญเสียได้เท่านั้น
+    </p>
+
+    <!-- MAIN SIGNAL -->
+    <section class="card signal-card">
+
+        <div id="signalLabel" class="forecast-title">
+            Next-Round History Trend
+        </div>
+
+        <div id="signal" class="signal wait">
+            WAIT
+        </div>
+
+        <div class="signal-strength">
+            Strength :
+            <span id="strength">-</span>
+        </div>
+
+        <div class="confidence">
+            Confidence :
+            <span id="confidence">0%</span>
+        </div>
+
+        <div class="precision-panel">
+            <div>
+                Bias :
+                <span id="bias">-</span>
+            </div>
+            <div>
+                Precision :
+                <span id="precisionStatus">WAIT</span>
+            </div>
+        </div>
+
+    </section>
+
+<!-- PLAYER / BANKER BUTTON -->
+    <section class="card controls">
+
+        <button class="player-btn"
+                onclick="addResult('P')">
+            PLAYER
+        </button>
+
+        <button class="banker-btn"
+                onclick="addResult('B')">
+            BANKER
+        </button>
+
+        <button class="undo-btn"
+                onclick="addTie()">
+            TIE / PUSH
+        </button>
+
+        <button class="undo-btn"
+                onclick="undo()">
+            UNDO
+        </button>
+
+        <button class="reset-btn"
+                onclick="resetAll()">
+            RESET
+        </button>
+
+    </section>
+
+    <!-- HISTORY -->
+    <section class="card">
+
+        <h2>History</h2>
+
+        <div id="history" class="history-grid">
+
+        </div>
+
+    </section>
+
+    <!-- TABLE STATUS -->
+    <section class="card">
+
+        <h2>Table Analysis</h2>
+
+        <div class="grid">
+
+            <div>
+                Mode
+                <div id="mode">-</div>
+            </div>
+
+            <div>
+                Entropy
+                <div id="entropy">0</div>
+            </div>
+
+            <div>
+                Win Rate
+                <div id="winrate">0%</div>
+            </div>
+
+            <div>
+                Total Bets
+                <div id="totalbets">0</div>
+            </div>
+
+            <div>
+                Consensus Groups
+                <div id="consensus">0/6</div>
+            </div>
+
+            <div>
+                Dynamic Gate
+                <div id="dynamicGate">52%</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ROAD PATTERN MONITOR -->
+    <section class="card">
+
+        <h2>Road Pattern Monitor</h2>
+
+        <div class="grid">
+            <div>
+                Active Pattern
+                <div id="roadPattern">WAIT</div>
+            </div>
+
+            <div>
+                Selected Formula
+                <div id="roadFormula">NEUTRAL</div>
+            </div>
+
+            <div>
+                Current Run
+                <div id="roadRun">-</div>
+            </div>
+
+            <div>
+                Recent Switches
+                <div id="roadSwitch">-</div>
+            </div>
+
+            <div>
+                Pattern Context
+                <div id="roadContext">Waiting for 6 decisive rounds</div>
+            </div>
+
+            <div>
+                Use
+                <div id="roadUse">OBSERVE</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ADAPTIVE FORMULA GUARD -->
+    <section class="card">
+
+        <h2>Adaptive Formula Guard</h2>
+
+        <div class="grid">
+            <div>
+                Current Formula
+                <div id="adaptiveFormula">NEUTRAL</div>
+            </div>
+
+            <div>
+                Formula Health
+                <div id="formulaHealth">OBSERVE</div>
+            </div>
+
+            <div>
+                Observed Accuracy
+                <div id="formulaAccuracy">-</div>
+            </div>
+
+            <div>
+                Consecutive Misses
+                <div id="formulaMisses">0</div>
+            </div>
+
+            <div>
+                Observations
+                <div id="formulaSamples">0</div>
+            </div>
+
+            <div>
+                Action
+                <div id="formulaAction">OBSERVE ONLY</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- CONTINUOUS VALIDATION MONITOR -->
+    <section class="card">
+
+        <h2>Continuous Validation Monitor</h2>
+        <p class="similarity-note">
+            Uses only predictions recorded before each result. It tracks the latest observations separately from older ones so the analysis can keep running while weak periods are flagged.
+        </p>
+
+        <div class="grid">
+            <div>
+                Rolling Sample
+                <div id="continuousSample">0 / 40</div>
+            </div>
+
+            <div>
+                Recent Observed Rate
+                <div id="continuousRate">-</div>
+            </div>
+
+            <div>
+                Conservative Lower Bound
+                <div id="continuousLower">-</div>
+            </div>
+
+            <div>
+                Confidence Calibration
+                <div id="continuousCalibration">building</div>
+            </div>
+
+            <div>
+                Trend vs Previous Window
+                <div id="continuousDrift">building</div>
+            </div>
+
+            <div>
+                Continuous Action
+                <div id="continuousAction">OBSERVE</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ALL HISTORY TREND -->
+    <section class="card">
+
+        <h2>All-History Trend</h2>
+
+        <div class="grid">
+            <div>
+                Total History
+                <div id="allHistoryTotal">0</div>
+            </div>
+
+            <div>
+                Player / Banker
+                <div id="allHistorySplit">-</div>
+            </div>
+
+            <div>
+                Overall Bias
+                <div id="allHistoryBias">WAIT</div>
+            </div>
+
+            <div>
+                Trend Strength
+                <div id="allHistoryStrength">-</div>
+            </div>
+
+            <div>
+                Last-State Transition
+                <div id="allHistoryTransition">-</div>
+            </div>
+
+            <div>
+                Table Behaviour
+                <div id="allHistoryBehaviour">-</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- HISTORICAL SIMILARITY -->
+    <section class="card">
+
+        <h2>Historical Similarity Analysis</h2>
+        <p class="similarity-note">
+            เปรียบเทียบลำดับล่าสุดกับทุกช่วงก่อนหน้าในประวัติ แล้วสรุปผลที่เคยเกิดขึ้นถัดจากช่วงที่คล้ายกัน
+        </p>
+
+        <div class="grid">
+            <div>
+                Current Context
+                <div id="similarContext">-</div>
+            </div>
+
+            <div>
+                Similar Historical Periods
+                <div id="similarMatches">0</div>
+            </div>
+
+            <div>
+                Results After Similar Periods
+                <div id="similarOutcomes">-</div>
+            </div>
+
+            <div>
+                Weighted Historical Support
+                <div id="similarSupport">WAIT</div>
+            </div>
+        </div>
+
+        <div id="similarExamples" class="similar-examples"></div>
+
+    </section>
+
+    <!-- TIMING / RISK -->
+    <section class="card">
+
+        <h2>Timing / Risk Control</h2>
+
+        <div class="grid">
+
+            <div>
+                Timing
+                <div id="timingStatus" class="timing-status weak">WAIT</div>
+            </div>
+
+            <div>
+                Score
+                <div id="timingScore">0/100</div>
+            </div>
+
+            <div>
+                Risk Level
+                <div id="riskLevel">-</div>
+            </div>
+
+            <div>
+                Reason
+                <div id="riskReason" class="timing-reason">Waiting for data</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FORECAST -->
+    <section class="card">
+
+        <h2>Forecast Next 3 Rounds</h2>
+
+        <div class="forecast-grid">
+
+            <div class="forecast-box">
+                <div class="forecast-title">#1</div>
+                <div id="forecast1">-</div>
+            </div>
+
+            <div class="forecast-box">
+                <div class="forecast-title">#2</div>
+                <div id="forecast2">-</div>
+            </div>
+
+            <div class="forecast-box">
+                <div class="forecast-title">#3</div>
+                <div id="forecast3">-</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- HEATMAP -->
+    <section class="card">
+
+        <h2>Engine Heatmap</h2>
+
+        <div class="heatmap">
+
+            <div class="heat-row">
+                <span>Pattern Engine</span>
+                <span id="heat-pattern">0</span>
+            </div>
+
+            <div class="heat-row">
+                <span>Markov Engine</span>
+                <span id="heat-markov">0</span>
+            </div>
+
+            <div class="heat-row">
+                <span>Trend Engine</span>
+                <span id="heat-trend">0</span>
+            </div>
+
+            <div class="heat-row">
+                <span>Streak Engine</span>
+                <span id="heat-streak">0</span>
+            </div>
+
+            <div class="heat-row">
+                <span>Monte Carlo</span>
+                <span id="heat-monte">0</span>
+            </div>
+
+            <div class="heat-row">
+                <span>Cycle Engine</span>
+                <span id="heat-cycle">0</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ENGINE STATISTICS -->
+    <section class="card">
+
+        <h2>AI Statistics</h2>
+
+        <div class="stats-grid">
+
+            <div>
+                Pattern Matches
+                <div id="patternMatches">0</div>
+            </div>
+
+            <div>
+                Verified Signal Rate
+                <div id="markovAccuracy">0%</div>
+            </div>
+
+            <div>
+                Adaptive Weight
+                <div id="adaptiveWeight">1.00</div>
+            </div>
+
+            <div>
+                Forecast Quality (Brier)
+                <div id="forecastBrier">-</div>
+            </div>
+
+            <div>
+                All History Form
+                <div id="recentForm">-</div>
+            </div>
+
+            <div>
+                Backtest Gate
+                <div id="backtestGate">-</div>
+            </div>
+
+            <div>
+                Backtest Net (1-unit stakes)
+                <div id="backtestNet">-</div>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+// =========================
+// NEURAL APEX V5 ULTIMATE
+// PART 1 : CORE SYSTEM
+// =========================
+
+// arch contains only decisive P/B results used by directional analysis.
+// roundHistory also retains TIE/PUSH rounds so the visible road is truthful.
+let arch = [];
+let roundHistory = [];
+
+let wins = 0;
+let total = 0;
+let legacyWins = 0;
+let legacyTotal = 0;
+
+let nextMove = null;
+
+let resultLog = [];
+// Every eligible model proposal is recorded, including proposals suppressed
+// by a safety gate. This lets the system re-evaluate a formula while paused.
+let strategyLog = [];
+
+let lastAnalysis = {
+    candidate:null,
+    formula:"NEUTRAL",
+    confidence:null,
+    pProbability:null,
+    margin:null
+};
+
+let adaptiveWeight = 1.0;
+
+let patternMatches = 0;
+
+// The similarity engine compares the current road with every earlier,
+// non-overlapping period.  It uses only outcomes that were already known at
+// the end of each earlier period, so it cannot read the current next hand.
+const SIMILARITY_MIN_CONTEXT = 4;
+const SIMILARITY_MAX_CONTEXT = 10;
+const SIMILARITY_MIN_SCORE = 0.68;
+const SIMILARITY_MAX_EXAMPLES = 5;
+let similarityCache = {
+    key:null,
+    data:null
+};
+
+// Continuous validation uses proposals captured before the corresponding
+// result arrives. It can tighten or pause a signal after a genuine recent
+// deterioration, but it never promotes a model merely for a short hot run.
+const CONTINUOUS_WINDOW = 40;
+const CONTINUOUS_MIN_SAMPLES = 20;
+const CONTINUOUS_CAUTION_RATE = 48;
+const CONTINUOUS_PAUSE_RATE = 45;
+const CONTINUOUS_DRIFT_LIMIT = -8;
+let continuousValidationCache = {
+    key:null,
+    data:null
+};
+
+const MONTE_SAMPLES = 10000;
+const MODEL_VERSION = 5;
+// A baccarat shoe is inherently random.  These gates deliberately favour
+// WAIT over a weak prediction; they are not a guarantee of an outcome.
+const MIN_SIGNAL_CONFIDENCE = 66;
+const MIN_SIGNAL_MARGIN = 16;
+const MIN_SIGNAL_HISTORY = 80;
+const MIN_CONSENSUS = 3;
+const MIN_BACKTEST_RATE = 60;
+const MIN_BACKTEST_SAMPLES = 60;
+const MIN_BACKTEST_LOWER_BOUND = 55;
+const MIN_WALK_FORWARD_RATE = 55;
+const MIN_WALK_FORWARD_SAMPLES = 80;
+const MIN_CONTEXT_SAMPLES = 50;
+const MIN_CONTEXT_LOWER_BOUND = 0.55;
+const HIGH_ENTROPY_LIMIT = 0.985;
+const MAX_RECENT_LOSSES = 3;
+const PAUSE_OBSERVATION_ROUNDS = 5;
+const FORMULA_CAUTION_LOSSES = 2;
+const FORMULA_PAUSE_LOSSES = 3;
+const FORMULA_MIN_SAMPLES = 8;
+const FORMULA_REENTRY_SAMPLES = 12;
+const FORMULA_REENTRY_RATE = 60;
+
+let precisionState = {
+    bias:null,
+    status:"WAIT",
+    reason:"กำลังรอข้อมูล",
+    consensus:0,
+    totalVotes:3,
+    dynamicGate:MIN_SIGNAL_CONFIDENCE,
+    recentForm:"-",
+    backtestRate:null,
+    backtestNet:null
+};
+
+let engineHeat = {
+    pattern:0,
+    markov:0,
+    trend:0,
+    streak:0,
+    monte:0,
+    cycle:0
+};
+
+// =========================
+// SAVE / LOAD
+// =========================
+
+function saveData(){
+
+    // Storage can be disabled or full in private browsing. Never let that
+    // prevent the current session from working.
+    try{
+        localStorage.setItem(
+            "neural_apex_v5_ultimate",
+            JSON.stringify({
+                modelVersion:MODEL_VERSION,
+                arch,
+                roundHistory,
+                wins,
+                total,
+                legacyWins,
+                legacyTotal,
+                nextMove,
+                resultLog,
+                strategyLog,
+                adaptiveWeight,
+                patternMatches,
+                patternDatabase,
+                weights
+            })
+        );
+    }catch(error){
+        console.warn("Unable to save this session locally.", error);
+    }
+
+}
+
+function sanitizePatternDatabase(raw){
+
+    const clean = {};
+
+    if(!raw || typeof raw !== "object" || Array.isArray(raw)){
+        return clean;
+    }
+
+    Object.entries(raw).forEach(([key,value]) => {
+        if(
+            !/^[PB]{4}$/.test(key) ||
+            !value ||
+            typeof value !== "object" ||
+            !Number.isInteger(value.total) ||
+            !Number.isInteger(value.win) ||
+            value.total < 0 ||
+            value.total > 100000 ||
+            value.win < 0 ||
+            value.win > value.total
+        ){
+            return;
+        }
+
+        clean[key] = {
+            total:value.total,
+            win:value.win
+        };
+    });
+
+    return clean;
+
+}
+
+function sanitizeWeights(raw){
+
+    const source = raw && typeof raw === "object" && !Array.isArray(raw)
+        ? raw
+        : {};
+    const safeWeight = value =>
+        Number.isFinite(value)
+        ? Math.max(0.25,Math.min(2,value))
+        : 1;
+
+    return {
+        pattern:safeWeight(source.pattern),
+        markov:safeWeight(source.markov),
+        trend:safeWeight(source.trend),
+        streak:safeWeight(source.streak),
+        timeframe:safeWeight(source.timeframe),
+        cycle:safeWeight(source.cycle)
+    };
+
+}
+
+function loadData(){
+
+    let data = null;
+
+    try{
+
+        data = JSON.parse(
+            localStorage.getItem(
+                "neural_apex_v5_ultimate"
+            ) || "null"
+        );
+
+    }catch(error){
+
+        localStorage.removeItem(
+            "neural_apex_v5_ultimate"
+        );
+
+    }
+
+    if(!data) return;
+
+    // Treat browser storage as untrusted.  Older versions or manual edits
+    // must not be allowed to inject invalid results into the calculation.
+    arch = Array.isArray(data.arch)
+        ? data.arch.filter(item => item === "P" || item === "B")
+        : [];
+    const hasCurrentModelData =
+        Array.isArray(data.resultLog) &&
+        data.modelVersion === MODEL_VERSION;
+
+    roundHistory =
+        data.modelVersion === MODEL_VERSION &&
+        Array.isArray(data.roundHistory)
+        ? data.roundHistory.filter(item =>
+            item === "P" || item === "B" || item === "T"
+        )
+        : [...arch];
+
+    // Keep directional calculations and the displayed road in agreement.
+    const decisiveHistory = roundHistory.filter(item => item !== "T");
+    if(decisiveHistory.join("") !== arch.join("")){
+        arch = decisiveHistory;
+    }
+
+    resultLog = hasCurrentModelData
+        ? data.resultLog.filter(entry =>
+            entry &&
+            (entry.result === "P" || entry.result === "B") &&
+            (entry.prediction === null || entry.prediction === "P" || entry.prediction === "B") &&
+            (entry.patternKey === null || typeof entry.patternKey === "string") &&
+            (entry.formula === null || typeof entry.formula === "string")
+        )
+        : [];
+
+    strategyLog = hasCurrentModelData && Array.isArray(data.strategyLog)
+        ? data.strategyLog.filter(entry =>
+            entry &&
+            Number.isInteger(entry.index) &&
+            entry.index >= 0 &&
+            entry.index < arch.length &&
+            (entry.result === "P" || entry.result === "B") &&
+            (entry.prediction === "P" || entry.prediction === "B") &&
+            typeof entry.formula === "string" &&
+            (
+                entry.confidence === undefined ||
+                entry.confidence === null ||
+                (
+                    Number.isFinite(entry.confidence) &&
+                    entry.confidence >= 50 &&
+                    entry.confidence <= 100
+                )
+            ) &&
+            (
+                entry.pProbability === undefined ||
+                entry.pProbability === null ||
+                (
+                    Number.isFinite(entry.pProbability) &&
+                    entry.pProbability >= 0 &&
+                    entry.pProbability <= 1
+                )
+            )
+        )
+        : [];
+
+    // A stored observation must map to one unique decisive round.
+    const observedIndexes = new Set();
+    strategyLog = strategyLog.filter(entry => {
+        if(observedIndexes.has(entry.index)){
+            return false;
+        }
+        observedIndexes.add(entry.index);
+        return true;
+    });
+
+    // A valid log must exactly describe the visible history.  If it does not,
+    // discard it rather than displaying a misleading accuracy score.
+    if(resultLog.length !== arch.length){
+        resultLog = [];
+    }
+
+    legacyTotal = hasCurrentModelData && Number.isInteger(data.legacyTotal)
+        ? Math.max(0,Math.min(100000,data.legacyTotal))
+        : 0;
+
+    legacyWins = hasCurrentModelData && Number.isInteger(data.legacyWins)
+        ? Math.max(0,Math.min(legacyTotal,data.legacyWins))
+        : 0;
+
+    nextMove = hasCurrentModelData && (data.nextMove === "P" || data.nextMove === "B")
+        ? data.nextMove
+        : null;
+    adaptiveWeight = hasCurrentModelData && Number.isFinite(data.adaptiveWeight)
+        ? Math.max(0.70, Math.min(1.25, data.adaptiveWeight))
+        : 1;
+    patternMatches = hasCurrentModelData && Number.isFinite(data.patternMatches)
+        ? Math.max(0, data.patternMatches)
+        : 0;
+
+    patternDatabase = hasCurrentModelData
+        ? sanitizePatternDatabase(data.patternDatabase)
+        : {};
+
+    weights = hasCurrentModelData
+        ? sanitizeWeights(data.weights)
+        : sanitizeWeights(null);
+
+    recalculateScore();
+
+}
+
+// =========================
+// ADD RESULT
+// =========================
+
+function addResult(value){
+
+    if(value !== "P" && value !== "B") return;
+
+    const prediction = nextMove;
+    const patternKey =
+        prediction && arch.length >= 4
+        ? arch.slice(-4).join("")
+        : null;
+    const formula =
+        prediction && typeof lastAnalysis.formula === "string"
+        ? lastAnalysis.formula
+        : null;
+
+    // Record the pre-result proposal even when a gate suppresses a live
+    // signal.  This is observation only; it never creates a bet by itself.
+    if(
+        arch.length >= MIN_SIGNAL_HISTORY &&
+        (lastAnalysis.candidate === "P" || lastAnalysis.candidate === "B")
+    ){
+        strategyLog.push({
+            index:arch.length,
+            result:value,
+            prediction:lastAnalysis.candidate,
+            formula:lastAnalysis.formula || "NEUTRAL",
+            confidence:Number.isFinite(lastAnalysis.confidence)
+                ? lastAnalysis.confidence
+                : null,
+            pProbability:Number.isFinite(lastAnalysis.pProbability)
+                ? lastAnalysis.pProbability
+                : null,
+            margin:Number.isFinite(lastAnalysis.margin)
+                ? lastAnalysis.margin
+                : null
+        });
+    }
+
+    if(nextMove){
+
+        updatePatternDatabase(value);
+
+    }
+
+    resultLog.push({
+        result:value,
+        prediction,
+        patternKey,
+        formula
+    });
+
+    arch.push(value);
+    roundHistory.push(value);
+
+    recalculateScore();
+
+    analyze();
+
+    saveData();
+
+    render();
+
+}
+
+function addTie(){
+
+    roundHistory.push("T");
+
+    // A tie is a push for a Player/Banker result and must not be recorded as
+    // a win or loss, nor injected into a binary prediction model.
+    saveData();
+    render();
+
+}
+
+// =========================
+// UNDO
+// =========================
+
+function undo(){
+
+    if(!roundHistory.length) return;
+
+    const lastRound = roundHistory[roundHistory.length - 1];
+
+    if(lastRound === "T"){
+        roundHistory.pop();
+        saveData();
+        render();
+        return;
+    }
+
+    const removed =
+        resultLog[resultLog.length - 1];
+    const removedIndex = arch.length - 1;
+
+    removePatternDatabaseEntry(removed);
+
+    arch.pop();
+    resultLog.pop();
+    roundHistory.pop();
+    strategyLog = strategyLog.filter(entry => entry.index !== removedIndex);
+
+    recalculateScore();
+
+    analyze();
+
+    saveData();
+
+    render();
+
+}
+
+// =========================
+// RESET
+// =========================
+
+function resetAll(){
+
+    arch = [];
+    roundHistory = [];
+
+    wins = 0;
+    total = 0;
+    legacyWins = 0;
+    legacyTotal = 0;
+
+    nextMove = null;
+    resultLog = [];
+    strategyLog = [];
+    lastAnalysis = {
+        candidate:null,
+        formula:"NEUTRAL",
+        confidence:null,
+        pProbability:null,
+        margin:null
+    };
+
+    adaptiveWeight = 1;
+
+    patternMatches = 0;
+    patternDatabase = {};
+    updatePrecisionState({
+        bias:null,
+        status:"WAIT",
+        reason:"กำลังรอข้อมูล",
+        consensus:0,
+        totalVotes:3,
+        dynamicGate:MIN_SIGNAL_CONFIDENCE,
+        recentForm:"-",
+        backtestRate:null,
+        backtestNet:null
+    });
+
+    weights.pattern = 1;
+    weights.markov = 1;
+    weights.trend = 1;
+    weights.streak = 1;
+    weights.timeframe = 1;
+    weights.cycle = 1;
+
+    engineHeat.pattern = 0;
+    engineHeat.markov = 0;
+    engineHeat.trend = 0;
+    engineHeat.streak = 0;
+    engineHeat.monte = 0;
+
+    localStorage.removeItem(
+        "neural_apex_v5_ultimate"
+    );
+
+    render();
+
+}
+
+// =========================
+// BASIC STATS
+// =========================
+
+function getWinRate(){
+
+    if(total === 0){
+        return 0;
+    }
+
+    return (
+        (wins / total) * 100
+    ).toFixed(1);
+
+}
+
+function recalculateScore(){
+
+    total = legacyTotal;
+    wins = legacyWins;
+
+    resultLog.forEach(entry => {
+
+        if(!entry.prediction) return;
+
+        total++;
+
+        if(entry.prediction === entry.result){
+            wins++;
+        }
+
+    });
+
+}
+
+function resetEngineHeat(){
+
+    engineHeat.pattern = 0;
+    engineHeat.markov = 0;
+    engineHeat.trend = 0;
+    engineHeat.streak = 0;
+    engineHeat.monte = 0;
+    engineHeat.cycle = 0;
+
+    patternMatches = 0;
+
+}
+
+function clearAnalysisDisplays(){
+
+    const signal =
+        document.getElementById("signal");
+
+    signal.className = "signal wait";
+    signal.innerText = "WAIT";
+
+    document.getElementById(
+        "strength"
+    ).innerText = "-";
+
+    document.getElementById(
+        "confidence"
+    ).innerText = "0%";
+
+    updatePrecisionDisplay();
+
+    document.getElementById(
+        "mode"
+    ).innerText = tableMode();
+
+    document.getElementById(
+        "entropy"
+    ).innerText = entropyScore().toFixed(3);
+
+    document.getElementById(
+        "forecast1"
+    ).innerText = "-";
+
+    document.getElementById(
+        "forecast2"
+    ).innerText = "-";
+
+    document.getElementById(
+        "forecast3"
+    ).innerText = "-";
+
+    updateHeatmap();
+    updateMarkovAccuracy();
+
+}
+
+// =========================
+// HISTORY RENDER
+// =========================
+
+function renderHistory(){
+
+    const history =
+        document.getElementById("history");
+
+    history.innerHTML = "";
+
+    roundHistory.forEach(item => {
+
+        const node =
+            document.createElement("div");
+
+        node.className =
+            item === "P"
+            ? "node node-player"
+            : item === "B"
+            ? "node node-banker"
+            : "node node-tie";
+
+        node.innerText = item;
+
+        history.appendChild(node);
+
+    });
+
+}
+
+// =========================
+// PLACEHOLDER ANALYZE
+// PART 2-5 WILL EXTEND THIS
+// =========================
+
+function analyze(){
+
+    if(arch.length < 2){
+
+        nextMove = null;
+
+        return;
+
+    }
+
+}
+
+// =========================
+// MAIN RENDER
+// =========================
+
+function render(){
+
+    renderHistory();
+    updateAllHistoryTrend();
+    updateSimilarHistoryDisplay();
+    updateRoadPatternMonitor();
+    updateAdaptiveFormulaGuard();
+    updateContinuousValidationMonitor();
+
+    document.getElementById(
+        "winrate"
+    ).innerText =
+        getWinRate() + "%";
+
+    document.getElementById(
+        "totalbets"
+    ).innerText =
+        total;
+
+    document.getElementById(
+        "patternMatches"
+    ).innerText =
+        patternMatches;
+
+    document.getElementById(
+        "adaptiveWeight"
+    ).innerText =
+        adaptiveWeight.toFixed(2);
+
+    updateForecastQuality();
+
+    updatePrecisionDisplay();
+
+    if(!nextMove && arch.length < 5){
+        clearAnalysisDisplays();
+    }else{
+        updatePrecisionDisplay();
+    }
+
+}
+
+// =========================
+// PART 2 : PATTERN + MARKOV
+// =========================
+
+// เก็บสถิติ Pattern
+let patternDatabase = {};
+
+// =========================
+// PATTERN ENGINE
+// =========================
+
+function patternEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    let matches = 0;
+
+    if(arch.length < 6){
+        return {
+            score,
+            matches
+        };
+    }
+
+    for(let depth = 3; depth <= 8; depth++){
+
+        if(arch.length <= depth) continue;
+
+        const target =
+            arch.slice(-depth).join("");
+
+        // A historical candidate and the result following it must both end
+        // before the current target begins. Otherwise a shifted copy of the
+        // current road can leak an already-known hand into its own forecast.
+        const targetStart = arch.length - depth;
+        const lastStart = targetStart - depth - 1;
+
+        if(lastStart < 0) continue;
+
+        for(let i=0; i <= lastStart; i++){
+
+            const current =
+                arch.slice(i, i+depth).join("");
+
+            if(current === target){
+
+                const next =
+                    arch[i+depth];
+
+                if(next){
+
+                    score[next] += depth * depth;
+
+                    matches++;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    patternMatches = matches;
+
+    engineHeat.pattern =
+        Math.max(score.P, score.B);
+
+    return {
+        score,
+        matches
+    };
+
+}
+
+// =========================
+// MARKOV ENGINE
+// =========================
+
+function markovEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    if(arch.length < 5){
+        return score;
+    }
+
+    for(let depth = 2; depth <= 5; depth++){
+
+        if(arch.length <= depth) continue;
+
+        const target =
+            arch.slice(-depth).join("");
+
+        let weight =
+            depth * 3;
+
+        // See patternEngine: the next outcome for a matched state must be
+        // wholly historical, never part of the current state being scored.
+        const targetStart = arch.length - depth;
+        const lastStart = targetStart - depth - 1;
+
+        if(lastStart < 0) continue;
+
+        for(let i=0; i <= lastStart; i++){
+
+            const current =
+                arch.slice(i, i+depth).join("");
+
+            if(current === target){
+
+                const next =
+                    arch[i+depth];
+
+                if(next){
+
+                    score[next] += weight;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    engineHeat.markov =
+        Math.max(score.P, score.B);
+
+    return score;
+
+}
+
+// =========================
+// HISTORICAL ACCURACY
+// =========================
+
+function historicalAccuracy(){
+
+    if(arch.length < 5){
+        return 50;
+    }
+
+    const key =
+        arch.slice(-4).join("");
+
+    const data =
+        patternDatabase[key];
+
+    // Reading an accuracy metric must not create a new database entry. New
+    // entries are created only when an actual pre-result prediction matures.
+    if(!data || data.total === 0){
+        return 50;
+    }
+
+    return (
+        data.win / data.total
+    ) * 100;
+
+}
+
+// =========================
+// UPDATE PATTERN DATABASE
+// =========================
+
+function updatePatternDatabase(result){
+
+    if(arch.length < 5) return;
+
+    const key =
+        arch.slice(-4).join("");
+
+    if(!patternDatabase[key]){
+
+        patternDatabase[key] = {
+            total:0,
+            win:0
+        };
+
+    }
+
+    patternDatabase[key].total++;
+
+    if(nextMove === result){
+
+        patternDatabase[key].win++;
+
+    }
+
+}
+
+function removePatternDatabaseEntry(entry){
+
+    if(
+        !entry ||
+        !entry.prediction ||
+        !entry.patternKey ||
+        !patternDatabase[entry.patternKey]
+    ){
+        return;
+    }
+
+    const data =
+        patternDatabase[entry.patternKey];
+
+    data.total =
+        Math.max(0, data.total - 1);
+
+    if(entry.prediction === entry.result){
+
+        data.win =
+            Math.max(0, data.win - 1);
+
+    }
+
+    if(data.total === 0){
+        delete patternDatabase[entry.patternKey];
+    }
+
+}
+
+// =========================
+// MARKOV ACCURACY DISPLAY
+// =========================
+
+function updateMarkovAccuracy(){
+
+    const acc =
+        historicalAccuracy()
+        .toFixed(1);
+
+    document.getElementById(
+        "markovAccuracy"
+    ).innerText =
+        acc + "%";
+
+}
+
+// =========================
+// PART 3 : TREND + CHOP +
+// STREAK + ENTROPY +
+// MULTI TIMEFRAME
+// =========================
+
+// -------------------------
+// TABLE MODE
+// -------------------------
+
+// Classifies the road labels players commonly use.  These labels describe
+// recorded results; they are only allowed to choose an existing Trend/Chop
+// filter and never bypass the confidence, validation, or risk gates.
+function roadPatternProfile(){
+
+    if(arch.length < 6){
+        return {
+            name:"WAIT",
+            formula:"NEUTRAL",
+            mode:"MIXED",
+            run:0,
+            switches:0,
+            context:"Waiting for 6 decisive rounds",
+            use:"OBSERVE"
+        };
+    }
+
+    const recent = arch.slice(-8);
+    const last = recent[recent.length - 1];
+    let run = 1;
+
+    for(let i=recent.length - 2; i>=0; i--){
+        if(recent[i] !== last) break;
+        run++;
+    }
+
+    const lastSix = recent.slice(-6);
+    let switches = 0;
+    for(let i=1; i<lastSix.length; i++){
+        if(lastSix[i] !== lastSix[i-1]) switches++;
+    }
+
+    const terminalFour = recent.slice(-4).join("");
+    const pCount = terminalFour.split("").filter(item => item === "P").length;
+
+    if(run >= 3){
+        return {
+            name:"DRAGON / มังกร",
+            formula:"TREND",
+            mode:"TREND",
+            run,
+            switches,
+            context:"ล่าสุด " + last + " ต่อเนื่อง " + run + " ตา",
+            use:"TREND FILTER"
+        };
+    }
+
+    if(switches === 5){
+        return {
+            name:"PING-PONG / ปิงปอง",
+            formula:"CHOP",
+            mode:"CHOP",
+            run,
+            switches,
+            context:"6 ตาล่าสุดสลับฝั่งทุกตา",
+            use:"CHOP FILTER"
+        };
+    }
+
+    if(terminalFour === "PPBB" || terminalFour === "BBPP"){
+        return {
+            name:"2-2 PAIR / สองตัด",
+            formula:"PAIR WATCH",
+            mode:"MIXED",
+            run,
+            switches,
+            context:"4 ตาล่าสุดเป็น " + terminalFour,
+            use:"CONTEXT ONLY"
+        };
+    }
+
+    if(pCount === 1 || pCount === 3){
+        return {
+            name:"3-1 DISTRIBUTION",
+            formula:"3-1 WATCH",
+            mode:"MIXED",
+            run,
+            switches,
+            context:"4 ตาล่าสุดมีสัดส่วน 3 ต่อ 1",
+            use:"CONTEXT ONLY"
+        };
+    }
+
+    return {
+        name:"MIXED ROAD",
+        formula:"NEUTRAL",
+        mode:"MIXED",
+        run,
+        switches,
+        context:"ยังไม่มีรูปแบบซ้ำที่ชัดเจน",
+        use:"OBSERVE"
+    };
+
+}
+
+function updateRoadPatternMonitor(){
+
+    const profile = roadPatternProfile();
+
+    document.getElementById("roadPattern").innerText = profile.name;
+    document.getElementById("roadFormula").innerText = profile.formula;
+    document.getElementById("roadRun").innerText = profile.run ? profile.run + " rounds" : "-";
+    document.getElementById("roadSwitch").innerText = profile.switches + "/5";
+    document.getElementById("roadContext").innerText = profile.context;
+    document.getElementById("roadUse").innerText = profile.use;
+
+}
+
+function formulaCircuit(formula){
+
+    const entries = strategyLog
+        .filter(entry => entry.formula === formula)
+        .slice(-FORMULA_REENTRY_SAMPLES);
+    const samples = entries.length;
+    const wins = entries.filter(
+        entry => entry.prediction === entry.result
+    ).length;
+    const accuracy = samples ? (wins / samples) * 100 : null;
+    let misses = 0;
+
+    for(let i=entries.length - 1; i>=0; i--){
+        if(entries[i].prediction === entries[i].result){
+            break;
+        }
+        misses++;
+    }
+
+    if(samples < FORMULA_MIN_SAMPLES){
+        return {
+            status:"OBSERVE",
+            samples,
+            accuracy,
+            misses,
+            action:"COLLECT DATA"
+        };
+    }
+
+    if(misses >= FORMULA_PAUSE_LOSSES){
+        return {
+            status:"PAUSE",
+            samples,
+            accuracy,
+            misses,
+            action:"PAUSE FORMULA"
+        };
+    }
+
+    if(misses >= FORMULA_CAUTION_LOSSES){
+        return {
+            status:"CAUTION",
+            samples,
+            accuracy,
+            misses,
+            action:"OBSERVE RE-EVALUATION"
+        };
+    }
+
+    if(
+        samples >= FORMULA_REENTRY_SAMPLES &&
+        accuracy >= FORMULA_REENTRY_RATE
+    ){
+        return {
+            status:"READY",
+            samples,
+            accuracy,
+            misses,
+            action:"FORMULA AVAILABLE"
+        };
+    }
+
+    return {
+        status:"OBSERVE",
+        samples,
+        accuracy,
+        misses,
+        action:"NEED STRONGER HISTORY"
+    };
+
+}
+
+function updateAdaptiveFormulaGuard(){
+
+    const profile = roadPatternProfile();
+    const state = formulaCircuit(profile.formula);
+
+    document.getElementById("adaptiveFormula").innerText = profile.formula;
+    document.getElementById("formulaHealth").innerText = state.status;
+    document.getElementById("formulaAccuracy").innerText =
+        state.accuracy === null ? "-" : state.accuracy.toFixed(1) + "%";
+    document.getElementById("formulaMisses").innerText = state.misses;
+    document.getElementById("formulaSamples").innerText = state.samples;
+    document.getElementById("formulaAction").innerText = state.action;
+
+}
+
+function tableMode(){
+
+    const history =
+        arch;
+
+    if(history.length < 6){
+        return "WAIT";
+    }
+
+    const profile = roadPatternProfile();
+
+    if(profile.mode === "TREND" || profile.mode === "CHOP"){
+        return profile.mode;
+    }
+
+    let switches = 0;
+
+    for(let i=1;i<history.length;i++){
+
+        if(history[i] !== history[i-1]){
+            switches++;
+        }
+
+    }
+
+    const ratio =
+        switches / (history.length-1);
+
+    if(ratio < 0.35){
+        return "TREND";
+    }
+
+    if(ratio > 0.65){
+        return "CHOP";
+    }
+
+    return "MIXED";
+
+}
+
+// -------------------------
+// ENTROPY SCORE
+// -------------------------
+
+function entropyScore(){
+
+    const history =
+        arch;
+
+    if(history.length < 5){
+        return 0;
+    }
+
+    const pCount =
+        history.filter(x=>x==="P").length;
+
+    const p =
+        pCount / history.length;
+
+    const b =
+        1 - p;
+
+    const entropy =
+        -(
+            p * Math.log2(p || 1)
+            +
+            b * Math.log2(b || 1)
+        );
+
+    return entropy;
+
+}
+
+// -------------------------
+// STREAK ENGINE
+// -------------------------
+
+function streakEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    if(arch.length < 4){
+        return score;
+    }
+
+    let streak = 1;
+
+    for(let i=arch.length-1;i>0;i--){
+
+        if(arch[i] === arch[i-1]){
+            streak++;
+        }else{
+            break;
+        }
+
+    }
+
+    const last =
+        arch[arch.length-1];
+
+    // วิ่งยาว
+    if(streak >= 3){
+
+        score[last] +=
+            streak * 6;
+
+    }
+
+    // ปิงปอง
+    if(arch.length >= 6){
+
+        let pingpong = true;
+
+        for(let i=arch.length-5;i<arch.length-1;i++){
+
+            if(arch[i] === arch[i+1]){
+                pingpong = false;
+            }
+
+        }
+
+        if(pingpong){
+
+            const next =
+                last === "P"
+                ? "B"
+                : "P";
+
+            score[next] += 20;
+
+        }
+
+    }
+
+    engineHeat.streak =
+        Math.max(score.P, score.B);
+
+    return score;
+
+}
+
+// -------------------------
+// MULTI TIMEFRAME
+// -------------------------
+
+function timeframeBias(size){
+
+    const history =
+        size === "ALL"
+        ? arch
+        : arch.slice(-size);
+
+    if(history.length < 4){
+
+        return {
+            P:0,
+            B:0
+        };
+
+    }
+
+    const pCount =
+        history.filter(x=>x==="P").length;
+
+    const bCount =
+        history.length - pCount;
+
+    return {
+        P:pCount,
+        B:bCount
+    };
+
+}
+
+// -------------------------
+// COMBINE TIMEFRAMES
+// -------------------------
+
+function multiTimeframeEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    const tf10 =
+        timeframeBias(10);
+
+    const tf20 =
+        timeframeBias(20);
+
+    const tf50 =
+        timeframeBias(50);
+
+    const tf100 =
+        timeframeBias(100);
+
+    const tfAll =
+        timeframeBias("ALL");
+
+    score.P =
+        tf10.P +
+        tf20.P +
+        tf50.P +
+        tf100.P +
+        tfAll.P;
+
+    score.B =
+        tf10.B +
+        tf20.B +
+        tf50.B +
+        tf100.B +
+        tfAll.B;
+
+    return score;
+
+}
+
+function updateForecastQuality(){
+
+    const validation = walkForwardValidation();
+    const display = document.getElementById("forecastBrier");
+
+    if(validation.brier === null){
+        display.innerText = "building sample";
+        return;
+    }
+
+    display.innerText =
+        validation.brier.toFixed(3) +
+        " | skill " + (validation.skill * 100).toFixed(1) +
+        "% | n=" + validation.samples;
+
+}
+
+let walkForwardCache = {
+    key:null,
+    data:null
+};
+
+// Pure forecast based only on the results that existed at that point in time.
+// It never reads a future hand, so it can be honestly backtested.
+function historyForecastFrom(history){
+
+    if(!history.length){
+        return {
+            pProbability:0.5,
+            bProbability:0.5,
+            move:null,
+            confidence:50
+        };
+    }
+
+    const total = history.length;
+    const pCount = history.filter(item => item === "P").length;
+    // Beta(4,4) prior pulls small samples toward 50/50.  This prevents a
+    // handful of results from creating a misleadingly strong probability.
+    const pBase = (pCount + 4) / (total + 8);
+    let pTransition = 0.5;
+    let transitionSamples = 0;
+
+    if(total >= 2){
+        const last = history[total - 1];
+        let afterP = 0;
+        let afterB = 0;
+
+        for(let i=1; i<total; i++){
+            if(history[i-1] !== last){
+                continue;
+            }
+
+            if(history[i] === "P"){
+                afterP++;
+            }else{
+                afterB++;
+            }
+        }
+
+        transitionSamples = afterP + afterB;
+        // Beta(2,2) smoothing is deliberately stronger than a raw frequency.
+        pTransition = (afterP + 2) / (transitionSamples + 4);
+    }
+
+    // State-transition evidence is correlated with the base history and is
+    // capped; it earns more weight only as its sample grows.
+    const transitionWeight = Math.min(0.35, transitionSamples / 80);
+    const pProbability =
+        (pBase * (1 - transitionWeight)) +
+        (pTransition * transitionWeight);
+    const bProbability = 1 - pProbability;
+
+    return {
+        pProbability,
+        bProbability,
+        move:pProbability >= bProbability ? "P" : "B",
+        confidence:Math.round(
+            50 + Math.abs(pProbability - 0.5) * 100
+        )
+    };
+
+}
+
+// Walk-forward validation: each historical prediction is made with only the
+// hands before it. This is stronger evidence than fitting a rule to all data.
+function walkForwardValidation(){
+
+    const key = arch.join("");
+
+    if(walkForwardCache.key === key){
+        return walkForwardCache.data;
+    }
+
+    let correct = 0;
+    let samples = 0;
+    let squaredErrorSum = 0;
+    let squaredErrorSquaresSum = 0;
+
+    for(let i=12; i<arch.length; i++){
+        const forecast = historyForecastFrom(arch.slice(0,i));
+
+        if(forecast.move === arch[i]){
+            correct++;
+        }
+
+        const actual = arch[i] === "P" ? 1 : 0;
+        const squaredError =
+            Math.pow(forecast.pProbability - actual, 2);
+
+        squaredErrorSum += squaredError;
+        squaredErrorSquaresSum += squaredError * squaredError;
+
+        samples++;
+    }
+
+    const rate = samples ? (correct / samples) * 100 : null;
+    const brier = samples ? squaredErrorSum / samples : null;
+    const errorVariance = samples > 1
+        ? Math.max(
+            0,
+            (squaredErrorSquaresSum / samples) - (brier * brier)
+        )
+        : 0;
+    const skill = brier === null ? null : 0.25 - brier;
+    const skillLower = skill === null
+        ? null
+        : skill - (1.28 * Math.sqrt(errorVariance / samples));
+    const data = {
+        samples,
+        rate,
+        inverseRate:rate === null ? null : 100 - rate,
+        brier,
+        skill,
+        skillLower
+    };
+
+    walkForwardCache = { key, data };
+
+    return data;
+
+}
+
+function summarizeObservedPredictions(entries){
+
+    const samples = entries.length;
+    const correct = entries.filter(
+        entry => entry.prediction === entry.result
+    ).length;
+    const rate = samples ? (correct / samples) * 100 : null;
+    const lowerBound = samples
+        ? wilsonLowerBound(correct,samples) * 100
+        : null;
+    const probabilityEntries = entries.filter(
+        entry => Number.isFinite(entry.pProbability)
+    );
+    let brierSum = 0;
+    let confidenceSum = 0;
+
+    probabilityEntries.forEach(entry => {
+        const actual = entry.result === "P" ? 1 : 0;
+
+        brierSum += Math.pow(entry.pProbability - actual,2);
+        confidenceSum += entry.prediction === "P"
+            ? entry.pProbability
+            : 1 - entry.pProbability;
+    });
+
+    const probabilitySamples = probabilityEntries.length;
+    const brier = probabilitySamples
+        ? brierSum / probabilitySamples
+        : null;
+    const meanConfidence = probabilitySamples
+        ? confidenceSum / probabilitySamples
+        : null;
+    const calibrationGap =
+        rate === null || meanConfidence === null
+        ? null
+        : Math.abs((rate / 100) - meanConfidence) * 100;
+
+    return {
+        samples,
+        correct,
+        rate,
+        lowerBound,
+        probabilitySamples,
+        brier,
+        brierSkill:brier === null ? null : 0.25 - brier,
+        meanConfidence,
+        calibrationGap
+    };
+
+}
+
+// This monitor is intentionally one-sided: a recent weak spell can reduce
+// confidence or pause new signals, but a short winning spell can never create
+// an approval on its own. Existing out-of-sample gates still decide that.
+function continuousValidation(){
+
+    const key =
+        arch.join("") + "|" +
+        strategyLog.map(entry =>
+            entry.index + entry.prediction + entry.result +
+            (Number.isFinite(entry.pProbability)
+                ? entry.pProbability.toFixed(3)
+                : "-")
+        ).join(",");
+
+    if(continuousValidationCache.key === key){
+        return continuousValidationCache.data;
+    }
+
+    const observed = strategyLog.filter(entry =>
+        entry &&
+        (entry.prediction === "P" || entry.prediction === "B") &&
+        (entry.result === "P" || entry.result === "B")
+    );
+    const recentEntries = observed.slice(-CONTINUOUS_WINDOW);
+    const previousEntries = observed.slice(
+        -(CONTINUOUS_WINDOW * 2),
+        -CONTINUOUS_WINDOW
+    );
+    const recent = summarizeObservedPredictions(recentEntries);
+    const previous = summarizeObservedPredictions(previousEntries);
+    const delta =
+        recent.rate === null ||
+        previous.samples < CONTINUOUS_MIN_SAMPLES ||
+        previous.rate === null
+        ? null
+        : recent.rate - previous.rate;
+
+    let status = "OBSERVE";
+    let reason =
+        "collecting " + recent.samples + "/" +
+        CONTINUOUS_MIN_SAMPLES + " recent observations";
+
+    if(recent.samples >= CONTINUOUS_MIN_SAMPLES){
+        const declining = delta !== null && delta <= CONTINUOUS_DRIFT_LIMIT;
+        const deeplyWeak =
+            recent.samples >= CONTINUOUS_WINDOW &&
+            recent.rate < CONTINUOUS_PAUSE_RATE &&
+            (declining || previous.samples === 0);
+
+        if(deeplyWeak){
+            status = "PAUSE";
+            reason =
+                "recent rate " + recent.rate.toFixed(1) +
+                "% is materially weak";
+        }else if(
+            recent.rate < CONTINUOUS_CAUTION_RATE ||
+            declining
+        ){
+            status = "CAUTION";
+            reason = declining
+                ? "recent window fell " + Math.abs(delta).toFixed(1) + " points"
+                : "recent rate " + recent.rate.toFixed(1) + "% is soft";
+        }else{
+            status = "STABLE";
+            reason = "monitoring continuously";
+        }
+    }
+
+    const data = {
+        totalSamples:observed.length,
+        recent,
+        previous,
+        delta,
+        status,
+        reason
+    };
+
+    continuousValidationCache = { key, data };
+
+    return data;
+
+}
+
+function updateContinuousValidationMonitor(){
+
+    const data = continuousValidation();
+    const recent = data.recent;
+
+    document.getElementById("continuousSample").innerText =
+        recent.samples + " / " + CONTINUOUS_WINDOW;
+    document.getElementById("continuousRate").innerText =
+        recent.rate === null ? "-" : recent.rate.toFixed(1) + "%";
+    document.getElementById("continuousLower").innerText =
+        recent.lowerBound === null
+        ? "-"
+        : recent.lowerBound.toFixed(1) + "%";
+
+    document.getElementById("continuousCalibration").innerText =
+        recent.brier === null
+        ? "needs new logged forecasts"
+        : "Brier " + recent.brier.toFixed(3) +
+          " | gap " + recent.calibrationGap.toFixed(1) + "pp";
+
+    document.getElementById("continuousDrift").innerText =
+        data.delta === null
+        ? "need previous window"
+        : (data.delta >= 0 ? "+" : "") +
+          data.delta.toFixed(1) + "pp";
+
+    document.getElementById("continuousAction").innerText =
+        data.status + " | " + data.reason;
+
+}
+
+function wilsonLowerBound(successes,total,z = 1.96){
+
+    if(!total){
+        return 0;
+    }
+
+    const p = successes / total;
+    const z2 = z * z;
+    const centre = p + (z2 / (2 * total));
+    const spread = z * Math.sqrt(
+        (p * (1 - p) / total) +
+        (z2 / (4 * total * total))
+    );
+
+    return (centre - spread) / (1 + (z2 / total));
+
+}
+
+// Finds recurring contexts and rejects one-off patterns that only look strong
+// because their sample is too small.
+function contextEvidence(){
+
+    let best = {
+        move:null,
+        samples:0,
+        posterior:0.5,
+        lowerBound:0,
+        depth:0,
+        qualified:false
+    };
+
+    for(let depth=1; depth<=5; depth++){
+        if(arch.length <= depth){
+            continue;
+        }
+
+        const target = arch.slice(-depth).join("");
+        let pCount = 0;
+        let bCount = 0;
+
+        // Context evidence has to be a true earlier observation. Excluding
+        // overlapping windows prevents the current sequence from confirming
+        // itself through its own already-recorded hands.
+        const targetStart = arch.length - depth;
+        const lastStart = targetStart - depth - 1;
+
+        if(lastStart < 0){
+            continue;
+        }
+
+        for(let i=0; i<=lastStart; i++){
+            if(arch.slice(i,i+depth).join("") !== target){
+                continue;
+            }
+
+            if(arch[i+depth] === "P"){
+                pCount++;
+            }else{
+                bCount++;
+            }
+        }
+
+        const samples = pCount + bCount;
+
+        if(!samples){
+            continue;
+        }
+
+        const move = pCount >= bCount ? "P" : "B";
+        const successes = move === "P" ? pCount : bCount;
+        const posterior = (successes + 1) / (samples + 2);
+        const lowerBound = wilsonLowerBound(successes,samples);
+        const qualified =
+            samples >= MIN_CONTEXT_SAMPLES &&
+            posterior >= 0.58 &&
+            lowerBound >= MIN_CONTEXT_LOWER_BOUND;
+        const quality =
+            (posterior - 0.5) * Math.sqrt(samples) +
+            (qualified ? 1 : 0);
+        const bestQuality =
+            (best.posterior - 0.5) * Math.sqrt(best.samples) +
+            (best.qualified ? 1 : 0);
+
+        if(quality > bestQuality){
+            best = {
+                move,
+                samples,
+                posterior,
+                lowerBound,
+                depth,
+                qualified
+            };
+        }
+    }
+
+    return best;
+
+}
+
+// Compare a candidate period with the current one.  Direct results matter
+// most, while the same/flip road shape provides a smaller allowance for
+// near-matches.  The most recent positions receive slightly more weight.
+function sequenceSimilarity(current,candidate){
+
+    let directHits = 0;
+    let directWeight = 0;
+    let shapeHits = 0;
+    let shapeWeight = 0;
+
+    for(let i=0; i<current.length; i++){
+        const weight = 1 + (i / Math.max(1,current.length - 1));
+
+        directWeight += weight;
+
+        if(current[i] === candidate[i]){
+            directHits += weight;
+        }
+
+        if(i === 0){
+            continue;
+        }
+
+        shapeWeight += weight;
+
+        const currentChange = current[i] !== current[i-1];
+        const candidateChange = candidate[i] !== candidate[i-1];
+
+        if(currentChange === candidateChange){
+            shapeHits += weight;
+        }
+    }
+
+    const direct = directWeight ? directHits / directWeight : 0;
+    const shape = shapeWeight ? shapeHits / shapeWeight : direct;
+
+    return (direct * 0.75) + (shape * 0.25);
+
+}
+
+function similarityContextLength(historyLength){
+
+    return Math.min(
+        SIMILARITY_MAX_CONTEXT,
+        Math.max(
+            SIMILARITY_MIN_CONTEXT,
+            Math.floor(historyLength / 8) + 4
+        )
+    );
+
+}
+
+// Finds the closest earlier, non-overlapping contexts across the whole
+// decisive history.  Each historical outcome is known before the current
+// context begins, preventing an overlap from leaking current information
+// into the evidence.
+function similarHistoryEngine(){
+
+    const key = arch.join("");
+
+    if(similarityCache.key === key){
+        return similarityCache.data;
+    }
+
+    const contextLength = arch.length
+        ? similarityContextLength(arch.length)
+        : 0;
+    const currentStart = arch.length - contextLength;
+    const context = contextLength
+        ? arch.slice(currentStart)
+        : [];
+    const empty = {
+        contextLength,
+        context:context.join(""),
+        matches:0,
+        nextCounts:{ P:0, B:0 },
+        pProbability:0.5,
+        bProbability:0.5,
+        confidence:50,
+        effectiveSamples:0,
+        independentSamples:0,
+        meanSimilarity:0,
+        move:null,
+        P:0,
+        B:0,
+        examples:[]
+    };
+
+    // The matched window and its following result must both finish before
+    // the current context begins.  That gives every match a true historical
+    // "what happened next" result.
+    const lastStart = currentStart - contextLength - 1;
+
+    if(contextLength < SIMILARITY_MIN_CONTEXT || lastStart < 0){
+        similarityCache = { key, data:empty };
+        return empty;
+    }
+
+    const matches = [];
+
+    for(let start=0; start<=lastStart; start++){
+        const candidate = arch.slice(start,start + contextLength);
+        const similarity = sequenceSimilarity(context,candidate);
+
+        if(similarity < SIMILARITY_MIN_SCORE){
+            continue;
+        }
+
+        const next = arch[start + contextLength];
+
+        if(next !== "P" && next !== "B"){
+            continue;
+        }
+
+        matches.push({
+            start,
+            context:candidate.join(""),
+            next,
+            similarity
+        });
+    }
+
+    matches.sort((a,b) =>
+        b.similarity - a.similarity || a.start - b.start
+    );
+
+    // Nearby windows share most of the same hands. Keep every match in the
+    // displayed result, but cap confidence using a spaced subset so shifted
+    // copies of one pattern cannot masquerade as independent evidence.
+    const independentMatches = [];
+
+    matches.forEach(match => {
+        const overlapsKnownEvidence = independentMatches.some(reference =>
+            Math.abs(match.start - reference.start) < contextLength
+        );
+
+        if(!overlapsKnownEvidence){
+            independentMatches.push(match);
+        }
+    });
+
+    let weightedP = 0;
+    let weightedB = 0;
+    let weightTotal = 0;
+    let weightSquares = 0;
+    let similarityTotal = 0;
+    const nextCounts = { P:0, B:0 };
+
+    matches.forEach(match => {
+        // Weight only by similarity, never by recency: every prior period is
+        // considered and equally eligible once its resemblance is measured.
+        const weight = Math.pow(match.similarity,4);
+
+        weightTotal += weight;
+        weightSquares += weight * weight;
+        similarityTotal += match.similarity;
+        nextCounts[match.next]++;
+
+        if(match.next === "P"){
+            weightedP += weight;
+        }else{
+            weightedB += weight;
+        }
+    });
+
+    const pProbability = matches.length
+        ? (weightedP + 2) / (weightTotal + 4)
+        : 0.5;
+    const bProbability = 1 - pProbability;
+    const weightedEffectiveSamples = weightTotal
+        ? (weightTotal * weightTotal) / weightSquares
+        : 0;
+    const effectiveSamples = Math.min(
+        weightedEffectiveSamples,
+        independentMatches.length
+    );
+    const meanSimilarity = matches.length
+        ? similarityTotal / matches.length
+        : 0;
+    const rawConfidence = 50 + Math.abs(pProbability - 0.5) * 100;
+    const coverage = Math.min(1,effectiveSamples / 8);
+    const confidence = Math.round(
+        50 + ((rawConfidence - 50) * coverage)
+    );
+    const leader = pProbability >= bProbability ? "P" : "B";
+    const qualified = matches.length >= 3 && effectiveSamples >= 3;
+    const reliability = coverage * meanSimilarity;
+    const evidenceScale = 26 * reliability;
+    const data = {
+        contextLength,
+        context:context.join(""),
+        matches:matches.length,
+        nextCounts,
+        pProbability,
+        bProbability,
+        confidence,
+        effectiveSamples,
+        independentSamples:independentMatches.length,
+        meanSimilarity,
+        move:qualified ? leader : null,
+        P:pProbability * evidenceScale,
+        B:bProbability * evidenceScale,
+        examples:matches.slice(0,SIMILARITY_MAX_EXAMPLES)
+    };
+
+    similarityCache = { key, data };
+
+    return data;
+
+}
+
+function updateSimilarHistoryDisplay(){
+
+    const data = similarHistoryEngine();
+    const context = document.getElementById("similarContext");
+    const matches = document.getElementById("similarMatches");
+    const outcomes = document.getElementById("similarOutcomes");
+    const support = document.getElementById("similarSupport");
+    const examples = document.getElementById("similarExamples");
+
+    context.innerText = data.context
+        ? data.contextLength + " hands: " + data.context
+        : "Need more history";
+    matches.innerText = data.matches
+        ? data.matches + " periods (≥68%)"
+        : "0";
+    outcomes.innerText = data.matches
+        ? "P " + data.nextCounts.P + " / B " + data.nextCounts.B
+        : "-";
+
+    if(data.move){
+        support.innerText =
+            (data.move === "P" ? "PLAYER" : "BANKER") +
+            " " + data.confidence + "% | n=" +
+            data.effectiveSamples.toFixed(1) + " independent";
+    }else if(data.matches){
+        support.innerText =
+            "BUILDING | n=" + data.effectiveSamples.toFixed(1) + " independent";
+    }else{
+        support.innerText = "WAIT";
+    }
+
+    examples.innerHTML = "";
+
+    if(!data.examples.length){
+        const empty = document.createElement("div");
+        empty.className = "similar-example";
+        empty.innerText = "ยังไม่มีช่วงในอดีตที่คล้ายเพียงพอสำหรับการเปรียบเทียบ";
+        examples.appendChild(empty);
+        return;
+    }
+
+    data.examples.forEach(match => {
+        const row = document.createElement("div");
+        row.className = "similar-example";
+        const start = match.start + 1;
+        const end = match.start + data.contextLength;
+        const next = match.next === "P" ? "PLAYER" : "BANKER";
+
+        row.innerText =
+            "Hands " + start + "-" + end + ": " +
+            match.context + " → " + next +
+            " (" + Math.round(match.similarity * 100) + "% similar)";
+
+        examples.appendChild(row);
+    });
+
+}
+
+function allHistoryAnalysis(){
+
+    const total = roundHistory.length;
+    const pCount = arch.filter(item => item === "P").length;
+    const bCount = arch.length - pCount;
+    const tieCount = roundHistory.filter(item => item === "T").length;
+    const decisiveTotal = arch.length;
+    const transitions = {
+        PP:0,
+        PB:0,
+        BP:0,
+        BB:0
+    };
+
+    for(let i=1; i<decisiveTotal; i++){
+        transitions[arch[i-1] + arch[i]]++;
+    }
+
+    if(decisiveTotal < 2){
+        return {
+            total,
+            pCount,
+            bCount,
+            tieCount,
+            bias:"WAIT",
+            strength:"need more history",
+            transition:"-",
+            behaviour:"-"
+        };
+    }
+
+    const pRate = pCount / decisiveTotal;
+    const forecast = historyForecastFrom(arch);
+    const validation = walkForwardValidation();
+    const switchRatio =
+        (transitions.PB + transitions.BP) / (decisiveTotal - 1);
+    const last = arch[decisiveTotal - 1];
+    const same = last === "P" ? transitions.PP : transitions.BB;
+    const flip = last === "P" ? transitions.PB : transitions.BP;
+    const transitionTotal = same + flip;
+    const sameRate = transitionTotal ? same / transitionTotal : 0.5;
+
+    let bias = "BALANCED";
+    if(pRate >= 0.53){
+        bias = "PLAYER";
+    }else if(pRate <= 0.47){
+        bias = "BANKER";
+    }
+
+    const balanceEdge = Math.abs(pRate - 0.5) * 100;
+    const transitionEdge = Math.abs(sameRate - 0.5) * 100;
+    const strength = Math.round(
+        Math.min(100, (balanceEdge * 2) + (transitionEdge * 1.5))
+    );
+
+    let behaviour = "MIXED";
+    if(switchRatio < 0.38){
+        behaviour = "TRENDING";
+    }else if(switchRatio > 0.62){
+        behaviour = "CHOPPY";
+    }
+
+    return {
+        total,
+        pCount,
+        bCount,
+        tieCount,
+        bias,
+        strength:
+            strength + "/100 | WF " +
+            (
+                validation.rate === null
+                ? "building"
+                : validation.rate.toFixed(1) + "% n=" + validation.samples
+            ),
+        transition:
+            last + " → same " + (sameRate * 100).toFixed(0) +
+            "% | flip " + ((1 - sameRate) * 100).toFixed(0) + "%",
+        behaviour:behaviour + " | switch " + (switchRatio * 100).toFixed(0) + "%"
+    };
+
+}
+
+function updateAllHistoryTrend(){
+
+    const data = allHistoryAnalysis();
+
+    document.getElementById("allHistoryTotal").innerText = data.total;
+    document.getElementById("allHistorySplit").innerText =
+        "P " + data.pCount + " / B " + data.bCount + " / T " + data.tieCount;
+    document.getElementById("allHistoryBias").innerText = data.bias;
+    document.getElementById("allHistoryStrength").innerText = data.strength;
+    document.getElementById("allHistoryTransition").innerText = data.transition;
+    document.getElementById("allHistoryBehaviour").innerText = data.behaviour;
+
+}
+
+function allHistoryEngine(){
+
+    const forecast = historyForecastFrom(arch);
+    const validation = walkForwardValidation();
+    let trust = 0.35;
+
+    if(validation.samples >= 20){
+        trust = Math.max(
+            0.20,
+            Math.min(1, (validation.rate - 45) / 15)
+        );
+    }
+
+    return {
+        P:forecast.pProbability * 36 * trust,
+        B:forecast.bProbability * 36 * trust,
+        validation,
+        trust
+    };
+
+}
+
+function detectCycle(){
+
+    const history =
+        arch;
+
+    if(history.length < 8){
+        return null;
+    }
+
+    let best = null;
+
+    for(let size = 2; size <= 6; size++){
+
+        // Reserve the latest complete cycle as the candidate forecast. It is
+        // not allowed to score its own fit; only the earlier history may
+        // validate whether that cycle was genuinely recurring.
+        if(history.length < size * 4){
+            continue;
+        }
+
+        const cycle =
+            history.slice(-size);
+
+        const start =
+            history.length - size;
+
+        let matches = 0;
+
+        for(let index=0; index<start; index++){
+
+            const item = history[index];
+
+            const cycleIndex =
+                (
+                    (index - start) % size +
+                    size
+                ) % size;
+
+            if(item === cycle[cycleIndex]){
+                matches++;
+            }
+
+        }
+
+        const accuracy =
+            matches / start;
+
+        if(
+            accuracy >= 0.86 &&
+            (
+                !best ||
+                accuracy > best.accuracy ||
+                (
+                    accuracy === best.accuracy &&
+                    size < best.size
+                )
+            )
+        ){
+
+            best = {
+                size,
+                accuracy,
+                samples:start,
+                next:cycle[
+                    (
+                        history.length - start
+                    ) % size
+                ]
+            };
+
+        }
+
+    }
+
+    return best;
+
+}
+
+function cycleEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    const cycle =
+        detectCycle();
+
+    if(!cycle){
+
+        engineHeat.cycle = 0;
+        return score;
+
+    }
+
+    const strength =
+        Math.round(
+            cycle.accuracy *
+            cycle.size *
+            14
+        );
+
+    score[cycle.next] += strength;
+
+    engineHeat.cycle =
+        strength;
+
+    return score;
+
+}
+
+// -------------------------
+// UPDATE MODE DISPLAY
+// -------------------------
+
+function updateModeDisplay(){
+
+    document.getElementById(
+        "mode"
+    ).innerText =
+        tableMode();
+
+    document.getElementById(
+        "entropy"
+    ).innerText =
+        entropyScore().toFixed(3);
+
+}
+
+// =========================
+// PART 4 : BAYESIAN +
+// ADAPTIVE LEARNING +
+// SIGNAL ENGINE
+// =========================
+
+// -------------------------
+// ENGINE WEIGHTS
+// -------------------------
+
+let weights = {
+    pattern:1.00,
+    markov:1.00,
+    trend:1.00,
+    streak:1.00,
+    timeframe:1.00,
+    cycle:1.00
+};
+
+// -------------------------
+// BAYESIAN ENGINE
+// -------------------------
+
+function bayesianEngine(){
+
+    const pattern = patternEngine().score;
+    const markov = markovEngine();
+    const similarity = similarHistoryEngine();
+    const streak = streakEngine();
+    const timeframe = multiTimeframeEngine();
+    const cycle = cycleEngine();
+
+    let trend = {
+        P:0,
+        B:0
+    };
+
+    const mode = tableMode();
+
+    if(mode === "TREND"){
+
+        const last =
+            arch[arch.length-1];
+
+        trend[last] += 25;
+
+    }
+
+    if(mode === "CHOP"){
+
+        const last =
+            arch[arch.length-1];
+
+        const next =
+            last === "P"
+            ? "B"
+            : "P";
+
+        trend[next] += 25;
+
+    }
+
+    engineHeat.trend =
+        Math.max(trend.P, trend.B);
+
+    // These three methods inspect the same historical road, so they share
+    // one sequence group. The similarity score contributes the outcomes
+    // following analogous full-history periods without becoming a separate
+    // independent vote.
+    const sequence = {
+        P:(
+            pattern.P * weights.pattern +
+            markov.P * weights.markov +
+            similarity.P * weights.pattern
+        ) / 3,
+        B:(
+            pattern.B * weights.pattern +
+            markov.B * weights.markov +
+            similarity.B * weights.pattern
+        ) / 3
+    };
+
+    const regime = {
+        P:(
+            streak.P * weights.streak +
+            trend.P * weights.trend +
+            cycle.P * weights.cycle
+        ) / 3,
+        B:(
+            streak.B * weights.streak +
+            trend.B * weights.trend +
+            cycle.B * weights.cycle
+        ) / 3
+    };
+
+    const P = sequence.P + regime.P + timeframe.P * weights.timeframe;
+    const B = sequence.B + regime.B + timeframe.B * weights.timeframe;
+
+    return {
+        P,
+        B
+    };
+
+}
+
+// -------------------------
+// ADAPTIVE LEARNING
+// -------------------------
+
+function adaptiveLearning(){
+
+    const validation = walkForwardValidation();
+
+    if(validation.samples < 20){
+        return;
+    }
+
+    // Re-weight from out-of-sample history, rather than from in-sample wins.
+    adaptiveWeight = Math.max(
+        0.70,
+        Math.min(1.25, (validation.rate - 40) / 16)
+    );
+
+    weights.pattern = adaptiveWeight;
+    weights.markov = adaptiveWeight;
+
+}
+
+// -------------------------
+// CONFIDENCE
+// -------------------------
+
+function calculateConfidence(P,B){
+
+    const totalScore =
+        P + B;
+
+    if(totalScore <= 0){
+        return 50;
+    }
+
+    return Math.round(
+        (
+            Math.max(P,B)
+            /
+            totalScore
+        ) * 100
+    );
+
+}
+
+function calibratedConfidence(P,B){
+
+    const raw = calculateConfidence(P,B);
+    const validation = walkForwardValidation();
+    const context = contextEvidence();
+    const continuous = continuousValidation();
+    let evidence = 0.25;
+
+    if(
+        validation.samples >= MIN_WALK_FORWARD_SAMPLES &&
+        validation.skillLower !== null &&
+        validation.skillLower > 0
+    ){
+        evidence = Math.max(
+            0.15,
+            Math.min(1, validation.skillLower / 0.03)
+        );
+    }
+
+    evidence = context.qualified
+        ? Math.min(1, evidence + 0.20)
+        : evidence * 0.85;
+
+    if(continuous.status === "PAUSE"){
+        evidence *= 0.45;
+    }else if(continuous.status === "CAUTION"){
+        evidence *= 0.70;
+    }
+
+    return Math.round(
+        50 + ((raw - 50) * evidence)
+    );
+
+}
+
+// A directional hit rate can look good by chance.  Brier skill measures the
+// quality of the probability itself; the lower bound must beat a 50/50
+// forecast before it is treated as evidence.
+function hasPositiveProbabilisticSkill(validation){
+
+    return (
+        validation.samples >= MIN_WALK_FORWARD_SAMPLES &&
+        validation.skillLower !== null &&
+        validation.skillLower > 0
+    );
+
+}
+
+function calculateMargin(P,B){
+
+    const totalScore =
+        P + B;
+
+    if(totalScore <= 0){
+        return 0;
+    }
+
+    return Math.round(
+        (
+            Math.abs(P - B)
+            /
+            totalScore
+        ) * 100
+    );
+
+}
+
+function scoreLeader(score){
+
+    if(!score || score.P === score.B){
+        return null;
+    }
+
+    return score.P > score.B ? "P" : "B";
+
+}
+
+function trendEngineScore(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    const mode =
+        tableMode();
+
+    if(
+        mode !== "TREND" &&
+        mode !== "CHOP"
+    ){
+        return score;
+    }
+
+    const last =
+        arch[arch.length - 1];
+
+    if(mode === "TREND"){
+
+        score[last] += 1;
+
+    }else{
+
+        score[
+            last === "P" ? "B" : "P"
+        ] += 1;
+
+    }
+
+    return score;
+
+}
+
+function engineConsensus(move){
+
+    const pattern = patternEngine().score;
+    const markov = markovEngine();
+    const similarity = similarHistoryEngine();
+    const streak = streakEngine();
+    const trend = trendEngineScore();
+    const cycle = cycleEngine();
+
+    // Do not count closely related methods as independent confirmation.
+    // Pattern and Markov inspect the same history; trend, streak and cycle
+    // describe the same recent regime.  Grouping them prevents confidence
+    // inflation from double-counting one source of evidence.
+    const engines = [
+        {
+            P:pattern.P + markov.P + similarity.P,
+            B:pattern.B + markov.B + similarity.B
+        },
+        {
+            P:streak.P + trend.P + cycle.P,
+            B:streak.B + trend.B + cycle.B
+        },
+        multiTimeframeEngine(),
+    ];
+
+    let votes = 0;
+
+    engines.forEach(score => {
+
+        if(scoreLeader(score) === move){
+            votes++;
+        }
+
+    });
+
+    return {
+        votes,
+        total:engines.length
+    };
+
+}
+
+function recentPredictionEntries(limit){
+
+    const entries =
+        resultLog.filter(entry => entry.prediction);
+
+    return limit
+        ? entries.slice(-limit)
+        : entries;
+
+}
+
+function recentWinRate(limit){
+
+    const entries =
+        recentPredictionEntries(limit);
+
+    if(!entries.length){
+        return null;
+    }
+
+    const winsCount =
+        entries.filter(
+            entry => entry.prediction === entry.result
+        ).length;
+
+    return (winsCount / entries.length) * 100;
+
+}
+
+function currentLosingStreak(){
+
+    const entries =
+        recentPredictionEntries();
+
+    let losses = 0;
+
+    for(let i=entries.length - 1; i>=0; i--){
+
+        if(entries[i].prediction === entries[i].result){
+            break;
+        }
+
+        losses++;
+
+    }
+
+    return losses;
+
+}
+
+function threeLossCircuitBreaker(
+    conf,
+    margin,
+    consensus,
+    entropy,
+    backtest
+){
+
+    const losses = currentLosingStreak();
+
+    if(losses < MAX_RECENT_LOSSES){
+        return {
+            active:false,
+            reentry:false,
+            observed:0
+        };
+    }
+
+    let lastConfirmedIndex = -1;
+
+    for(let i=resultLog.length - 1; i>=0; i--){
+        if(resultLog[i].prediction){
+            lastConfirmedIndex = i;
+            break;
+        }
+    }
+
+    const observed =
+        lastConfirmedIndex < 0
+        ? 0
+        : Math.max(0, arch.length - 1 - lastConfirmedIndex);
+
+    const reentry =
+        observed >= PAUSE_OBSERVATION_ROUNDS &&
+        conf >= 68 &&
+        margin >= 18 &&
+        consensus >= MIN_CONSENSUS &&
+        entropy < 0.96 &&
+        backtest.pass;
+
+    return {
+        active:!reentry,
+        reentry,
+        observed
+    };
+
+}
+
+function recentSwitchRatio(limit){
+
+    const history =
+        limit
+        ? arch.slice(-limit)
+        : arch;
+
+    if(history.length < 2){
+        return 0;
+    }
+
+    let switches = 0;
+
+    for(let i=1; i<history.length; i++){
+
+        if(history[i] !== history[i-1]){
+            switches++;
+        }
+
+    }
+
+    return switches / (history.length - 1);
+
+}
+
+function currentResultStreak(){
+
+    if(!arch.length){
+        return 0;
+    }
+
+    const last =
+        arch[arch.length - 1];
+
+    let streak = 1;
+
+    for(let i=arch.length - 2; i>=0; i--){
+
+        if(arch[i] !== last){
+            break;
+        }
+
+        streak++;
+
+    }
+
+    return streak;
+
+}
+
+function evaluateTiming(P,B,conf,move){
+
+    if(!move || arch.length < MIN_SIGNAL_HISTORY){
+        return {
+            status:"WAIT",
+            level:"NO DATA",
+            score:0,
+            reason:"Waiting for data"
+        };
+    }
+
+    const consensus =
+        engineConsensus(move);
+
+    const margin =
+        calculateMargin(P,B);
+
+    const entropy =
+        entropyScore();
+
+    const walkForward =
+        walkForwardValidation();
+
+    const context =
+        contextEvidence();
+
+    const continuous =
+        continuousValidation();
+
+    const form =
+        recentWinRate();
+
+    const recentForm =
+        recentWinRate(12);
+
+    const losingStreak =
+        currentLosingStreak();
+
+    const switchRatio =
+        recentSwitchRatio(20);
+
+    const resultStreak =
+        currentResultStreak();
+
+    let score = 50;
+    const good = [];
+    const risk = [];
+
+    if(conf >= 70){
+        score += 16;
+        good.push("high confidence");
+    }else if(conf >= 58){
+        score += 8;
+    }else{
+        score -= 12;
+        risk.push("confidence low");
+    }
+
+    if(margin >= 12){
+        score += 14;
+        good.push("clear score gap");
+    }else if(margin >= 5){
+        score += 6;
+    }else{
+        score -= 10;
+        risk.push("score is close");
+    }
+
+    if(consensus.votes >= MIN_CONSENSUS){
+        score += 14;
+        good.push("engines agree");
+    }else if(consensus.votes >= 2){
+        score += 5;
+    }else{
+        score -= 12;
+        risk.push("low engine consensus");
+    }
+
+    if(form !== null){
+        if(form >= 58){
+            score += 10;
+            good.push("history form good");
+        }else if(form < 46){
+            score -= 12;
+            risk.push("history form weak");
+        }
+    }
+
+    if(recentForm !== null){
+        if(recentForm >= 60){
+            score += 8;
+            good.push("recent form good");
+        }else if(recentForm < 42){
+            score -= 10;
+            risk.push("recent form weak");
+        }
+    }
+
+    if(entropy >= 0.985){
+        score -= 14;
+        risk.push("high entropy");
+    }else if(entropy <= 0.88 && arch.length >= 8){
+        score += 6;
+        good.push("table has direction");
+    }
+
+    if(switchRatio > 0.72){
+        score -= 10;
+        risk.push("too much chopping");
+    }else if(switchRatio < 0.30 && arch.length >= 8){
+        score += 6;
+        good.push("trend is stable");
+    }
+
+    if(losingStreak >= 3){
+        score -= 18;
+        risk.push("prediction losing streak");
+    }else if(losingStreak === 0 && total >= 3){
+        score += 4;
+    }
+
+    if(resultStreak >= 5){
+        score -= 6;
+        risk.push("long streak reversal risk");
+    }
+
+    if(continuous.status === "PAUSE"){
+        score -= 22;
+        risk.push("continuous monitor paused");
+    }else if(continuous.status === "CAUTION"){
+        score -= 10;
+        risk.push("continuous monitor caution");
+    }
+
+    score =
+        Math.max(0, Math.min(100, Math.round(score)));
+
+    let status = "CAUTION";
+    let level = "MEDIUM";
+
+    if(score >= 72 && risk.length <= 1){
+        status = "GOOD";
+        level = "LOW";
+    }else if(score < 45 || risk.length >= 4){
+        status = "STOP";
+        level = "HIGH";
+    }
+
+    return {
+        status,
+        level,
+        score,
+        reason:(
+            risk.length
+            ? risk.join(", ")
+            : good.join(", ") || "normal signal"
+        )
+    };
+
+}
+
+function updateTimingDisplay(data){
+
+    const timing =
+        document.getElementById("timingStatus");
+
+    timing.className = "timing-status";
+    timing.innerText = data.status;
+
+    if(data.status === "GOOD"){
+        timing.classList.add("strong");
+    }else if(data.status === "STOP"){
+        timing.classList.add("risk");
+    }else{
+        timing.classList.add("weak");
+    }
+
+    document.getElementById(
+        "timingScore"
+    ).innerText =
+        data.score + "/100";
+
+    document.getElementById(
+        "riskLevel"
+    ).innerText =
+        data.level;
+
+    document.getElementById(
+        "riskReason"
+    ).innerText =
+        data.reason;
+
+}
+
+function dynamicConfidenceGate(){
+
+    const form =
+        recentWinRate();
+    const continuous = continuousValidation();
+
+    if(continuous.status === "PAUSE"){
+        return 75;
+    }
+
+    if(continuous.status === "CAUTION"){
+        return 70;
+    }
+
+    if(form === null){
+        return MIN_SIGNAL_CONFIDENCE;
+    }
+
+    if(form < 45){
+        return 72;
+    }
+
+    if(form < 52){
+        return 69;
+    }
+
+    return MIN_SIGNAL_CONFIDENCE;
+
+}
+
+function backtestGate(){
+
+    // These are pre-result observations, so a strict backtest can mature
+    // while live signals remain safely gated off.
+    const entries = strategyLog.slice(-MIN_BACKTEST_SAMPLES);
+
+    if(entries.length < MIN_BACKTEST_SAMPLES){
+        return {
+            pass:false,
+            rate:null,
+            lowerBound:null,
+            netUnits:null,
+            samples:entries.length
+        };
+    }
+
+    const correct = entries.filter(
+        entry => entry.prediction === entry.result
+    ).length;
+
+    const rate = (correct / entries.length) * 100;
+    const lowerBound =
+        wilsonLowerBound(correct, entries.length) * 100;
+    const netUnits = entries.reduce((sum, entry) => {
+        if(entry.prediction !== entry.result){
+            return sum - 1;
+        }
+
+        // Standard commission baccarat: a winning Banker wager returns 0.95
+        // units, while a winning Player wager returns 1 unit.
+        return sum + (entry.prediction === "B" ? 0.95 : 1);
+    }, 0);
+
+    return {
+        // A raw win rate alone is fragile at small samples. Require a
+        // conservative 95% lower bound and a positive commission-adjusted net.
+        pass:
+            rate >= MIN_BACKTEST_RATE &&
+            lowerBound >= MIN_BACKTEST_LOWER_BOUND &&
+            netUnits > 0,
+        rate,
+        lowerBound,
+        netUnits,
+        samples:entries.length
+    };
+
+}
+
+function opposite(move){
+
+    return move === "P" ? "B" : "P";
+
+}
+
+// A losing run does not establish that the opposite side has an edge. Keep
+// recovery disabled rather than turning recent noise into a reverse bet.
+function verifiedRecoveryMode(){
+
+    return { active:false, rate:null };
+
+}
+
+function updatePrecisionState(data){
+
+    precisionState = {
+        ...precisionState,
+        ...data
+    };
+
+    updatePrecisionDisplay();
+
+}
+
+function updatePrecisionDisplay(){
+
+    document.getElementById(
+        "bias"
+    ).innerText =
+        precisionState.bias
+        ? (
+            precisionState.bias === "P"
+            ? "PLAYER"
+            : "BANKER"
+        )
+        : "-";
+
+    document.getElementById(
+        "precisionStatus"
+    ).innerText =
+        precisionState.status +
+        (
+            precisionState.reason
+            ? " : " + precisionState.reason
+            : ""
+        );
+
+    document.getElementById(
+        "consensus"
+    ).innerText =
+        precisionState.consensus +
+        "/" +
+        precisionState.totalVotes;
+
+    document.getElementById(
+        "dynamicGate"
+    ).innerText =
+        precisionState.dynamicGate + "%";
+
+    document.getElementById(
+        "recentForm"
+    ).innerText =
+        precisionState.recentForm;
+
+    document.getElementById(
+        "backtestGate"
+    ).innerText =
+        precisionState.backtestRate === null
+        ? "-"
+        : precisionState.backtestRate.toFixed(1) + "%";
+
+    document.getElementById(
+        "backtestNet"
+    ).innerText =
+        precisionState.backtestNet === null
+        ? "-"
+        : (precisionState.backtestNet >= 0 ? "+" : "") +
+          precisionState.backtestNet.toFixed(2) + " units";
+
+}
+
+function shouldTakeSignal(P,B,conf,move,recovery){
+
+    const formula =
+        roadPatternProfile().formula;
+
+    const formulaState =
+        formulaCircuit(formula);
+
+    const consensus =
+        engineConsensus(move);
+
+    const gate =
+        dynamicConfidenceGate();
+
+    const backtest =
+        backtestGate();
+
+    const continuous =
+        continuousValidation();
+
+    const recentForm =
+        recentWinRate();
+
+    const margin =
+        calculateMargin(P,B);
+
+    const losingStreak =
+        currentLosingStreak();
+
+    const entropy =
+        entropyScore();
+
+    // These checks were previously referenced without being calculated,
+    // causing a ReferenceError as soon as enough history existed to analyze.
+    const walkForward =
+        walkForwardValidation();
+
+    const context =
+        contextEvidence();
+
+    const breaker =
+        threeLossCircuitBreaker(
+            conf,
+            margin,
+            consensus.votes,
+            entropy,
+            backtest
+        );
+
+    const baseState = {
+        bias:move,
+        consensus:consensus.votes,
+        totalVotes:consensus.total,
+        dynamicGate:gate,
+        recentForm:
+            recentForm === null
+            ? "-"
+            : recentForm.toFixed(1) + "%",
+        backtestRate:backtest.rate,
+        backtestNet:backtest.netUnits
+    };
+
+    if(arch.length < MIN_SIGNAL_HISTORY){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"ข้อมูลยังน้อย"
+        });
+        return false;
+    }
+
+    if(continuous.status === "PAUSE"){
+        updatePrecisionState({
+            ...baseState,
+            status:"PAUSE",
+            reason:"continuous monitor: " + continuous.reason
+        });
+        return false;
+    }
+
+    if(formulaState.status === "PAUSE"){
+        updatePrecisionState({
+            ...baseState,
+            status:"PAUSE",
+            reason:
+                formula + " paused after " + formulaState.misses +
+                " consecutive observed misses"
+        });
+        return false;
+    }
+
+    if(formulaState.status === "CAUTION"){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:
+                formula + " caution: " + formulaState.misses +
+                " consecutive observed misses"
+        });
+        return false;
+    }
+
+    if(breaker.active){
+        updatePrecisionState({
+            ...baseState,
+            status:"PAUSE",
+            reason:
+                breaker.observed < PAUSE_OBSERVATION_ROUNDS
+                ? "3 losses: observing " + breaker.observed + "/" + PAUSE_OBSERVATION_ROUNDS + " rounds"
+                : "3 losses: waiting for high-confidence re-entry"
+        });
+        return false;
+    }
+
+    if(conf < gate){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"confidence ต่ำ"
+        });
+        return false;
+    }
+
+    if(margin < MIN_SIGNAL_MARGIN){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"คะแนนสูสี"
+        });
+        return false;
+    }
+
+    if(consensus.votes < MIN_CONSENSUS){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"consensus ไม่พอ"
+        });
+        return false;
+    }
+
+    if(
+        walkForward.samples >= MIN_WALK_FORWARD_SAMPLES &&
+        walkForward.rate < MIN_WALK_FORWARD_RATE
+    ){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:
+                "walk-forward " + walkForward.rate.toFixed(1) +
+                "% below " + MIN_WALK_FORWARD_RATE + "%"
+        });
+        return false;
+    }
+
+    if(
+        walkForward.samples >= MIN_WALK_FORWARD_SAMPLES &&
+        !hasPositiveProbabilisticSkill(walkForward)
+    ){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:
+                "probability model has no verified edge (Brier skill)"
+        });
+        return false;
+    }
+
+    if(!context.qualified || context.move !== move){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:
+                "context not verified: n=" + context.samples +
+                ", lower=" + (context.lowerBound * 100).toFixed(0) + "%"
+        });
+        return false;
+    }
+
+    if(!backtest.pass){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:
+                backtest.rate === null
+                ? "need " + MIN_BACKTEST_SAMPLES + " verified signals (" + backtest.samples + "/" + MIN_BACKTEST_SAMPLES + ")"
+                : "backtest must clear rate, confidence bound, and net result"
+        });
+        return false;
+    }
+
+    if(entropy >= HIGH_ENTROPY_LIMIT){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"โต๊ะมั่ว"
+        });
+        return false;
+    }
+
+    if(
+        losingStreak >= MAX_RECENT_LOSSES &&
+        !breaker.reentry
+    ){
+        updatePrecisionState({
+            ...baseState,
+            status:"WAIT",
+            reason:"พักหลังแพ้ติด"
+        });
+        return false;
+    }
+
+    updatePrecisionState({
+        ...baseState,
+        status:recovery && recovery.active ? "REVERSE" : "READY",
+        reason:
+            recovery && recovery.active
+            ? "verified reverse mode: " + recovery.rate.toFixed(1) + "% inverse validation"
+            : "passed confidence, consensus, and backtest gates"
+    });
+
+    return true;
+
+}
+
+// -------------------------
+// SIGNAL LEVEL
+// -------------------------
+
+function signalStrength(conf){
+
+    if(conf >= 80){
+        return "STRONG-แข็งแกร่ง";
+    }
+
+    if(conf >= 70){
+        return "NORMAL-ปกติ";
+    }
+
+    if(conf >= 60){
+        return "WEAK-อ่อนแอ";
+    }
+
+    return "RISK-เสี่ยง";
+
+}
+
+// -------------------------
+// UPDATE SIGNAL UI
+// -------------------------
+
+function updateSignalUI(move,conf){
+
+    const signal =
+        document.getElementById("signal");
+
+    const label =
+        document.getElementById("signalLabel");
+
+    signal.className = "signal";
+
+    if(precisionState.status === "PAUSE"){
+
+        label.innerText = "Paused — observing history";
+        signal.innerText = "PAUSE";
+        signal.classList.add("wait");
+
+        document.getElementById(
+            "confidence"
+        ).innerText =
+            conf + "%";
+
+        document.getElementById(
+            "strength"
+        ).innerText =
+            "STOP — wait for high-confidence re-entry";
+
+        return;
+
+    }
+
+    if(!move){
+
+        label.innerText = "Next-Round History Trend";
+
+        signal.innerText = "WAIT";
+        signal.classList.add("wait");
+
+        document.getElementById(
+            "confidence"
+        ).innerText =
+            conf + "%";
+
+        document.getElementById(
+            "strength"
+        ).innerText =
+            "WAIT-ยังไม่ชัด";
+
+        return;
+
+    }
+
+    label.innerText =
+        nextMove === move
+        ? "Confirmed Signal"
+        : "Next-Round History Trend (watch)";
+
+    if(move === "P"){
+
+        signal.innerText = "PLAYER";
+        signal.classList.add("player");
+
+    }else{
+
+        signal.innerText = "BANKER";
+        signal.classList.add("banker");
+
+    }
+
+    document.getElementById(
+        "confidence"
+    ).innerText =
+        conf + "%";
+
+    document.getElementById(
+        "strength"
+    ).innerText =
+        signalStrength(conf);
+
+}
+
+// -------------------------
+// UPDATE HEATMAP
+// -------------------------
+
+function updateHeatmap(){
+
+    document.getElementById(
+        "heat-pattern"
+    ).innerText =
+        engineHeat.pattern;
+
+    document.getElementById(
+        "heat-markov"
+    ).innerText =
+        engineHeat.markov;
+
+    document.getElementById(
+        "heat-trend"
+    ).innerText =
+        engineHeat.trend;
+
+    document.getElementById(
+        "heat-streak"
+    ).innerText =
+        engineHeat.streak;
+
+    document.getElementById(
+        "heat-monte"
+    ).innerText =
+        engineHeat.monte;
+
+    document.getElementById(
+        "heat-cycle"
+    ).innerText =
+        engineHeat.cycle;
+
+}
+
+// =========================
+// PART 5 : FINAL ENGINE
+// =========================
+
+// -------------------------
+// MONTE CARLO
+// -------------------------
+
+function monteCarloEngine(){
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    if(arch.length < 10){
+        return score;
+    }
+
+    const history =
+        arch;
+
+    const pCount =
+        history.filter(x=>x==="P").length;
+
+    const pProb =
+        pCount / history.length;
+
+    score.P =
+        Math.round(MONTE_SAMPLES * pProb);
+
+    score.B =
+        MONTE_SAMPLES - score.P;
+
+    engineHeat.monte =
+        Math.max(score.P, score.B);
+
+    return score;
+
+}
+
+// -------------------------
+// FORECAST ENGINE
+// -------------------------
+
+function forecastMove(currentMove){
+
+    if(!currentMove || arch.length < 6){
+        return "-";
+    }
+
+    let score = {
+        P:0,
+        B:0
+    };
+
+    for(let i=0; i<arch.length-1; i++){
+
+        if(arch[i] === currentMove){
+
+            score[arch[i+1]]++;
+
+        }
+
+    }
+
+    if(score.P === score.B){
+        return currentMove;
+    }
+
+    return score.P > score.B ? "P" : "B";
+
+}
+
+function updateForecast(move){
+
+    if(!move){
+
+        document.getElementById(
+            "forecast1"
+        ).innerText = "-";
+
+        document.getElementById(
+            "forecast2"
+        ).innerText = "-";
+
+        document.getElementById(
+            "forecast3"
+        ).innerText = "-";
+
+        return;
+
+    }
+
+    let f1 = move;
+    let f2 = forecastMove(f1);
+    let f3 = forecastMove(f2);
+
+    document.getElementById(
+        "forecast1"
+    ).innerText = f1;
+
+    document.getElementById(
+        "forecast2"
+    ).innerText = f2;
+
+    document.getElementById(
+        "forecast3"
+    ).innerText = f3;
+
+}
+
+// -------------------------
+// MAIN ANALYZE
+// -------------------------
+
+function analyze(){
+
+    if(arch.length < MIN_SIGNAL_HISTORY){
+
+        nextMove = null;
+        lastAnalysis = {
+            candidate:null,
+            formula:roadPatternProfile().formula,
+            confidence:null,
+            pProbability:null,
+            margin:null
+        };
+        resetEngineHeat();
+
+        const historyOnly =
+            allHistoryEngine();
+
+        const historyMove =
+            arch.length
+            ? (historyOnly.P >= historyOnly.B ? "P" : "B")
+            : null;
+
+        const historyConfidence =
+            calculateConfidence(
+                historyOnly.P,
+                historyOnly.B
+            );
+
+        updatePrecisionState({
+            bias:null,
+            status:"WAIT",
+            reason:"ข้อมูลยังน้อย",
+            consensus:0,
+            totalVotes:3,
+            dynamicGate:MIN_SIGNAL_CONFIDENCE,
+            recentForm:"-",
+            backtestRate:null,
+            backtestNet:null
+        });
+
+        updateSignalUI(historyMove,historyConfidence);
+        updateForecast(historyMove);
+
+        return;
+
+    }
+
+    updateModeDisplay();
+
+    adaptiveLearning();
+
+    const bayes =
+        bayesianEngine();
+
+    const monte =
+        monteCarloEngine();
+
+    const history =
+        allHistoryEngine();
+
+    // Monte Carlo only describes the historical balance of the shoe; it is
+    // shown as context, not allowed to manufacture a directional edge.
+    const P = bayes.P + history.P;
+    const B = bayes.B + history.B;
+
+    const conf =
+        calibratedConfidence(P,B);
+
+    const rawMove =
+        P > B ? "P" : "B";
+
+    const recovery =
+        verifiedRecoveryMode();
+
+    const candidateMove =
+        recovery.active
+        ? opposite(rawMove)
+        : rawMove;
+
+    const activeFormula =
+        roadPatternProfile().formula;
+
+    const signalAllowed =
+        shouldTakeSignal(P,B,conf,candidateMove,recovery);
+
+    nextMove =
+        signalAllowed
+        ? candidateMove
+        : null;
+
+    // Store the candidate before the next result arrives.  This permits an
+    // unbiased observation of a paused formula without exposing a signal.
+    lastAnalysis = {
+        candidate:candidateMove,
+        formula:activeFormula,
+        confidence:conf,
+        pProbability:
+            candidateMove === "P"
+            ? conf / 100
+            : 1 - (conf / 100),
+        margin:calculateMargin(P,B)
+    };
+
+    updateTimingDisplay(
+        evaluateTiming(P,B,conf,nextMove)
+    );
+
+    // Only render a direction when every validation gate has accepted it.
+    // Showing the candidate while status is WAIT can be mistaken for a bet.
+    updateSignalUI(
+        nextMove,
+        conf
+    );
+
+    updateForecast(
+        candidateMove
+    );
+
+    updateHeatmap();
+
+    updateMarkovAccuracy();
+
+}
+
+// -------------------------
+// FINAL RENDER
+// -------------------------
+
+const originalRender = render;
+
+render = function(){
+
+    originalRender();
+
+    if(nextMove){
+
+        document.getElementById(
+            "signal"
+        ).innerText =
+            nextMove === "P"
+            ? "PLAYER"
+            : "BANKER";
+
+    }
+
+};
+
+// -------------------------
+// AUTO START
+// -------------------------
+
+loadData();
+
+analyze();
+
+render();
+</script>
+
+</body>
+</html>

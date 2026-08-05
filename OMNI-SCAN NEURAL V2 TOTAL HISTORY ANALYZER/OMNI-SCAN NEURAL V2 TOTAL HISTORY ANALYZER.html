@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OMNI-SCAN | TOTAL ANALYZER</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #030303; --r: #ff0055; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; font-family: 'JetBrains Mono', monospace; }
+ body { background: var(--bg); color: #fff; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #000; box-shadow: 0 0 80px rgba(0, 255, 242, 0.05); }
+ .monitor { text-align: center; border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 75px; font-weight: 950; height: 95px; display: flex; align-items: center; justify-content: center; letter-spacing: -5px; }
+ .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+ .metric-box { padding: 10px; font-size: 9px; font-weight: 900; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; color: #555; text-transform: uppercase; }
+ .val { display: block; font-size: 13px; color: #aaa; margin-top: 4px; }
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+ .btn-k { border: none; height: 100px; border-radius: 25px; font-size: 50px; font-weight: 950; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.3); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+ .h-row { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; }
+ .node { min-width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; }
+ .status-bar { display: flex; justify-content: space-between; margin-top: 15px; font-size: 11px; font-weight: 900; color: #444; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:7px; color:var(--n); letter-spacing:8px; margin-bottom:12px;">OMNI-SCAN NEURAL ENGINE V2</div>
+ <div class="monitor">
+  <div class="metrics">
+   <div class="metric-box">TOTAL SCAN DEPTH<span id="depth-v" class="val">0</span></div>
+   <div class="metric-box">HISTORICAL EDGE<span id="edge-v" class="val">0.0%</span></div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:40px; font-weight:950; color:var(--n);">---</div>
+  <div id="log" style="font-size:10px; color:var(--g); margin-top:10px; font-weight:bold;">AWAITING DATA...</div>
+ </div>
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onpointerdown="cmd('P')">P</button>
+  <button class="btn-k btn-b" onpointerdown="cmd('B')">B</button>
+ </div>
+ <div class="h-row" id="h-box"></div>
+ <div class="status-bar">
+  <span>NET: <span id="n-ui" style="color:var(--g)">0</span></span>
+  <span>MATCHES: <span id="m-ui" style="color:var(--n)">0</span></span>
+  <span>STREAK: <span id="s-ui" style="color:#888">0</span></span>
+ </div>
+ <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:10px; color:#222; font-weight:bold;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">UNDO</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--r);">RESET SYSTEM</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, loss=0, net=0, nextMove=null;
+
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){ wins++; net++; } else { loss++; net--; }
+ }
+ arch.push(s); ui(); engine();
+}
+
+function engine(){
+ const len = arch.length;
+ if(len < 6) return wait("NEED MORE DATA");
+
+ let pScore = 0, bScore = 0, totalMatches = 0;
+ let maxDepth = Math.min(len - 1, 20); // สแกนลึกสูงสุด 20 ชั้นเพื่อความแม่นยำ
+
+ // 1. OMNI-DEPTH PATTERN MATCHING
+ for(let d = 2; d <= maxDepth; d++){
+  const currentPattern = arch.slice(-d).join('');
+  const weight = Math.pow(d, 3); // ยิ่งรูปแบบยาวยิ่งมีน้ำหนัก (d^3)
+
+  for(let i = 0; i < len - d; i++){
+   const historyPattern = arch.slice(i, i + d).join('');
+   if(historyPattern === currentPattern){
+    const result = arch[i + d];
+    const recency = Math.exp((i - len) / 20); // ถ่วงน้ำหนักตามความสด
+    if(result === 'P') pScore += (weight * recency);
+    else bScore += (weight * recency);
+    totalMatches++;
+   }
+  }
+ }
+
+ // 2. Trend Analysis (Streak/Chop)
+ let streak = 1;
+ for(let i=len-1; i>0; i--){ if(arch[i]===arch[i-1]) streak++; else break; }
+ document.getElementById('s-ui').innerText = streak;
+
+ // 3. Aggregate Probability Calculation
+ const totalScore = pScore + bScore;
+ document.getElementById('m-ui').innerText = totalMatches;
+ document.getElementById('depth-v').innerText = maxDepth;
+
+ if(totalScore === 0 || totalMatches < 3) return wait("NO PATTERN MATCH");
+
+ const pProb = (pScore / totalScore) * 100;
+ const bProb = (bScore / totalScore) * 100;
+ const maxProb = Math.max(pProb, bProb);
+ const edge = Math.abs(pProb - bProb);
+
+ document.getElementById('edge-v').innerText = edge.toFixed(1) + "%";
+
+ // 4. Decision Layer (Threshold 62%)
+ const threshold = 62;
+ if(edge >= 12 && maxProb >= threshold){
+  nextMove = pProb > bProb ? 'P' : 'B';
+  const sig = document.getElementById('sig');
+  sig.innerText = nextMove === 'P' ? 'PLAYER' : 'BANKER';
+  sig.style.color = nextMove === 'P' ? 'var(--p)' : 'var(--b)';
+  document.getElementById('prob').innerText = maxProb.toFixed(1) + "%";
+  document.getElementById('log').innerText = "HISTORY REPEATING...";
+ } else {
+  wait("LOW PROBABILITY");
+ }
+}
+
+function wait(m){
+ nextMove=null; document.getElementById('sig').innerText="WAIT";
+ document.getElementById('sig').style.color="#111";
+ document.getElementById('prob').innerText="---";
+ document.getElementById('log').innerText=m;
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=9999;
+ document.getElementById('n-ui').innerText=net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); ui(); engine(); } }
+</script>
+</body>
+</html>

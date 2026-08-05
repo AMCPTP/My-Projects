@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OMNI-STRIKER | REPAIRED</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; --w: #ffffff; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'JetBrains Mono', monospace; }
+ body { background: var(--bg); color: #fff; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: #050505; box-shadow: 0 0 100px rgba(0, 255, 242, 0.1); }
+ 
+ .monitor { text-align: center; border-bottom: 2px solid #111; padding-bottom: 20px; margin-bottom: 20px; }
+ #sig { font-size: 70px; font-weight: 950; height: 90px; display: flex; align-items: center; justify-content: center; letter-spacing: -4px; transition: 0.2s; }
+ 
+ .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+ .status-box { padding: 10px; font-size: 9px; font-weight: 900; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; }
+ .val { display: block; font-size: 13px; color: #888; margin-top: 4px; }
+
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+ .btn-k { border: none; height: 100px; border-radius: 25px; font-size: 50px; font-weight: 950; color: #fff; cursor: pointer; border-bottom: 8px solid rgba(0,0,0,0.5); touch-action: manipulation; }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+ .h-row { display: flex; gap: 5px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #111; min-height: 62px; }
+ .node { min-width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 950; flex-shrink: 0; }
+ 
+ #log { font-size: 11px; font-weight: bold; color: var(--g); margin-top: 15px; text-transform: uppercase; height: 15px; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:8px; color:var(--n); letter-spacing:8px; margin-bottom:15px; font-weight:900;">OMNI-STRIKER SYSTEM</div>
+ 
+ <div class="monitor">
+  <div class="status-grid">
+   <div class="status-box">SYSTEM STATE<span id="state-v" class="val" style="color:var(--n)">READY</span></div>
+   <div class="status-box">LOSS STREAK<span id="loss-v" class="val">0 / 2</span></div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:45px; font-weight:950; color:var(--w);">---</div>
+  <div id="log">AWAITING INPUT...</div>
+ </div>
+
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onclick="cmd('P')">P</button>
+  <button class="btn-k btn-b" onclick="cmd('B')">B</button>
+ </div>
+
+ <div class="h-row" id="h-box"></div>
+
+ <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:11px; font-weight:bold; color:#444;">
+  <span>NET: <span id="net-v" style="color:var(--g)">0</span></span>
+  <span>MATCHES: <span id="match-v" style="color:#888">0</span></span>
+  <span onclick="undo()" style="cursor:pointer; color:var(--r); padding: 0 10px;">[UNDO]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, loss=0, net=0, streakL=0, nextMove=null;
+let isPaused = false;
+
+function cmd(s){
+ try {
+  if(nextMove && !isPaused){
+   if(nextMove === s){ wins++; net++; streakL = 0; isPaused = false; } 
+   else { loss++; net--; streakL++; if(streakL >= 2) isPaused = true; }
+  } else if(isPaused) {
+   let virtualPredict = calculateEngine(true);
+   if(virtualPredict === s) { streakL = 0; isPaused = false; }
+  }
+  arch.push(s); ui(); engine();
+ } catch(e) { console.error("Command Error:", e); }
+}
+
+function calculateEngine(silent = false){
+ const len = arch.length;
+ if(len < 8) return null;
+ let pW=0, bW=0, matches=0;
+ 
+ for(let d=2; d < Math.min(len, 20); d++){
+  const pat = arch.slice(-d).join('');
+  const weight = Math.pow(d, 4);
+  for(let i=0; i < len-d; i++){
+   if(arch.slice(i, i+d).join('') === pat){
+    const result = arch[i+d];
+    const recency = Math.exp((i - len) / 25);
+    if(result === 'P') pW += (weight * recency); else bW += (weight * recency);
+    matches++;
+   }
+  }
+ }
+ if(!silent) document.getElementById('match-v').innerText = matches;
+ const total = pW + bW;
+ if(total === 0 || matches < 3) return null;
+ const pP = (pW/total)*100, bP = (bW/total)*100;
+ if(Math.max(pP, bP) > 70) return pP > bP ? 'P' : 'B';
+ return null;
+}
+
+function engine(){
+ try {
+  const stateV = document.getElementById('state-v');
+  const lossV = document.getElementById('loss-v');
+  const sig = document.getElementById('sig');
+  const log = document.getElementById('log');
+  const probV = document.getElementById('prob');
+
+  lossV.innerText = streakL + " / 2";
+  lossV.style.color = streakL >= 2 ? "var(--r)" : "#888";
+
+  if(isPaused){
+   stateV.innerText = "OBSERVING...";
+   stateV.style.color = "var(--g)"; // Fix: Added quotes here
+   sig.innerText = "WAIT";
+   sig.style.color = "#111";
+   probV.innerText = "---";
+   log.innerText = "STREAK LOST: CALIBRATING...";
+   log.style.color = "var(--r)";
+   return;
+  }
+
+  stateV.innerText = "ACTIVE";
+  stateV.style.color = "var(--n)";
+  
+  let result = calculateEngine();
+  if(result){
+   nextMove = result;
+   sig.innerText = result === 'P' ? 'PLAYER' : 'BANKER';
+   sig.style.color = result === 'P' ? 'var(--p)' : 'var(--b)';
+   log.innerText = "PATTERN MATCHED: READY";
+   log.style.color = "var(--g)";
+  } else {
+   nextMove = null;
+   sig.innerText = "WAIT";
+   sig.style.color = "#111";
+   probV.innerText = "---";
+   log.innerText = "SCANNING HISTORY...";
+   log.style.color = "#444";
+  }
+ } catch(e) { console.error("Engine Error:", e); }
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=b.scrollWidth;
+ document.getElementById('net-v').innerText = net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; isPaused=false; ui(); engine(); } }
+</script>
+</body>
+</html>

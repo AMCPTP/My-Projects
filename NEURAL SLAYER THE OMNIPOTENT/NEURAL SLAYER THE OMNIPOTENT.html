@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEURAL SLAYER | OMNIPOTENT</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #030303; --r: #ff0055; --w: #ffffff; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+ body { background: var(--bg); color: #fff; font-family: 'JetBrains Mono', 'Courier New', sans-serif; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 25px; background: linear-gradient(145deg, #050505, #0a0a0a); position: relative; box-shadow: 0 0 80px rgba(0, 255, 242, 0.05); }
+ 
+ .monitor { text-align: center; border-bottom: 1px solid #151515; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 75px; font-weight: 950; height: 95px; display: flex; align-items: center; justify-content: center; letter-spacing: -5px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+ 
+ .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 15px; }
+ .metric-box { padding: 8px 4px; font-size: 8px; font-weight: 900; background: #000; border: 1px solid #111; border-radius: 8px; color: #444; text-transform: uppercase; }
+ .val { display: block; font-size: 11px; color: #888; margin-top: 3px; }
+
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 10000; }
+ .btn-k { border: none; height: 110px; border-radius: 30px; font-size: 50px; font-weight: 950; color: #fff; cursor: pointer; border-bottom: 10px solid rgba(0,0,0,0.5); transition: 0.1s; }
+ .btn-p { background: var(--p); box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2); } 
+ .btn-b { background: var(--b); box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2); }
+ .btn-k:active { transform: translateY(4px); border-bottom-width: 2px; }
+
+ .h-row { display: flex; gap: 6px; overflow-x: auto; padding: 15px 0; border-bottom: 1px solid #151515; }
+ .node { min-width: 32px; height: 32px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 950; border: 1px solid #222; }
+ .footer-stat { display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; font-weight: 900; color: #333; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:7px; color:#333; letter-spacing:12px; margin-bottom:15px; font-weight:bold;">NEURAL SLAYER : OMNIPOTENT V.FINAL</div>
+ 
+ <div class="monitor">
+  <div class="metrics">
+   <div class="metric-box">ENTROPY<span id="entropy-v" class="val">0.0</span></div>
+   <div class="metric-box">SATURATION<span id="sat-v" class="val">0%</span></div>
+   <div id="m-state" class="metric-box">STATE<span id="state-v" class="val">STABLE</span></div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:45px; font-weight:950; color:var(--n);">0.0%</div>
+  <div id="intel" style="font-size:11px; color:var(--g); margin-top:10px; font-weight:bold; letter-spacing:1px;">SCANNING TRANSITIONS...</div>
+ </div>
+
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onpointerdown="cmd('P')">P</button>
+  <button class="btn-k btn-b" onpointerdown="cmd('B')">B</button>
+ </div>
+
+ <div class="h-row" id="h-box"></div>
+
+ <div class="footer-stat">
+  <span>WINS: <span id="w-ui" style="color:#eee">0</span></span>
+  <span>NET: <span id="n-ui" style="color:var(--g)">0</span></span>
+  <span>RECALL: <span id="r-ui" style="color:var(--n)">0</span></span>
+ </div>
+ 
+ <div style="display:flex; justify-content:space-between; margin-top:25px; font-size:10px; color:#222; font-weight:900;">
+  <span onclick="undo()" style="cursor:pointer; padding:5px;">UNDO</span>
+  <span onclick="location.reload()" style="cursor:pointer; padding:5px; color:var(--r);">ABSOLUTE RESET</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let wins=0, loss=0, net=0, streakL=0, nextMove=null;
+
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){ wins++; net++; streakL=0; }
+  else { loss++; net--; streakL++; }
+ }
+ arch.push(s); ui(); engine();
+}
+
+function getEntropy(arr){
+ if(arr.length < 8) return 0;
+ let switches = 0;
+ const sample = arr.slice(-8);
+ for(let i=1; i<sample.length; i++) if(sample[i] !== sample[i-1]) switches++;
+ return (switches / 7);
+}
+
+function engine(){
+ const len=arch.length; if(len<8) return;
+ 
+ // 1. Markov & Transition Logic
+ let pW=0, bW=0, matchCount=0;
+ let threshold = (streakL >= 2) ? 98 : (streakL === 1 ? 92 : 87);
+
+ // 2. Entropy Check
+ const entropy = getEntropy(arch);
+ document.getElementById('entropy-v').innerText = (entropy*100).toFixed(1) + "%";
+ document.getElementById('entropy-v').style.color = entropy > 0.8 ? "var(--r)" : "#888";
+
+ // 3. Saturation (Dragon Wall)
+ let currentS = 1;
+ for(let i=len-1; i>0; i--){ if(arch[i]===arch[i-1]) currentS++; else break; }
+ let maxS = 0, tempS = 1;
+ for(let i=1; i<len-1; i++){
+  if(arch[i]===arch[i-1]) tempS++;
+  else { maxS = Math.max(maxS, tempS); tempS = 1; }
+ }
+ const sat = (currentS / (maxS || 2)) * 100;
+ document.getElementById('sat-v').innerText = sat.toFixed(0) + "%";
+ document.getElementById('sat-v').style.color = sat >= 100 ? "var(--r)" : "#888";
+
+ // Deep Scan (95 layers of history)
+ for(let d=2; d<=95; d++){
+  if(len<d) break;
+  const pat=arch.slice(-d).join('');
+  const weight = Math.pow(d, 9.8);
+  for(let i=0; i<len-d; i++){
+   if(arch.slice(i, i+d).join('')===pat){
+    const decay = Math.exp((i-len)/15); 
+    if(arch[i+d]==='P') pW+=(weight*decay); else bW+=(weight*decay);
+    matchCount++;
+   }
+  }
+ }
+
+ const total=pW+bW;
+ document.getElementById('r-ui').innerText = matchCount;
+
+ // [โหมดโหด] เงื่อนไขการหยุด
+ if(total===0 || matchCount < 4) return wait("NO TRANSITION DATA");
+ if(entropy > 0.85) return wait("CHAOS DETECTED");
+ 
+ const pP=(pW/total)*100, pB=(bW/total)*100, max=Math.max(pP,pB);
+ const sig=document.getElementById('sig'), intel=document.getElementById('intel');
+
+ if(max >= threshold){
+  nextMove = pP>pB?'P':'B';
+  
+  // จุดดักตัดมังกร (Breakpoint)
+  if(sat >= 100 && nextMove === arch[len-1] && max < 95){
+    return wait("BREAKPOINT REACHED");
+  }
+
+  sig.innerText = nextMove==='P'?'PLAYER':'BANKER';
+  sig.style.color = nextMove==='P'?'var(--p)':'var(--b)';
+  document.getElementById('prob').innerText = max.toFixed(1)+'%';
+  
+  if(streakL >= 2) {
+   intel.innerText = "SLAYER MODE LOCK (98%)";
+   intel.style.color = "var(--r)";
+  } else {
+   intel.innerText = sat > 80 ? "CAUTION: END OF STREAK" : "TRANSITION CONFIRMED";
+   intel.style.color = "var(--n)";
+  }
+  document.getElementById('state-v').innerText = "STABLE";
+  document.getElementById('m-state').style.borderColor = "var(--n)";
+ } else {
+  wait("LOW PROBABILITY");
+ }
+}
+
+function wait(m){
+ nextMove=null; document.getElementById('sig').innerText="WAIT";
+ document.getElementById('sig').style.color="#111";
+ document.getElementById('prob').innerText="---";
+ document.getElementById('intel').innerText=m;
+ document.getElementById('intel').style.color="#444";
+ document.getElementById('state-v').innerText = "OBSERVE";
+ document.getElementById('m-state').style.borderColor = "#222";
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=9999;
+ document.getElementById('w-ui').innerText=wins; 
+ document.getElementById('n-ui').innerText=net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; ui(); engine(); } }
+</script>
+</body>
+</html>

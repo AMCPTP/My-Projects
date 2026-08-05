@@ -1,0 +1,1 @@
+export const State={history:[],prediction:null,confidence:0,statistics:{wins:0,losses:0,total:0},engines:{},weights:{},learning:{},heatmap:{}};

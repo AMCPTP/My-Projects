@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NEURAL APEX v3 PRO</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;padding:20px;
+font-family:Segoe UI,Arial,sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+color:#fff;max-width:900px;margin:auto;
+}
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,.15);
+border-radius:24px;padding:18px;margin-bottom:18px;
+}
+h1{text-align:center}
+.signal{text-align:center;font-size:42px;font-weight:bold}
+.wait{color:#facc15}
+.player{color:#38bdf8}
+.banker{color:#fb7185}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{
+border:none;border-radius:18px;padding:18px;
+font-size:28px;font-weight:bold;color:white;cursor:pointer
+}
+.p{background:#0284c7}.b{background:#dc2626}
+.s{background:#475569}
+.stat{font-size:18px;line-height:1.8}
+#history{display:flex;flex-wrap:wrap;gap:6px}
+.node{
+width:32px;height:32px;border-radius:8px;
+display:flex;align-items:center;justify-content:center;
+font-weight:bold
+}
+.gauge{
+height:18px;background:#334155;border-radius:999px;overflow:hidden
+}
+.fill{height:100%;width:0%}
+</style>
+</head>
+<body>
+
+<h1>NEURAL APEX v3 PRO</h1>
+
+<div class="card">
+<div id="signal" class="signal wait">WAIT</div>
+<div style="text-align:center">Confidence <span id="conf">0</span>%</div>
+<div class="gauge"><div id="fill" class="fill"></div></div>
+</div>
+
+<div class="grid card">
+<button class="p" onclick="add('P')">PLAYER</button>
+<button class="b" onclick="add('B')">BANKER</button>
+<button class="s" onclick="undo()">UNDO</button>
+<button class="s" onclick="resetAll()">RESET</button>
+</div>
+
+<div class="card stat">
+Matches: <span id="matches">0</span><br>
+Win Rate: <span id="wr">0</span>%<br>
+Predictions: <span id="pred">0</span>
+</div>
+
+<div class="card">
+<div id="history"></div>
+</div>
+
+<script>
+let arch=[];
+let nextMove=null;
+let wins=0,total=0;
+
+function save(){
+localStorage.setItem("neural_apex_v3",JSON.stringify({arch,wins,total,nextMove}));
+}
+
+function load(){
+try{
+let d=JSON.parse(localStorage.getItem("neural_apex_v3"));
+if(!d) return;
+arch=d.arch||[];
+wins=d.wins||0;
+total=d.total||0;
+nextMove=d.nextMove||null;
+render();
+}catch(e){}
+}
+
+function transitionScore(){
+let s={P:0,B:0};
+if(arch.length<2) return s;
+let last=arch[arch.length-1];
+for(let i=0;i<arch.length-1;i++){
+if(arch[i]===last){
+s[arch[i+1]]++;
+}
+}
+return s;
+}
+
+function trendScore(){
+let recent=arch.slice(-20);
+let p=recent.filter(x=>x==="P").length;
+let b=recent.filter(x=>x==="B").length;
+return {P:p,B:b};
+}
+
+function patternScore(){
+let score={P:0,B:0};
+let match=0;
+
+for(let d=3; d<=Math.min(12,arch.length-1); d++){
+let pat=arch.slice(-d).join("");
+for(let i=0;i<arch.length-d;i++){
+if(arch.slice(i,i+d).join("")===pat){
+let res=arch[i+d];
+if(res){
+let weight=d*d*(1+i/Math.max(1,arch.length));
+score[res]+=weight;
+match++;
+}
+}
+}
+}
+return {score,match};
+}
+
+function analyze(){
+if(arch.length<10) return null;
+
+const patt=patternScore();
+const tran=transitionScore();
+const trend=trendScore();
+
+document.getElementById("matches").textContent=patt.match;
+
+let P=(patt.score.P*0.6)+(trend.P*2)+(tran.P*3);
+let B=(patt.score.B*0.6)+(trend.B*2)+(tran.B*3);
+
+let totalScore=P+B;
+if(totalScore<=0) return null;
+
+let conf=Math.round((Math.max(P,B)/totalScore)*100);
+document.getElementById("conf").textContent=conf;
+document.getElementById("fill").style.width=conf+"%";
+
+if(conf<60 || patt.match<3) return null;
+
+return {
+move:P>B?"P":"B",
+conf
+};
+}
+
+function add(v){
+if(nextMove){
+total++;
+if(nextMove===v) wins++;
+}
+
+arch.push(v);
+
+let r=analyze();
+nextMove=r?r.move:null;
+
+save();
+render();
+}
+
+function render(){
+let sig=document.getElementById("signal");
+
+if(nextMove==="P"){
+sig.className="signal player";
+sig.textContent="PLAYER";
+}else if(nextMove==="B"){
+sig.className="signal banker";
+sig.textContent="BANKER";
+}else{
+sig.className="signal wait";
+sig.textContent="WAIT";
+}
+
+document.getElementById("wr").textContent=total?((wins/total)*100).toFixed(1):0;
+document.getElementById("pred").textContent=total;
+
+document.getElementById("history").innerHTML=arch.map(x=>
+`<div class="node" style="background:${x==="P"?"#0284c7":"#dc2626"}">${x}</div>`
+).join("");
+}
+
+function undo(){
+if(arch.length===0) return;
+arch.pop();
+let r=analyze();
+nextMove=r?r.move:null;
+save();
+render();
+}
+
+function resetAll(){
+if(!confirm("Reset all data?")) return;
+arch=[];wins=0;total=0;nextMove=null;
+localStorage.removeItem("neural_apex_v3");
+render();
+}
+
+load();
+render();
+</script>
+</body>
+</html>

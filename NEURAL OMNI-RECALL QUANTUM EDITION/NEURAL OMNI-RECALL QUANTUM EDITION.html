@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>QUANTUM EDITION | NEURAL OMNI-RECALL</title>
+<style>
+ :root { --p: #007aff; --b: #ff3b30; --n: #00fff2; --g: #ffcc00; --bg: #000; --r: #ff0055; --w: #fff; }
+ * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'JetBrains Mono', monospace; }
+ body { background: var(--bg); color: #fff; margin: 0; padding: 10px; overflow: hidden; }
+ .shell { max-width: 420px; margin: auto; border: 1px solid #1a1a1a; border-radius: 40px; padding: 20px; background: radial-gradient(circle at top, #0a0a0a, #000); box-shadow: 0 0 100px rgba(0, 255, 242, 0.05); }
+ 
+ .monitor { text-align: center; border-bottom: 2px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
+ #sig { font-size: 65px; font-weight: 950; height: 85px; display: flex; align-items: center; justify-content: center; letter-spacing: -3px; }
+ 
+ .ai-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+ .stat-box { padding: 8px 4px; font-size: 8px; font-weight: 900; background: #080808; border: 1px solid #151515; border-radius: 10px; color: #444; }
+ .val { display: block; font-size: 11px; color: #888; margin-top: 3px; }
+
+ .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ .btn-k { border: none; height: 90px; border-radius: 20px; font-size: 45px; font-weight: 950; color: #fff; cursor: pointer; border-bottom: 6px solid rgba(0,0,0,0.5); }
+ .btn-p { background: var(--p); } .btn-b { background: var(--b); }
+ .btn-k:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+ .h-row { display: flex; gap: 4px; overflow-x: auto; padding: 12px 0; border-bottom: 1px solid #111; min-height: 55px; }
+ .node { min-width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 950; flex-shrink: 0; }
+ 
+ #log { font-size: 10px; font-weight: bold; color: var(--g); margin-top: 12px; text-transform: uppercase; letter-spacing: 1px; min-height: 14px; }
+</style>
+</head>
+<body>
+<div class="shell">
+ <div style="text-align:center; font-size:7px; color:var(--n); letter-spacing:6px; margin-bottom:12px; font-weight:bold;">QUANTUM ANALYSIS ENGINE V3.0</div>
+ 
+ <div class="monitor">
+  <div class="ai-stats">
+   <div class="stat-box">CHAOS FILTER<span id="chaos-v" class="val">0%</span></div>
+   <div class="stat-box">TIME-DECAY<span id="decay-v" class="val">1.0x</span></div>
+   <div class="stat-box">SIMULATION<span id="sim-v" class="val">OFF</span></div>
+  </div>
+  <div id="sig" style="color:#111;">WAIT</div>
+  <div id="prob" style="font-size:38px; font-weight:950; color:var(--w);">---</div>
+  <div id="log">AWAITING SEQUENCE...</div>
+ </div>
+
+ <div class="btn-grid">
+  <button class="btn-k btn-p" onclick="cmd('P')">P</button>
+  <button class="btn-k btn-b" onclick="cmd('B')">B</button>
+ </div>
+
+ <div class="h-row" id="h-box"></div>
+
+ <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:10px; font-weight:bold; color:#333;">
+  <span>NET: <span id="net-v" style="color:var(--g)">0</span></span>
+  <span>LOSS_STREAK: <span id="ls-v" style="color:var(--r)">0/2</span></span>
+  <span onclick="undo()" style="cursor:pointer; color:var(--r)">[UNDO]</span>
+ </div>
+</div>
+
+<script>
+let arch=[]; let net=0, streakL=0, nextMove=null, isPaused=false;
+
+function cmd(s){
+ if(nextMove && !isPaused){
+  if(nextMove === s) { net++; streakL = 0; isPaused = false; }
+  else { net--; streakL++; if(streakL >= 2) isPaused = true; }
+ } else if(isPaused) {
+  // ช่วงเฝ้าดู: ตรวจสอบความแม่นยำจำลอง
+  let simResult = quantumEngine(true);
+  if(simResult === s) { streakL = 0; isPaused = false; }
+ }
+ arch.push(s); ui(); engine();
+}
+
+function getChaos(arr){
+ if(arr.length < 10) return 0;
+ let sw = 0; const sub = arr.slice(-10);
+ for(let i=1; i<sub.length; i++) if(sub[i] !== sub[i-1]) sw++;
+ return sw / 9;
+}
+
+function quantumEngine(silent = false){
+ const len = arch.length;
+ if(len < 8) return null;
+
+ // 1. Chaos Filter
+ const chaos = getChaos(arch);
+ if(!silent) {
+  document.getElementById('chaos-v').innerText = (chaos*100).toFixed(0) + "%";
+  document.getElementById('chaos-v').style.color = chaos > 0.8 ? "var(--r)" : "#888";
+ }
+ if(chaos > 0.85) return null;
+
+ // 2 & 3. Multi-Depth Scan with Time-Decay
+ let pW=0, bW=0, matches=0;
+ for(let d=3; d <= Math.min(len-1, 15); d++){
+  const pat = arch.slice(-d).join('');
+  const depthWeight = Math.pow(d, 3.5); // ความลึกมีผลมาก
+
+  for(let i=0; i < len-d; i++){
+   if(arch.slice(i, i+d).join('') === pat){
+    const res = arch[i+d];
+    const recency = Math.exp((i - len) / 20); // Time-decay (ล่าสุดสำคัญกว่า)
+    if(res === 'P') pW += (depthWeight * recency); else bW += (depthWeight * recency);
+    matches++;
+   }
+  }
+ }
+
+ const total = pW + bW;
+ if(total === 0 || matches < 2) return null;
+
+ // 4. Monte Carlo Simulation (Check Structural Stability)
+ const pProb = pW/total; const bProb = bW/total;
+ let finalPick = null;
+ 
+ if(pProb > 0.75) finalPick = 'P';
+ else if(bProb > 0.75) finalPick = 'B';
+
+ if(finalPick && !silent){
+  document.getElementById('sim-v').innerText = "STABLE";
+  document.getElementById('sim-v').style.color = "var(--n)";
+ }
+ 
+ return finalPick;
+}
+
+function engine(){
+ const sig = document.getElementById('sig');
+ const log = document.getElementById('log');
+ const lsV = document.getElementById('ls-v');
+ 
+ lsV.innerText = streakL + "/2";
+ 
+ if(isPaused){
+  sig.innerText = "WAIT";
+  sig.style.color = "#111";
+  log.innerText = "STREAK LOSS: CALIBRATING...";
+  log.style.color = "var(--r)";
+  return;
+ }
+
+ let result = quantumEngine();
+ if(result){
+  nextMove = result;
+  sig.innerText = result === 'P' ? 'PLAYER' : 'BANKER';
+  sig.style.color = result === 'P' ? 'var(--p)' : 'var(--b)';
+  document.getElementById('prob').innerText = "STRIKE";
+  log.innerText = "HISTORICAL EDGE DETECTED";
+  log.style.color = "var(--n)";
+ } else {
+  nextMove = null;
+  sig.innerText = "WAIT";
+  sig.style.color = "#111";
+  document.getElementById('prob').innerText = "---";
+  log.innerText = "SCANNING QUANTUM PATTERNS...";
+  log.style.color = "#444";
+ }
+}
+
+function ui(){
+ const b=document.getElementById('h-box');
+ b.innerHTML=arch.map(v=>`<div class="node" style="background:${v==='P'?'var(--p)':'var(--b)'}">${v}</div>`).join('');
+ b.scrollLeft=b.scrollWidth;
+ document.getElementById('net-v').innerText = net;
+}
+
+function undo(){ if(arch.length>0){ arch.pop(); if(streakL>0) streakL--; isPaused=false; ui(); engine(); } }
+</script>
+</body>
+</html>

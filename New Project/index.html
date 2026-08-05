@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baccarat AI Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Baccarat AI Analyzer</h1>
+        <p>Professional Road Analyzer</p>
+    </header>
+
+    <!-- ========================= -->
+    <!-- Control Panel -->
+    <!-- ========================= -->
+
+    <section class="control-panel">
+
+        <button id="playerBtn" class="player">
+            PLAYER
+        </button>
+
+        <button id="bankerBtn" class="banker">
+            BANKER
+        </button>
+
+        <button id="tieBtn" class="tie">
+            TIE
+        </button>
+
+        <button id="undoBtn">
+            UNDO
+        </button>
+
+        <button id="redoBtn">
+            REDO
+        </button>
+
+        <button id="resetBtn">
+            RESET
+        </button>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+    <section class="statistics">
+
+        <div class="card">
+            <h3>Player</h3>
+            <span id="playerCount">0</span>
+        </div>
+
+        <div class="card">
+            <h3>Banker</h3>
+            <span id="bankerCount">0</span>
+        </div>
+
+        <div class="card">
+            <h3>Tie</h3>
+            <span id="tieCount">0</span>
+        </div>
+
+        <div class="card">
+            <h3>Total</h3>
+            <span id="totalCount">0</span>
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Recommendation -->
+    <!-- ========================= -->
+
+    <section class="recommend">
+
+        <h2>Recommendation</h2>
+
+        <div id="recommendation">
+            WAIT
+        </div>
+
+        <div id="confidence">
+            Confidence : 0%
+        </div>
+
+        <div id="risk">
+            Risk : -
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Pattern -->
+    <!-- ========================= -->
+
+    <section class="pattern">
+
+        <h2>Pattern Detection</h2>
+
+        <ul>
+
+            <li id="dragonStatus">
+                Dragon : -
+            </li>
+
+            <li id="pingpongStatus">
+                Ping Pong : -
+            </li>
+
+            <li id="doubleStatus">
+                Double : -
+            </li>
+
+            <li id="tripleStatus">
+                Triple : -
+            </li>
+
+            <li id="trendStatus">
+                Trend : -
+            </li>
+
+        </ul>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Big Road -->
+    <!-- ========================= -->
+
+    <section class="road">
+
+        <h2>Big Road</h2>
+
+        <div id="bigRoad" class="road-grid">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Big Eye -->
+    <!-- ========================= -->
+
+    <section class="road">
+
+        <h2>Big Eye Boy</h2>
+
+        <div id="bigEyeRoad" class="road-grid">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Small Road -->
+    <!-- ========================= -->
+
+    <section class="road">
+
+        <h2>Small Road</h2>
+
+        <div id="smallRoad" class="road-grid">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Cockroach Road -->
+    <!-- ========================= -->
+
+    <section class="road">
+
+        <h2>Cockroach Pig</h2>
+
+        <div id="cockroachRoad" class="road-grid">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Bead Plate -->
+    <!-- ========================= -->
+
+    <section class="road">
+
+        <h2>Bead Plate</h2>
+
+        <div id="beadPlate" class="bead-grid">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Score -->
+    <!-- ========================= -->
+
+    <section class="score-panel">
+
+        <h2>Analysis Score</h2>
+
+        <table>
+
+            <tr>
+                <td>Dragon Score</td>
+                <td id="dragonScore">0</td>
+            </tr>
+
+            <tr>
+                <td>Pattern Score</td>
+                <td id="patternScore">0</td>
+            </tr>
+
+            <tr>
+                <td>Trend Score</td>
+                <td id="trendScore">0</td>
+            </tr>
+
+            <tr>
+                <td>Road Score</td>
+                <td id="roadScore">0</td>
+            </tr>
+
+            <tr>
+                <td>History Score</td>
+                <td id="historyScore">0</td>
+            </tr>
+
+            <tr>
+                <td>Risk Score</td>
+                <td id="riskScore">0</td>
+            </tr>
+
+            <tr class="total">
+
+                <td>Total</td>
+
+                <td id="totalScore">
+                    0
+                </td>
+
+            </tr>
+
+        </table>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- History -->
+    <!-- ========================= -->
+
+    <section class="history">
+
+        <h2>History</h2>
+
+        <div id="historyList">
+
+        </div>
+
+    </section>
+
+    <!-- ========================= -->
+    <!-- Log -->
+    <!-- ========================= -->
+
+    <section class="log">
+
+        <h2>System Log</h2>
+
+        <textarea
+                id="systemLog"
+                rows="12"
+                readonly>
+
+        </textarea>
+
+    </section>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

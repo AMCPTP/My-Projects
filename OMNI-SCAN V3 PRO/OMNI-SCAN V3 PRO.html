@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNI-SCAN V4 ELITE</title>
+<style>
+:root{--p:#007aff;--b:#ff3b30;--bg:#050505;--card:#0f0f0f;--txt:#fff}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:monospace}
+.container{max-width:420px;margin:auto;padding:15px}
+.card{background:var(--card);border-radius:20px;padding:15px;margin-bottom:15px}
+.signal{font-size:40px;text-align:center;margin:10px 0}
+.prob{text-align:center;font-size:24px;color:#00fff2}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{height:90px;border:none;border-radius:20px;font-size:35px;color:#fff}
+.p{background:var(--p)}
+.b{background:var(--b)}
+.history{display:flex;overflow-x:auto;gap:5px;margin-top:10px}
+.node{min-width:35px;height:35px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.panel{display:flex;justify-content:space-between;margin-top:10px}
+.ctrl{cursor:pointer;padding:8px;background:#111;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card">
+<div class="signal" id="signal">WAIT</div>
+<div class="prob" id="prob">---</div>
+</div>
+
+<div class="card">
+<div class="btns">
+<button class="btn p" onclick="cmd('P')">P</button>
+<button class="btn b" onclick="cmd('B')">B</button>
+</div>
+</div>
+
+<div class="card">
+<b>HISTORY</b>
+<div class="history" id="history"></div>
+<div class="panel">
+<div>Win: <span id="win">0</span></div>
+<div>Loss: <span id="loss">0</span></div>
+<div>Streak: <span id="streak">0</span></div>
+</div>
+</div>
+
+<div class="card panel">
+<div class="ctrl" onclick="undo()">⟲ Undo</div>
+<div class="ctrl" onclick="reset()">⛔ Reset</div>
+</div>
+
+</div>
+
+<script>
+let arch=[];
+let nextMove=null;
+let win=0,loss=0,streak=0;
+
+function cmd(s){
+ if(nextMove){
+  if(nextMove===s){win++; streak++;}
+  else{loss++; streak=0;}
+ }
+ arch.push(s);
+ render();
+ engine();
+}
+
+function engine(){
+ let len=arch.length;
+ if(len<6) return wait('WAIT DATA');
+
+ let p=0,b=0;
+ for(let i=0;i<len-2;i++){
+  let pattern=arch.slice(i,i+2).join('');
+  let next=arch[i+2];
+  if(pattern===arch.slice(-2).join('')){
+   if(next==='P') p++;
+   else b++;
+  }
+ }
+
+ if(p+b<2) return wait('NO EDGE');
+
+ let pProb=p/(p+b)*100;
+ let bProb=b/(p+b)*100;
+
+ nextMove = pProb>bProb?'P':'B';
+ document.getElementById('signal').innerText = nextMove==='P'?'PLAYER':'BANKER';
+ document.getElementById('prob').innerText = Math.max(pProb,bProb).toFixed(1)+'%';
+}
+
+function wait(msg){
+ nextMove=null;
+ document.getElementById('signal').innerText=msg;
+ document.getElementById('prob').innerText='---';
+}
+
+function render(){
+ let h=document.getElementById('history');
+ h.innerHTML = arch.map(x=>`<div class="node" style="background:${x==='P'?'var(--p)':'var(--b)'}">${x}</div>`).join('');
+ h.scrollLeft=9999;
+ document.getElementById('win').innerText=win;
+ document.getElementById('loss').innerText=loss;
+ document.getElementById('streak').innerText=streak;
+}
+
+function undo(){
+ if(arch.length>0){arch.pop(); render(); engine();}
+}
+
+function reset(){
+ arch=[]; win=0; loss=0; streak=0;
+ render(); wait('RESET');
+}
+</script>
+
+</body>
+</html>

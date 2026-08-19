@@ -1,0 +1,1836 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>NEURAL APEX V9.1 | วิเคราะห์ประวัติบาคาร่า</title>
+  <style>
+    :root {
+      --player: #1683ff;
+      --banker: #ff4b43;
+      --tie: #6f707b;
+      --aqua: #24e8d7;
+      --gold: #ffd24a;
+      --red: #ff6f8e;
+      --bg: #050507;
+      --surface: #0c0c10;
+      --surface-raised: #111117;
+      --line: #292931;
+      --text: #f7f7f9;
+      --muted: #90909b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: radial-gradient(circle at top, #112426 0, var(--bg) 43rem);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 14px 36px; }
+    .app-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(12, 12, 16, .96);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+    header { padding: 26px 20px 18px; text-align: center; }
+    .eyebrow { color: var(--aqua); font-size: 10px; font-weight: 900; letter-spacing: .19em; }
+    h1 { margin: 8px 0 6px; font-size: 25px; letter-spacing: -.05em; }
+    .subtitle { max-width: 590px; margin: 0 auto; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 14px 14px; }
+    .metric { min-height: 73px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #08080b; }
+    .metric-label { display: block; color: #82828c; font-size: 8px; font-weight: 900; letter-spacing: .07em; }
+    .metric output { display: block; margin-top: 7px; color: #e0e0e5; font-size: 12px; font-weight: 850; line-height: 1.32; overflow-wrap: anywhere; }
+
+    .forecast {
+      margin: 0 14px;
+      padding: 19px 14px 18px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+    #recommendation { min-height: 43px; font-size: 30px; font-weight: 950; letter-spacing: -.055em; }
+    #recommendation .forecast-label { display:block; margin-bottom:4px; color:#8f8f9a; font-size:10px; font-weight:900; letter-spacing:.12em; }
+    #recommendation .forecast-pick { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border:1px solid currentColor; border-radius:14px; line-height:1; }
+    #recommendation .forecast-pick.player { color:var(--player); background:rgba(22,131,255,.12); }
+    #recommendation .forecast-pick.banker { color:var(--banker); background:rgba(255,75,67,.12); }
+    #recommendation .forecast-pick.tie { color:var(--gold); background:rgba(255,210,74,.10); }
+    #recommendation .forecast-pick .pick-code { font-size:32px; font-weight:1000; }
+    #recommendation .forecast-pick .pick-name { font-size:18px; font-weight:950; }
+    #forecast-probability { margin-top: 8px; color: #d6d6dc; font-size: 13px; font-weight: 800; }
+    .prob-p { color:var(--player); font-weight:950; }
+    .prob-b { color:var(--banker); font-weight:950; }
+    .prob-t { color:var(--gold); font-weight:950; }
+    #message { min-height: 36px; max-width: 580px; margin: 8px auto 0; color: var(--muted); font-size: 11px; font-weight: 700; line-height: 1.5; }
+
+    .result-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px; }
+    .result-button {
+      min-height: 82px;
+      border: 0;
+      border-bottom: 6px solid rgba(0, 0, 0, .35);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 34px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: filter .14s ease, transform .14s ease;
+    }
+    .result-button:hover { filter: brightness(1.08); }
+    .result-button:active, .small-button:active { transform: translateY(2px); }
+    .player { background: var(--player); }
+    .banker { background: var(--banker); }
+    .tie { background: #555560; font-size: 25px; }
+
+    .section { margin: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #08080b; }
+    .section-title { margin: 0 0 5px; color: var(--aqua); font-size: 10px; font-weight: 950; letter-spacing: .08em; }
+    .section-description { margin: 0 0 12px; color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.45; }
+
+    /* Baccarat-road order: top-left downward for six outcomes, then right. */
+    .history {
+      display: grid;
+      grid-template-rows: repeat(6, 42px);
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(42px, 1fr);
+      gap: 8px;
+      min-height: 292px;
+      padding: 2px 0;
+      overflow-x: auto;
+    }
+    .history-empty {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      display: grid;
+      min-height: 44px;
+      place-items: center;
+      border: 1px dashed #30303a;
+      border-radius: 11px;
+      color: #7f7f8b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .history-node {
+      display: grid;
+      min-width: 0;
+      min-height: 42px;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 950;
+      box-shadow: inset 0 -2px rgba(0, 0, 0, .16);
+    }
+    .history-node.player { background: var(--player); }
+    .history-node.banker { background: var(--banker); }
+    .history-node.tie { background: var(--tie); font-size: 14px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    .small-button {
+      min-height: 35px;
+      border: 1px solid #373742;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--surface-raised);
+      color: #e1e1e7;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .small-button:hover:not(:disabled) { border-color: #626270; }
+    .small-button.danger { border-color: #733447; color: #ffb0c0; }
+    .small-button:disabled { cursor: not-allowed; opacity: .42; }
+
+    .analysis-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .detail { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #0b0b0f; }
+    .detail-wide { grid-column: 1 / -1; }
+    .detail-decision { border-color: #3e4d56; background: linear-gradient(135deg, #0c1719, #0b0b0f 58%); }
+    .detail-label { display: block; color: #868690; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+    .detail output { display: block; margin-top: 6px; color: #dedee4; font-size: 12px; font-weight: 850; line-height: 1.35; overflow-wrap: anywhere; }
+
+    .notice { margin: 15px 18px 19px; color: #85858f; font-size: 10px; line-height: 1.55; text-align: center; }
+    .notice strong { color: #d3d3da; }
+
+    @media (max-width: 440px) {
+      .shell { padding: 9px 8px 28px; }
+      .app-card { border-radius: 20px; }
+      header { padding: 22px 16px 16px; }
+      .metrics { gap: 6px; padding: 0 10px 10px; }
+      .metric { min-height: 68px; padding: 8px; }
+      .metric output { font-size: 11px; }
+      #recommendation { font-size: 27px; }
+      .history { gap: 6px; }
+      .history { grid-template-rows: repeat(6, 39px); min-height: 270px; }
+      .history-node { min-height: 39px; }
+      .analysis-details { gap: 6px; }
+    }
+  
+    .pattern-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .pattern-card { border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(255,255,255,.02); }
+    .pattern-card.active { border-color:var(--aqua); box-shadow:0 0 0 1px rgba(36,232,215,.12) inset; }
+    .pattern-card .pattern-head { display:flex; justify-content:space-between; gap:8px; font-weight:700; }
+    .pattern-card .pattern-sub { color:var(--muted); font-size:.82rem; margin-top:5px; line-height:1.45; }
+    .pattern-card .pattern-stat { margin-top:8px; font-size:.84rem; line-height:1.5; }
+    .pattern-bar { height:5px; border-radius:99px; background:#202027; overflow:hidden; margin-top:7px; }
+    .pattern-bar > span { display:block; height:100%; background:var(--aqua); border-radius:99px; }
+    @media (max-width:520px) { .pattern-grid { grid-template-columns:1fr; } }
+
+    .v9-badge { font-size:.42em; letter-spacing:.08em; padding:5px 8px; border:1px solid var(--aqua); border-radius:999px; color:var(--aqua); vertical-align:middle; }
+    .legacy-pattern { display:none !important; }
+    .v9-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v9-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v9-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v9-card strong { display:block; margin-top:6px; font-size:1.35rem; }
+    .v9-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.4; }
+    .v9-decision { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:16px; font-size:1.2rem; font-weight:800; }
+    .v9-reasons,.v9-failure { margin-top:10px; color:var(--muted); line-height:1.6; }
+    @media (max-width:700px) { .v9-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { .v9-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <section class="app-card">
+      <header>
+        <div class="eyebrow">HISTORY · PROBABILITY · AUDIT</div>
+        <h1>NEURAL APEX <span class="v9-badge">V9.1 · EDGE ANALYST</span></h1>
+        <p class="subtitle">V9.1 แยก “การคาดการณ์” ออกจาก “การตัดสินใจ” และตรวจสอบตัวคาดการณ์ V9.1 ด้วย walk-forward ตัวเดียวกับที่ใช้จริง. เน้น Edge, Evidence Depth, Regime, Consensus, Recent-vs-Long Skill และสิทธิ์ <strong>NO EDGE</strong> เมื่อหลักฐานไม่พอ</p>
+      </header>
+
+      <div class="metrics" aria-live="polite">
+        <div class="metric"><span class="metric-label">มุมมองเชิงสถิติตาถัดไป</span><output id="next-side">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">P / B / T จากผลที่บันทึก</span><output id="history-probability">--</output></div>
+        <div class="metric"><span class="metric-label">จำนวนตาที่บันทึก</span><output id="hands-recorded">0 ตา</output></div>
+        <div class="metric"><span class="metric-label">บริบทล่าสุดที่เทียบได้</span><output id="matched-context">--</output></div>
+        <div class="metric"><span class="metric-label">Walk-forward · ถูก / ผิด</span><output id="walk-forward">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">BRIER SKILL เทียบฐานอ้างอิงคงที่</span><output id="brier-skill">--</output></div>
+      </div>
+
+      <section class="forecast" aria-live="polite">
+        <div id="recommendation">รอข้อมูล</div>
+        <div id="forecast-probability">รอผลจริงอย่างน้อย 1 ตา</div>
+        <div id="message">เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะตรวจสอบใหม่จากประวัติทั้งหมดทันที</div>
+      </section>
+
+      <div class="result-buttons" aria-label="บันทึกผลของตาที่เพิ่งจบ">
+        <button class="result-button player" type="button" data-result="P" aria-label="บันทึก Player ชนะ">P</button>
+        <button class="result-button banker" type="button" data-result="B" aria-label="บันทึก Banker ชนะ">B</button>
+        <button class="result-button tie" type="button" data-result="T" aria-label="บันทึก Tie">T</button>
+      </div>
+
+      <section class="section" aria-label="ประวัติผล">
+        <h2 class="section-title">ประวัติผล</h2>
+        <p class="section-description">เริ่มที่มุมซ้ายบน แล้วเรียงลงล่างทีละตา; ครบ 6 ตาแล้วเริ่มชุดถัดไปทางขวาอัตโนมัติ</p>
+        <div id="history" class="history"></div>
+        <div class="actions">
+          <button class="small-button" id="undo" type="button">ย้อนกลับ 1 ตา</button>
+          <button class="small-button danger" id="reset" type="button">รีเซ็ตประวัติ</button>
+        </div>
+      </section>
+
+      <section class="section v9-console" aria-label="V9 Edge Analyst">
+        <h2 class="section-title">V9 EDGE ANALYST · วิเคราะห์แบบคัดเฉพาะจังหวะ</h2>
+        <p class="section-description">ไม่ถามแค่ว่า “ฝั่งไหนนำ” แต่ถามว่า “นำเหนือฐานมากพอหรือไม่ และหลักฐานน่าเชื่อถือแค่ไหน” ทุกตัวชี้วัดคำนวณแบบไม่ใช้ข้อมูลอนาคต</p>
+        <div class="v9-grid">
+          <div class="v9-card"><span>EDGE</span><strong id="v9-edge">--</strong><small id="v9-edge-detail">--</small></div>
+          <div class="v9-card"><span>SIGNAL QUALITY</span><strong id="v9-confidence">--</strong><small id="v9-confidence-detail">--</small></div>
+          <div class="v9-card"><span>EVIDENCE DEPTH</span><strong id="v9-sample">--</strong><small id="v9-sample-detail">--</small></div>
+          <div class="v9-card"><span>REGIME</span><strong id="v9-regime">--</strong><small id="v9-regime-detail">--</small></div>
+          <div class="v9-card"><span>CONSENSUS</span><strong id="v9-consensus">--</strong><small id="v9-consensus-detail">--</small></div>
+          <div class="v9-card"><span>RECENT VS LONG</span><strong id="v9-divergence">--</strong><small id="v9-divergence-detail">--</small></div>
+        </div>
+        <div class="v9-decision" id="v9-decision">รอข้อมูล</div>
+        <div class="v9-reasons" id="v9-reasons">บันทึกผลจริงเพื่อสร้างหลักฐาน</div>
+        <div class="v9-failure" id="v9-failure">ERROR ATTRIBUTION · ยังไม่มีข้อมูลตรวจสอบ</div><div class="v9-failure" id="v9-abstention">ABSTENTION RATE · ยังไม่มีข้อมูล</div>
+      </section>
+
+      <section class="section legacy-pattern" aria-label="Pattern Engine" style="display:none">
+        <h2 class="section-title">PATTERN ENGINE · รูปแบบ P / B</h2>
+        <p class="section-description">ตรวจรูปแบบที่กำหนดจากผล P/B จริง โดย T ไม่ถูกนับเป็น P/B ของ pattern. สถิติย้อนหลังใช้เฉพาะเหตุการณ์ที่ pattern ปรากฏก่อนผลถัดไป เพื่อรักษา walk-forward และไม่ใช้ผลอนาคต.</p>
+        <div class="analysis-details">
+          <div class="detail detail-wide"><span class="detail-label">PATTERN READ · ตรวจครบทั้ง 13 รูปแบบ</span><output id="pattern-current">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">PATTERN FORECAST · คาดการณ์จาก Pattern ที่ตรงกัน</span><output id="pattern-forecast">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">PATTERN ENSEMBLE · รวมคะแนนจาก Pattern ที่ตรงกัน</span><output id="pattern-ensemble-weight">รอข้อมูล</output></div>
+        </div>
+        <div id="pattern-grid" class="pattern-grid"></div>
+      </section>
+
+      <section class="section" aria-label="รายละเอียดการวิเคราะห์">
+        <h2 class="section-title">การตรวจสอบโมเดล</h2>
+        <p class="section-description">ให้บริบทซ้ำหลายชั้น, ผลต่อจากตาล่าสุด, รูปทรง run/สลับ และสภาพล่าสุด เป็น ensemble เดียว น้ำหนักของแต่ละมุมมองมาจากผลงานย้อนหลังของมันเอง ระบบจำแนกทุกตาเป็น FOLLOW / WATCH / CUT จากความเสี่ยง, calibration และการพลาดติดกัน โดยทุกคะแนนใช้เฉพาะข้อมูลที่มีอยู่ก่อนตานั้น</p>
+        <div class="analysis-details">
+          <div class="detail"><span class="detail-label">สัดส่วนผลจริง P / B / T</span><output id="observed-ratio">--</output></div>
+          <div class="detail"><span class="detail-label">บริบทหลักจากประวัติทั้งหมด</span><output id="context-detail">--</output></div>
+          <div class="detail"><span class="detail-label">ผลทดสอบย้อนหลัง · ถูก / ผิด</span><output id="audit-record">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">BRIER SCORE · โมเดล / ฐาน</span><output id="brier-score">--</output></div>
+          <div class="detail"><span class="detail-label">CALIBRATION (ECE)</span><output id="calibration">--</output></div>
+          <div class="detail"><span class="detail-label">RECENT SKILL DELTA · ล่าสุดเทียบระยะยาว</span><output id="recent-skill-delta">--</output></div>
+          <div class="detail"><span class="detail-label">ABSTENTION · สัดส่วน NO EDGE / WATCH</span><output id="abstention-rate">--</output></div>
+          <div class="detail"><span class="detail-label">สถานะการตรวจสอบ</span><output id="audit-status">กำลังเก็บข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">RISK GUARD · จังหวะตัด</span><output id="risk-guard">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">ปรับตัวหลังผลล่าสุด</span><output id="adaptation-status">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">TIMING MODE · ตาม / เฝ้า / ตัด</span><output id="timing-mode">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">RISK INDEX · ความเสี่ยงสัญญาณ</span><output id="risk-index">--</output></div>
+          <div class="detail"><span class="detail-label">GAME STATE · สภาพลำดับล่าสุด</span><output id="game-state">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">MIRAGE FILTER · ภาพลวงตา</span><output id="mirage-filter">รอข้อมูล</output></div>
+          <div class="detail detail-wide detail-decision"><span class="detail-label">TACTICAL READ · จังหวะอ่าน / ตัดสัญญาณ</span><output id="tactical-decision">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">ENSEMBLE EVIDENCE · น้ำหนักและความเห็นของโมเดล</span><output id="ensemble-evidence">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">การเรียนรู้และแก้ความคลาดเคลื่อน</span><output id="repair-plan">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">สาเหตุความเสี่ยง</span><output id="risk-reasons">รอข้อมูล</output></div>
+        </div>
+      </section>
+
+      <p class="notice"><strong>หลักการสำคัญ:</strong> ลำดับผลที่ผ่านมาไม่พิสูจน์ว่าตาถัดไปถูกควบคุมหรือ “หลอก” ได้ ระบบจึงเรียกสิ่งที่พบว่าเป็น <em>ภาพลวงตาทางสถิติ</em> และจะลดความเชื่อในสัญญาณเฉพาะรูปทรงเมื่อการทดสอบย้อนหลัง, จำนวนตัวอย่าง, regime หรือโมเดลหลายมุมมองไม่สนับสนุนกัน แม้ยังคงคาดการณ์เชิงความน่าจะเป็นทุกตา</p>
+    </section>
+  </main>
+
+  <script>
+  'use strict';
+
+  /*
+   * Results-only statistical audit. The model is deterministic: equal input
+   * history always gives equal output. It reads every saved outcome through
+   * complementary experts, and measures each one with expanding-window
+   * walk-forward validation before trusting its influence.
+   */
+  const STORAGE_KEY = 'neural-apex-history-audit-v4';
+  const LEGACY_KEYS = Object.freeze([
+    'neural-apex-history-audit-v3',
+    'neural-apex-baccarat-audit-v4',
+    'neural-apex-baccarat-audit-v3',
+    'neural-apex-audited-forecast-v3'
+  ]);
+  const OUTCOMES = Object.freeze(['P', 'B', 'T']);
+  const OUTCOME_NAME = Object.freeze({ P: 'PLAYER', B: 'BANKER', T: 'TIE' });
+  const BASE = Object.freeze({ P: 0.446246609, B: 0.458597423, T: 0.095155968 });
+  const MODEL = Object.freeze({
+    // Every recorded hand contributes to the global distribution.  The last
+    // sequence only selects comparable historical continuations; it never
+    // discards the rest of the history.
+    maximumContextDepth: 16,
+    contextPrior: 12,
+    adaptiveMinimumObservations: 12,
+    adaptiveRecentWindow: 100,
+    adaptivePrior: 24,
+    adaptiveStrength: 0.60,
+    adaptiveCap: 0.04,
+    // Start the first walk-forward check on the 10th recorded hand.
+    minimumWalkForwardHistory: 9,
+    reviewSample: 300,
+    recentReviewSample: 100,
+    meaningfulSkill: 0.01,
+    minimumForecastMargin: 0.015,
+    maximumCalibrationError: 0.03,
+    confidenceZ: 1.96,
+    ensembleMinimumObservations: 18,
+    ensembleRecentWindow: 96,
+    ensembleTemperature: 4,
+    ensembleFloor: 0.12,
+    featurePrior: 14,
+    minimumFeatureObservations: 5,
+    regimeRecentWindow: 24,
+    regimePrior: 18,
+    regimeShiftThreshold: 0.12,
+    maximumExpertDisagreement: 0.055,
+    minimumTacticalHistory: 48,
+    minimumTacticalValidation: 36,
+    minimumFollowMargin: 0.025,
+    maximumFollowRisk: 35,
+    criticalMissStreak: 3,
+    expertBaseWeights: Object.freeze({ context: 0.92, transition: 0.72, state: 0.62, pattern: 0.58 })
+  });
+  const EXPERTS = Object.freeze(['context', 'transition', 'state', 'pattern']);
+  const EXPERT_NAME = Object.freeze({
+    context: 'บริบทซ้ำหลายชั้น',
+    transition: 'จังหวะต่อเนื่อง',
+    state: 'รูปทรง run / สลับ',
+    pattern: 'Pattern Engine'
+  });
+
+  let rounds = [];
+  let auditCache = null;
+  const dom = {
+    nextSide: document.getElementById('next-side'),
+    historyProbability: document.getElementById('history-probability'),
+    handsRecorded: document.getElementById('hands-recorded'),
+    matchedContext: document.getElementById('matched-context'),
+    walkForward: document.getElementById('walk-forward'),
+    brierSkill: document.getElementById('brier-skill'),
+    recommendation: document.getElementById('recommendation'),
+    forecastProbability: document.getElementById('forecast-probability'),
+    message: document.getElementById('message'),
+    history: document.getElementById('history'),
+    observedRatio: document.getElementById('observed-ratio'),
+    contextDetail: document.getElementById('context-detail'),
+    auditRecord: document.getElementById('audit-record'),
+    brierScore: document.getElementById('brier-score'),
+    calibration: document.getElementById('calibration'), recentSkillDelta: document.getElementById('recent-skill-delta'), abstentionRate: document.getElementById('abstention-rate'),
+    auditStatus: document.getElementById('audit-status'),
+    riskGuard: document.getElementById('risk-guard'),
+    adaptationStatus: document.getElementById('adaptation-status'),
+    timingMode: document.getElementById('timing-mode'),
+    riskIndex: document.getElementById('risk-index'),
+    gameState: document.getElementById('game-state'),
+    mirageFilter: document.getElementById('mirage-filter'),
+    tacticalDecision: document.getElementById('tactical-decision'),
+    ensembleEvidence: document.getElementById('ensemble-evidence'),
+    repairPlan: document.getElementById('repair-plan'),
+    riskReasons: document.getElementById('risk-reasons'),
+    patternCurrent: document.getElementById('pattern-current'),
+    patternForecast: document.getElementById('pattern-forecast'),
+    patternEnsembleWeight: document.getElementById('pattern-ensemble-weight'),
+    patternGrid: document.getElementById('pattern-grid'),
+    v9Edge: document.getElementById('v9-edge'), v9EdgeDetail: document.getElementById('v9-edge-detail'),
+    v9Confidence: document.getElementById('v9-confidence'), v9ConfidenceDetail: document.getElementById('v9-confidence-detail'), v9Abstention: document.getElementById('v9-abstention'),
+    v9Sample: document.getElementById('v9-sample'), v9SampleDetail: document.getElementById('v9-sample-detail'),
+    v9Regime: document.getElementById('v9-regime'), v9RegimeDetail: document.getElementById('v9-regime-detail'),
+    v9Consensus: document.getElementById('v9-consensus'), v9ConsensusDetail: document.getElementById('v9-consensus-detail'),
+    v9Divergence: document.getElementById('v9-divergence'), v9DivergenceDetail: document.getElementById('v9-divergence-detail'),
+    v9Decision: document.getElementById('v9-decision'), v9Reasons: document.getElementById('v9-reasons'), v9Failure: document.getElementById('v9-failure'),
+    undo: document.getElementById('undo'),
+    reset: document.getElementById('reset')
+  };
+
+  function isOutcome(value) {
+    return OUTCOMES.includes(value);
+  }
+  function percent(value, digits) {
+    return Number.isFinite(value) ? (value * 100).toFixed(digits === undefined ? 2 : digits) + '%' : '--';
+  }
+  function signedPercent(value, digits) {
+    return Number.isFinite(value) ? (value >= 0 ? '+' : '') + (value * 100).toFixed(digits === undefined ? 1 : digits) + '%' : '--';
+  }
+  function score(value) {
+    return Number.isFinite(value) ? value.toFixed(3) : '--';
+  }
+  function topOutcome(probabilities) {
+    return OUTCOMES.reduce(function(best, side) {
+      return probabilities[side] > probabilities[best] ? side : best;
+    }, 'P');
+  }
+  function normalise(probabilities) {
+    const total = OUTCOMES.reduce(function(sum, side) { return sum + probabilities[side]; }, 0);
+    if (!Number.isFinite(total) || total <= 0) return { P: BASE.P, B: BASE.B, T: BASE.T };
+    return {
+      P: probabilities.P / total,
+      B: probabilities.B / total,
+      T: probabilities.T / total
+    };
+  }
+  function outcomeCounts(data) {
+    const counts = { P: 0, B: 0, T: 0 };
+    for (const result of data) counts[result]++;
+    return counts;
+  }
+  function posterior(counts, prior, strength) {
+    return normalise({
+      P: counts.P + prior.P * strength,
+      B: counts.B + prior.B * strength,
+      T: counts.T + prior.T * strength
+    });
+  }
+  function emptyMaps() {
+    return [];
+  }
+  function clamp(value, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, value));
+  }
+  function totalVariation(left, right) {
+    return OUTCOMES.reduce(function(total, side) {
+      return total + Math.abs(left[side] - right[side]);
+    }, 0) / 2;
+  }
+  function addFeature(map, key, outcome) {
+    const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
+    entry[outcome]++;
+    entry.total++;
+    map.set(key, entry);
+  }
+  function entryProbability(entry, fallback, prior) {
+    return entry && entry.total ? posterior(entry, fallback, prior) : fallback;
+  }
+  function makeSequenceState(last, side, runLength, alternatingLength) {
+    const runBucket = side ? Math.min(runLength, 6) : 0;
+    const alternatingBucket = side ? Math.min(alternatingLength, 8) : 0;
+    const mode = !side ? 'none' : runLength >= 3 ? 'run' : alternatingLength >= 4 ? 'chop' : 'mixed';
+    return {
+      last: last,
+      side: side,
+      runLength: runLength,
+      alternatingLength: alternatingLength,
+      mode: mode,
+      transitionKey: 'last:' + (last || 'none'),
+      runKey: 'run:' + (side || 'none') + ':' + runBucket,
+      chopKey: 'chop:' + (side || 'none') + ':' + alternatingBucket,
+      stateKey: 'state:' + mode + ':' + (side || 'none') + ':' + runBucket + ':' + alternatingBucket + ':' + (last || 'none')
+    };
+  }
+  function stepSequenceState(summary, outcome) {
+    const next = {
+      last: outcome,
+      side: summary.side,
+      runLength: summary.runLength,
+      alternatingLength: summary.alternatingLength
+    };
+    if (outcome !== 'T') {
+      if (outcome === summary.side) {
+        next.runLength++;
+        next.alternatingLength = 1;
+      } else {
+        next.side = outcome;
+        next.runLength = 1;
+        next.alternatingLength = summary.side ? summary.alternatingLength + 1 : 1;
+      }
+    }
+    return next;
+  }
+  function sequenceState(data, endIndex) {
+    const end = endIndex === undefined ? data.length : endIndex;
+    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
+    for (let index = 0; index < end; index++) summary = stepSequenceState(summary, data[index]);
+    return makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
+  }
+  const PATTERN_DEFS = Object.freeze([
+    { id:'dragon', label:'🐉 มังกร', example:'BBBBBB', test:function(s){ return /B{6,}$/.test(s); }, match:function(s){ return /B{6,}$/.test(s); }, desc:'Banker ต่อเนื่อง ≥ 6' },
+    { id:'pingpong', label:'🏓 ปิงปอง', example:'BPBPBP', test:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, match:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, desc:'สลับ P/B ต่อเนื่อง ≥ 6' },
+    { id:'skip', label:'ลูกโดด', example:'BPBPBP', test:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, match:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, desc:'รูปสลับแบบลูกโดด' },
+    { id:'twoTwo', label:'2-2', example:'BBPPBBPP', test:function(s){ return /(?:BBPP){2,}$/.test(s) || /(?:PPBB){2,}$/.test(s); }, match:function(s){ return /(?:BBPP){2,}$|(?:PPBB){2,}$/.test(s); }, desc:'2 ฝั่งหนึ่ง / 2 อีกฝั่ง' },
+    { id:'threeThree', label:'3-3', example:'BBBPPPBBBPPP', test:function(s){ return /(?:BBBPPP){2,}$/.test(s) || /(?:PPPBBB){2,}$/.test(s); }, match:function(s){ return /(?:BBBPPP){2,}$|(?:PPPBBB){2,}$/.test(s); }, desc:'3 ฝั่งหนึ่ง / 3 อีกฝั่ง' },
+    { id:'fourFour', label:'4-4', example:'BBBBPPPPBBBB', test:function(s){ return /(?:BBBBPPPP){2,}$/.test(s) || /(?:PPPPBBBB){2,}$/.test(s); }, match:function(s){ return /(?:BBBBPPPP){2,}$|(?:PPPPBBBB){2,}$/.test(s); }, desc:'4 ฝั่งหนึ่ง / 4 อีกฝั่ง' },
+    { id:'oneTwo', label:'1-2', example:'BPPBPPBPP', test:function(s){ return /(?:BPP){2,}$/.test(s) || /(?:PBB){2,}$/.test(s); }, match:function(s){ return /(?:BPP){2,}$|(?:PBB){2,}$/.test(s); }, desc:'1 ต่อ 2 ซ้ำ' },
+    { id:'twoOne', label:'2-1', example:'BBPBBPBBP', test:function(s){ return /(?:BBP){2,}$/.test(s) || /(?:PBB){2,}$/.test(s); }, match:function(s){ return /(?:BBP){2,}$|(?:PBB){2,}$/.test(s); }, desc:'2 ต่อ 1 ซ้ำ' },
+    { id:'brokenDragon', label:'มังกรขาด', example:'BBBBBPBBBB', test:function(s){ return /B{5,}PB{1,}$/.test(s) || /P{5,}BP{1,}$/.test(s); }, match:function(s){ return /B{5,}PB{1,}$|P{5,}BP{1,}$/.test(s); }, desc:'run ยาว → ถูกตัด → กลับฝั่งเดิม' },
+    { id:'streak', label:'Streak', example:'BBBBBB', test:function(s){ return /(B{3,}|P{3,})$/.test(s); }, match:function(s){ return /(B{3,}|P{3,})$/.test(s); }, desc:'run ต่อเนื่อง ≥ 3' },
+    { id:'chop', label:'Chop', example:'BPBPBP', test:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, match:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, desc:'สลับต่อเนื่อง ≥ 6' },
+    { id:'dragonBanker', label:'มังกร Banker', example:'BBBBBBB', test:function(s){ return /B{7,}$/.test(s); }, match:function(s){ return /B{7,}$/.test(s); }, desc:'Banker streak ≥ 7' },
+    { id:'dragonPlayer', label:'มังกร Player', example:'PPPPPPP', test:function(s){ return /P{7,}$/.test(s); }, match:function(s){ return /P{7,}$/.test(s); }, desc:'Player streak ≥ 7' }
+  ]);
+  function decisiveData(data) { return data.filter(function(x){ return x === 'P' || x === 'B'; }); }
+    function patternStats(data, def) {
+    const seq = decisiveData(data);
+    const current = seq.join('');
+    const matches = [];
+
+    // ตรวจย้อนหลังแบบ walk-forward: ถ้า prefix ตรง Pattern
+    // ให้ผลจริงของตาถัดไปเป็น target โดยไม่ใช้ข้อมูลอนาคต
+    for (let end = 1; end < seq.length; end++) {
+      const prefix = seq.slice(0, end).join('');
+      if (def.match(prefix)) matches.push({ index: end, actual: seq[end] });
+    }
+
+    const counts = { P:0, B:0, T:0 };
+    matches.forEach(function(m) { counts[m.actual]++; });
+
+    const total = counts.P + counts.B + counts.T;
+    const probability = total
+      ? normalise({
+          P: counts.P + BASE.P * MODEL.patternPrior,
+          B: counts.B + BASE.B * MODEL.patternPrior,
+          T: counts.T + BASE.T * MODEL.patternPrior
+        })
+      : null;
+
+    return {
+      active: def.test(current),
+      current: current,
+      counts: counts,
+      total: total,
+      probability: probability,
+      prediction: probability ? topOutcome(probability) : null,
+      reliability: total / (total + MODEL.patternPrior)
+    };
+  }
+
+  function patternAnalysis(data) {
+    // ตรวจครบทั้ง 13 Pattern ทุกครั้ง
+    const stats = {};
+    const matched = [];
+
+    PATTERN_DEFS.forEach(function(def) {
+      const stat = patternStats(data, def);
+      stats[def.id] = stat;
+      if (stat.active) {
+        matched.push({ id:def.id, label:def.label, stat:stat });
+      }
+    });
+
+    // เฉพาะ Pattern ที่ "ตรงกับสถานะปัจจุบัน" เท่านั้นที่มีสิทธิ์ลงคะแนน
+    const votes = [];
+    const score = { P:0, B:0, T:0 };
+
+    matched.forEach(function(item) {
+      const stat = item.stat;
+
+      if (!stat.probability || stat.total === 0) {
+        votes.push({
+          id:item.id, label:item.label, prediction:null, weight:0,
+          reliability:stat.reliability, total:stat.total,
+          probability:stat.probability, matched:true
+        });
+        return;
+      }
+
+      // น้ำหนักเรียนรู้จากหลักฐานย้อนหลังของ Pattern ตัวนั้นเอง
+      const peak = Math.max(stat.probability.P, stat.probability.B, stat.probability.T);
+      const weight = Math.max(0.01, stat.reliability * peak);
+
+      OUTCOMES.forEach(function(side) {
+        score[side] += stat.probability[side] * weight;
+      });
+
+      votes.push({
+        id:item.id, label:item.label, prediction:stat.prediction,
+        weight:weight, reliability:stat.reliability, total:stat.total,
+        probability:stat.probability, matched:true
+      });
+    });
+
+    const activeVotes = votes.filter(function(v) { return v.weight > 0; });
+    const probabilities = activeVotes.length ? normalise(score) : null;
+
+    votes.sort(function(a,b) { return b.weight - a.weight; });
+
+    const support = { P:0, B:0, T:0 };
+    activeVotes.forEach(function(v) {
+      if (v.prediction) support[v.prediction] += v.weight;
+    });
+
+    return {
+      stats:stats,
+      active:matched.map(function(x) { return x.id; }),
+      matched:matched,
+      votes:votes,
+      support:support,
+      probabilities:probabilities,
+      matchedCount:matched.length,
+      activeVoteCount:activeVotes.length,
+
+      // ส่งสถานะของ "ทั้ง 13 Pattern" ให้ UI ตรวจสอบได้
+      all13:PATTERN_DEFS.map(function(def) {
+        const s = stats[def.id];
+        const vote = votes.find(function(v) { return v.id === def.id; });
+        return {
+          id:def.id,
+          label:def.label,
+          matched:!!s.active,
+          prediction:s.prediction,
+          probability:s.probability,
+          occurrences:s.total,
+          weight:vote ? vote.weight : 0
+        };
+      })
+    };
+  }
+
+  function featureMaps(data) {
+    const maps = {
+      transition: new Map(),
+      run: new Map(),
+      chop: new Map(),
+      state: new Map()
+    };
+    // Each target is indexed only by the state that existed before it. This
+    // preserves the same no-peeking rule used by walk-forward validation.
+    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
+    for (let targetIndex = 0; targetIndex < data.length; targetIndex++) {
+      if (targetIndex) {
+        const state = makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
+        const outcome = data[targetIndex];
+        addFeature(maps.transition, state.transitionKey, outcome);
+        addFeature(maps.run, state.runKey, outcome);
+        addFeature(maps.chop, state.chopKey, outcome);
+        addFeature(maps.state, state.stateKey, outcome);
+      }
+      summary = stepSequenceState(summary, data[targetIndex]);
+    }
+    return maps;
+  }
+  function blendFeatureEntries(entries, fallback, prior) {
+    let totalWeight = 1;
+    const blended = { P: fallback.P, B: fallback.B, T: fallback.T };
+    let support = 0;
+    const used = [];
+    for (const item of entries) {
+      if (!item.entry || !item.entry.total) continue;
+      const probability = entryProbability(item.entry, fallback, prior);
+      const reliability = item.entry.total / (item.entry.total + prior);
+      const weight = reliability * (item.bias || 1);
+      blended.P += probability.P * weight;
+      blended.B += probability.B * weight;
+      blended.T += probability.T * weight;
+      totalWeight += weight;
+      support += item.entry.total;
+      used.push({ label: item.label, total: item.entry.total, probability: probability });
+    }
+    return {
+      probabilities: normalise({ P: blended.P / totalWeight, B: blended.B / totalWeight, T: blended.T / totalWeight }),
+      support: support,
+      used: used
+    };
+  }
+  function regimeForecast(data, prior) {
+    const window = Math.min(MODEL.regimeRecentWindow, data.length);
+    if (!window) return { probabilities: prior, support: 0, shift: 0, window: 0 };
+    const recentCounts = outcomeCounts(data.slice(-window));
+    const recent = posterior(recentCounts, prior, MODEL.regimePrior);
+    const observedRecent = normalise(recentCounts);
+    const observedAll = normalise(outcomeCounts(data));
+    return {
+      probabilities: recent,
+      support: window,
+      shift: totalVariation(observedRecent, observedAll),
+      window: window
+    };
+  }
+  function expertPerformance(evaluations, name) {
+    const usable = evaluations.filter(function(evaluation) {
+      return evaluation.experts && evaluation.experts[name];
+    });
+    if (!usable.length) return { observations: 0, skill: 0, recentSkill: null };
+    function skillFor(sample) {
+      let expertLoss = 0;
+      let baselineLoss = 0;
+      for (const evaluation of sample) {
+        expertLoss += brier(evaluation.experts[name], evaluation.actual);
+        baselineLoss += brier(BASE, evaluation.actual);
+      }
+      return baselineLoss > 0 ? (baselineLoss - expertLoss) / baselineLoss : 0;
+    }
+    const recentSample = usable.slice(-MODEL.ensembleRecentWindow);
+    return {
+      observations: usable.length,
+      skill: skillFor(usable),
+      recentSkill: recentSample.length >= MODEL.ensembleMinimumObservations ? skillFor(recentSample) : null
+    };
+  }
+  function combineExperts(experts, evaluations) {
+    const weights = {};
+    const performance = {};
+    let totalWeight = 0;
+    for (const name of EXPERTS) {
+      const stats = expertPerformance(evaluations, name);
+      const combinedSkill = stats.recentSkill === null ? stats.skill : stats.skill * 0.35 + stats.recentSkill * 0.65;
+      const confidence = stats.observations / (stats.observations + MODEL.featurePrior);
+      const adjusted = 1 + clamp(combinedSkill * MODEL.ensembleTemperature * confidence, -0.65, 1.25);
+      const weight = Math.max(MODEL.ensembleFloor, MODEL.expertBaseWeights[name] * adjusted);
+      weights[name] = weight;
+      performance[name] = Object.assign(stats, { combinedSkill: combinedSkill });
+      totalWeight += weight;
+    }
+    const probabilities = { P: 0, B: 0, T: 0 };
+    for (const name of EXPERTS) {
+      const share = weights[name] / totalWeight;
+      weights[name] = share;
+      for (const side of OUTCOMES) probabilities[side] += experts[name][side] * share;
+    }
+    let disagreement = 0;
+    for (const name of EXPERTS) disagreement = Math.max(disagreement, totalVariation(experts[name], probabilities));
+    return { probabilities: normalise(probabilities), weights: weights, performance: performance, disagreement: disagreement };
+  }
+  function addTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    // For each supported context length, every historical continuation is
+    // counted.  This makes the result depend on the complete saved history.
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, targetIndex); depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth] || (maps[depth] = new Map());
+      const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
+      entry[outcome]++;
+      entry.total++;
+      map.set(key, entry);
+    }
+  }
+  function removeTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, targetIndex); depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth];
+      const entry = map && map.get(key);
+      // A missing entry means the cache is no longer trustworthy; rebuild it
+      // from the saved rounds instead of producing a silently wrong forecast.
+      if (!entry) return false;
+      entry[outcome]--;
+      entry.total--;
+      if (entry.total === 0) map.delete(key);
+    }
+    return true;
+  }
+  function transitionMaps(data) {
+    const maps = emptyMaps();
+    for (let targetIndex = 1; targetIndex < data.length; targetIndex++) addTransition(maps, data, targetIndex);
+    return maps;
+  }
+
+  function analyseState(data, totalHands, maps, overallCounts) {
+    // Start with the distribution from every recorded hand.  Then blend in
+    // all matching historical continuations for context lengths 1..16.
+    const prior = BASE;
+    const blended = { P: 0, B: 0, T: 0 };
+    let totalWeight = 0;
+    let context = null;
+
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, totalHands); depth++) {
+      const map = maps[depth];
+      if (!map) continue;
+      const key = data.slice(totalHands - depth, totalHands).join('');
+      const entry = map.get(key);
+      if (!entry || !entry.total) continue;
+
+      const contextProbability = posterior(entry, prior, MODEL.contextPrior);
+      const reliability = entry.total / (entry.total + MODEL.contextPrior);
+      const weight = reliability * (1 + Math.log2(depth));
+      blended.P += contextProbability.P * weight;
+      blended.B += contextProbability.B * weight;
+      blended.T += contextProbability.T * weight;
+      totalWeight += weight;
+
+      if (!context || weight > context.weight) {
+        context = {
+          key: key,
+          depth: depth,
+          total: entry.total,
+          counts: { P: entry.P, B: entry.B, T: entry.T },
+          probabilities: contextProbability,
+          weight: weight
+        };
+      }
+    }
+
+    const probabilities = normalise({
+      P: blended.P / totalWeight,
+      B: blended.B / totalWeight,
+      T: blended.T / totalWeight
+    });
+    return {
+      probabilities: probabilities,
+      top: topOutcome(probabilities),
+      overallCounts: overallCounts,
+      overall: prior,
+      context: context,
+      matchedExamples: context ? context.total : 0
+    };
+  }
+  function analyse(data) {
+    return adaptiveAnalysis(data, transitionMaps(data), outcomeCounts(data), []);
+  }
+  function residualProfile(evaluations) {
+    const expected = { P: 0, B: 0, T: 0 };
+    const observed = { P: 0, B: 0, T: 0 };
+    for (const evaluation of evaluations) {
+      for (const side of OUTCOMES) expected[side] += evaluation.probabilities[side];
+      observed[evaluation.actual]++;
+    }
+    const total = evaluations.length;
+    const residuals = { P: 0, B: 0, T: 0 };
+    if (total) {
+      for (const side of OUTCOMES) residuals[side] = (observed[side] - expected[side]) / total;
+    }
+    return { total: total, expected: expected, observed: observed, residuals: residuals };
+  }
+  function adaptiveCorrection(evaluations) {
+    const observations = evaluations.length;
+    const adjustment = { P: 0, B: 0, T: 0 };
+    if (observations < MODEL.adaptiveMinimumObservations) {
+      return { active: false, observations: observations, adjustment: adjustment, dominant: null };
+    }
+    const full = residualProfile(evaluations);
+    const recent = residualProfile(evaluations.slice(-MODEL.adaptiveRecentWindow));
+    const shrinkage = observations / (observations + MODEL.adaptivePrior);
+    let dominant = 'P';
+    for (const side of OUTCOMES) {
+      const residual = full.residuals[side] * 0.4 + recent.residuals[side] * 0.6;
+      adjustment[side] = Math.max(-MODEL.adaptiveCap, Math.min(MODEL.adaptiveCap, residual * shrinkage * MODEL.adaptiveStrength));
+      if (Math.abs(adjustment[side]) > Math.abs(adjustment[dominant])) dominant = side;
+    }
+    return { active: true, observations: observations, adjustment: adjustment, dominant: dominant, full: full, recent: recent };
+  }
+  function applyAdaptiveCorrection(probabilities, evaluations) {
+    const correction = adaptiveCorrection(evaluations);
+    const adjusted = normalise({
+      P: Math.max(0.001, probabilities.P + correction.adjustment.P),
+      B: Math.max(0.001, probabilities.B + correction.adjustment.B),
+      T: Math.max(0.001, probabilities.T + correction.adjustment.T)
+    });
+    return { probabilities: adjusted, correction: correction };
+  }
+  function adaptiveAnalysis(data, maps, counts, evaluations) {
+    const raw = analyseState(data, data.length, maps, counts);
+    const state = sequenceState(data);
+    const features = featureMaps(data);
+    const transition = blendFeatureEntries([
+      { label: 'ผลล่าสุด', entry: features.transition.get(state.transitionKey), bias: 1 }
+    ], BASE, MODEL.featurePrior);
+    const stateForecast = blendFeatureEntries([
+      { label: 'run', entry: features.run.get(state.runKey), bias: state.mode === 'run' ? 1.45 : 0.80 },
+      { label: 'สลับ', entry: features.chop.get(state.chopKey), bias: state.mode === 'chop' ? 1.45 : 0.80 },
+      { label: 'รูปทรงตรง', entry: features.state.get(state.stateKey), bias: 1.20 }
+    ], BASE, MODEL.featurePrior);
+    const regime = v91RegimeForecast(data, BASE);
+    const pattern = patternAnalysis(data);
+    const experts = {
+      context: raw.probabilities,
+      transition: transition.probabilities,
+      state: stateForecast.probabilities,
+      pattern: pattern.probabilities || BASE
+    };
+    const ensemble = combineExperts(experts, evaluations);
+    // Regime is intentionally NOT an ensemble expert. It is a separate filter
+    // that measures whether the recent 24 hands differ materially from the
+    // historical distribution and lets the tactical risk guard reduce trust.
+    const regimeFilter = {
+      shift: regime.shift,
+      threshold: MODEL.regimeShiftThreshold,
+      active: regime.shift > MODEL.regimeShiftThreshold
+    };
+    const adaptive = applyAdaptiveCorrection(ensemble.probabilities, evaluations);
+    return Object.assign({}, raw, {
+      rawProbabilities: ensemble.probabilities,
+      probabilities: adaptive.probabilities,
+      top: topOutcome(adaptive.probabilities),
+      adaptation: adaptive.correction,
+      experts: experts,
+      ensemble: ensemble,
+      state: state,
+      transition: transition,
+      stateForecast: stateForecast,
+      regime: regime,
+      regimeFilter: regimeFilter,
+      pattern: pattern
+    });
+  }
+  function repairPlanText(adaptation, latestReview, timing) {
+    if (!latestReview) return 'กำลังเก็บผลจริงเพื่อสร้างชุดเรียนรู้แรก';
+    if (timing && timing.mode === 'CUT') {
+      return 'โหมด CUT · หยุดยกน้ำหนักสัญญาณที่อ่อน, เก็บผลจริงใหม่เพื่อรีคาลิเบรต และไม่ไล่แก้จากผลที่พลาด';
+    }
+    if (!adaptation.active) return 'บันทึกผลล่าสุดแล้ว · รอผลทดสอบย้อนหลัง ' + adaptation.observations + '/' + MODEL.adaptiveMinimumObservations + ' ตา ก่อนเริ่มปรับสมดุล';
+    const side = adaptation.dominant;
+    const amount = adaptation.adjustment[side];
+    const direction = amount >= 0 ? 'เพิ่ม' : 'ลด';
+    const change = percent(Math.abs(amount), 1);
+    if (latestReview.correct) return 'ตรวจสอบความคลาดเคลื่อนต่อเนื่อง · ' + direction + ' น้ำหนัก ' + OUTCOME_NAME[side] + ' ' + change + ' จากผลทดสอบย้อนหลัง ' + adaptation.observations + ' ตา';
+    return 'คาดล่าสุดผิด · ปรับสมดุล ' + direction + ' น้ำหนัก ' + OUTCOME_NAME[side] + ' ' + change + ' จากความคลาดเคลื่อนทั้งชุดและช่วงล่าสุด โดยไม่ไล่แก้แพ้';
+  }
+  function brier(probabilities, actual) {
+    return OUTCOMES.reduce(function(sum, side) {
+      return sum + Math.pow(probabilities[side] - (side === actual ? 1 : 0), 2);
+    }, 0);
+  }
+  function calibrationScore(evaluations) {
+    const bucketCount = 10;
+    const byOutcome = {};
+    for (const side of OUTCOMES) {
+      const buckets = Array.from({ length: bucketCount }, function() {
+        return { count: 0, predicted: 0, actual: 0 };
+      });
+      for (const evaluation of evaluations) {
+        const probability = evaluation.probabilities[side];
+        const bucket = Math.min(bucketCount - 1, Math.floor(probability * bucketCount));
+        buckets[bucket].count++;
+        buckets[bucket].predicted += probability;
+        buckets[bucket].actual += side === evaluation.actual ? 1 : 0;
+      }
+      byOutcome[side] = evaluations.length ? buckets.reduce(function(total, bucket) {
+        if (!bucket.count) return total;
+        return total + bucket.count * Math.abs(bucket.predicted / bucket.count - bucket.actual / bucket.count);
+      }, 0) / evaluations.length : null;
+    }
+    const error = OUTCOMES.reduce(function(worst, side) {
+      return Math.max(worst, byOutcome[side] || 0);
+    }, 0);
+    return { error: evaluations.length ? error : null, byOutcome: byOutcome, observations: evaluations.length };
+  }
+  function summariseEvaluations(evaluations) {
+    let correct = 0;
+    let baseCorrect = 0;
+    let modelLoss = 0;
+    let baseLoss = 0;
+    let deltaSum = 0;
+    let deltaSquareSum = 0;
+    for (const evaluation of evaluations) {
+      if (evaluation.top === evaluation.actual) correct++;
+      if (evaluation.baseTop === evaluation.actual) baseCorrect++;
+      const modelRoundLoss = brier(evaluation.probabilities, evaluation.actual);
+      const baseRoundLoss = brier(evaluation.baseline, evaluation.actual);
+      const delta = baseRoundLoss - modelRoundLoss;
+      modelLoss += modelRoundLoss;
+      baseLoss += baseRoundLoss;
+      deltaSum += delta;
+      deltaSquareSum += delta * delta;
+    }
+    const total = evaluations.length;
+    const modelBrier = total ? modelLoss / total : null;
+    const baselineBrier = total ? baseLoss / total : null;
+    const meanDelta = total ? deltaSum / total : null;
+    const variance = total > 1 ? Math.max(0, (deltaSquareSum - total * meanDelta * meanDelta) / (total - 1)) : null;
+    const lowerDelta = total > 1 ? meanDelta - MODEL.confidenceZ * Math.sqrt(variance / total) : null;
+    return {
+      total: total,
+      correct: correct,
+      wrong: total - correct,
+      baseCorrect: baseCorrect,
+      baseWrong: total - baseCorrect,
+      modelBrier: modelBrier,
+      baselineBrier: baselineBrier,
+      skill: baselineBrier > 0 ? (baselineBrier - modelBrier) / baselineBrier : null,
+      skillLower: baselineBrier > 0 && Number.isFinite(lowerDelta) ? lowerDelta / baselineBrier : null,
+      calibration: calibrationScore(evaluations)
+    };
+  }
+  function emptyValidation() {
+    return {
+      total: 0,
+      correct: 0,
+      wrong: 0,
+      baseCorrect: 0,
+      baseWrong: 0,
+      modelBrier: null,
+      baselineBrier: null,
+      skill: null,
+      skillLower: null,
+      recent: null,
+      long: null,
+      skillDelta: null,
+      calibration: { error: null, observations: 0 }
+    };
+  }
+  function makeEvaluation(history, maps, counts, actual, priorEvaluations) {
+    const analysis = adaptiveAnalysis(history, maps, counts, []);
+    analysis._data = history;
+    analysis.regimeV91 = v91RegimeForecast(history, BASE);
+    const priorValidation = validationFromEvaluations(priorEvaluations || []);
+    const decision = v91Decision(analysis, priorValidation, priorEvaluations || []);
+    const baseline = BASE;
+    const calibrationError = priorValidation.calibration ? priorValidation.calibration.error : null;
+    return {
+      probabilities: decision.core.probabilities,
+      rawProbabilities: decision.core.probabilities,
+      top: decision.top,
+      baseline: baseline,
+      baseTop: binaryTop(baseline),
+      actual: actual,
+      experts: analysis.experts,
+      ensemble: decision.core,
+      state: analysis.state,
+      regime: analysis.regimeV91,
+      evidenceDepth: decision.sample,
+      calibrationError: calibrationError,
+      v9: { mode: decision.mode, quality: decision.quality, top: decision.top, edge: decision.edge },
+      divergence: decision.divergence
+    };
+  }
+  function validationFromEvaluations(evaluations) {
+    if (!evaluations.length) return emptyValidation();
+    const summary = summariseEvaluations(evaluations);
+    const recent = evaluations.length >= MODEL.recentReviewSample
+      ? summariseEvaluations(evaluations.slice(-MODEL.recentReviewSample))
+      : null;
+    let long = null;
+    if (recent) {
+      const longSample = evaluations.slice(0, -MODEL.recentReviewSample);
+      if (longSample.length >= MODEL.ensembleMinimumObservations) long = summariseEvaluations(longSample);
+      recent.skillDelta = long ? (recent.skill || 0) - (long.skill || 0) : null;
+    }
+    summary.skillDelta = recent ? recent.skillDelta : null;
+    return Object.assign(summary, { recent: recent, long: long });
+  }
+  function walkForward(data) {
+    const start = MODEL.minimumWalkForwardHistory;
+    if (data.length <= start) return emptyValidation();
+
+    const maps = emptyMaps();
+    const prefixCounts = { P: 0, B: 0, T: 0 };
+    const evaluations = [];
+
+    for (let index = 0; index < data.length; index++) {
+      if (index >= start) {
+        evaluations.push(makeEvaluation(data.slice(0, index), maps, prefixCounts, data[index], evaluations));
+      }
+      addTransition(maps, data, index);
+      prefixCounts[data[index]]++;
+    }
+    return validationFromEvaluations(evaluations);
+  }
+  function buildAuditCache(data) {
+    const cache = { data: [], maps: emptyMaps(), counts: { P: 0, B: 0, T: 0 }, evaluations: [] };
+    for (const result of data) appendAuditResult(cache, result);
+    return cache;
+  }
+  function appendAuditResult(cache, result) {
+    const index = cache.data.length;
+    if (index >= MODEL.minimumWalkForwardHistory) {
+      cache.evaluations.push(makeEvaluation(cache.data, cache.maps, cache.counts, result, cache.evaluations));
+    }
+    cache.data.push(result);
+    addTransition(cache.maps, cache.data, index);
+    cache.counts[result]++;
+  }
+  function removeAuditResult(cache) {
+    const index = cache.data.length - 1;
+    if (index < 0) return true;
+    if (index >= MODEL.minimumWalkForwardHistory) cache.evaluations.pop();
+    if (!removeTransition(cache.maps, cache.data, index)) return false;
+    cache.counts[cache.data[index]]--;
+    cache.data.pop();
+    return true;
+  }
+  function sharesPrefix(left, right, length) {
+    if (left.length < length || right.length < length) return false;
+    for (let index = 0; index < length; index++) {
+      if (left[index] !== right[index]) return false;
+    }
+    return true;
+  }
+  function auditFor(data) {
+    if (!auditCache) {
+      auditCache = buildAuditCache(data);
+    } else if (data.length === auditCache.data.length + 1 && sharesPrefix(data, auditCache.data, auditCache.data.length)) {
+      appendAuditResult(auditCache, data[data.length - 1]);
+    } else if (data.length + 1 === auditCache.data.length && sharesPrefix(data, auditCache.data, data.length)) {
+      if (!removeAuditResult(auditCache)) auditCache = buildAuditCache(data);
+    } else if (data.length !== auditCache.data.length || !sharesPrefix(data, auditCache.data, data.length)) {
+      auditCache = buildAuditCache(data);
+    }
+    return {
+      analysis: adaptiveAnalysis(auditCache.data, auditCache.maps, auditCache.counts, auditCache.evaluations),
+      validation: validationFromEvaluations(auditCache.evaluations),
+      evaluations: auditCache.evaluations
+    };
+  }
+  function probabilityText(probabilities, digits) {
+    return 'P ' + percent(probabilities.P, digits) + ' · B ' + percent(probabilities.B, digits) + ' · T ' + percent(probabilities.T, digits);
+  }
+  function coloredProbabilityHTML(probabilities, digits) {
+    return '<span class="prob-p">P ' + percent(probabilities.P, digits) + '</span> · ' +
+      '<span class="prob-b">B ' + percent(probabilities.B, digits) + '</span> · ' +
+      '<span class="prob-t">T ' + percent(probabilities.T, digits) + '</span>';
+  }
+  function contextName(context) {
+    if (!context) return 'ยังไม่มีบริบทซ้ำที่เทียบได้';
+    const shownHands = 8;
+    const visible = context.key.length > shownHands ? '…-' + context.key.slice(-shownHands).split('').join('-') : context.key.split('').join('-');
+    return 'บริบทที่มีน้ำหนักสูงสุด ' + context.depth + ' ตา (' + visible + ') → ?';
+  }
+  function contextText(context, totalHands) {
+    const source = 'วิเคราะห์ครบ ' + totalHands + ' ตา';
+    if (!context) return source + ' · ยังไม่มีบริบทซ้ำที่ตรงกัน';
+    return source + ' · บริบทหลัก ' + context.depth + ' ตา พบ ' + context.total + ' ครั้ง';
+  }
+  function predictionMargin(probabilities) {
+    const values = OUTCOMES.map(function(side) { return probabilities[side]; }).sort(function(left, right) { return right - left; });
+    return values[0] - values[1];
+  }
+  function assessForecastQuality(analysis, validation) {
+    const reasons = [];
+    if (!analysis.context) {
+      reasons.push('ยังไม่พบบริบทซ้ำ จึงยังลดความมั่นใจของสัญญาณ');
+    } else if (analysis.context.total < 5) {
+      reasons.push('บริบทหลักพบเพียง ' + analysis.context.total + ' ครั้ง จึงยังมีความไม่แน่นอนสูง');
+    }
+    if (predictionMargin(analysis.probabilities) < MODEL.minimumForecastMargin) {
+      reasons.push('ความน่าจะเป็นของผลนำยังสูสีกับผลรอง (ต่างกันน้อยกว่า ' + percent(MODEL.minimumForecastMargin, 1) + ')');
+    }
+    if (!validation.total) {
+      reasons.push('ยังไม่มีผล walk-forward สำหรับตรวจสอบความแม่น');
+    } else {
+      if (validation.total < MODEL.reviewSample) {
+        reasons.push('ตัวอย่าง walk-forward ' + validation.total + '/' + MODEL.reviewSample + ' ตา ยังไม่พอ');
+      }
+      if (!Number.isFinite(validation.skill) || validation.skill <= 0) {
+        reasons.push('Brier Skill ยังไม่เหนือฐานอ้างอิงคงที่ จึงเสี่ยงที่โมเดลกำลังเสียความแม่น');
+      }
+      if (validation.correct <= validation.baseCorrect) {
+        reasons.push('ผลทดสอบย้อนหลังคาดถูก ' + validation.correct + '/' + validation.total + ' ยังไม่สูงกว่าฐานอ้างอิง (' + validation.baseCorrect + '/' + validation.total + ')');
+      }
+      if (!Number.isFinite(validation.calibration.error)) {
+        reasons.push('ยังไม่มีข้อมูล calibration สำหรับตรวจสอบความน่าเชื่อถือ');
+      } else if (validation.calibration.error > MODEL.maximumCalibrationError) {
+        reasons.push('calibration สูงกว่าเกณฑ์ ECE ' + percent(MODEL.maximumCalibrationError, 0));
+      }
+    }
+    if (validation.total >= MODEL.reviewSample) {
+      if (!Number.isFinite(validation.skillLower) || validation.skillLower <= MODEL.meaningfulSkill) {
+        reasons.push('Brier Skill ทั้งชุดยังไม่เหนือฐานอ้างอิงเกินเกณฑ์');
+      }
+      if (!validation.recent || validation.recent.skillLower <= MODEL.meaningfulSkill) {
+        reasons.push('Brier Skill ช่วงล่าสุดยังไม่เหนือฐานอ้างอิงอย่างต่อเนื่อง');
+      }
+    }
+    if (analysis.ensemble && analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
+      reasons.push('ผู้เชี่ยวชาญแต่ละมุมมองเห็นต่างกัน ' + percent(analysis.ensemble.disagreement, 1) + ' จึงตัดความเชื่อในสัญญาณเชิงรูปทรง');
+    }
+    if (analysis.state && (analysis.state.mode === 'run' || analysis.state.mode === 'chop') && analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
+      reasons.push('รูปทรง ' + analysis.state.mode + ' ที่ตรงปัจจุบันมีตัวอย่างย้อนหลังเพียง ' + analysis.stateForecast.support + ' จุด จึงยังไม่ยืนยันจังหวะต่อหรือกลับ');
+    }
+    if (analysis.regime && analysis.regime.shift > MODEL.regimeShiftThreshold) {
+      reasons.push('สัดส่วนช่วงล่าสุดเบี่ยงจากข้อมูลทั้งหมด ' + percent(analysis.regime.shift, 1) + ' จึงเฝ้าระวัง regime shift และไม่ไล่ตามผลระยะสั้น');
+    }
+    return { isStrong: reasons.length === 0, reason: reasons[0] || '', reasons: reasons };
+  }
+  function latestOutcomeReview(data, evaluations) {
+    // Use the exact adaptive forecast that existed before the latest outcome.
+    if (data.length < 2) return null;
+    const actual = data[data.length - 1];
+    if (data.length - 1 >= MODEL.minimumWalkForwardHistory && evaluations.length) {
+      const evaluation = evaluations[evaluations.length - 1];
+      return { top: evaluation.top, actual: actual, correct: evaluation.top === actual };
+    }
+    const history = data.slice(0, -1);
+    const forecast = analyse(history);
+    return {
+      top: forecast.top,
+      actual: actual,
+      correct: forecast.top === actual
+    };
+  }
+  function recentMissStreak(evaluations) {
+    let misses = 0;
+    for (let index = evaluations.length - 1; index >= 0; index--) {
+      if (evaluations[index].top === evaluations[index].actual) break;
+      misses++;
+    }
+    return misses;
+  }
+  function timingAssessment(analysis, validation, evaluations) {
+    if (!analysis.state.last) {
+      return { mode: 'WAIT', risk: null, reasons: ['ยังไม่มีผลจริง'], missStreak: 0, margin: 0, summary: 'รอข้อมูลจริง' };
+    }
+    const margin = predictionMargin(analysis.probabilities);
+    const missStreak = recentMissStreak(evaluations);
+    const reasons = [];
+    let risk = 6;
+    if (!validation.total) {
+      risk += 28;
+      reasons.push('ยังไม่มี walk-forward audit');
+    } else {
+      if (validation.total < MODEL.minimumTacticalValidation) {
+        risk += 18 * (1 - validation.total / MODEL.minimumTacticalValidation);
+        reasons.push('ชุดตรวจสอบยังไม่ครบ ' + MODEL.minimumTacticalValidation + ' ตา');
+      }
+      if (!Number.isFinite(validation.skill) || validation.skill <= 0) {
+        risk += 18;
+        reasons.push('Brier Skill ไม่เหนือฐานอ้างอิง');
+      } else if (validation.skill < MODEL.meaningfulSkill) {
+        risk += 7;
+        reasons.push('Brier Skill บวกเพียงเล็กน้อย');
+      }
+      if (validation.correct <= validation.baseCorrect) {
+        risk += 10;
+        reasons.push('จำนวนที่คาดถูกยังไม่เหนือฐาน');
+      }
+      if (!Number.isFinite(validation.calibration.error)) {
+        risk += 8;
+        reasons.push('ยังไม่มี calibration');
+      } else if (validation.calibration.error > MODEL.maximumCalibrationError) {
+        risk += 14 * clamp(validation.calibration.error / MODEL.maximumCalibrationError, 1, 2);
+        reasons.push('calibration เกินเกณฑ์');
+      }
+    }
+    if (margin < MODEL.minimumFollowMargin) {
+      risk += 10;
+      reasons.push('ผลนำห่างผลรองเพียง ' + percent(margin, 1));
+    }
+    if (analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
+      risk += 12 * clamp(analysis.ensemble.disagreement / MODEL.maximumExpertDisagreement, 1, 2);
+      reasons.push('ensemble เห็นต่างกัน ' + percent(analysis.ensemble.disagreement, 1));
+    }
+    if ((analysis.state.mode === 'run' || analysis.state.mode === 'chop') && analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
+      risk += 8;
+      reasons.push('ตัวอย่างรูปทรงปัจจุบันน้อย');
+    }
+    if (analysis.regime.shift > MODEL.regimeShiftThreshold) {
+      risk += 10;
+      reasons.push('regime ล่าสุดเปลี่ยนจากภาพรวม');
+    }
+    if (missStreak >= MODEL.criticalMissStreak) {
+      risk += 18;
+      reasons.push('โมเดลพลาดติดกัน ' + missStreak + ' ครั้ง');
+    } else if (missStreak === 2) {
+      risk += 8;
+      reasons.push('โมเดลพลาด 2 ครั้งติด');
+    }
+    risk = Math.round(clamp(risk, 0, 100));
+    const enoughAudit = validation.total >= MODEL.minimumTacticalValidation;
+    const calibrated = Number.isFinite(validation.calibration.error) && validation.calibration.error <= MODEL.maximumCalibrationError;
+    const follow = enoughAudit && validation.skill > MODEL.meaningfulSkill &&
+      validation.correct > validation.baseCorrect && calibrated &&
+      margin >= MODEL.minimumFollowMargin &&
+      analysis.ensemble.disagreement <= MODEL.maximumExpertDisagreement &&
+      analysis.regime.shift <= MODEL.regimeShiftThreshold &&
+      missStreak < MODEL.criticalMissStreak && risk <= MODEL.maximumFollowRisk;
+    const cut = enoughAudit && (
+      validation.skill <= 0 ||
+      validation.correct <= validation.baseCorrect ||
+      !calibrated ||
+      analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement * 1.5 ||
+      missStreak >= MODEL.criticalMissStreak
+    );
+    const mode = follow ? 'FOLLOW' : cut ? 'CUT' : 'WATCH';
+    const summary = mode === 'FOLLOW'
+      ? 'ตามสัญญาณเชิงสถิติ · risk ' + risk + '/100'
+      : mode === 'CUT'
+        ? 'ตัดน้ำหนักสัญญาณ · risk ' + risk + '/100'
+        : 'เฝ้าดูและเก็บหลักฐาน · risk ' + risk + '/100';
+    return { mode: mode, risk: risk, reasons: reasons, missStreak: missStreak, margin: margin, summary: summary };
+  }
+  function gameStateText(analysis) {
+    const state = analysis.state;
+    if (!state.last) return 'รอผลจริงเพื่อระบุรูปทรงลำดับ';
+    if (state.last === 'T') return 'ผลล่าสุด T · เก็บ T เป็นข้อมูลจริงแยกจาก P/B และคงรูปทรง P/B ก่อนหน้าไว้ตรวจต่อ';
+    if (state.mode === 'run') {
+      return 'RUN ' + OUTCOME_NAME[state.side] + ' × ' + state.runLength + ' · ตรวจทั้งแรงต่อและแรงตัดจากรูปทรงซ้ำย้อนหลัง';
+    }
+    if (state.mode === 'chop') {
+      return 'CHOP / สลับ × ' + state.alternatingLength + ' · ตรวจว่าการสลับมีหลักฐานต่อเนื่องหรือเป็นเพียงความบังเอิญ';
+    }
+    return 'MIXED · ' + OUTCOME_NAME[state.side] + ' ล่าสุด · ยังไม่มี run หรือจังหวะสลับที่ยาวพอจะตั้งเป็นรูปทรงหลัก';
+  }
+  function mirageText(analysis, validation) {
+    const warnings = [];
+    if (analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
+      warnings.push('รูปทรงตรงปัจจุบันมีตัวอย่างเพียง ' + analysis.stateForecast.support + ' จุด');
+    }
+    if (analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
+      warnings.push('มุมมองต่างกัน ' + percent(analysis.ensemble.disagreement, 1));
+    }
+    if (analysis.regime.shift > MODEL.regimeShiftThreshold) {
+      warnings.push('ข้อมูลล่าสุดแกว่งจากภาพรวม ' + percent(analysis.regime.shift, 1));
+    }
+    if (!validation.total || validation.skill === null || validation.skill <= 0) {
+      warnings.push('ผลย้อนหลังยังไม่ยืนยันว่าเหนือฐานอ้างอิงคงที่');
+    }
+    return warnings.length
+      ? 'ตัดภาพลวงตา · ' + warnings.join(' · ')
+      : 'ไม่พบสัญญาณภาพลวงตาตามเกณฑ์ปัจจุบัน แต่ยังตรวจซ้ำทุกตา';
+  }
+  function tacticalDecisionText(analysis, timing) {
+    const state = analysis.state;
+    if (!state.last) return 'รอผลจริงก่อน ระบบจึงจะอ่านจังหวะและสร้างคาดการณ์ตาถัดไปได้';
+    const support = analysis.stateForecast.support;
+    const stateLabel = state.mode === 'run'
+      ? 'RUN ' + OUTCOME_NAME[state.side] + ' × ' + state.runLength
+      : state.mode === 'chop'
+        ? 'CHOP × ' + state.alternatingLength
+        : 'MIXED';
+    const tacticalTop = topOutcome(analysis.stateForecast.probabilities);
+    if (timing.mode === 'CUT') {
+      return stateLabel + ' · CUT · ลดน้ำหนักสัญญาณรูปทรงและไม่ไล่แก้ผล · ' + timing.reasons.slice(0, 2).join(' / ') + ' · แต่ยังคาดการณ์ ' + OUTCOME_NAME[analysis.top] + ' ทุกตา';
+    }
+    if (timing.mode === 'FOLLOW') {
+      return stateLabel + ' · FOLLOW · รูปทรงอ่านไปทาง ' + OUTCOME_NAME[tacticalTop] + ' (' + percent(analysis.stateForecast.probabilities[tacticalTop], 1) + ') และผ่านเกณฑ์ audit ปัจจุบัน · ตรวจซ้ำทันทีหลังผลจริง';
+    }
+    const read = tacticalTop === analysis.top ? 'สอดคล้องกับ ensemble' : 'ต่างจาก ensemble จึงลดน้ำหนักแล้ว';
+    return stateLabel + ' · WATCH · หลักฐานรูปทรง ' + support + ' จุด · รูปทรงอ่านไปทาง ' + OUTCOME_NAME[tacticalTop] + ' (' + percent(analysis.stateForecast.probabilities[tacticalTop], 1) + ') · ' + read + ' · คาดการณ์ต่อและตรวจคุณภาพทุกตา';
+  }
+  function ensembleEvidenceText(analysis) {
+    const expertsText = EXPERTS.map(function(name) {
+      const probability = analysis.experts[name];
+      const stats = analysis.ensemble.performance[name];
+      const recent = stats.recentSkill === null ? '' : ' / ล่าสุด ' + signedPercent(stats.recentSkill, 1);
+      return EXPERT_NAME[name] + ' ' + percent(analysis.ensemble.weights[name], 0) + ' → ' + OUTCOME_NAME[topOutcome(probability)] + ' ' + percent(probability[topOutcome(probability)], 1) + ' · skill ' + signedPercent(stats.skill, 1) + recent;
+    }).join(' | ');
+    const rf = analysis.regimeFilter || { shift: 0, active: false };
+    return expertsText + ' | REGIME FILTER ' + (rf.active ? 'ACTIVE' : 'CLEAR') + ' · shift ' + percent(rf.shift, 1);
+  }
+  function riskReasonText(reasons) {
+    return reasons.map(function(reason, index) { return (index + 1) + '. ' + reason; }).join(' · ');
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, rounds: rounds }));
+    } catch (_) {
+      // The app remains usable even when browser storage is unavailable.
+    }
+  }
+  function extractResults(saved) {
+    if (!saved || !Array.isArray(saved.rounds)) return [];
+    return saved.rounds.map(function(round) {
+      return typeof round === 'string' ? round : round && round.result;
+    }).filter(isOutcome);
+  }
+  function load() {
+    auditCache = null;
+    const keys = [STORAGE_KEY].concat(LEGACY_KEYS);
+    for (const key of keys) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(key));
+        const imported = extractResults(saved);
+        if (saved && Array.isArray(saved.rounds)) {
+          rounds = imported;
+          // Repair malformed records and migrate legacy data once, so the
+          // on-disk state cannot keep reintroducing invalid outcomes.
+          if (key !== STORAGE_KEY || imported.length !== saved.rounds.length) save();
+          return;
+        }
+      } catch (_) {
+        // Ignore malformed saved data and try the next safe source.
+      }
+    }
+    rounds = [];
+  }
+  function setColor(element, color) {
+    element.style.color = color;
+  }
+  function renderHistory() {
+    dom.history.replaceChildren();
+    if (!rounds.length) {
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'ยังไม่มีประวัติ';
+      dom.history.append(empty);
+      return;
+    }
+    const fragment = document.createDocumentFragment();
+    rounds.forEach(function(result, index) {
+      const node = document.createElement('div');
+      const className = result === 'P' ? 'player' : result === 'B' ? 'banker' : 'tie';
+      node.className = 'history-node ' + className;
+      node.textContent = result;
+      node.title = 'ตาที่ ' + (index + 1) + ': ' + OUTCOME_NAME[result];
+      node.setAttribute('aria-label', node.title);
+      fragment.append(node);
+    });
+    dom.history.append(fragment);
+  }
+  function renderPatternReport(pattern, ensemble) {
+    if (!dom.patternGrid) return;
+    if (!rounds.length || !pattern) {
+      dom.patternCurrent.textContent = 'รอข้อมูล P/B';
+      dom.patternForecast.textContent = 'รอข้อมูล';
+      dom.patternEnsembleWeight.textContent = 'รอข้อมูล';
+      dom.patternGrid.replaceChildren();
+      return;
+    }
+    const activeDefs = pattern.active.map(function(id){ return PATTERN_DEFS.find(function(d){return d.id===id;}); });
+    dom.patternCurrent.textContent = activeDefs.length ? activeDefs.map(function(d){ return d.label + ' [' + d.example + ']'; }).join(' · ') : 'ยังไม่พบ pattern ที่กำหนด';
+    dom.patternForecast.textContent = pattern.probabilities ? probabilityText(pattern.probabilities,1) + ' · support ' + pattern.support + ' เหตุการณ์' : 'ยังไม่มีสถิติย้อนหลังตรง pattern';
+    dom.patternEnsembleWeight.textContent = 'Pattern Engine ' + percent(ensemble.weights.pattern,1) + ' · skill ' + signedPercent(ensemble.performance.pattern.combinedSkill,1) + ' · observations ' + ensemble.performance.pattern.observations;
+    dom.patternGrid.replaceChildren();
+    PATTERN_DEFS.forEach(function(def){
+      const stat=pattern.stats[def.id], card=document.createElement('div'); card.className='pattern-card'+(stat.active?' active':'');
+      const head=document.createElement('div'); head.className='pattern-head';
+      const title=document.createElement('span'); title.textContent=def.label; const badge=document.createElement('span'); badge.textContent=stat.active?'ACTIVE':'—'; badge.style.color=stat.active?'var(--aqua)':'var(--muted)';
+      head.append(title,badge); card.append(head);
+      const sub=document.createElement('div'); sub.className='pattern-sub'; sub.textContent=def.example+' · '+def.desc; card.append(sub);
+      const statline=document.createElement('div'); statline.className='pattern-stat'; statline.textContent=stat.total ? ('ย้อนหลัง '+stat.total+' ครั้ง · '+probabilityText(stat.probability,0)+' · เด่น '+OUTCOME_NAME[topOutcome(stat.probability)]) : 'ยังไม่มีเหตุการณ์ย้อนหลังที่ตรงเงื่อนไข'; card.append(statline);
+      const bar=document.createElement('div'); bar.className='pattern-bar'; const fill=document.createElement('span'); fill.style.width=(stat.total ? Math.min(100, stat.total*4) : 0)+'%'; bar.append(fill); card.append(bar);
+      dom.patternGrid.append(card);
+    });
+  }
+  function renderLegacy() {
+    const audit = auditFor(rounds);
+    const analysis = audit.analysis;
+    const validation = audit.validation;
+    const probabilities = analysis.probabilities;
+    const top = analysis.top;
+    const counts = analysis.overallCounts;
+    const currentContext = analysis.context;
+    const quality = assessForecastQuality(analysis, validation);
+    const timing = timingAssessment(analysis, validation, audit.evaluations);
+    const hasForecast = rounds.length > 0;
+    const latestReview = latestOutcomeReview(rounds, audit.evaluations);
+    const observed = rounds.length ? {
+      P: counts.P / rounds.length,
+      B: counts.B / rounds.length,
+      T: counts.T / rounds.length
+    } : null;
+
+    dom.handsRecorded.textContent = rounds.length + ' ตา';
+    dom.historyProbability.textContent = rounds.length ? probabilityText(analysis.overall, 1) : '--';
+    dom.forecastProbability.innerHTML = hasForecast
+      ? coloredProbabilityHTML(probabilities, 1)
+      : 'รอผลจริงอย่างน้อย 1 ตา';
+    dom.nextSide.innerHTML = hasForecast
+      ? '<span class="' + (top === 'P' ? 'prob-p' : top === 'B' ? 'prob-b' : 'prob-t') + '">คาดการณ์ ' + top + ' · ' + OUTCOME_NAME[top] + ' · ' + percent(probabilities[top], 1) + '</span>'
+      : 'รอข้อมูล';
+    if (hasForecast) {
+      const pickClass = top === 'P' ? 'player' : top === 'B' ? 'banker' : 'tie';
+      dom.recommendation.innerHTML = '<span class="forecast-label">คาดการณ์ตาถัดไป · ' + (v9.mode === 'FOLLOW' ? 'พร้อมติดตาม' : 'ยังไม่ใช่สัญญาณเล่น') + '</span>' +
+        '<span class="forecast-pick ' + pickClass + '"><span class="pick-code">' + top + '</span><span class="pick-name">' + OUTCOME_NAME[top] + '</span></span>';
+      dom.recommendation.style.color = top === 'P' ? 'var(--player)' : top === 'B' ? 'var(--banker)' : 'var(--gold)';
+    } else {
+      dom.recommendation.textContent = 'รอข้อมูล';
+      dom.recommendation.style.color = '#a7a7b0';
+    }
+    dom.matchedContext.textContent = contextText(currentContext, rounds.length);
+    dom.contextDetail.textContent = currentContext
+      ? contextName(currentContext) + ' · P ' + currentContext.counts.P + ' / B ' + currentContext.counts.B + ' / T ' + currentContext.counts.T + ' · พบในอดีต ' + currentContext.total + ' ครั้ง'
+      : '--';
+    dom.observedRatio.textContent = observed ? probabilityText(observed, 1) : '--';
+    dom.gameState.textContent = gameStateText(analysis);
+    setColor(dom.gameState, rounds.length ? '#dedee4' : '#a7a7b0');
+    dom.mirageFilter.textContent = rounds.length ? mirageText(analysis, validation) : 'รอข้อมูลจริง';
+    setColor(dom.mirageFilter, !rounds.length ? '#a7a7b0' : quality.isStrong ? 'var(--aqua)' : 'var(--gold)');
+    dom.tacticalDecision.textContent = tacticalDecisionText(analysis, timing);
+    setColor(dom.tacticalDecision, !rounds.length ? '#a7a7b0' : timing.mode === 'FOLLOW' ? 'var(--aqua)' : timing.mode === 'CUT' ? 'var(--red)' : 'var(--gold)');
+    renderPatternReport(analysis.pattern, analysis.ensemble);
+    dom.ensembleEvidence.textContent = rounds.length ? ensembleEvidenceText(analysis) : 'รอผลจริงเพื่อสร้างผู้เชี่ยวชาญแต่ละมุมมอง';
+    setColor(dom.ensembleEvidence, !rounds.length ? '#a7a7b0' : analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement ? 'var(--gold)' : '#dedee4');
+
+    if (!rounds.length) {
+      dom.riskGuard.textContent = 'รอข้อมูลจริง';
+      setColor(dom.riskGuard, '#a7a7b0');
+      dom.timingMode.textContent = 'WAIT · รอข้อมูลจริง';
+      setColor(dom.timingMode, '#a7a7b0');
+      dom.riskIndex.textContent = '--';
+      setColor(dom.riskIndex, '#a7a7b0');
+      dom.riskReasons.textContent = 'เริ่มบันทึกผลจริงก่อน ระบบจึงจะประเมินความเสี่ยงได้';
+      setColor(dom.riskReasons, '#a7a7b0');
+    } else if (timing.mode === 'FOLLOW') {
+      dom.riskGuard.textContent = 'ผ่าน Risk Guard · ตรวจผลจริงต่อเนื่อง';
+      setColor(dom.riskGuard, 'var(--aqua)');
+      dom.timingMode.textContent = 'FOLLOW · ตามสัญญาณเชิงสถิติ';
+      setColor(dom.timingMode, 'var(--aqua)');
+      dom.riskIndex.textContent = timing.risk + '/100 · margin ' + percent(timing.margin, 1);
+      setColor(dom.riskIndex, 'var(--aqua)');
+      dom.riskReasons.textContent = 'ผ่านเกณฑ์สัญญาณปัจจุบัน แต่ผลจริงใหม่จะตรวจซ้ำและปรับน้ำหนักทันที';
+      setColor(dom.riskReasons, 'var(--aqua)');
+    } else if (timing.mode === 'CUT') {
+      dom.riskGuard.textContent = 'CUT · ตัดน้ำหนักสัญญาณเสี่ยง';
+      setColor(dom.riskGuard, 'var(--red)');
+      dom.timingMode.textContent = 'CUT · คงคาดการณ์ แต่ไม่ยกสัญญาณขึ้นนำ';
+      setColor(dom.timingMode, 'var(--red)');
+      dom.riskIndex.textContent = timing.risk + '/100 · พลาดติด ' + timing.missStreak + ' ตา';
+      setColor(dom.riskIndex, 'var(--red)');
+      dom.riskReasons.textContent = riskReasonText(timing.reasons);
+      setColor(dom.riskReasons, 'var(--red)');
+    } else {
+      dom.riskGuard.textContent = 'WATCH · คาดการณ์ต่อและเก็บหลักฐาน';
+      setColor(dom.riskGuard, 'var(--gold)');
+      dom.timingMode.textContent = 'WATCH · ยังไม่ผ่านเกณฑ์ตาม/ตัด';
+      setColor(dom.timingMode, 'var(--gold)');
+      dom.riskIndex.textContent = timing.risk + '/100 · margin ' + percent(timing.margin, 1);
+      setColor(dom.riskIndex, 'var(--gold)');
+      dom.riskReasons.textContent = riskReasonText(timing.reasons);
+      setColor(dom.riskReasons, 'var(--gold)');
+    }
+
+    if (!latestReview) {
+      dom.adaptationStatus.textContent = 'รอผลจริงตาที่ 2 เพื่อเทียบกับคาดการณ์ตาก่อนหน้า';
+      setColor(dom.adaptationStatus, '#a7a7b0');
+    } else if (latestReview.correct) {
+      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ตรงคาด · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
+      setColor(dom.adaptationStatus, 'var(--aqua)');
+    } else {
+      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ผิดแล้วบันทึกและปรับสมดุลจากผลทดสอบ · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
+      setColor(dom.adaptationStatus, 'var(--red)');
+    }
+
+    if (!rounds.length) {
+      dom.repairPlan.textContent = 'เริ่มบันทึกผลจริงก่อน ระบบจึงจะเรียนรู้ความคลาดเคลื่อนได้';
+      setColor(dom.repairPlan, '#a7a7b0');
+    } else {
+      dom.repairPlan.textContent = repairPlanText(analysis.adaptation, latestReview, timing);
+      setColor(dom.repairPlan, timing.mode === 'CUT' ? 'var(--red)' : latestReview && !latestReview.correct ? 'var(--gold)' : '#dedee4');
+    }
+
+    if (!validation.total) {
+      dom.walkForward.textContent = 'รออย่างน้อย ' + (MODEL.minimumWalkForwardHistory + 1) + ' ตา';
+      dom.brierSkill.textContent = '--';
+      setColor(dom.brierSkill, '#dedee4');
+      dom.auditRecord.textContent = 'รอข้อมูลทดสอบ';
+      dom.brierScore.textContent = '--';
+      setColor(dom.brierScore, '#dedee4');
+      dom.calibration.textContent = '--';
+      setColor(dom.calibration, '#dedee4');
+    } else {
+      dom.walkForward.textContent = 'ชนะ ' + validation.correct + ' · แพ้ ' + validation.wrong + ' · ฐาน ' + validation.baseCorrect + '/' + validation.total;
+      dom.brierSkill.textContent = signedPercent(validation.skill, 1) + (validation.recent ? ' · ล่าสุด ' + signedPercent(validation.recent.skill, 1) : '');
+      setColor(dom.brierSkill, validation.skillLower > 0 ? 'var(--gold)' : validation.skill < 0 ? 'var(--red)' : '#dedee4');
+      dom.brierSkill.textContent += ' · ขอบล่าง 95% ' + signedPercent(validation.skillLower, 1);
+      dom.auditRecord.textContent = 'ถูก ' + validation.correct + ' · ผิด ' + validation.wrong + ' (ทดสอบรวม ' + validation.total + ')';
+      dom.brierScore.textContent = 'โมเดล ' + score(validation.modelBrier) + ' · ฐาน ' + score(validation.baselineBrier);
+      setColor(dom.brierScore, validation.modelBrier < validation.baselineBrier ? 'var(--gold)' : 'var(--red)');
+      dom.calibration.textContent = 'ECE ' + percent(validation.calibration.error, 1) + ' · เกณฑ์ ≤ ' + percent(MODEL.maximumCalibrationError, 0);
+      setColor(dom.calibration, validation.calibration.error <= MODEL.maximumCalibrationError ? 'var(--aqua)' : 'var(--red)');
+      dom.calibration.textContent = 'ECE worst ' + percent(validation.calibration.error, 1) + ' (P ' + percent(validation.calibration.byOutcome.P, 1) + ' / B ' + percent(validation.calibration.byOutcome.B, 1) + ' / T ' + percent(validation.calibration.byOutcome.T, 1) + ')';
+    }
+
+    if (!rounds.length) {
+      dom.auditStatus.textContent = 'เริ่มบันทึกผลเพื่อสร้างข้อมูล';
+      setColor(dom.auditStatus, '#a7a7b0');
+      dom.message.textContent = 'เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะคำนวณความน่าจะเป็นใหม่จากข้อมูลที่มีอยู่ก่อนทุกตา';
+      setColor(dom.message, 'var(--muted)');
+    } else if (timing.mode === 'CUT') {
+      dom.auditStatus.textContent = 'CUT · รีคาลิเบรตจากผลจริง';
+      setColor(dom.auditStatus, 'var(--red)');
+      dom.message.textContent = 'ระบบยังคาดการณ์ตาถัดไปจากข้อมูลจริงครบทั้งหมด แต่ลดน้ำหนักสัญญาณที่ไม่ผ่าน audit และไม่ไล่แก้จากผลที่พลาด';
+      setColor(dom.message, 'var(--red)');
+    } else if (timing.mode === 'FOLLOW') {
+      dom.auditStatus.textContent = 'FOLLOW · ผ่านเกณฑ์สัญญาณชั่วคราว';
+      setColor(dom.auditStatus, 'var(--aqua)');
+      dom.message.textContent = 'สัญญาณผ่านเกณฑ์จาก audit ปัจจุบัน ผลจริงใหม่จะถูกเพิ่มเข้า ensemble และตรวจจังหวะใหม่ทุกตา';
+      setColor(dom.message, 'var(--aqua)');
+    } else if (quality.isStrong) {
+      dom.auditStatus.textContent = 'ผ่านเกณฑ์สถิติภายใน · เฝ้าตรวจต่อเนื่อง';
+      setColor(dom.auditStatus, 'var(--aqua)');
+      dom.message.textContent = 'บริบทล่าสุดมีตัวอย่างพอ และ Brier Skill เหนือฐานอ้างอิงทั้งชุดกับช่วงล่าสุด พร้อม calibration ผ่านเกณฑ์ ผลใหม่จะถูกใช้ปรับการคาดการณ์ของตาถัดไปเท่านั้น';
+      setColor(dom.message, 'var(--aqua)');
+    } else {
+      dom.auditStatus.textContent = 'คาดการณ์ทุกตา · กำลังเก็บหลักฐานเพิ่ม';
+      setColor(dom.auditStatus, 'var(--red)');
+      dom.message.textContent = 'ระบบคาดการณ์จากข้อมูลย้อนหลังทั้งหมดทุกตา และติดตามคุณภาพต่อเนื่อง: ' + quality.reason + ' ผลจริงใหม่จะถูกเพิ่มในข้อมูลทั้งหมดสำหรับตาถัดไป';
+      setColor(dom.message, 'var(--red)');
+    }
+
+    dom.undo.disabled = !rounds.length;
+    dom.reset.disabled = !rounds.length;
+    renderHistory();
+  }
+  /* ======================= V9.1 EDGE ANALYST ========================
+     V9.1 principles:
+     1) Walk-forward validates the exact V9.1 forecast, not the legacy model.
+     2) TIE remains a probability, never a FOLLOW decision.
+     3) Prediction and decision are separate.
+     4) Recent-vs-long is measured by predictive skill, not raw frequencies.
+     5) Regime compares recent data with the immediately preceding regime,
+        not with a population that contains the recent window itself.
+     6) Pattern remains research-only and is hidden from the main UI.
+  */
+  function binaryTop(probabilities) {
+    return probabilities.P >= probabilities.B ? 'P' : 'B';
+  }
+  function binaryMargin(probabilities) {
+    return Math.abs(probabilities.P - probabilities.B);
+  }
+  function v91CoreEnsemble(analysis) {
+    const names = ['context','transition','state'];
+    const weights = { context: 0.92, transition: 0.72, state: 0.62 };
+    const probabilities = { P:0, B:0, T:0 };
+    let total = 0;
+    names.forEach(function(name){
+      const w = weights[name]; total += w;
+      for (const side of OUTCOMES) probabilities[side] += analysis.experts[name][side] * w;
+    });
+    const combined = normalise(probabilities);
+    const disagreement = names.reduce(function(maximum,name){
+      return Math.max(maximum, totalVariation(analysis.experts[name], combined));
+    },0);
+    return { probabilities: combined, total: total, names: names, disagreement: disagreement, top: binaryTop(combined) };
+  }
+  function v91RegimeForecast(data, prior) {
+    const recentWindow = Math.min(MODEL.regimeRecentWindow, data.length);
+    if (!recentWindow) return { probabilities: prior, support: 0, shift: 0, recentShift: 0, window: 0, previousWindow: 0 };
+    const recentData = data.slice(-recentWindow);
+    const previousEnd = Math.max(0, data.length - recentWindow);
+    const previousStart = Math.max(0, previousEnd - recentWindow);
+    const previousData = data.slice(previousStart, previousEnd);
+    const recentCounts = outcomeCounts(recentData);
+    const previousCounts = outcomeCounts(previousData);
+    const recent = posterior(recentCounts, prior, MODEL.regimePrior);
+    const observedRecent = normalise(recentCounts);
+    const observedPrevious = previousData.length ? normalise(previousCounts) : normalise(outcomeCounts(data));
+    const observedLong = normalise(outcomeCounts(data));
+    return {
+      probabilities: recent,
+      support: recentData.length,
+      shift: totalVariation(observedRecent, observedPrevious),
+      recentShift: totalVariation(observedRecent, observedLong),
+      window: recentData.length,
+      previousWindow: previousData.length
+    };
+  }
+  function v91RecentForecast(data) {
+    if (!data.length) return { probabilities: BASE, window:0 };
+    const window = Math.min(36, data.length);
+    const recent = data.slice(-window);
+    return { probabilities: posterior(outcomeCounts(recent), BASE, 12), window: window };
+  }
+  function v91EvidenceDepth(analysis, validation) {
+    const contextN = analysis.context ? analysis.context.total : 0;
+    const auditN = validation.total || 0;
+    const recentN = validation.recent ? validation.recent.total : 0;
+    const vals = [contextN, auditN, recentN].filter(function(x){ return x > 0; });
+    if (!vals.length) return 0;
+    const harmonic = vals.length / vals.reduce(function(sum,x){ return sum + 1/x; },0);
+    return Math.round(harmonic);
+  }
+  function v91SignalQuality(edge, margin, evidence, disagreement, regimeShift, validation) {
+    const evidenceScore = 1 - Math.exp(-evidence / 45);
+    const edgeScore = clamp(Math.abs(edge) / 0.04, 0, 1);
+    const marginScore = clamp(margin / 0.05, 0, 1);
+    const agreeScore = 1 - clamp(disagreement / 0.08, 0, 1);
+    const regimeScore = 1 - clamp(regimeShift / 0.20, 0, 1);
+    const auditScore = validation.total ? clamp((validation.skill || 0) / 0.04, 0, 1) : 0;
+    const cal = Number.isFinite(validation.calibration.error) ? 1-clamp(validation.calibration.error/0.05,0,1) : 0;
+    return Math.round(100 * (0.22*evidenceScore + 0.20*edgeScore + 0.14*marginScore + 0.16*agreeScore + 0.12*regimeScore + 0.10*auditScore + 0.06*cal));
+  }
+  function v91ErrorAttribution(evaluations) {
+    if (!evaluations.length) return 'ERROR ATTRIBUTION · ยังไม่มี walk-forward';
+    const usable = evaluations.slice(-100);
+    let shared = 0, minority = 0, regime = 0, lowSample = 0, calibration = 0;
+    usable.forEach(function(e){
+      if (e.top === e.actual) return;
+      const votes = ['context','transition','state'].map(function(n){ return e.experts && e.experts[n] ? binaryTop(e.experts[n]) : null; }).filter(Boolean);
+      const voteP = votes.filter(function(x){return x==='P';}).length;
+      const voteB = votes.filter(function(x){return x==='B';}).length;
+      const majority = voteP >= voteB ? 'P' : 'B';
+      if (votes.length >= 2 && votes.every(function(x){return x !== e.actual;})) shared++;
+      else if (votes.length && majority !== e.actual) minority++;
+      if (e.regime && e.regime.shift > MODEL.regimeShiftThreshold) regime++;
+      if (e.evidenceDepth < 12) lowSample++;
+      if (Number.isFinite(e.calibrationError) && e.calibrationError > MODEL.maximumCalibrationError) calibration++;
+    });
+    return 'ERROR ATTRIBUTION · 100 ล่าสุด: shared-model miss '+shared+' · conflicting/majority miss '+minority+' · regime shift '+regime+' · low evidence '+lowSample+' · calibration warning '+calibration;
+  }
+  function v91AbstentionRate(evaluations) {
+    if (!evaluations.length) return { total:0, follow:0, watch:0, noEdge:0, rate:null };
+    let follow=0, watch=0, noEdge=0;
+    evaluations.forEach(function(e){
+      if (e.v9 && e.v9.mode === 'FOLLOW') follow++;
+      else if (e.v9 && e.v9.mode === 'WATCH') watch++;
+      else noEdge++;
+    });
+    return { total:evaluations.length, follow:follow, watch:watch, noEdge:noEdge, rate:noEdge/evaluations.length };
+  }
+  function v91Decision(analysis, validation, evaluations) {
+    const core = v91CoreEnsemble(analysis);
+    const p = core.probabilities;
+    const top = core.top; // P/B only; T is never a decision.
+    const edge = p[top] - BASE[top];
+    const margin = binaryMargin(p);
+    const recent = v91RecentForecast(analysis._data || []);
+    const divergence = totalVariation(p, recent.probabilities);
+    const evidence = v91EvidenceDepth(analysis, validation);
+    const regime = analysis.regimeV91 || v91RegimeForecast(analysis._data || [], BASE);
+    const regimeShift = regime.shift;
+    const quality = v91SignalQuality(edge, margin, evidence, core.disagreement, regimeShift, validation);
+    const reasons = [];
+    if (!validation.total) reasons.push('ยังไม่มี walk-forward ของ V9.1');
+    if (validation.total < 60) reasons.push('V9.1 audit ยังน้อยกว่า 60 ตา');
+    if (!Number.isFinite(validation.skill) || validation.skill <= 0) reasons.push('V9.1 ยังไม่พิสูจน์ว่าเหนือ baseline');
+    if (evidence < 12) reasons.push('evidence depth ต่ำ');
+    if (edge < 0.015) reasons.push('edge ต่ำกว่า 1.5%');
+    if (margin < 0.02) reasons.push('P/B ห่างกันน้อย');
+    if (core.disagreement > 0.055) reasons.push('core experts เห็นต่างกัน');
+    if (regimeShift > 0.12) reasons.push('regime ล่าสุดเปลี่ยนจากช่วงก่อนหน้า');
+    if (divergence > 0.10) reasons.push('recent กับ long-term prediction ต่างกันมาก');
+    if (validation.recent && validation.recent.skill <= 0) reasons.push('recent validation ไม่เหนือ baseline');
+    if (validation.recent && Number.isFinite(validation.recent.skillDelta) && validation.recent.skillDelta < -0.01) reasons.push('recent skill แย่ลงจากระยะยาว');
+    const hardFail = !validation.total || validation.skill <= 0 || evidence < 8 || edge < 0.01 || core.disagreement > 0.08 || regimeShift > 0.20;
+    let mode = 'NO EDGE';
+    if (!hardFail && reasons.length <= 2 && quality >= 60) mode = 'FOLLOW';
+    else if (!hardFail && quality >= 42) mode = 'WATCH';
+    return { core:core, top:top, edge:edge, margin:margin, recent:recent, divergence:divergence, sample:evidence, confidence:quality, quality:quality, mode:mode, reasons:reasons, regime:regime };
+  }
+  function render() {
+    const audit = auditFor(rounds);
+    const analysis = audit.analysis;
+    analysis._data = auditCache ? auditCache.data : rounds;
+    analysis.regimeV91 = v91RegimeForecast(analysis._data, BASE);
+    const validation = audit.validation;
+    const v9 = v91Decision(analysis, validation, audit.evaluations);
+    const p = v9.core.probabilities;
+    const top = v9.top;
+    const counts = analysis.overallCounts;
+    const has = rounds.length > 0;
+    const abstention = v91AbstentionRate(audit.evaluations);
+
+    dom.handsRecorded.textContent = rounds.length + ' ตา';
+    dom.historyProbability.textContent = rounds.length ? probabilityText(analysis.overall,1) : '--';
+    dom.forecastProbability.innerHTML = has ? coloredProbabilityHTML(p,1) : 'รอข้อมูลจริง';
+    dom.nextSide.textContent = has ? (top === 'P' ? '🔵 PLAYER' : '🔴 BANKER') + ' · ' + percent(p[top],1) : 'รอข้อมูล';
+    if (has) {
+      const pickClass = top === 'P' ? 'player' : 'banker';
+      dom.recommendation.innerHTML = '<span class="forecast-label">คาดการณ์ตาถัดไป · ' + (v9.mode === 'FOLLOW' ? 'พร้อมติดตาม' : 'ยังไม่ใช่สัญญาณเล่น') + '</span>' +
+        '<span class="forecast-pick ' + pickClass + '"><span class="pick-code">' + top + '</span><span class="pick-name">' + OUTCOME_NAME[top] + '</span></span>';
+      dom.recommendation.style.color = top === 'P' ? 'var(--player)' : 'var(--banker)';
+    } else {
+      dom.recommendation.textContent = 'รอข้อมูล';
+      dom.recommendation.style.color = '#a7a7b0';
+    }
+    dom.matchedContext.textContent = analysis.context ? contextText(analysis.context, rounds.length) : '--';
+    dom.observedRatio.textContent = has ? probabilityText(countsToProb(counts),1) : '--';
+
+    dom.v9Edge.textContent = has ? signedPercent(v9.edge,2) : '--';
+    dom.v9EdgeDetail.textContent = has ? OUTCOME_NAME[top] + ' ' + percent(p[top],1) + ' vs baseline ' + percent(BASE[top],1) : '--';
+    dom.v9Confidence.textContent = has ? v9.quality + '/100' : '--';
+    dom.v9ConfidenceDetail.textContent = 'signal quality · P/B margin ' + percent(v9.margin,1) + ' · disagreement ' + percent(v9.core.disagreement,1);
+    dom.v9Sample.textContent = has ? String(v9.sample) : '--';
+    dom.v9SampleDetail.textContent = 'context ' + (analysis.context ? analysis.context.total : 0) + ' · audit ' + validation.total + ' · recent ' + (validation.recent ? validation.recent.total : 0);
+    dom.v9Regime.textContent = has ? (v9.regime.shift > 0.12 ? 'SHIFT' : 'STABLE') : '--';
+    dom.v9RegimeDetail.textContent = has ? 'recent vs previous ' + percent(v9.regime.shift,1) + ' · recent vs long ' + percent(v9.regime.recentShift,1) + ' · windows ' + v9.regime.window + '/' + v9.regime.previousWindow : '--';
+    dom.v9Consensus.textContent = has ? (v9.core.disagreement <= 0.03 ? 'HIGH' : v9.core.disagreement <= 0.055 ? 'MEDIUM' : 'LOW') : '--';
+    dom.v9ConsensusDetail.textContent = 'core expert disagreement ' + percent(v9.core.disagreement,1);
+    dom.v9Divergence.textContent = has ? (v9.divergence > 0.10 ? 'DIVERGENT' : 'ALIGNED') : '--';
+    dom.v9DivergenceDetail.textContent = has ? 'prediction distance ' + percent(v9.divergence,1) + ' · recent ' + v9.recent.window + ' ตา · skill delta ' + (validation.recent && Number.isFinite(validation.recent.skillDelta) ? signedPercent(validation.recent.skillDelta,1) : '--') : '--';
+    dom.v9Decision.textContent = has ? 'DECISION · ' + v9.mode + (v9.mode === 'NO EDGE' ? '' : ' · ' + OUTCOME_NAME[top]) : 'DECISION · รอข้อมูล';
+    dom.v9Decision.style.color = !has ? '#a7a7b0' : v9.mode === 'FOLLOW' ? 'var(--aqua)' : v9.mode === 'NO EDGE' ? 'var(--red)' : 'var(--gold)';
+    dom.v9Reasons.textContent = has ? (v9.reasons.length ? 'WHY NOT FOLLOW · ' + v9.reasons.join(' · ') : 'WHY FOLLOW · edge / evidence / validation / consensus ผ่านเกณฑ์') : 'บันทึกผลจริงเพื่อสร้างหลักฐาน';
+    dom.v9Failure.textContent = v91ErrorAttribution(audit.evaluations);
+    dom.v9Abstention.textContent = abstention.total ? 'ABSTENTION RATE · NO EDGE+WATCH ' + percent((abstention.noEdge+abstention.watch)/abstention.total,1) + ' · NO EDGE ' + percent(abstention.rate,1) + ' · FOLLOW ' + percent(abstention.follow/abstention.total,1) + ' · รวม ' + abstention.total + ' ตา' : 'ABSTENTION RATE · ยังไม่มีข้อมูล';
+
+    dom.contextDetail.textContent = analysis.context ? contextName(analysis.context) + ' · sample ' + analysis.context.total : '--';
+    dom.gameState.textContent = gameStateText(analysis);
+    dom.mirageFilter.textContent = has ? (v9.reasons.length ? 'FILTER · ' + v9.reasons.slice(0,3).join(' · ') : 'FILTER CLEAR · หลักฐานสอดคล้อง') : 'รอข้อมูลจริง';
+    dom.tacticalDecision.textContent = has ? 'V9.1 · ' + v9.mode + (v9.mode === 'NO EDGE' ? '' : ' · ' + OUTCOME_NAME[top]) + ' · edge ' + signedPercent(v9.edge,2) + ' · signal quality ' + v9.quality + '/100' : 'รอข้อมูล';
+    dom.ensembleEvidence.textContent = has ? 'CORE = Context + Transition + State · Pattern = research-only · disagreement ' + percent(v9.core.disagreement,1) : 'รอข้อมูล';
+    dom.repairPlan.textContent = has ? 'V9.1 ไม่ไล่แก้จากผลล่าสุด; ใช้ exact walk-forward + recent skill + error attribution' : 'รอข้อมูล';
+    dom.riskReasons.textContent = has ? (v9.reasons.length ? v9.reasons.join(' · ') : 'ไม่มี blocker หลัก') : 'รอข้อมูล';
+
+    dom.recentSkillDelta.textContent = validation.recent && Number.isFinite(validation.recent.skillDelta) ? signedPercent(validation.recent.skillDelta,1) : '--';
+    dom.abstentionRate.textContent = abstention.total ? 'NO EDGE+WATCH ' + percent((abstention.noEdge+abstention.watch)/abstention.total,1) + ' · FOLLOW ' + percent(abstention.follow/abstention.total,1) : '--';
+
+    if (!has) {
+      dom.walkForward.textContent='รอข้อมูล'; dom.brierSkill.textContent='--'; dom.auditRecord.textContent='รอข้อมูล'; dom.brierScore.textContent='--'; dom.calibration.textContent='--'; dom.auditStatus.textContent='กำลังเก็บข้อมูล'; dom.riskGuard.textContent='รอข้อมูล'; dom.timingMode.textContent='WAIT'; dom.riskIndex.textContent='--'; dom.adaptationStatus.textContent='รอข้อมูล';
+    } else {
+      dom.walkForward.textContent='V9.1 ถูก '+validation.correct+' · ผิด '+validation.wrong+' · ฐาน '+validation.baseCorrect+'/'+validation.total;
+      dom.brierSkill.textContent=signedPercent(validation.skill,1)+' · lower95 '+signedPercent(validation.skillLower,1)+(validation.recent ? ' · recent '+signedPercent(validation.recent.skill,1) : '');
+      dom.auditRecord.textContent='V9.1 ถูก '+validation.correct+' · ผิด '+validation.wrong+' (รวม '+validation.total+')';
+      dom.brierScore.textContent='V9.1 '+score(validation.modelBrier)+' · ฐาน '+score(validation.baselineBrier);
+      dom.calibration.textContent='ECE '+percent(validation.calibration.error,1);
+      dom.auditStatus.textContent='V9.1 · '+v9.mode;
+      dom.riskGuard.textContent=v9.mode+' · decision gate';
+      dom.timingMode.textContent=v9.mode;
+      dom.riskIndex.textContent=Math.round(100-v9.quality)+'/100 · uncertainty';
+      dom.adaptationStatus.textContent='No chase · ไม่เพิ่มน้ำหนักเพราะแพ้ตาเดียว';
+    }
+    dom.message.textContent = has ? (v9.mode === 'FOLLOW' ? 'คาดการณ์: ' + (top==='P'?'🔵 PLAYER':'🔴 BANKER') + ' · ผ่าน decision gate V9.1' : 'คาดการณ์: ' + (top==='P'?'🔵 PLAYER':'🔴 BANKER') + ' · แต่ decision = ' + v9.mode + ' เพราะระบบแยก prediction ออกจาก decision และไม่ฝืนเมื่อไม่มี edge') : 'เริ่มบันทึกผลจริงเพื่อสร้างหลักฐาน';
+    dom.undo.disabled=!rounds.length; dom.reset.disabled=!rounds.length;
+    renderHistory();
+  }
+  function countsToProb(counts) {
+    const total = counts.P + counts.B + counts.T;
+    return total ? {P:counts.P/total,B:counts.B/total,T:counts.T/total} : BASE;
+  }
+
+  function record(result) {
+    if (!isOutcome(result)) return;
+    rounds.push(result);
+    if (auditCache && auditCache.data.length === rounds.length - 1) appendAuditResult(auditCache, result);
+    save();
+    render();
+  }
+  function undo() {
+    if (!rounds.length) return;
+    if (auditCache && auditCache.data.length === rounds.length && !removeAuditResult(auditCache)) auditCache = null;
+    rounds.pop();
+    save();
+    render();
+  }
+  function reset() {
+    if (!rounds.length) return;
+    if (!window.confirm('รีเซ็ตประวัติทั้งหมดของ SHOE นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้')) return;
+    rounds = [];
+    auditCache = null;
+    save();
+    render();
+  }
+
+  document.querySelectorAll('[data-result]').forEach(function(button) {
+    button.addEventListener('click', function() { record(button.dataset.result); });
+  });
+  dom.undo.addEventListener('click', undo);
+  dom.reset.addEventListener('click', reset);
+  load();
+  render();
+  </script>
+</body>
+</html>

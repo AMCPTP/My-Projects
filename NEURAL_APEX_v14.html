@@ -1,0 +1,2242 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>NEURAL APEX V11 | Adaptive Error-Learning Tactical Analyst</title>
+  <style>
+    :root {
+      --player: #1683ff;
+      --banker: #ff4b43;
+      --tie: #6f707b;
+      --aqua: #24e8d7;
+      --gold: #ffd24a;
+      --red: #ff6f8e;
+      --bg: #050507;
+      --surface: #0c0c10;
+      --surface-raised: #111117;
+      --line: #292931;
+      --text: #f7f7f9;
+      --muted: #90909b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: radial-gradient(circle at top, #112426 0, var(--bg) 43rem);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 14px 36px; }
+    .app-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(12, 12, 16, .96);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+    header { padding: 26px 20px 18px; text-align: center; }
+    .eyebrow { color: var(--aqua); font-size: 10px; font-weight: 900; letter-spacing: .19em; }
+    h1 { margin: 8px 0 6px; font-size: 25px; letter-spacing: -.05em; }
+    .subtitle { max-width: 590px; margin: 0 auto; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 14px 14px; }
+    .metric { min-height: 73px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #08080b; }
+    .metric-label { display: block; color: #82828c; font-size: 8px; font-weight: 900; letter-spacing: .07em; }
+    .metric output { display: block; margin-top: 7px; color: #e0e0e5; font-size: 12px; font-weight: 850; line-height: 1.32; overflow-wrap: anywhere; }
+
+    .forecast {
+      margin: 0 14px;
+      padding: 19px 14px 18px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+    #recommendation { min-height: 43px; font-size: 30px; font-weight: 950; letter-spacing: -.055em; }
+    #recommendation .forecast-label { display:block; margin-bottom:4px; color:#8f8f9a; font-size:10px; font-weight:900; letter-spacing:.12em; }
+    #recommendation .forecast-pick { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border:1px solid currentColor; border-radius:14px; line-height:1; }
+    #recommendation .forecast-pick.player { color:var(--player); background:rgba(22,131,255,.12); }
+    #recommendation .forecast-pick.banker { color:var(--banker); background:rgba(255,75,67,.12); }
+    #recommendation .forecast-pick.tie { color:var(--gold); background:rgba(255,210,74,.10); }
+    #recommendation .forecast-pick .pick-code { font-size:32px; font-weight:1000; }
+    #recommendation .forecast-pick .pick-name { font-size:18px; font-weight:950; }
+    #forecast-probability { margin-top: 8px; color: #d6d6dc; font-size: 13px; font-weight: 800; }
+    .prob-p { color:var(--player); font-weight:950; }
+    .prob-b { color:var(--banker); font-weight:950; }
+    .prob-t { color:var(--gold); font-weight:950; }
+    #message { min-height: 36px; max-width: 580px; margin: 8px auto 0; color: var(--muted); font-size: 11px; font-weight: 700; line-height: 1.5; }
+
+    .result-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px; }
+    .result-button {
+      min-height: 82px;
+      border: 0;
+      border-bottom: 6px solid rgba(0, 0, 0, .35);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 34px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: filter .14s ease, transform .14s ease;
+    }
+    .result-button:hover { filter: brightness(1.08); }
+    .result-button:active, .small-button:active { transform: translateY(2px); }
+    .player { background: var(--player); }
+    .banker { background: var(--banker); }
+    .tie { background: #555560; font-size: 25px; }
+
+    .section { margin: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #08080b; }
+    .section-title { margin: 0 0 5px; color: var(--aqua); font-size: 10px; font-weight: 950; letter-spacing: .08em; }
+    .section-description { margin: 0 0 12px; color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.45; }
+
+    /* Baccarat-road order: top-left downward for six outcomes, then right. */
+    .history {
+      display: grid;
+      grid-template-rows: repeat(6, 42px);
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(42px, 1fr);
+      gap: 8px;
+      min-height: 292px;
+      padding: 2px 0;
+      overflow-x: auto;
+    }
+    .history-empty {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      display: grid;
+      min-height: 44px;
+      place-items: center;
+      border: 1px dashed #30303a;
+      border-radius: 11px;
+      color: #7f7f8b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .history-node {
+      display: grid;
+      min-width: 0;
+      min-height: 42px;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 950;
+      box-shadow: inset 0 -2px rgba(0, 0, 0, .16);
+    }
+    .history-node.player { background: var(--player); }
+    .history-node.banker { background: var(--banker); }
+    .history-node.tie { background: var(--tie); font-size: 14px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    .small-button {
+      min-height: 35px;
+      border: 1px solid #373742;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--surface-raised);
+      color: #e1e1e7;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .small-button:hover:not(:disabled) { border-color: #626270; }
+    .small-button.danger { border-color: #733447; color: #ffb0c0; }
+    .small-button:disabled { cursor: not-allowed; opacity: .42; }
+
+    .analysis-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .detail { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #0b0b0f; }
+    .detail-wide { grid-column: 1 / -1; }
+    .detail-decision { border-color: #3e4d56; background: linear-gradient(135deg, #0c1719, #0b0b0f 58%); }
+    .detail-label { display: block; color: #868690; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+    .detail output { display: block; margin-top: 6px; color: #dedee4; font-size: 12px; font-weight: 850; line-height: 1.35; overflow-wrap: anywhere; }
+
+    .notice { margin: 15px 18px 19px; color: #85858f; font-size: 10px; line-height: 1.55; text-align: center; }
+    .notice strong { color: #d3d3da; }
+
+    @media (max-width: 440px) {
+      .shell { padding: 9px 8px 28px; }
+      .app-card { border-radius: 20px; }
+      header { padding: 22px 16px 16px; }
+      .metrics { gap: 6px; padding: 0 10px 10px; }
+      .metric { min-height: 68px; padding: 8px; }
+      .metric output { font-size: 11px; }
+      #recommendation { font-size: 27px; }
+      .history { gap: 6px; }
+      .history { grid-template-rows: repeat(6, 39px); min-height: 270px; }
+      .history-node { min-height: 39px; }
+      .analysis-details { gap: 6px; }
+    }
+  
+    .pattern-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .pattern-card { border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(255,255,255,.02); }
+    .pattern-card.active { border-color:var(--aqua); box-shadow:0 0 0 1px rgba(36,232,215,.12) inset; }
+    .pattern-card .pattern-head { display:flex; justify-content:space-between; gap:8px; font-weight:700; }
+    .pattern-card .pattern-sub { color:var(--muted); font-size:.82rem; margin-top:5px; line-height:1.45; }
+    .pattern-card .pattern-stat { margin-top:8px; font-size:.84rem; line-height:1.5; }
+    .pattern-bar { height:5px; border-radius:99px; background:#202027; overflow:hidden; margin-top:7px; }
+    .pattern-bar > span { display:block; height:100%; background:var(--aqua); border-radius:99px; }
+    @media (max-width:520px) { .pattern-grid { grid-template-columns:1fr; } }
+
+    .v9-badge { font-size:.42em; letter-spacing:.08em; padding:5px 8px; border:1px solid var(--aqua); border-radius:999px; color:var(--aqua); vertical-align:middle; }
+    .v10-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v10-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v10-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v10-card strong { display:block; margin-top:6px; font-size:1.15rem; }
+    .v10-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.4; }
+    .v10-matrix { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:12px; color:#d8d8de; background:#0a0a0e; line-height:1.55; font-size:11px; }
+    .v10-decision { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:16px; font-size:1.25rem; font-weight:900; background:linear-gradient(135deg,#0d1719,#0b0b0f 60%); }
+    .v10-reasons { margin-top:10px; color:var(--muted); line-height:1.6; font-size:11px; }
+    @media (max-width:700px) { .v10-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { .v10-grid { grid-template-columns:1fr; } }
+
+    .v11-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v11-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v11-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v11-card strong { display:block; margin-top:6px; font-size:1.08rem; }
+    .v11-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.45; }
+    .v11-plan { margin-top:12px; border:1px solid #33484b; border-radius:14px; padding:14px; background:linear-gradient(135deg,#0d1719,#0b0b0f 62%); line-height:1.55; font-size:11px; }
+    .v11-learn { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:14px; background:#0a0a0e; line-height:1.55; font-size:11px; }
+    .v11-bars { display:grid; gap:7px; margin-top:10px; }
+    .v11-bar { display:grid; grid-template-columns:100px 1fr 52px; gap:8px; align-items:center; }
+    .v11-bar label { color:#a5a5ae; font-size:10px; }
+    .v11-track { height:6px; border-radius:99px; background:#202027; overflow:hidden; }
+    .v11-track > span { display:block; height:100%; background:var(--aqua); border-radius:99px; }
+    .v11-value { text-align:right; color:#dedee4; font-size:10px; }
+    .v11-warning { margin-top:10px; color:#ffb0c0; }
+    .v11-good { margin-top:10px; color:#9feee7; }
+    @media (max-width:700px) { .v11-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .v11-bar { grid-template-columns:82px 1fr 48px; } }
+    @media (max-width:520px) { .v11-grid { grid-template-columns:1fr; } }
+    .v12-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v12-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v12-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v12-card strong { display:block; margin-top:6px; font-size:1.08rem; }
+    .v12-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.45; }
+    .v12-decision { margin-top:12px; border:1px solid #33484b; border-radius:14px; padding:16px; font-size:1.18rem; font-weight:900; background:linear-gradient(135deg,#0d1719,#0b0b0f 62%); }
+    .v12-matrix { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:12px; background:#0a0a0e; color:#d8d8de; line-height:1.55; font-size:11px; }
+    .v12-learning { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:14px; background:#0a0a0e; line-height:1.55; font-size:11px; }
+    .v12-warning { color:#ffb0c0; } .v12-good { color:#9feee7; }
+    @media (max-width:700px) { .v12-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { .v12-grid { grid-template-columns:1fr; } }
+
+
+    .v13-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v13-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v13-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v13-card strong { display:block; margin-top:6px; font-size:1.08rem; }
+    .v13-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.45; }
+    .v13-decision { margin-top:12px; border:1px solid #33484b; border-radius:14px; padding:16px; font-size:1.18rem; font-weight:900; background:linear-gradient(135deg,#0d1719,#0b0b0f 62%); }
+    .v13-matrix { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:12px; background:#0a0a0e; color:#d8d8de; line-height:1.6; font-size:11px; }
+    .v13-learning { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:14px; background:#0a0a0e; line-height:1.6; font-size:11px; }
+    .v13-warning { color:#ffb0c0; } .v13-good { color:#9feee7; }
+    @media (max-width:880px) { .v13-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { .v13-grid { grid-template-columns:1fr; } }
+    .legacy-pattern { display:none !important; }
+    .v9-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .v9-card { border:1px solid var(--line); border-radius:14px; padding:14px; background:rgba(255,255,255,.025); min-height:92px; }
+    .v9-card span { display:block; color:var(--muted); font-size:.72rem; letter-spacing:.08em; }
+    .v9-card strong { display:block; margin-top:6px; font-size:1.35rem; }
+    .v9-card small { display:block; margin-top:4px; color:var(--muted); line-height:1.4; }
+    .v9-decision { margin-top:12px; border:1px solid var(--line); border-radius:14px; padding:16px; font-size:1.2rem; font-weight:800; }
+    .v9-reasons,.v9-failure { margin-top:10px; color:var(--muted); line-height:1.6; }
+    @media (max-width:700px) { .v9-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { .v9-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <section class="app-card">
+      <header>
+        <div class="eyebrow">HISTORY · PROBABILITY · AUDIT</div>
+        <h1>NEURAL APEX <span class="v9-badge">V14 · ADAPTIVE TACTICAL ENGINE</span></h1>
+        <p class="subtitle">V13 แยก “การคาดการณ์” ออกจาก “การตัดสินใจ” และเพิ่ม <strong>Meta Tactical Engine</strong>, Case Replay, Action Memory, Next-State Simulation, Reversal Ladder, Confidence Decay, Error Attribution และ Adaptive Recovery โดยยังยึด walk-forward และ no-peeking เป็นแกนหลัก</p>
+      </header>
+
+      <div class="metrics" aria-live="polite">
+        <div class="metric"><span class="metric-label">มุมมองเชิงสถิติตาถัดไป</span><output id="next-side">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">สัดส่วนผลจริง P / B / T</span><output id="history-probability">--</output></div>
+        <div class="metric"><span class="metric-label">จำนวนตาที่บันทึก</span><output id="hands-recorded">0 ตา</output></div>
+        <div class="metric"><span class="metric-label">บริบทล่าสุดที่เทียบได้</span><output id="matched-context">--</output></div>
+        <div class="metric"><span class="metric-label">Walk-forward · ถูก / ผิด</span><output id="walk-forward">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">BRIER SKILL เทียบฐานอ้างอิงคงที่</span><output id="brier-skill">--</output></div>
+      </div>
+
+      <section class="forecast" aria-live="polite">
+        <div id="recommendation">รอข้อมูล</div>
+        <div id="forecast-probability">รอผลจริงอย่างน้อย 1 ตา</div>
+        <div id="message">เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะตรวจสอบใหม่จากประวัติทั้งหมดทันที</div>
+      </section>
+
+      <div class="result-buttons" aria-label="บันทึกผลของตาที่เพิ่งจบ">
+        <button class="result-button player" type="button" data-result="P" aria-label="บันทึก Player ชนะ">P</button>
+        <button class="result-button banker" type="button" data-result="B" aria-label="บันทึก Banker ชนะ">B</button>
+        <button class="result-button tie" type="button" data-result="T" aria-label="บันทึก Tie">T</button>
+      </div>
+
+      <section class="section" aria-label="ประวัติผล">
+        <h2 class="section-title">ประวัติผล</h2>
+        <p class="section-description">เริ่มที่มุมซ้ายบน แล้วเรียงลงล่างทีละตา; ครบ 6 ตาแล้วเริ่มชุดถัดไปทางขวาอัตโนมัติ</p>
+        <div id="history" class="history"></div>
+        <div class="actions">
+          <button class="small-button" id="undo" type="button">ย้อนกลับ 1 ตา</button>
+          <button class="small-button danger" id="reset" type="button">รีเซ็ตประวัติ</button>
+        </div>
+      </section>
+
+      <section class="section v9-console" aria-label="V9 Edge Analyst">
+        <h2 class="section-title">V11 EDGE ANALYST · วิเคราะห์แบบคัดเฉพาะจังหวะ + เรียนรู้จากความผิดพลาด</h2>
+        <p class="section-description">ไม่ถามแค่ว่า “ฝั่งไหนนำ” แต่ถามว่า “นำเหนือฐานมากพอหรือไม่ และหลักฐานน่าเชื่อถือแค่ไหน” ทุกตัวชี้วัดคำนวณแบบไม่ใช้ข้อมูลอนาคต และ V9.3 จำความผิดพลาดจากอดีต</p>
+        <div class="v9-grid">
+          <div class="v9-card"><span>EDGE</span><strong id="v9-edge">--</strong><small id="v9-edge-detail">--</small></div>
+          <div class="v9-card"><span>SIGNAL QUALITY · HEURISTIC</span><strong id="v9-confidence">--</strong><small id="v9-confidence-detail">--</small></div>
+          <div class="v9-card"><span>EVIDENCE DEPTH</span><strong id="v9-sample">--</strong><small id="v9-sample-detail">--</small></div>
+          <div class="v9-card"><span>REGIME</span><strong id="v9-regime">--</strong><small id="v9-regime-detail">--</small></div>
+          <div class="v9-card"><span>CONSENSUS</span><strong id="v9-consensus">--</strong><small id="v9-consensus-detail">--</small></div>
+          <div class="v9-card"><span>RECENT VS LONG</span><strong id="v9-divergence">--</strong><small id="v9-divergence-detail">--</small></div>
+        </div>
+        <div class="v9-decision" id="v9-decision">รอข้อมูล</div>
+        <div class="v9-reasons" id="v9-reasons">บันทึกผลจริงเพื่อสร้างหลักฐาน</div>
+        <div class="v9-failure" id="v9-failure">ERROR ATTRIBUTION · ยังไม่มีข้อมูลตรวจสอบ</div><div class="v9-failure" id="v93-memory">V9.3 ADAPTIVE MEMORY · ยังไม่มีข้อมูล</div><div class="v9-failure" id="v9-abstention">ABSTENTION RATE · ยังไม่มีข้อมูล</div>
+      </section>
+
+      <section class="section v10-console" aria-label="V10 Tactical Engine">
+        <h2 class="section-title">V10 CORE · GAME STATE · TRANSITION · TACTICAL (ฐานเดิม)</h2>
+        <p class="section-description">อ่านหลายระยะพร้อมกัน: ภาพรวม / ระยะกลาง / ระยะสั้น / micro state แล้วตรวจว่ารูปเดิมกำลังแข็งแรง แตก หรือเปลี่ยนสถานะ ก่อนผ่าน tactical gate</p>
+        <div class="v10-grid">
+          <div class="v10-card"><span>GAME STATE</span><strong id="v10-state">--</strong><small id="v10-state-detail">--</small></div>
+          <div class="v10-card"><span>TRANSITION</span><strong id="v10-transition">--</strong><small id="v10-transition-detail">--</small></div>
+          <div class="v10-card"><span>STATE STRENGTH</span><strong id="v10-strength">--</strong><small id="v10-strength-detail">--</small></div>
+          <div class="v10-card"><span>BREAK PRESSURE</span><strong id="v10-break">--</strong><small id="v10-break-detail">--</small></div>
+          <div class="v10-card"><span>COUNTER-SIGNAL</span><strong id="v10-counter">--</strong><small id="v10-counter-detail">--</small></div>
+          <div class="v10-card"><span>MULTI-TIMEFRAME</span><strong id="v10-mtf">--</strong><small id="v10-mtf-detail">--</small></div>
+        </div>
+        <div class="v10-matrix" id="v10-matrix">รอข้อมูล</div>
+        <div class="v10-decision" id="v10-decision">V10 TACTICAL · รอข้อมูล</div>
+        <div class="v10-reasons" id="v10-reasons">บันทึกผลจริงเพื่อเริ่มอ่านสถานะ</div>
+      </section>
+
+
+      <section class="section v11-console" aria-label="V11 Adaptive Error Learning Engine">
+        <h2 class="section-title">V11 ADAPTIVE ERROR-LEARNING · อ่านเกม / แก้เกม / เรียนรู้</h2>
+        <p class="section-description">V11 ไม่จำแค่ว่า “ถูกหรือผิด” แต่บันทึกสมมติฐานของแต่ละการคาดการณ์ แล้วตรวจว่าแพ้เพราะ state, transition, counter, regime, expert หรือจังหวะตัดสินใจ เพื่อปรับแผนเมื่อเจอสถานการณ์คล้ายเดิมอีกครั้ง</p>
+        <div class="v11-grid">
+          <div class="v11-card"><span>LEARNING MODE</span><strong id="v11-mode">--</strong><small id="v11-mode-detail">--</small></div>
+          <div class="v11-card"><span>SCENARIO MEMORY</span><strong id="v11-scenario">--</strong><small id="v11-scenario-detail">--</small></div>
+          <div class="v11-card"><span>ERROR TYPE</span><strong id="v11-error">--</strong><small id="v11-error-detail">--</small></div>
+          <div class="v11-card"><span>ASSUMPTION</span><strong id="v11-assumption">--</strong><small id="v11-assumption-detail">--</small></div>
+          <div class="v11-card"><span>REVERSAL MEMORY</span><strong id="v11-reversal">--</strong><small id="v11-reversal-detail">--</small></div>
+          <div class="v11-card"><span>RECOVERY</span><strong id="v11-recovery">--</strong><small id="v11-recovery-detail">--</small></div>
+        </div>
+        <div class="v11-plan" id="v11-plan">รอข้อมูลเพื่อสร้าง GAME PLAN</div>
+        <div class="v11-learn">
+          <strong>LEARNING PROFILE · สิ่งที่ระบบกำลังจำ</strong>
+          <div class="v11-bars">
+            <div class="v11-bar"><label>STATE MISS</label><div class="v11-track"><span id="v11-state-miss-bar" style="width:0%"></span></div><div class="v11-value" id="v11-state-miss">--</div></div>
+            <div class="v11-bar"><label>TRANSITION MISS</label><div class="v11-track"><span id="v11-transition-miss-bar" style="width:0%"></span></div><div class="v11-value" id="v11-transition-miss">--</div></div>
+            <div class="v11-bar"><label>COUNTER IGNORED</label><div class="v11-track"><span id="v11-counter-miss-bar" style="width:0%"></span></div><div class="v11-value" id="v11-counter-miss">--</div></div>
+            <div class="v11-bar"><label>REGIME MISS</label><div class="v11-track"><span id="v11-regime-miss-bar" style="width:0%"></span></div><div class="v11-value" id="v11-regime-miss">--</div></div>
+          </div>
+          <div id="v11-learning-message">ยังไม่มี historical learning evidence</div>
+        </div>
+      </section>
+
+      <section class="section v12-console" aria-label="V12 Adaptive Tactical Engine">
+        <h2 class="section-title">V12 ADAPTIVE TACTICAL ENGINE · จำเกม / แก้เกม / เปลี่ยนแผน</h2>
+        <p class="section-description">V14 ไม่ถามแค่ว่า “ทายถูกไหม” แต่ถามว่า “การตัดสินใจแบบไหนเหมาะกับสถานการณ์นี้” แล้ว replay เคสเก่า, จำผลของ action, จำความผิดพลาด, จำจุดกลับตัว และจำเส้นทางของ state เพื่อเปลี่ยนแผนให้ไวขึ้น</p>
+        <div class="v12-grid">
+          <div class="v12-card"><span>GAME STATE MACHINE</span><strong id="v12-state">--</strong><small id="v12-state-detail">--</small></div>
+          <div class="v12-card"><span>FOLLOW LOSS STREAK</span><strong id="v12-follow-loss">--</strong><small id="v12-follow-loss-detail">--</small></div>
+          <div class="v12-card"><span>RECOVERY</span><strong id="v12-recovery">--</strong><small id="v12-recovery-detail">--</small></div>
+          <div class="v12-card"><span>CASE MEMORY</span><strong id="v12-case">--</strong><small id="v12-case-detail">--</small></div>
+          <div class="v12-card"><span>COUNTERFACTUAL</span><strong id="v12-counterfactual">--</strong><small id="v12-counterfactual-detail">--</small></div>
+          <div class="v12-card"><span>ADAPTATION</span><strong id="v12-adaptation">--</strong><small id="v12-adaptation-detail">--</small></div>
+        </div>
+        <div class="v12-decision" id="v12-decision">V12 DECISION · รอข้อมูล</div>
+        <div class="v12-matrix" id="v12-matrix">FOLLOW / CUT MATRIX · รอข้อมูล</div>
+        <div class="v12-learning" id="v12-learning">V12 LEARNING · ยังไม่มี historical decision evidence</div>
+      </section>
+
+      <section class="section v13-console" aria-label="V13 Meta Tactical Engine">
+        <h2 class="section-title">V14 ADAPTIVE TACTICAL ENGINE · จำเคส / จำ action / จำการแก้เกม</h2>
+        <p class="section-description">V14 เพิ่มชั้นตัดสินใจเหนือ V12: แยก prediction skill / action utility / counterfactual / recovery และเรียนรู้จาก error แบบ walk-forward</p>
+        <div class="v13-grid">
+          <div class="v13-card"><span>TACTICAL STATE</span><strong id="v13-state">--</strong><small id="v13-state-detail">--</small></div>
+          <div class="v13-card"><span>ACTION SKILL</span><strong id="v13-action-skill">--</strong><small id="v13-action-skill-detail">--</small></div>
+          <div class="v13-card"><span>CASE REPLAY</span><strong id="v13-case-replay">--</strong><small id="v13-case-replay-detail">--</small></div>
+          <div class="v13-card"><span>NEXT-STATE</span><strong id="v13-next-state">--</strong><small id="v13-next-state-detail">--</small></div>
+          <div class="v13-card"><span>REVERSAL LADDER</span><strong id="v13-reversal">--</strong><small id="v13-reversal-detail">--</small></div>
+          <div class="v13-card"><span>CONFIDENCE DECAY</span><strong id="v13-decay">--</strong><small id="v13-decay-detail">--</small></div>
+          <div class="v13-card"><span>ERROR ATTRIBUTION</span><strong id="v13-error">--</strong><small id="v13-error-detail">--</small></div>
+          <div class="v13-card"><span>RECOVERY CONTROL</span><strong id="v13-recovery">--</strong><small id="v13-recovery-detail">--</small></div>
+        </div>
+        <div class="v13-decision" id="v13-decision">V13 DECISION · รอข้อมูล</div>
+        <div class="v13-matrix" id="v13-matrix">ACTION MATRIX · รอข้อมูล</div>
+        <div class="v13-learning" id="v13-learning">V13 LEARNING · ยังไม่มี historical tactical evidence</div>
+      </section>
+
+      <section class="section legacy-pattern" aria-label="Pattern Engine" style="display:none">
+        <h2 class="section-title">PATTERN ENGINE · รูปแบบ P / B</h2>
+        <p class="section-description">ตรวจรูปแบบที่กำหนดจากผล P/B จริง โดย T ไม่ถูกนับเป็น P/B ของ pattern. สถิติย้อนหลังใช้เฉพาะเหตุการณ์ที่ pattern ปรากฏก่อนผลถัดไป เพื่อรักษา walk-forward และไม่ใช้ผลอนาคต; Pattern Engine เป็น research-only และไม่มีผลต่อ V9.1 decision.</p>
+        <div class="analysis-details">
+          <div class="detail detail-wide"><span class="detail-label">PATTERN READ · ตรวจครบทุก Pattern ที่เปิดใช้งาน</span><output id="pattern-current">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">PATTERN FORECAST · คาดการณ์จาก Pattern ที่ตรงกัน</span><output id="pattern-forecast">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">PATTERN ENSEMBLE · รวมคะแนนจาก Pattern ที่ตรงกัน</span><output id="pattern-ensemble-weight">รอข้อมูล</output></div>
+        </div>
+        <div id="pattern-grid" class="pattern-grid"></div>
+      </section>
+
+      <section class="section" aria-label="รายละเอียดการวิเคราะห์">
+        <h2 class="section-title">การตรวจสอบโมเดล</h2>
+        <p class="section-description">V9.1 Core ใช้ Context + Transition + State ด้วยน้ำหนักฐานที่กำหนดไว้ล่วงหน้า; Pattern Engine เป็น research-only และไม่เข้า decision หลัก. Walk-forward ตรวจ forecast เดียวกับที่ใช้ตัดสินใจ โดยไม่ใช้ข้อมูลอนาคต และแยก prediction ออกจาก decision gate อย่างชัดเจน.</p>
+        <div class="analysis-details">
+          <div class="detail"><span class="detail-label">เทียบ BASE · ผลจริง</span><output id="observed-ratio">--</output></div>
+          <div class="detail"><span class="detail-label">บริบทหลักจากประวัติทั้งหมด</span><output id="context-detail">--</output></div>
+          <div class="detail"><span class="detail-label">ผลทดสอบย้อนหลัง · ถูก / ผิด</span><output id="audit-record">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">BRIER SCORE · โมเดล / ฐาน</span><output id="brier-score">--</output></div>
+          <div class="detail"><span class="detail-label">CALIBRATION (ECE)</span><output id="calibration">--</output></div>
+          <div class="detail"><span class="detail-label">RECENT SKILL DELTA · ล่าสุดเทียบระยะยาว</span><output id="recent-skill-delta">--</output></div>
+          <div class="detail"><span class="detail-label">ABSTENTION · สัดส่วน NO EDGE / WATCH</span><output id="abstention-rate">--</output></div>
+          <div class="detail"><span class="detail-label">สถานะการตรวจสอบ</span><output id="audit-status">กำลังเก็บข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">RISK GUARD · จังหวะตัด</span><output id="risk-guard">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">ปรับตัวหลังผลล่าสุด</span><output id="adaptation-status">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">TIMING MODE · ตาม / เฝ้า / ตัด</span><output id="timing-mode">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">RISK INDEX · ความเสี่ยงสัญญาณ</span><output id="risk-index">--</output></div>
+          <div class="detail"><span class="detail-label">GAME STATE · สภาพลำดับล่าสุด</span><output id="game-state">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">MIRAGE FILTER · ภาพลวงตา</span><output id="mirage-filter">รอข้อมูล</output></div>
+          <div class="detail detail-wide detail-decision"><span class="detail-label">TACTICAL READ · จังหวะอ่าน / ตัดสัญญาณ</span><output id="tactical-decision">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">ENSEMBLE EVIDENCE · น้ำหนักและความเห็นของโมเดล</span><output id="ensemble-evidence">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">การเรียนรู้และแก้ความคลาดเคลื่อน</span><output id="repair-plan">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">สาเหตุความเสี่ยง</span><output id="risk-reasons">รอข้อมูล</output></div>
+        </div>
+      </section>
+
+      <p class="notice"><strong>หลักการสำคัญ:</strong> ลำดับผลที่ผ่านมาไม่พิสูจน์ว่าตาถัดไปถูกควบคุมหรือ “หลอก” ได้ ระบบจึงเรียกสิ่งที่พบว่าเป็น <em>ภาพลวงตาทางสถิติ</em> และจะลดความเชื่อในสัญญาณเฉพาะรูปทรงเมื่อการทดสอบย้อนหลัง, จำนวนตัวอย่าง, regime หรือโมเดลหลายมุมมองไม่สนับสนุนกัน แม้ยังคงคาดการณ์เชิงความน่าจะเป็นทุกตา</p>
+    </section>
+  </main>
+
+  <script>
+  'use strict';
+
+  /*
+   * Results-only statistical audit. The model is deterministic: equal input
+   * history always gives equal output. It reads every saved outcome through
+   * complementary experts, and measures each one with expanding-window
+   * walk-forward validation before trusting its influence.
+   */
+  const STORAGE_KEY = 'neural-apex-history-audit-v14';
+  const LEGACY_KEYS = Object.freeze([
+    'neural-apex-history-audit-v13',
+    'neural-apex-history-audit-v3',
+    'neural-apex-baccarat-audit-v4',
+    'neural-apex-baccarat-audit-v3',
+    'neural-apex-audited-forecast-v3'
+  ]);
+  const OUTCOMES = Object.freeze(['P', 'B', 'T']);
+  const OUTCOME_NAME = Object.freeze({ P: 'PLAYER', B: 'BANKER', T: 'TIE' });
+  const BASE = Object.freeze({ P: 0.446246609, B: 0.458597423, T: 0.095155968 });
+  const MODEL = Object.freeze({
+    // Every recorded hand contributes to the global distribution.  The last
+    // sequence only selects comparable historical continuations; it never
+    // discards the rest of the history.
+    maximumContextDepth: 16,
+    contextPrior: 12,
+    adaptiveMinimumObservations: 12,
+    adaptiveRecentWindow: 100,
+    adaptivePrior: 24,
+    adaptiveStrength: 0.60,
+    adaptiveCap: 0.04,
+    // Start the first walk-forward check on the 10th recorded hand.
+    minimumWalkForwardHistory: 9,
+    reviewSample: 300,
+    recentReviewSample: 100,
+    meaningfulSkill: 0.01,
+    minimumForecastMargin: 0.015,
+    maximumCalibrationError: 0.03,
+    confidenceZ: 1.96,
+    ensembleMinimumObservations: 18,
+    ensembleRecentWindow: 96,
+    ensembleTemperature: 4,
+    ensembleFloor: 0.12,
+    featurePrior: 14,
+    minimumFeatureObservations: 5,
+    regimeRecentWindow: 24,
+    regimePrior: 18,
+    regimeShiftThreshold: 0.12,
+    maximumExpertDisagreement: 0.055,
+    minimumTacticalHistory: 48,
+    minimumTacticalValidation: 36,
+    minimumFollowMargin: 0.025,
+    maximumFollowRisk: 35,
+    criticalMissStreak: 3,
+    v93ContextMinimum: 8, v93MemoryMinimum: 18, v93MemoryRecentWindow: 48,
+    v93SkillTemperature: 2.8, v93WeightFloor: 0.70, v93WeightCeiling: 1.30,
+    v93RecoveryMissStreak: 3, v93RecoveryMargin: 0.035, v93RecoveryQuality: 58,
+    v93StateMinimum: 8, v93RegimeMinimum: 8, v93FailurePenalty: 0.08, v93RecoveryPenalty: 0.10,
+    expertBaseWeights: Object.freeze({ context: 0.92, transition: 0.72, state: 0.62, pattern: 0.58 }),
+    v10RecentWindow: 12,
+    v10MicroWindow: 5,
+    v10TransitionWindow: 8,
+    v10StateMinimum: 8,
+    v10RecoveryWindow: 1,
+    v10CutPressure: 0.62,
+    v10BreakPressure: 0.55,
+    v10CounterPressure: 0.56,
+    v10FalseBreakWindow: 2,
+    v10ConditionalQuality: 56,
+    v10FollowQuality: 68,
+    v10MinHistoryForTactical: 24,
+    v11ScenarioMinimum: 5,
+    v11ScenarioSimilarityFloor: 0.67,
+    v11RecentLearningWindow: 60,
+    v11ErrorMinimum: 6,
+    v11RecoveryObserveHands: 1,
+    v11CounterIgnoreThreshold: 0.58,
+    v11ReversalMemoryMinimum: 4,
+    v11ScenarioPenalty: 0.08,
+    v11ScenarioBoost: 0.04,
+    v11LearningWeight: 0.22,
+    v11CutThreshold: 0.72,
+    v11ReassessThreshold: 0.60,
+    v12FollowLossStreak: 3,
+    v12ObserveHands: 1,
+    v12CaseMemoryWindow: 240,
+    v12CaseMinimum: 5,
+    v12CaseSimilarityFloor: 0.67,
+    v12ShortRegimeWindow: 12,
+    v12MicroRegimeWindow: 5,
+    v12FollowThreshold: 68,
+    v12ConditionalThreshold: 52,
+    v12CutThreshold: 0.68,
+    v12HardCutCounter: 0.72,
+    v12WarningCounter: 0.56,
+    v12ReversalConfirm: 0.55,
+    v13CaseReplayWindow: 300,
+    v13ActionMinimum: 8,
+    v13ActionRecentWindow: 120,
+    v13ReplaySimilarityFloor: 0.67,
+    v13ReplayHorizon: 3,
+    v13DecayCounterStart: 0.40,
+    v13DecayTransitionStart: 0.48,
+    v13DecayReversalStart: 0.55,
+    v13DecayRate: 0.32,
+    v13RecoveryObserveHands: 1,
+    v13ReversalConfirm2: 0.68,
+    v13ReversalConfirm3: 0.82,
+    v13ActionPenalty: 0.12,
+    v13ActionBoost: 0.08,
+    v14ActionMinimum: 8,
+    v14ActionRecentWindow: 120,
+    v14CaseReplayWindow: 300,
+    v14ReplaySimilarityFloor: 0.67,
+    v14ReplayTopK: 40,
+    v14ReplayHorizon: 3,
+    v14RecoveryLossStreak: 3,
+    v14RecoveryReassessThreshold: 55,
+    v14ReversalBreakThreshold: 0.60,
+    v14ReversalConfirmThreshold: 0.68,
+    v14ReversalStrongThreshold: 0.82,
+    v14CalibrationShrink: 0.35,
+    v14TrajectoryWeight: 0.28,
+    v14ActionMemoryWeight: 0.22,
+    v14CaseMemoryWeight: 0.18,
+    v14PredictionWeight: 0.14
+  });
+  const EXPERTS = Object.freeze(['context', 'transition', 'state', 'pattern']);
+  const EXPERT_NAME = Object.freeze({
+    context: 'บริบทซ้ำหลายชั้น',
+    transition: 'จังหวะต่อเนื่อง',
+    state: 'รูปทรง run / สลับ',
+    pattern: 'Pattern Engine'
+  });
+
+  let rounds = [];
+  let auditCache = null;
+  const dom = {
+    nextSide: document.getElementById('next-side'),
+    historyProbability: document.getElementById('history-probability'),
+    handsRecorded: document.getElementById('hands-recorded'),
+    matchedContext: document.getElementById('matched-context'),
+    walkForward: document.getElementById('walk-forward'),
+    brierSkill: document.getElementById('brier-skill'),
+    recommendation: document.getElementById('recommendation'),
+    forecastProbability: document.getElementById('forecast-probability'),
+    message: document.getElementById('message'),
+    history: document.getElementById('history'),
+    observedRatio: document.getElementById('observed-ratio'),
+    contextDetail: document.getElementById('context-detail'),
+    auditRecord: document.getElementById('audit-record'),
+    brierScore: document.getElementById('brier-score'),
+    calibration: document.getElementById('calibration'), recentSkillDelta: document.getElementById('recent-skill-delta'), abstentionRate: document.getElementById('abstention-rate'),
+    auditStatus: document.getElementById('audit-status'),
+    riskGuard: document.getElementById('risk-guard'),
+    adaptationStatus: document.getElementById('adaptation-status'),
+    timingMode: document.getElementById('timing-mode'),
+    riskIndex: document.getElementById('risk-index'),
+    gameState: document.getElementById('game-state'),
+    mirageFilter: document.getElementById('mirage-filter'),
+    tacticalDecision: document.getElementById('tactical-decision'),
+    ensembleEvidence: document.getElementById('ensemble-evidence'),
+    repairPlan: document.getElementById('repair-plan'),
+    riskReasons: document.getElementById('risk-reasons'),
+    patternCurrent: document.getElementById('pattern-current'),
+    patternForecast: document.getElementById('pattern-forecast'),
+    patternEnsembleWeight: document.getElementById('pattern-ensemble-weight'),
+    patternGrid: document.getElementById('pattern-grid'),
+    v9Edge: document.getElementById('v9-edge'), v9EdgeDetail: document.getElementById('v9-edge-detail'),
+    v9Confidence: document.getElementById('v9-confidence'), v9ConfidenceDetail: document.getElementById('v9-confidence-detail'), v9Abstention: document.getElementById('v9-abstention'),
+    v9Sample: document.getElementById('v9-sample'), v9SampleDetail: document.getElementById('v9-sample-detail'),
+    v9Regime: document.getElementById('v9-regime'), v9RegimeDetail: document.getElementById('v9-regime-detail'),
+    v9Consensus: document.getElementById('v9-consensus'), v9ConsensusDetail: document.getElementById('v9-consensus-detail'),
+    v9Divergence: document.getElementById('v9-divergence'), v9DivergenceDetail: document.getElementById('v9-divergence-detail'),
+    v9Decision: document.getElementById('v9-decision'), v9Reasons: document.getElementById('v9-reasons'), v9Failure: document.getElementById('v9-failure'), v93Memory: document.getElementById('v93-memory'),
+    undo: document.getElementById('undo'),
+    reset: document.getElementById('reset'),
+    v10State: document.getElementById('v10-state'), v10StateDetail: document.getElementById('v10-state-detail'),
+    v10Transition: document.getElementById('v10-transition'), v10TransitionDetail: document.getElementById('v10-transition-detail'),
+    v10Strength: document.getElementById('v10-strength'), v10StrengthDetail: document.getElementById('v10-strength-detail'),
+    v10Break: document.getElementById('v10-break'), v10BreakDetail: document.getElementById('v10-break-detail'),
+    v10Counter: document.getElementById('v10-counter'), v10CounterDetail: document.getElementById('v10-counter-detail'),
+    v10Mtf: document.getElementById('v10-mtf'), v10MtfDetail: document.getElementById('v10-mtf-detail'),
+    v10Matrix: document.getElementById('v10-matrix'), v10Decision: document.getElementById('v10-decision'), v10Reasons: document.getElementById('v10-reasons')
+,
+    v11Mode: document.getElementById('v11-mode'), v11ModeDetail: document.getElementById('v11-mode-detail'),
+    v11Scenario: document.getElementById('v11-scenario'), v11ScenarioDetail: document.getElementById('v11-scenario-detail'),
+    v11Error: document.getElementById('v11-error'), v11ErrorDetail: document.getElementById('v11-error-detail'),
+    v11Assumption: document.getElementById('v11-assumption'), v11AssumptionDetail: document.getElementById('v11-assumption-detail'),
+    v11Reversal: document.getElementById('v11-reversal'), v11ReversalDetail: document.getElementById('v11-reversal-detail'),
+    v11Recovery: document.getElementById('v11-recovery'), v11RecoveryDetail: document.getElementById('v11-recovery-detail'),
+    v11Plan: document.getElementById('v11-plan'), v11LearningMessage: document.getElementById('v11-learning-message'),
+    v12State: document.getElementById('v12-state'), v12StateDetail: document.getElementById('v12-state-detail'),
+    v12FollowLoss: document.getElementById('v12-follow-loss'), v12FollowLossDetail: document.getElementById('v12-follow-loss-detail'),
+    v12Recovery: document.getElementById('v12-recovery'), v12RecoveryDetail: document.getElementById('v12-recovery-detail'),
+    v12Case: document.getElementById('v12-case'), v12CaseDetail: document.getElementById('v12-case-detail'),
+    v12Counterfactual: document.getElementById('v12-counterfactual'), v12CounterfactualDetail: document.getElementById('v12-counterfactual-detail'),
+    v12Adaptation: document.getElementById('v12-adaptation'), v12AdaptationDetail: document.getElementById('v12-adaptation-detail'),
+    v12Decision: document.getElementById('v12-decision'), v12Matrix: document.getElementById('v12-matrix'), v12Learning: document.getElementById('v12-learning'),
+    v13State: document.getElementById('v13-state'), v13StateDetail: document.getElementById('v13-state-detail'),
+    v13ActionSkill: document.getElementById('v13-action-skill'), v13ActionSkillDetail: document.getElementById('v13-action-skill-detail'),
+    v13CaseReplay: document.getElementById('v13-case-replay'), v13CaseReplayDetail: document.getElementById('v13-case-replay-detail'),
+    v13NextState: document.getElementById('v13-next-state'), v13NextStateDetail: document.getElementById('v13-next-state-detail'),
+    v13Reversal: document.getElementById('v13-reversal'), v13ReversalDetail: document.getElementById('v13-reversal-detail'),
+    v13Decay: document.getElementById('v13-decay'), v13DecayDetail: document.getElementById('v13-decay-detail'),
+    v13Error: document.getElementById('v13-error'), v13ErrorDetail: document.getElementById('v13-error-detail'),
+    v13Recovery: document.getElementById('v13-recovery'), v13RecoveryDetail: document.getElementById('v13-recovery-detail'),
+    v13Decision: document.getElementById('v13-decision'), v13Matrix: document.getElementById('v13-matrix'), v13Learning: document.getElementById('v13-learning'),
+    v11StateMissBar: document.getElementById('v11-state-miss-bar'), v11StateMiss: document.getElementById('v11-state-miss'),
+    v11TransitionMissBar: document.getElementById('v11-transition-miss-bar'), v11TransitionMiss: document.getElementById('v11-transition-miss'),
+    v11CounterMissBar: document.getElementById('v11-counter-miss-bar'), v11CounterMiss: document.getElementById('v11-counter-miss'),
+    v11RegimeMissBar: document.getElementById('v11-regime-miss-bar'), v11RegimeMiss: document.getElementById('v11-regime-miss')
+  };
+
+  function isOutcome(value) {
+    return OUTCOMES.includes(value);
+  }
+  function percent(value, digits) {
+    return Number.isFinite(value) ? (value * 100).toFixed(digits === undefined ? 2 : digits) + '%' : '--';
+  }
+  function signedPercent(value, digits) {
+    return Number.isFinite(value) ? (value >= 0 ? '+' : '') + (value * 100).toFixed(digits === undefined ? 1 : digits) + '%' : '--';
+  }
+  function score(value) {
+    return Number.isFinite(value) ? value.toFixed(3) : '--';
+  }
+  function topOutcome(probabilities) {
+    return OUTCOMES.reduce(function(best, side) {
+      return probabilities[side] > probabilities[best] ? side : best;
+    }, 'P');
+  }
+  function normalise(probabilities) {
+    const total = OUTCOMES.reduce(function(sum, side) { return sum + probabilities[side]; }, 0);
+    if (!Number.isFinite(total) || total <= 0) return { P: BASE.P, B: BASE.B, T: BASE.T };
+    return {
+      P: probabilities.P / total,
+      B: probabilities.B / total,
+      T: probabilities.T / total
+    };
+  }
+  function outcomeCounts(data) {
+    const counts = { P: 0, B: 0, T: 0 };
+    for (const result of data) counts[result]++;
+    return counts;
+  }
+  function posterior(counts, prior, strength) {
+    return normalise({
+      P: counts.P + prior.P * strength,
+      B: counts.B + prior.B * strength,
+      T: counts.T + prior.T * strength
+    });
+  }
+  function emptyMaps() {
+    return [];
+  }
+  function clamp(value, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, value));
+  }
+  function totalVariation(left, right) {
+    return OUTCOMES.reduce(function(total, side) {
+      return total + Math.abs(left[side] - right[side]);
+    }, 0) / 2;
+  }
+  function addFeature(map, key, outcome) {
+    const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
+    entry[outcome]++;
+    entry.total++;
+    map.set(key, entry);
+  }
+  function entryProbability(entry, fallback, prior) {
+    return entry && entry.total ? posterior(entry, fallback, prior) : fallback;
+  }
+  function makeSequenceState(last, side, runLength, alternatingLength) {
+    const runBucket = side ? Math.min(runLength, 6) : 0;
+    const alternatingBucket = side ? Math.min(alternatingLength, 8) : 0;
+    const mode = !side ? 'none' : runLength >= 3 ? 'run' : alternatingLength >= 4 ? 'chop' : 'mixed';
+    return {
+      last: last,
+      side: side,
+      runLength: runLength,
+      alternatingLength: alternatingLength,
+      mode: mode,
+      transitionKey: 'last:' + (last || 'none'),
+      runKey: 'run:' + (side || 'none') + ':' + runBucket,
+      chopKey: 'chop:' + (side || 'none') + ':' + alternatingBucket,
+      stateKey: 'state:' + mode + ':' + (side || 'none') + ':' + runBucket + ':' + alternatingBucket + ':' + (last || 'none')
+    };
+  }
+  function stepSequenceState(summary, outcome) {
+    const next = {
+      last: outcome,
+      side: summary.side,
+      runLength: summary.runLength,
+      alternatingLength: summary.alternatingLength
+    };
+    if (outcome !== 'T') {
+      if (outcome === summary.side) {
+        next.runLength++;
+        next.alternatingLength = 1;
+      } else {
+        next.side = outcome;
+        next.runLength = 1;
+        next.alternatingLength = summary.side ? summary.alternatingLength + 1 : 1;
+      }
+    }
+    return next;
+  }
+  function sequenceState(data, endIndex) {
+    const end = endIndex === undefined ? data.length : endIndex;
+    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
+    for (let index = 0; index < end; index++) summary = stepSequenceState(summary, data[index]);
+    return makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
+  }
+  const PATTERN_DEFS = Object.freeze([
+    { id:'dragon', label:'🐉 มังกร', example:'BBBBBB', test:function(s){ return /B{6,}$/.test(s); }, match:function(s){ return /B{6,}$/.test(s); }, desc:'Banker ต่อเนื่อง ≥ 6' },
+    { id:'pingpong', label:'🏓 ปิงปอง', example:'BPBPBP', test:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, match:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, desc:'สลับ P/B ต่อเนื่อง ≥ 6' },
+    { id:'twoTwo', label:'2-2', example:'BBPPBBPP', test:function(s){ return /(?:BBPP){2,}$/.test(s) || /(?:PPBB){2,}$/.test(s); }, match:function(s){ return /(?:BBPP){2,}$|(?:PPBB){2,}$/.test(s); }, desc:'2 ฝั่งหนึ่ง / 2 อีกฝั่ง' },
+    { id:'threeThree', label:'3-3', example:'BBBPPPBBBPPP', test:function(s){ return /(?:BBBPPP){2,}$/.test(s) || /(?:PPPBBB){2,}$/.test(s); }, match:function(s){ return /(?:BBBPPP){2,}$|(?:PPPBBB){2,}$/.test(s); }, desc:'3 ฝั่งหนึ่ง / 3 อีกฝั่ง' },
+    { id:'fourFour', label:'4-4', example:'BBBBPPPPBBBB', test:function(s){ return /(?:BBBBPPPP){2,}$/.test(s) || /(?:PPPPBBBB){2,}$/.test(s); }, match:function(s){ return /(?:BBBBPPPP){2,}$|(?:PPPPBBBB){2,}$/.test(s); }, desc:'4 ฝั่งหนึ่ง / 4 อีกฝั่ง' },
+    { id:'oneTwo', label:'1-2', example:'BPPBPPBPP', test:function(s){ return /(?:BPP){2,}$/.test(s) || /(?:PBB){2,}$/.test(s); }, match:function(s){ return /(?:BPP){2,}$|(?:PBB){2,}$/.test(s); }, desc:'1 ต่อ 2 ซ้ำ' },
+    { id:'twoOne', label:'2-1', example:'BBPBBPBBP', test:function(s){ return /(?:BBP){2,}$|(?:PPB){2,}$/.test(s); }, match:function(s){ return /(?:BBP){2,}$|(?:PPB){2,}$/.test(s); }, desc:'2 ต่อ 1 ซ้ำ' },
+    { id:'brokenDragon', label:'มังกรขาด', example:'BBBBBPBBBB', test:function(s){ return /B{5,}PB{1,}$/.test(s) || /P{5,}BP{1,}$/.test(s); }, match:function(s){ return /B{5,}PB{1,}$|P{5,}BP{1,}$/.test(s); }, desc:'run ยาว → ถูกตัด → กลับฝั่งเดิม' },
+    { id:'streak', label:'Streak', example:'BBBBBB', test:function(s){ return /(B{3,}|P{3,})$/.test(s); }, match:function(s){ return /(B{3,}|P{3,})$/.test(s); }, desc:'run ต่อเนื่อง ≥ 3' },
+    { id:'chop', label:'Chop', example:'BPBPBP', test:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, match:function(s){ return /(?:BP){3,}$|(?:PB){3,}$/.test(s); }, desc:'สลับต่อเนื่อง ≥ 6' },
+    { id:'dragonBanker', label:'มังกร Banker', example:'BBBBBBB', test:function(s){ return /B{7,}$/.test(s); }, match:function(s){ return /B{7,}$/.test(s); }, desc:'Banker streak ≥ 7' },
+    { id:'dragonPlayer', label:'มังกร Player', example:'PPPPPPP', test:function(s){ return /P{7,}$/.test(s); }, match:function(s){ return /P{7,}$/.test(s); }, desc:'Player streak ≥ 7' }
+  ]);
+  function decisiveData(data) { return data.filter(function(x){ return x === 'P' || x === 'B'; }); }
+    function patternStats(data, def) {
+    const seq = decisiveData(data);
+    const current = seq.join('');
+    const matches = [];
+
+    // ตรวจย้อนหลังแบบ walk-forward: ถ้า prefix ตรง Pattern
+    // ให้ผลจริงของตาถัดไปเป็น target โดยไม่ใช้ข้อมูลอนาคต
+    for (let end = 1; end < seq.length; end++) {
+      const prefix = seq.slice(0, end).join('');
+      if (def.match(prefix)) matches.push({ index: end, actual: seq[end] });
+    }
+
+    const counts = { P:0, B:0, T:0 };
+    matches.forEach(function(m) { counts[m.actual]++; });
+
+    const total = counts.P + counts.B + counts.T;
+    const probability = total
+      ? normalise({
+          P: counts.P + BASE.P * MODEL.patternPrior,
+          B: counts.B + BASE.B * MODEL.patternPrior,
+          T: counts.T + BASE.T * MODEL.patternPrior
+        })
+      : null;
+
+    return {
+      active: def.test(current),
+      current: current,
+      counts: counts,
+      total: total,
+      probability: probability,
+      prediction: probability ? topOutcome(probability) : null,
+      reliability: total / (total + MODEL.patternPrior)
+    };
+  }
+
+  function patternAnalysis(data) {
+    // ตรวจครบทุก Pattern ที่เปิดใช้งานทุกครั้ง
+    const stats = {};
+    const matched = [];
+
+    PATTERN_DEFS.forEach(function(def) {
+      const stat = patternStats(data, def);
+      stats[def.id] = stat;
+      if (stat.active) {
+        matched.push({ id:def.id, label:def.label, stat:stat });
+      }
+    });
+
+    // เฉพาะ Pattern ที่ "ตรงกับสถานะปัจจุบัน" เท่านั้นที่มีสิทธิ์ลงคะแนน
+    const votes = [];
+    const score = { P:0, B:0, T:0 };
+
+    matched.forEach(function(item) {
+      const stat = item.stat;
+
+      if (!stat.probability || stat.total === 0) {
+        votes.push({
+          id:item.id, label:item.label, prediction:null, weight:0,
+          reliability:stat.reliability, total:stat.total,
+          probability:stat.probability, matched:true
+        });
+        return;
+      }
+
+      // น้ำหนักเรียนรู้จากหลักฐานย้อนหลังของ Pattern ตัวนั้นเอง
+      const peak = Math.max(stat.probability.P, stat.probability.B, stat.probability.T);
+      const weight = Math.max(0.01, stat.reliability * peak);
+
+      OUTCOMES.forEach(function(side) {
+        score[side] += stat.probability[side] * weight;
+      });
+
+      votes.push({
+        id:item.id, label:item.label, prediction:stat.prediction,
+        weight:weight, reliability:stat.reliability, total:stat.total,
+        probability:stat.probability, matched:true
+      });
+    });
+
+    const activeVotes = votes.filter(function(v) { return v.weight > 0; });
+    const probabilities = activeVotes.length ? normalise(score) : null;
+
+    votes.sort(function(a,b) { return b.weight - a.weight; });
+
+    const support = { P:0, B:0, T:0 };
+    activeVotes.forEach(function(v) {
+      if (v.prediction) support[v.prediction] += v.weight;
+    });
+
+    return {
+      stats:stats,
+      active:matched.map(function(x) { return x.id; }),
+      matched:matched,
+      votes:votes,
+      support:support,
+      probabilities:probabilities,
+      matchedCount:matched.length,
+      activeVoteCount:activeVotes.length,
+
+      // ส่งสถานะของ Pattern ที่เปิดใช้งานทั้งหมดให้ UI ตรวจสอบได้
+      allPatterns:PATTERN_DEFS.map(function(def) {
+        const s = stats[def.id];
+        const vote = votes.find(function(v) { return v.id === def.id; });
+        return {
+          id:def.id,
+          label:def.label,
+          matched:!!s.active,
+          prediction:s.prediction,
+          probability:s.probability,
+          occurrences:s.total,
+          weight:vote ? vote.weight : 0
+        };
+      })
+    };
+  }
+
+  function featureMaps(data) {
+    const maps = {
+      transition: new Map(),
+      run: new Map(),
+      chop: new Map(),
+      state: new Map()
+    };
+    // Each target is indexed only by the state that existed before it. This
+    // preserves the same no-peeking rule used by walk-forward validation.
+    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
+    for (let targetIndex = 0; targetIndex < data.length; targetIndex++) {
+      if (targetIndex) {
+        const state = makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
+        const outcome = data[targetIndex];
+        addFeature(maps.transition, state.transitionKey, outcome);
+        addFeature(maps.run, state.runKey, outcome);
+        addFeature(maps.chop, state.chopKey, outcome);
+        addFeature(maps.state, state.stateKey, outcome);
+      }
+      summary = stepSequenceState(summary, data[targetIndex]);
+    }
+    return maps;
+  }
+  function blendFeatureEntries(entries, fallback, prior) {
+    let totalWeight = 1;
+    const blended = { P: fallback.P, B: fallback.B, T: fallback.T };
+    let support = 0;
+    const used = [];
+    for (const item of entries) {
+      if (!item.entry || !item.entry.total) continue;
+      const probability = entryProbability(item.entry, fallback, prior);
+      const reliability = item.entry.total / (item.entry.total + prior);
+      const weight = reliability * (item.bias || 1);
+      blended.P += probability.P * weight;
+      blended.B += probability.B * weight;
+      blended.T += probability.T * weight;
+      totalWeight += weight;
+      support += item.entry.total;
+      used.push({ label: item.label, total: item.entry.total, probability: probability });
+    }
+    return {
+      probabilities: normalise({ P: blended.P / totalWeight, B: blended.B / totalWeight, T: blended.T / totalWeight }),
+      support: support,
+      used: used
+    };
+  }
+  function regimeForecast(data, prior) {
+    const window = Math.min(MODEL.regimeRecentWindow, data.length);
+    if (!window) return { probabilities: prior, support: 0, shift: 0, window: 0 };
+    const recentCounts = outcomeCounts(data.slice(-window));
+    const recent = posterior(recentCounts, prior, MODEL.regimePrior);
+    const observedRecent = normalise(recentCounts);
+    const observedAll = normalise(outcomeCounts(data));
+    return {
+      probabilities: recent,
+      support: window,
+      shift: totalVariation(observedRecent, observedAll),
+      window: window
+    };
+  }
+  function expertPerformance(evaluations, name) {
+    const usable = evaluations.filter(function(evaluation) {
+      return evaluation.experts && evaluation.experts[name];
+    });
+    if (!usable.length) return { observations: 0, skill: 0, recentSkill: null };
+    function skillFor(sample) {
+      let expertLoss = 0;
+      let baselineLoss = 0;
+      for (const evaluation of sample) {
+        expertLoss += brier(evaluation.experts[name], evaluation.actual);
+        baselineLoss += brier(BASE, evaluation.actual);
+      }
+      return baselineLoss > 0 ? (baselineLoss - expertLoss) / baselineLoss : 0;
+    }
+    const recentSample = usable.slice(-MODEL.ensembleRecentWindow);
+    return {
+      observations: usable.length,
+      skill: skillFor(usable),
+      recentSkill: recentSample.length >= MODEL.ensembleMinimumObservations ? skillFor(recentSample) : null
+    };
+  }
+  function combineExperts(experts, evaluations) {
+    const weights = {};
+    const performance = {};
+    let totalWeight = 0;
+    for (const name of EXPERTS) {
+      const stats = expertPerformance(evaluations, name);
+      const combinedSkill = stats.recentSkill === null ? stats.skill : stats.skill * 0.35 + stats.recentSkill * 0.65;
+      const confidence = stats.observations / (stats.observations + MODEL.featurePrior);
+      const adjusted = 1 + clamp(combinedSkill * MODEL.ensembleTemperature * confidence, -0.65, 1.25);
+      const weight = Math.max(MODEL.ensembleFloor, MODEL.expertBaseWeights[name] * adjusted);
+      weights[name] = weight;
+      performance[name] = Object.assign(stats, { combinedSkill: combinedSkill });
+      totalWeight += weight;
+    }
+    const probabilities = { P: 0, B: 0, T: 0 };
+    for (const name of EXPERTS) {
+      const share = weights[name] / totalWeight;
+      weights[name] = share;
+      for (const side of OUTCOMES) probabilities[side] += experts[name][side] * share;
+    }
+    let disagreement = 0;
+    for (const name of EXPERTS) disagreement = Math.max(disagreement, totalVariation(experts[name], probabilities));
+    return { probabilities: normalise(probabilities), weights: weights, performance: performance, disagreement: disagreement };
+  }
+  function addTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    // For each supported context length, every historical continuation is
+    // counted.  This makes the result depend on the complete saved history.
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, targetIndex); depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth] || (maps[depth] = new Map());
+      const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
+      entry[outcome]++;
+      entry.total++;
+      map.set(key, entry);
+    }
+  }
+  function removeTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, targetIndex); depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth];
+      const entry = map && map.get(key);
+      // A missing entry means the cache is no longer trustworthy; rebuild it
+      // from the saved rounds instead of producing a silently wrong forecast.
+      if (!entry) return false;
+      entry[outcome]--;
+      entry.total--;
+      if (entry.total === 0) map.delete(key);
+    }
+    return true;
+  }
+  function transitionMaps(data) {
+    const maps = emptyMaps();
+    for (let targetIndex = 1; targetIndex < data.length; targetIndex++) addTransition(maps, data, targetIndex);
+    return maps;
+  }
+
+  function analyseState(data, totalHands, maps, overallCounts) {
+    // Start with the distribution from every recorded hand.  Then blend in
+    // all matching historical continuations for context lengths 1..16.
+    const prior = BASE;
+    const blended = { P: 0, B: 0, T: 0 };
+    let totalWeight = 0;
+    let context = null;
+
+    for (let depth = 1; depth <= Math.min(MODEL.maximumContextDepth, totalHands); depth++) {
+      const map = maps[depth];
+      if (!map) continue;
+      const key = data.slice(totalHands - depth, totalHands).join('');
+      const entry = map.get(key);
+      if (!entry || !entry.total) continue;
+
+      const contextProbability = posterior(entry, prior, MODEL.contextPrior);
+      const reliability = entry.total / (entry.total + MODEL.contextPrior);
+      const weight = reliability * (1 + Math.log2(depth));
+      blended.P += contextProbability.P * weight;
+      blended.B += contextProbability.B * weight;
+      blended.T += contextProbability.T * weight;
+      totalWeight += weight;
+
+      if (!context || weight > context.weight) {
+        context = {
+          key: key,
+          depth: depth,
+          total: entry.total,
+          counts: { P: entry.P, B: entry.B, T: entry.T },
+          probabilities: contextProbability,
+          weight: weight
+        };
+      }
+    }
+
+    const probabilities = normalise({
+      P: blended.P / totalWeight,
+      B: blended.B / totalWeight,
+      T: blended.T / totalWeight
+    });
+    return {
+      probabilities: probabilities,
+      top: topOutcome(probabilities),
+      overallCounts: overallCounts,
+      overall: prior,
+      context: context,
+      matchedExamples: context ? context.total : 0
+    };
+  }
+  function analyse(data) {
+    return adaptiveAnalysis(data, transitionMaps(data), outcomeCounts(data), []);
+  }
+  function residualProfile(evaluations) {
+    const expected = { P: 0, B: 0, T: 0 };
+    const observed = { P: 0, B: 0, T: 0 };
+    for (const evaluation of evaluations) {
+      for (const side of OUTCOMES) expected[side] += evaluation.probabilities[side];
+      observed[evaluation.actual]++;
+    }
+    const total = evaluations.length;
+    const residuals = { P: 0, B: 0, T: 0 };
+    if (total) {
+      for (const side of OUTCOMES) residuals[side] = (observed[side] - expected[side]) / total;
+    }
+    return { total: total, expected: expected, observed: observed, residuals: residuals };
+  }
+  function adaptiveCorrection(evaluations) {
+    const observations = evaluations.length;
+    const adjustment = { P: 0, B: 0, T: 0 };
+    if (observations < MODEL.adaptiveMinimumObservations) {
+      return { active: false, observations: observations, adjustment: adjustment, dominant: null };
+    }
+    const full = residualProfile(evaluations);
+    const recent = residualProfile(evaluations.slice(-MODEL.adaptiveRecentWindow));
+    const shrinkage = observations / (observations + MODEL.adaptivePrior);
+    let dominant = 'P';
+    for (const side of OUTCOMES) {
+      const residual = full.residuals[side] * 0.4 + recent.residuals[side] * 0.6;
+      adjustment[side] = Math.max(-MODEL.adaptiveCap, Math.min(MODEL.adaptiveCap, residual * shrinkage * MODEL.adaptiveStrength));
+      if (Math.abs(adjustment[side]) > Math.abs(adjustment[dominant])) dominant = side;
+    }
+    return { active: true, observations: observations, adjustment: adjustment, dominant: dominant, full: full, recent: recent };
+  }
+  function applyAdaptiveCorrection(probabilities, evaluations) {
+    const correction = adaptiveCorrection(evaluations);
+    const adjusted = normalise({
+      P: Math.max(0.001, probabilities.P + correction.adjustment.P),
+      B: Math.max(0.001, probabilities.B + correction.adjustment.B),
+      T: Math.max(0.001, probabilities.T + correction.adjustment.T)
+    });
+    return { probabilities: adjusted, correction: correction };
+  }
+  function adaptiveAnalysis(data, maps, counts, evaluations) {
+    const raw = analyseState(data, data.length, maps, counts);
+    const state = sequenceState(data);
+    const features = featureMaps(data);
+    const transition = blendFeatureEntries([
+      { label: 'ผลล่าสุด', entry: features.transition.get(state.transitionKey), bias: 1 }
+    ], BASE, MODEL.featurePrior);
+    const stateForecast = blendFeatureEntries([
+      { label: 'run', entry: features.run.get(state.runKey), bias: state.mode === 'run' ? 1.45 : 0.80 },
+      { label: 'สลับ', entry: features.chop.get(state.chopKey), bias: state.mode === 'chop' ? 1.45 : 0.80 },
+      { label: 'รูปทรงตรง', entry: features.state.get(state.stateKey), bias: 1.20 }
+    ], BASE, MODEL.featurePrior);
+    const regime = v91RegimeForecast(data, BASE);
+    const pattern = patternAnalysis(data);
+    const experts = {
+      context: raw.probabilities,
+      transition: transition.probabilities,
+      state: stateForecast.probabilities,
+      pattern: pattern.probabilities || BASE
+    };
+    const ensemble = combineExperts(experts, evaluations);
+    // Regime is intentionally NOT an ensemble expert. It is a separate filter
+    // that measures whether the recent 24 hands differ materially from the
+    // historical distribution and lets the tactical risk guard reduce trust.
+    const regimeFilter = {
+      shift: regime.shift,
+      threshold: MODEL.regimeShiftThreshold,
+      active: regime.shift > MODEL.regimeShiftThreshold
+    };
+    const adaptive = applyAdaptiveCorrection(ensemble.probabilities, evaluations);
+    return Object.assign({}, raw, {
+      rawProbabilities: ensemble.probabilities,
+      probabilities: adaptive.probabilities,
+      top: topOutcome(adaptive.probabilities),
+      adaptation: adaptive.correction,
+      experts: experts,
+      ensemble: ensemble,
+      state: state,
+      transition: transition,
+      stateForecast: stateForecast,
+      regime: regime,
+      regimeFilter: regimeFilter,
+      pattern: pattern
+    });
+  }
+  function brier(probabilities, actual) {
+    return OUTCOMES.reduce(function(sum, side) {
+      return sum + Math.pow(probabilities[side] - (side === actual ? 1 : 0), 2);
+    }, 0);
+  }
+  function calibrationScore(evaluations) {
+    const bucketCount = 10;
+    const byOutcome = {};
+    for (const side of OUTCOMES) {
+      const buckets = Array.from({ length: bucketCount }, function() {
+        return { count: 0, predicted: 0, actual: 0 };
+      });
+      for (const evaluation of evaluations) {
+        const probability = evaluation.probabilities[side];
+        const bucket = Math.min(bucketCount - 1, Math.floor(probability * bucketCount));
+        buckets[bucket].count++;
+        buckets[bucket].predicted += probability;
+        buckets[bucket].actual += side === evaluation.actual ? 1 : 0;
+      }
+      byOutcome[side] = evaluations.length ? buckets.reduce(function(total, bucket) {
+        if (!bucket.count) return total;
+        return total + bucket.count * Math.abs(bucket.predicted / bucket.count - bucket.actual / bucket.count);
+      }, 0) / evaluations.length : null;
+    }
+    const error = OUTCOMES.reduce(function(worst, side) {
+      return Math.max(worst, byOutcome[side] || 0);
+    }, 0);
+    return { error: evaluations.length ? error : null, byOutcome: byOutcome, observations: evaluations.length };
+  }
+  function summariseEvaluations(evaluations) {
+    let correct = 0;
+    let baseCorrect = 0;
+    let modelLoss = 0;
+    let baseLoss = 0;
+    let deltaSum = 0;
+    let deltaSquareSum = 0;
+    for (const evaluation of evaluations) {
+      if (evaluation.top === evaluation.actual) correct++;
+      if (evaluation.baseTop === evaluation.actual) baseCorrect++;
+      const modelRoundLoss = brier(evaluation.probabilities, evaluation.actual);
+      const baseRoundLoss = brier(evaluation.baseline, evaluation.actual);
+      const delta = baseRoundLoss - modelRoundLoss;
+      modelLoss += modelRoundLoss;
+      baseLoss += baseRoundLoss;
+      deltaSum += delta;
+      deltaSquareSum += delta * delta;
+    }
+    const total = evaluations.length;
+    const modelBrier = total ? modelLoss / total : null;
+    const baselineBrier = total ? baseLoss / total : null;
+    const meanDelta = total ? deltaSum / total : null;
+    const variance = total > 1 ? Math.max(0, (deltaSquareSum - total * meanDelta * meanDelta) / (total - 1)) : null;
+    const lowerDelta = total > 1 ? meanDelta - MODEL.confidenceZ * Math.sqrt(variance / total) : null;
+    return {
+      total: total,
+      correct: correct,
+      wrong: total - correct,
+      baseCorrect: baseCorrect,
+      baseWrong: total - baseCorrect,
+      modelBrier: modelBrier,
+      baselineBrier: baselineBrier,
+      skill: baselineBrier > 0 ? (baselineBrier - modelBrier) / baselineBrier : null,
+      skillLower: baselineBrier > 0 && Number.isFinite(lowerDelta) ? lowerDelta / baselineBrier : null,
+      calibration: calibrationScore(evaluations)
+    };
+  }
+  function emptyValidation() {
+    return {
+      total: 0,
+      correct: 0,
+      wrong: 0,
+      baseCorrect: 0,
+      baseWrong: 0,
+      modelBrier: null,
+      baselineBrier: null,
+      skill: null,
+      skillLower: null,
+      recent: null,
+      long: null,
+      skillDelta: null,
+      calibration: { error: null, observations: 0 }
+    };
+  }
+  function makeEvaluation(history, maps, counts, actual, priorEvaluations) {
+    const analysis = adaptiveAnalysis(history, maps, counts, []);
+    analysis._data = history;
+    analysis.regimeV91 = v91RegimeForecast(history, BASE);
+    const priorValidation = validationFromEvaluations(priorEvaluations || []);
+    const decision = v93Decision(analysis, priorValidation, priorEvaluations || []);
+    const baseline = BASE;
+    const v12Now = v12Decision(analysis, decision, priorEvaluations || [], history);
+    const v13Now = v14Decision(analysis, decision, v12Now, priorEvaluations || [], history, actual, true);
+    const calibrationError = priorValidation.calibration ? priorValidation.calibration.error : null;
+    return {
+      probabilities: decision.core.probabilities,
+      rawProbabilities: decision.core.probabilities,
+      top: decision.top,
+      baseline: baseline,
+      baseTop: binaryTop(baseline),
+      actual: actual,
+      experts: analysis.experts,
+      ensemble: decision.core,
+      state: analysis.state,
+      regime: analysis.regimeV91,
+      evidenceDepth: decision.sample,
+      calibrationError: calibrationError,
+      v9: { mode: decision.mode, quality: decision.quality, top: decision.top, edge: decision.edge },
+      v12: { action: v12Now.action, machine: v12Now.machine, snapshot: v12Now.snapshot, followGate: v12Now.followGate },
+      v13: { action: v13Now.action, state: v13Now.state, snapshot: v13Now.snapshot, attribution: v13Now.attribution, confidence: v13Now.confidence, nextState: v13Now.nextState },
+      v14: { action: v13Now.action, state: v13Now.state, snapshot: v13Now.snapshot, attribution: v13Now.attribution, confidence: v13Now.confidence, rawConfidence: v13Now.rawConfidence, actionUtility: v13Now.actionUtility, errorVector: v13Now.errorVector, risk: v13Now.risk },
+      index: history.length,
+      divergence: decision.divergence
+    };
+  }
+  function validationFromEvaluations(evaluations) {
+    if (!evaluations.length) return emptyValidation();
+    const summary = summariseEvaluations(evaluations);
+    const recent = evaluations.length >= MODEL.recentReviewSample
+      ? summariseEvaluations(evaluations.slice(-MODEL.recentReviewSample))
+      : null;
+    let long = null;
+    if (recent) {
+      const longSample = evaluations.slice(0, -MODEL.recentReviewSample);
+      if (longSample.length >= MODEL.ensembleMinimumObservations) long = summariseEvaluations(longSample);
+      recent.skillDelta = long ? (recent.skill || 0) - (long.skill || 0) : null;
+    }
+    summary.skillDelta = recent ? recent.skillDelta : null;
+    return Object.assign(summary, { recent: recent, long: long });
+  }
+  function walkForward(data) {
+    const start = MODEL.minimumWalkForwardHistory;
+    if (data.length <= start) return emptyValidation();
+
+    const maps = emptyMaps();
+    const prefixCounts = { P: 0, B: 0, T: 0 };
+    const evaluations = [];
+
+    for (let index = 0; index < data.length; index++) {
+      if (index >= start) {
+        evaluations.push(makeEvaluation(data.slice(0, index), maps, prefixCounts, data[index], evaluations));
+      }
+      addTransition(maps, data, index);
+      prefixCounts[data[index]]++;
+    }
+    return validationFromEvaluations(evaluations);
+  }
+  function buildAuditCache(data) {
+    const cache = { data: [], maps: emptyMaps(), counts: { P: 0, B: 0, T: 0 }, evaluations: [] };
+    for (const result of data) appendAuditResult(cache, result);
+    return cache;
+  }
+  function appendAuditResult(cache, result) {
+    const index = cache.data.length;
+    if (index >= MODEL.minimumWalkForwardHistory) {
+      cache.evaluations.push(makeEvaluation(cache.data, cache.maps, cache.counts, result, cache.evaluations));
+    }
+    cache.data.push(result);
+    addTransition(cache.maps, cache.data, index);
+    cache.counts[result]++;
+  }
+  function removeAuditResult(cache) {
+    const index = cache.data.length - 1;
+    if (index < 0) return true;
+    if (index >= MODEL.minimumWalkForwardHistory) cache.evaluations.pop();
+    if (!removeTransition(cache.maps, cache.data, index)) return false;
+    cache.counts[cache.data[index]]--;
+    cache.data.pop();
+    return true;
+  }
+  function sharesPrefix(left, right, length) {
+    if (left.length < length || right.length < length) return false;
+    for (let index = 0; index < length; index++) {
+      if (left[index] !== right[index]) return false;
+    }
+    return true;
+  }
+  function auditFor(data) {
+    if (!auditCache) {
+      auditCache = buildAuditCache(data);
+    } else if (data.length === auditCache.data.length + 1 && sharesPrefix(data, auditCache.data, auditCache.data.length)) {
+      appendAuditResult(auditCache, data[data.length - 1]);
+    } else if (data.length + 1 === auditCache.data.length && sharesPrefix(data, auditCache.data, data.length)) {
+      if (!removeAuditResult(auditCache)) auditCache = buildAuditCache(data);
+    } else if (data.length !== auditCache.data.length || !sharesPrefix(data, auditCache.data, data.length)) {
+      auditCache = buildAuditCache(data);
+    }
+    return {
+      analysis: adaptiveAnalysis(auditCache.data, auditCache.maps, auditCache.counts, auditCache.evaluations),
+      validation: validationFromEvaluations(auditCache.evaluations),
+      evaluations: auditCache.evaluations
+    };
+  }
+  function probabilityText(probabilities, digits) {
+    return 'P ' + percent(probabilities.P, digits) + ' · B ' + percent(probabilities.B, digits) + ' · T ' + percent(probabilities.T, digits);
+  }
+  function coloredProbabilityHTML(probabilities, digits) {
+    return '<span class="prob-p">P ' + percent(probabilities.P, digits) + '</span> · ' +
+      '<span class="prob-b">B ' + percent(probabilities.B, digits) + '</span> · ' +
+      '<span class="prob-t">T ' + percent(probabilities.T, digits) + '</span>';
+  }
+  function contextName(context) {
+    if (!context) return 'ยังไม่มีบริบทซ้ำที่เทียบได้';
+    const shownHands = 8;
+    const visible = context.key.length > shownHands ? '…-' + context.key.slice(-shownHands).split('').join('-') : context.key.split('').join('-');
+    return 'บริบทที่มีน้ำหนักสูงสุด ' + context.depth + ' ตา (' + visible + ') → ?';
+  }
+  function contextText(context, totalHands) {
+    const source = 'วิเคราะห์ครบ ' + totalHands + ' ตา';
+    if (!context) return source + ' · ยังไม่มีบริบทซ้ำที่ตรงกัน';
+    return source + ' · บริบทหลัก ' + context.depth + ' ตา พบ ' + context.total + ' ครั้ง';
+  }
+  function predictionMargin(probabilities) {
+    const values = OUTCOMES.map(function(side) { return probabilities[side]; }).sort(function(left, right) { return right - left; });
+    return values[0] - values[1];
+  }
+  function recentMissStreak(evaluations) {
+    let misses = 0;
+    for (let index = evaluations.length - 1; index >= 0; index--) {
+      if (evaluations[index].top === evaluations[index].actual) break;
+      misses++;
+    }
+    return misses;
+  }
+  function recentFollowLossStreak(evaluations) {
+    let losses = 0;
+    for (let index = evaluations.length - 1; index >= 0; index--) {
+      const e = evaluations[index] || {};
+      const action = e.v12 && e.v12.action ? e.v12.action : (e.v9 ? e.v9.mode : null);
+      if (action === 'FOLLOW' || action === 'CONDITIONAL FOLLOW') {
+        if (e.top !== e.actual) losses++; else break;
+      } else {
+        break;
+      }
+    }
+    return losses;
+  }
+  function v12RecoveryActive(evaluations) { return recentFollowLossStreak(evaluations) >= MODEL.v12FollowLossStreak; }
+  function gameStateText(analysis) {
+    const state = analysis.state;
+    if (!state.last) return 'รอผลจริงเพื่อระบุรูปทรงลำดับ';
+    if (state.last === 'T') return 'ผลล่าสุด T · เก็บ T เป็นข้อมูลจริงแยกจาก P/B และคงรูปทรง P/B ก่อนหน้าไว้ตรวจต่อ';
+    if (state.mode === 'run') {
+      return 'RUN ' + OUTCOME_NAME[state.side] + ' × ' + state.runLength + ' · ตรวจทั้งแรงต่อและแรงตัดจากรูปทรงซ้ำย้อนหลัง';
+    }
+    if (state.mode === 'chop') {
+      return 'CHOP / สลับ × ' + state.alternatingLength + ' · ตรวจว่าการสลับมีหลักฐานต่อเนื่องหรือเป็นเพียงความบังเอิญ';
+    }
+    return 'MIXED · ' + OUTCOME_NAME[state.side] + ' ล่าสุด · ยังไม่มี run หรือจังหวะสลับที่ยาวพอจะตั้งเป็นรูปทรงหลัก';
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 14, rounds: rounds }));
+    } catch (_) {
+      // The app remains usable even when browser storage is unavailable.
+    }
+  }
+  function extractResults(saved) {
+    if (!saved || !Array.isArray(saved.rounds)) return [];
+    return saved.rounds.map(function(round) {
+      return typeof round === 'string' ? round : round && round.result;
+    }).filter(isOutcome);
+  }
+  function load() {
+    auditCache = null;
+    const keys = [STORAGE_KEY, 'neural-apex-history-audit-v12'].concat(LEGACY_KEYS);
+    for (const key of keys) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(key));
+        const imported = extractResults(saved);
+        if (saved && Array.isArray(saved.rounds)) {
+          rounds = imported;
+          // Repair malformed records and migrate legacy data once, so the
+          // on-disk state cannot keep reintroducing invalid outcomes.
+          if (key !== STORAGE_KEY || imported.length !== saved.rounds.length) save();
+          return;
+        }
+      } catch (_) {
+        // Ignore malformed saved data and try the next safe source.
+      }
+    }
+    rounds = [];
+  }
+  function renderHistory() {
+    dom.history.replaceChildren();
+    if (!rounds.length) {
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'ยังไม่มีประวัติ';
+      dom.history.append(empty);
+      return;
+    }
+    const fragment = document.createDocumentFragment();
+    rounds.forEach(function(result, index) {
+      const node = document.createElement('div');
+      const className = result === 'P' ? 'player' : result === 'B' ? 'banker' : 'tie';
+      node.className = 'history-node ' + className;
+      node.textContent = result;
+      node.title = 'ตาที่ ' + (index + 1) + ': ' + OUTCOME_NAME[result];
+      node.setAttribute('aria-label', node.title);
+      fragment.append(node);
+    });
+    dom.history.append(fragment);
+  }
+  /* Legacy renderer retained for reference only; render() below is the sole active UI path. */
+  /* ======================= V9.3 EDGE ANALYST ========================
+     V9.3 principles:
+     1) Walk-forward validates the exact V9.1 forecast, not the legacy model.
+     2) TIE remains a probability, never a FOLLOW decision.
+     3) Prediction and decision are separate.
+     4) Recent-vs-long is measured by predictive skill, not raw frequencies.
+     5) Regime compares recent data with the immediately preceding regime,
+        not with a population that contains the recent window itself.
+     6) Pattern remains research-only and is hidden from the main UI.
+  */
+  function binaryTop(probabilities) {
+    return probabilities.P >= probabilities.B ? 'P' : 'B';
+  }
+  function binaryMargin(probabilities) {
+    return Math.abs(probabilities.P - probabilities.B);
+  }
+  /* V9.3 Adaptive Error Memory: only prior evaluations are used. */
+  function v93ExpertSkill(evaluations, name, selector) {
+    const usable=evaluations.filter(e=>e.experts&&e.experts[name]&&(!selector||selector(e)));
+    if(usable.length<MODEL.v93ContextMinimum)return {total:usable.length,skill:0,recentSkill:0};
+    const recent=usable.slice(-MODEL.v93MemoryRecentWindow);
+    function calc(rows){let ml=0,bl=0;rows.forEach(e=>{ml+=brier(e.experts[name],e.actual);bl+=brier(BASE,e.actual);});return bl>0?(bl-ml)/bl:0;}
+    return {total:usable.length,skill:calc(usable),recentSkill:calc(recent)};
+  }
+  function v93Rate(rows){if(!rows.length)return {total:0,misses:0,rate:null};const misses=rows.reduce((n,e)=>n+(e.top===e.actual?0:1),0);return {total:rows.length,misses:misses,rate:misses/rows.length};}
+  function v93MemoryProfile(analysis,evaluations){
+    const names=['context','transition','state'];
+    const stateMode=analysis.state&&analysis.state.mode?analysis.state.mode:'mixed';
+    const shift=analysis.regimeV91?analysis.regimeV91.shift:0;
+    const regimeBucket=shift>MODEL.regimeShiftThreshold?'shift':'stable';
+    const stateRows=evaluations.filter(e=>e.state&&e.state.mode===stateMode);
+    const regimeRows=evaluations.filter(e=>{const x=e.regime&&Number.isFinite(e.regime.shift)?e.regime.shift:0;return (x>MODEL.regimeShiftThreshold?'shift':'stable')===regimeBucket;});
+    const memory={stateMode:stateMode,regimeBucket:regimeBucket,observations:evaluations.length,experts:{},failures:{state:v93Rate(stateRows),regime:v93Rate(regimeRows),recent:v93Rate(evaluations.slice(-MODEL.v93MemoryRecentWindow))},recovery:recentMissStreak(evaluations)>=MODEL.v93RecoveryMissStreak};
+    names.forEach(name=>{
+      const overall=v93ExpertSkill(evaluations,name), contextual=v93ExpertSkill(evaluations,name,e=>e.state&&e.state.mode===stateMode), regime=v93ExpertSkill(evaluations,name,e=>{const x=e.regime&&Number.isFinite(e.regime.shift)?e.regime.shift:0;return (x>MODEL.regimeShiftThreshold?'shift':'stable')===regimeBucket;});
+      const n=Math.min(overall.total,contextual.total||overall.total), confidence=Math.min(1,n/(MODEL.v93MemoryMinimum+n));
+      const skill=.30*overall.skill+.30*overall.recentSkill+.20*contextual.skill+.20*regime.skill;
+      let mult=1+Math.max(-.30,Math.min(.30,skill*MODEL.v93SkillTemperature*confidence));
+      if(contextual.total>=MODEL.v93StateMinimum&&contextual.skill<-MODEL.v93FailurePenalty)mult-=MODEL.v93FailurePenalty;
+      if(regime.total>=MODEL.v93RegimeMinimum&&regime.skill<-MODEL.v93FailurePenalty)mult-=MODEL.v93FailurePenalty*.75;
+      if(memory.recovery)mult-=MODEL.v93RecoveryPenalty*.35;
+      memory.experts[name]={overall:overall,contextual:contextual,regime:regime,skill:skill,confidence:confidence,multiplier:Math.max(MODEL.v93WeightFloor,Math.min(MODEL.v93WeightCeiling,mult))};
+    }); return memory;
+  }
+  function v93CoreEnsemble(analysis,evaluations){
+    const names=['context','transition','state'],memory=v93MemoryProfile(analysis,evaluations||[]),weights={},prob={P:0,B:0,T:0};let total=0;
+    names.forEach(name=>{weights[name]=MODEL.expertBaseWeights[name]*memory.experts[name].multiplier;total+=weights[name];});
+    names.forEach(name=>{const share=weights[name]/total;for(const side of OUTCOMES)prob[side]+=analysis.experts[name][side]*share;});
+    const combined=normalise(prob),disagreement=names.reduce((m,n)=>Math.max(m,totalVariation(analysis.experts[n],combined)),0);
+    return {probabilities:combined,names:names,weights:weights,source:'v9.3-adaptive-error-memory',disagreement:disagreement,top:binaryTop(combined),memory:memory};
+  }
+  function v91RegimeForecast(data, prior) {
+    const recentWindow = Math.min(MODEL.regimeRecentWindow, data.length);
+    if (!recentWindow) return { probabilities: prior, support: 0, shift: 0, recentShift: 0, window: 0, previousWindow: 0 };
+    const recentData = data.slice(-recentWindow);
+    const previousEnd = Math.max(0, data.length - recentWindow);
+    const previousStart = Math.max(0, previousEnd - recentWindow);
+    const previousData = data.slice(previousStart, previousEnd);
+    const recentCounts = outcomeCounts(recentData);
+    const previousCounts = outcomeCounts(previousData);
+    const recent = posterior(recentCounts, prior, MODEL.regimePrior);
+    const observedRecent = normalise(recentCounts);
+    const observedPrevious = previousData.length ? normalise(previousCounts) : normalise(outcomeCounts(data));
+    const observedLong = normalise(outcomeCounts(data));
+    return {
+      probabilities: recent,
+      support: recentData.length,
+      shift: totalVariation(observedRecent, observedPrevious),
+      recentShift: totalVariation(observedRecent, observedLong),
+      window: recentData.length,
+      previousWindow: previousData.length
+    };
+  }
+  function v91RecentForecast(data) {
+    if (!data.length) return { probabilities: BASE, window:0 };
+    const window = Math.min(36, data.length);
+    const recent = data.slice(-window);
+    return { probabilities: posterior(outcomeCounts(recent), BASE, 12), window: window };
+  }
+  function v91EvidenceDepth(analysis, validation) {
+    const contextN = analysis.context ? analysis.context.total : 0;
+    const auditN = validation.total || 0;
+    const recentN = validation.recent ? validation.recent.total : 0;
+    const vals = [contextN, auditN, recentN].filter(function(x){ return x > 0; });
+    if (!vals.length) return 0;
+    const harmonic = vals.length / vals.reduce(function(sum,x){ return sum + 1/x; },0);
+    return Math.round(harmonic);
+  }
+  function v91SignalQuality(edge, margin, evidence, disagreement, regimeShift, validation) {
+    const evidenceScore = 1 - Math.exp(-evidence / 45);
+    const edgeScore = clamp(Math.abs(edge) / 0.04, 0, 1);
+    const marginScore = clamp(margin / 0.05, 0, 1);
+    const agreeScore = 1 - clamp(disagreement / 0.08, 0, 1);
+    const regimeScore = 1 - clamp(regimeShift / 0.20, 0, 1);
+    const auditScore = validation.total ? clamp((validation.skill || 0) / 0.04, 0, 1) : 0;
+    const cal = Number.isFinite(validation.calibration.error) ? 1-clamp(validation.calibration.error/0.05,0,1) : 0;
+    return Math.round(100 * (0.22*evidenceScore + 0.20*edgeScore + 0.14*marginScore + 0.16*agreeScore + 0.12*regimeScore + 0.10*auditScore + 0.06*cal));
+  }
+  function v91ErrorAttribution(evaluations) {
+    if (!evaluations.length) return 'ERROR ATTRIBUTION · ยังไม่มี walk-forward';
+    const usable = evaluations.slice(-100);
+    let shared = 0, minority = 0, regime = 0, lowSample = 0, calibration = 0;
+    usable.forEach(function(e){
+      if (e.top === e.actual) return;
+      const votes = ['context','transition','state'].map(function(n){ return e.experts && e.experts[n] ? binaryTop(e.experts[n]) : null; }).filter(Boolean);
+      const voteP = votes.filter(function(x){return x==='P';}).length;
+      const voteB = votes.filter(function(x){return x==='B';}).length;
+      const majority = voteP >= voteB ? 'P' : 'B';
+      if (votes.length >= 2 && votes.every(function(x){return x !== e.actual;})) shared++;
+      else if (votes.length && majority !== e.actual) minority++;
+      if (e.regime && e.regime.shift > MODEL.regimeShiftThreshold) regime++;
+      if (e.evidenceDepth < 12) lowSample++;
+      if (Number.isFinite(e.calibrationError) && e.calibrationError > MODEL.maximumCalibrationError) calibration++;
+    });
+    return 'ERROR ATTRIBUTION · 100 ล่าสุด: shared-model miss '+shared+' · conflicting/majority miss '+minority+' · regime shift '+regime+' · low evidence '+lowSample+' · calibration warning '+calibration;
+  }
+  function v91AbstentionRate(evaluations) {
+    if (!evaluations.length) return { total:0, follow:0, watch:0, noEdge:0, rate:null };
+    let follow=0, watch=0, noEdge=0;
+    evaluations.forEach(function(e){
+      if (e.v9 && e.v9.mode === 'FOLLOW') follow++;
+      else if (e.v9 && e.v9.mode === 'WATCH') watch++;
+      else noEdge++;
+    });
+    return { total:evaluations.length, follow:follow, watch:watch, noEdge:noEdge, rate:noEdge/evaluations.length };
+  }
+  /* ======================= V10 GAME STATE TACTICAL ======================== */
+  function v10Decisive(data){ return data.filter(x=>x==='P'||x==='B'); }
+  function v10Window(data,n){ return v10Decisive(data.slice(-Math.min(n,data.length))); }
+  function v10TopBinary(data){
+    const d=v10Decisive(data); if(!d.length)return {side:null,share:0};
+    const c=outcomeCounts(d), total=d.length; const side=c.P>=c.B?'P':'B';
+    return {side:side,share:c[side]/total};
+  }
+  function v10RunInfo(data){
+    const d=v10Decisive(data); if(!d.length)return {side:null,length:0};
+    const side=d[d.length-1]; let n=0; for(let i=d.length-1;i>=0&&d[i]===side;i--)n++;
+    return {side:side,length:n};
+  }
+  function v10ChopInfo(data){
+    const d=v10Decisive(data); if(d.length<2)return {length:d.length};
+    let n=1; for(let i=d.length-1;i>0&&d[i]!==d[i-1];i--)n++;
+    return {length:n};
+  }
+  function v10RegimeLabel(analysis){
+    const s=analysis.regimeV91||{shift:0,recentShift:0};
+    const state=analysis.state||{};
+    if((s.shift||0)>.20)return 'UNSTABLE';
+    if((s.shift||0)>.12)return 'TRANSITION';
+    if(state.mode==='run')return 'TRENDING';
+    if(state.mode==='chop')return 'CHOPPING';
+    return 'STABLE';
+  }
+  function v10MultiTimeframe(data){
+    const windows=[{name:'LONG',n:Math.min(100,data.length)},{name:'MID',n:36},{name:'SHORT',n:12},{name:'MICRO',n:MODEL.v10MicroWindow}];
+    const reads=windows.map(w=>{const t=v10TopBinary(data.slice(-w.n));return {name:w.name,side:t.side,share:t.share};});
+    const votes={P:0,B:0}; reads.forEach(r=>{if(r.side)votes[r.side]++;});
+    const lead=votes.P>=votes.B?'P':'B';
+    const consensus=reads.filter(r=>r.side===lead).length/(reads.filter(r=>r.side).length||1);
+    return {reads,lead:lead,consensus:consensus};
+  }
+  function v10StateEngine(analysis){
+    const data=analysis._data||[];
+    const st=analysis.state||sequenceState(data);
+    const run=v10RunInfo(data), chop=v10ChopInfo(data), regime=v10RegimeLabel(analysis);
+    const recent=v10Window(data,MODEL.v10RecentWindow), micro=v10Window(data,MODEL.v10MicroWindow);
+    const mtf=v10MultiTimeframe(data);
+    let strength=35;
+    if(st.mode==='run') strength+=Math.min(30,st.runLength*6);
+    if(st.mode==='chop') strength+=Math.min(28,st.alternatingLength*5);
+    if(mtf.consensus>=.75) strength+=20; else if(mtf.consensus>=.5) strength+=8;
+    strength-=Math.round((analysis.regimeV91&&analysis.regimeV91.shift||0)*65);
+    strength=clamp(strength,0,100);
+    const side=st.side||mtf.lead;
+    return {mode:st.mode||'mixed',side:side,run:run.length,chop:chop.length,strength:strength,regime:regime,mtf:mtf,recent:recent,micro:micro};
+  }
+  function v10TransitionEngine(analysis){
+    const data=analysis._data||[], d=v10Decisive(data); if(d.length<3)return {label:'UNKNOWN',score:0,breakPressure:0,details:'หลักฐานยังน้อย'};
+    const st=analysis.state||sequenceState(data), recent=v10Window(data,MODEL.v10TransitionWindow), prev=v10Window(data.slice(0,Math.max(0,d.length-MODEL.v10TransitionWindow)),MODEL.v10TransitionWindow);
+    const r=v10RunInfo(d), c=v10ChopInfo(d); let breakP=0, reversalP=0, chopP=0;
+    if(st.mode==='run'){
+      breakP += Math.min(.55,Math.max(0,(c.length-1)/6));
+      if(recent.length>=3 && recent[recent.length-1]!==recent[recent.length-2]) breakP+=.18;
+      if(st.runLength>=5) breakP+=.08;
+    }
+    if(st.mode==='chop'){
+      chopP=Math.min(.75,(st.alternatingLength/8)*.75);
+      if(st.alternatingLength<=3) chopP*=.65;
+    }
+    const mtf=v10MultiTimeframe(data);
+    if(mtf.lead && st.side && mtf.lead!==st.side) reversalP+=.35;
+    if(recent.length>=4){
+      const a=recent.slice(-4); if(a[0]===a[1]&&a[2]===a[3]&&a[1]!==a[2]) reversalP+=.18;
+    }
+    const p=Math.max(breakP,reversalP,chopP); let label='STABLE';
+    if(reversalP>=.55) label='REVERSAL'; else if(breakP>=.48) label='BREAK PRESSURE'; else if(chopP>=.50) label='CHOPPING'; else if(p>=.30) label='WATCH TRANSITION';
+    const detail='break '+percent(breakP,0)+' · reversal '+percent(reversalP,0)+' · chop '+percent(chopP,0);
+    return {label:label,score:p,breakPressure:Math.max(breakP,reversalP),reversalPressure:reversalP,chopPressure:chopP,details:detail};
+  }
+  function v10CounterSignal(analysis,core){
+    const data=analysis._data||[], top=core.top, opp=top==='P'?'B':'P';
+    const recent=v10TopBinary(data.slice(-MODEL.v10RecentWindow)), micro=v10TopBinary(data.slice(-MODEL.v10MicroWindow));
+    let pressure=0; const reasons=[];
+    if(recent.side===opp){pressure+=.28; reasons.push('short-termสวนกับ '+top);}
+    if(micro.side===opp){pressure+=.25; reasons.push('microสวนกับ '+top);}
+    const mtf=v10MultiTimeframe(data); if(mtf.lead===opp){pressure+=.25; reasons.push('multi-timeframeสวนกับ '+top);}
+    if(analysis.regimeV91&&analysis.regimeV91.shift>.12){pressure+=.12; reasons.push('regime shift');}
+    if(core.disagreement>.055){pressure+=.10; reasons.push('experts ไม่เป็นเอกฉันท์');}
+    return {pressure:clamp(pressure,0,1),reasons:reasons};
+  }
+  function v10Matrix(analysis,core){
+    const names=['context','transition','state'];
+    return names.map(n=>n.toUpperCase()+': '+binaryTop(core.experts?core.experts[n]:analysis.experts[n])+' '+percent((core.experts?core.experts[n]:analysis.experts[n]).P>=.5? (core.experts?core.experts[n]:analysis.experts[n]).P : (core.experts?core.experts[n]:analysis.experts[n]).B,0)).join(' · ');
+  }
+  function v10TacticalGate(analysis,validation,evaluations,core,baseDecision){
+    const data=analysis._data||[], state=v10StateEngine(analysis), transition=v10TransitionEngine(analysis), counter=v10CounterSignal(analysis,core), mtf=state.mtf;
+    const missStreak=recentMissStreak(evaluations), followLossStreak=recentFollowLossStreak(evaluations), recovery=followLossStreak>=MODEL.v12FollowLossStreak;
+    let action='NO EDGE', reasons=[];
+    if(data.length<MODEL.v10MinHistoryForTactical) reasons.push('ประวัติยังน้อยสำหรับ tactical');
+    if(transition.score>=MODEL.v10BreakPressure){ reasons.push('จุดเปลี่ยนกำลังกดดัน state เดิม'); }
+    if(counter.pressure>=MODEL.v10CounterPressure){ reasons.push('counter-signal สูง'); }
+    if(mtf.consensus<.5) reasons.push('multi-timeframe ไม่ลงรอย');
+    if(recovery) reasons.push('RECOVERY: ตามแล้วแพ้ติดกัน '+followLossStreak+' ตา → ตาถัดไปเฝ้าดูเพื่อ reassess');
+    const falseBreak = transition.label==='REVERSAL' && counter.pressure<.35;
+    const hardCut = transition.breakPressure>=.68 || counter.pressure>=.72 || (state.strength<30 && mtf.consensus<.5);
+    if(hardCut) action='CUT';
+    else if(recovery) action='REASSESS';
+    else if(falseBreak) action='CONDITIONAL FOLLOW';
+    else if(baseDecision.mode==='FOLLOW' && state.strength>=60 && mtf.consensus>=.75 && transition.score<.48 && counter.pressure<.56) action='FOLLOW';
+    else if(baseDecision.mode!=='NO EDGE' && state.strength>=45 && mtf.consensus>=.5) action='CONDITIONAL FOLLOW';
+    else if(baseDecision.mode!=='FOLLOW' && transition.score<.30 && counter.pressure<.45) action='WAIT';
+    const tacticalQuality=clamp(Math.round(baseDecision.quality*0.55+state.strength*0.20+mtf.consensus*100*0.15+(1-counter.pressure)*100*0.10),0,100);
+    return {action:action,state:state,transition:transition,counter:counter,mtf:mtf,recovery:recovery,missStreak:missStreak,quality:tacticalQuality,reasons:reasons,falseBreak:falseBreak};
+  }
+
+
+  /* ======================= V11 ADAPTIVE ERROR-LEARNING ========================
+     V11 does not train from future information. Historical snapshots are built
+     only from prefixes that existed before their actual outcome. The current
+     decision uses those historical errors as scenario-level evidence.
+  */
+  function v11RegimeBucket(regime){
+    const shift=regime&&Number.isFinite(regime.shift)?regime.shift:0;
+    return shift>.20?'UNSTABLE':shift>.12?'TRANSITION':'STABLE';
+  }
+  function v11ScenarioKey(s){
+    const side=s&&s.state?s.state.side:null;
+    const mode=s&&s.state?s.state.mode:'mixed';
+    const regime=s&&s.regimeBucket?s.regimeBucket:'STABLE';
+    const trans=s&&s.transition?s.transition.label:'STABLE';
+    const mtf=s&&s.mtf?s.mtf.lead:null;
+    return [mode,side||'?',regime,trans,mtf||'?'].join('|');
+  }
+  function v11ScenarioSimilarity(a,b){
+    if(!a||!b)return 0;
+    let score=0,total=0;
+    const pairs=[
+      [a.state&&a.state.mode,b.state&&b.state.mode,0.22],
+      [a.state&&a.state.side,b.state&&b.state.side,0.20],
+      [a.regimeBucket,b.regimeBucket,0.18],
+      [a.transition&&a.transition.label,b.transition&&b.transition.label,0.20],
+      [a.mtf&&a.mtf.lead,b.mtf&&b.mtf.lead,0.12]
+    ];
+    pairs.forEach(function(p){ total+=p[2]; if(p[0]&&p[0]===p[1])score+=p[2]; });
+    return total?score/total:0;
+  }
+  function v11SimpleSnapshot(history,e){
+    const regime=e.regime||v91RegimeForecast(history,BASE);
+    const state=e.state||sequenceState(history);
+    const fakeAnalysis={_data:history,state:state,regimeV91:regime,experts:e.experts||{}};
+    const core=e.ensemble||{top:e.top,disagreement:0,experts:e.experts||{}};
+    const transition=v10TransitionEngine(fakeAnalysis);
+    const counter=v10CounterSignal(fakeAnalysis,core);
+    const mtf=v10MultiTimeframe(history);
+    return {state:state,regime:regime,regimeBucket:v11RegimeBucket(regime),transition:transition,counter:counter,mtf:mtf,top:e.top,actual:e.actual,probabilities:e.probabilities||BASE};
+  }
+  function v11CurrentSnapshot(analysis,v9){
+    const fake={_data:analysis._data||[],state:analysis.state||sequenceState(analysis._data||[]),regimeV91:analysis.regimeV91||v91RegimeForecast(analysis._data||[],BASE),experts:analysis.experts||{}};
+    const transition=v10TransitionEngine(fake);
+    const counter=v10CounterSignal(fake,v9.core);
+    const mtf=v10MultiTimeframe(analysis._data||[]);
+    return {state:analysis.state||sequenceState(analysis._data||[]),regime:fake.regimeV91,regimeBucket:v11RegimeBucket(fake.regimeV91),transition:transition,counter:counter,mtf:mtf,top:v9.top,actual:null,probabilities:v9.core.probabilities};
+  }
+  function v11ErrorClass(snapshot){
+    if(!snapshot||snapshot.actual==null)return 'NONE';
+    if(snapshot.top===snapshot.actual)return 'CORRECT';
+    const opp=snapshot.top==='P'?'B':'P';
+    if(snapshot.counter && snapshot.counter.pressure>=MODEL.v11CounterIgnoreThreshold && opp===snapshot.actual)return 'COUNTER_IGNORED';
+    if(snapshot.transition && (snapshot.transition.label==='REVERSAL'||snapshot.transition.label==='BREAK PRESSURE') && opp===snapshot.actual)return 'TRANSITION_MISS';
+    if(snapshot.regimeBucket==='TRANSITION'||snapshot.regimeBucket==='UNSTABLE')return 'REGIME_MISS';
+    if(snapshot.state && snapshot.state.side===snapshot.top && snapshot.state.mode==='run')return 'STATE_MISS';
+    return 'MODEL_MISS';
+  }
+  function v11LearningProfile(analysis,v9,evaluations,data){
+    const rows=evaluations||[];
+    const current=v11CurrentSnapshot(analysis,v9);
+    const profiles={state:[],transition:[],counter:[],regime:[]};
+    const scenarioRows=[];
+    const limit=Math.min(rows.length,MODEL.v11RecentLearningWindow);
+    const start=rows.length-limit;
+    rows.slice(start).forEach(function(e,offset){
+      const index=MODEL.minimumWalkForwardHistory+start+offset;
+      const hist=data.slice(0,index);
+      const s=v11SimpleSnapshot(hist,e);
+      const miss=s.top!==s.actual;
+      if(miss) profiles.state.push(s.state&&s.state.mode==='run');
+      scenarioRows.push({snapshot:s,error:v11ErrorClass(s),evaluation:e,index:index});
+    });
+    function rateFrom(rowsArr,pred){
+      const total=rowsArr.length; if(!total)return {total:0,miss:0,rate:null};
+      const misses=rowsArr.filter(pred).length; return {total:total,miss:misses,rate:misses/total};
+    }
+    const stateMode=current.state&&current.state.mode||'mixed';
+    const regime=current.regimeBucket;
+    const exact=scenarioRows.filter(function(r){return v11ScenarioSimilarity(r.snapshot,current)>=MODEL.v11ScenarioSimilarityFloor;});
+    const scenarioMatch=exact.length?exact:scenarioRows.filter(function(r){
+      return r.snapshot.state&&current.state&&r.snapshot.state.mode===current.state.mode && r.snapshot.regimeBucket===current.regimeBucket;
+    });
+    const scenarioCount=scenarioMatch.length;
+    const scenarioCorrect=scenarioMatch.filter(function(r){return r.snapshot.top===r.snapshot.actual;}).length;
+    const scenarioMiss=scenarioCount-scenarioCorrect;
+    const scenarioMissRate=scenarioCount?scenarioMiss/scenarioCount:null;
+    const stateRows=scenarioRows.filter(function(r){return r.snapshot.state&&r.snapshot.state.mode===stateMode;});
+    const regimeRows=scenarioRows.filter(function(r){return r.snapshot.regimeBucket===regime;});
+    const transitionRows=scenarioRows.filter(function(r){return r.snapshot.transition&&r.snapshot.transition.label===current.transition.label;});
+    const counterRows=scenarioRows.filter(function(r){return r.snapshot.counter&&r.snapshot.counter.pressure>=MODEL.v11CounterIgnoreThreshold;});
+    const stateMiss=rateFrom(stateRows,function(r){return r.snapshot.top!==r.snapshot.actual;});
+    const transitionMiss=rateFrom(transitionRows,function(r){return (r.error==='TRANSITION_MISS'||(r.snapshot.top!==r.snapshot.actual&&r.snapshot.transition&&r.snapshot.transition.score>=MODEL.v10BreakPressure));});
+    const counterIgnored=rateFrom(counterRows,function(r){return r.snapshot.top!==r.snapshot.actual && (r.snapshot.actual==='P'||r.snapshot.actual==='B');});
+    const regimeMiss=rateFrom(regimeRows,function(r){return r.snapshot.top!==r.snapshot.actual;});
+    const reversalRows=scenarioRows.filter(function(r){return r.snapshot.transition&&(r.snapshot.transition.label==='REVERSAL'||r.snapshot.transition.label==='BREAK PRESSURE');});
+    const reversalHits=reversalRows.filter(function(r){return r.snapshot.actual===(r.snapshot.top==='P'?'B':'P');}).length;
+    const reversalRate=reversalRows.length?reversalHits/reversalRows.length:null;
+    const errorCounts={}; scenarioRows.forEach(function(r){errorCounts[r.error]=(errorCounts[r.error]||0)+1;});
+    let dominantError='NONE',dominantN=0; Object.keys(errorCounts).forEach(function(k){if(k!=='CORRECT'&&errorCounts[k]>dominantN){dominantError=k;dominantN=errorCounts[k];}});
+    const currentMissStreak=recentMissStreak(rows);
+    const followLossStreak=recentFollowLossStreak(rows);
+    const recovery=followLossStreak>=MODEL.v12FollowLossStreak;
+    const scenarioPenalty=scenarioCount>=MODEL.v11ScenarioMinimum&&scenarioMissRate>=.60;
+    const scenarioBoost=scenarioCount>=MODEL.v11ScenarioMinimum&&scenarioMissRate<=.35;
+    return {current:current,scenario:{key:v11ScenarioKey(current),count:scenarioCount,correct:scenarioCorrect,miss:scenarioMiss,missRate:scenarioMissRate,penalty:scenarioPenalty,boost:scenarioBoost},errors:{dominant:dominantError,dominantN:dominantN,state:stateMiss,transition:transitionMiss,counter:counterIgnored,regime:regimeMiss},reversal:{total:reversalRows.length,hits:reversalHits,rate:reversalRate},missStreak:currentMissStreak,followLossStreak:followLossStreak,recovery:recovery,rows:scenarioRows};
+  }
+  function v11Assumption(profile,v9){
+    const top=v9.top, opp=top==='P'?'B':'P', c=profile.current.counter.pressure, t=profile.current.transition, scenario=profile.scenario;
+    const support=[];
+    support.push(top+' มี edge '+percent(v9.core.probabilities[top],0));
+    if(profile.current.state&&profile.current.state.side===top) support.push('state หนุน '+top);
+    if(profile.current.mtf&&profile.current.mtf.lead===top) support.push('MTF หนุน '+top);
+    if(t.label==='STABLE' || t.score<.30) support.push('transition ยังไม่กดดัน');
+    const invalid=[];
+    if(t.breakPressure>=MODEL.v11ReassessThreshold) invalid.push('break pressure สูง');
+    if(c>=MODEL.v11CounterIgnoreThreshold) invalid.push('counter-signal สูง');
+    if(profile.scenario.penalty) invalid.push('สถานการณ์คล้ายเดิมเคยพลาดสูง');
+    if(profile.recovery) invalid.push('miss streak 3+ → observe 1 hand');
+    return {top:top,opp:opp,support:support,invalid:invalid};
+  }
+  function v11GamePlan(profile,v9){
+    const a=v11Assumption(profile,v9), c=profile.current, scenario=profile.scenario;
+    let action=v9.mode, reasons=[];
+    if(profile.recovery) { action='REASSESS'; reasons.push('ตามแล้วแพ้ติดกัน '+profile.followLossStreak+' ครั้ง → ตาถัดไป OBSERVE ONLY'); }
+    if(scenario.penalty){ action=action==='FOLLOW'?'CONDITIONAL FOLLOW':action; reasons.push('scenario memory เตือนว่าจังหวะคล้ายเดิมเคยพลาด '+percent(scenario.missRate||0,0)); }
+    if(profile.errors.counter.rate!==null && profile.errors.counter.rate>=.58 && c.counter.pressure>=.56){ reasons.push('counter-signal เคยถูกมองข้ามบ่อย'); if(action==='FOLLOW')action='CONDITIONAL FOLLOW'; }
+    if(c.transition.breakPressure>=MODEL.v11CutThreshold || c.counter.pressure>=.72){ action='CUT'; reasons.push('จุดตัด tactical ถึงเกณฑ์'); }
+    if(action==='FOLLOW' && c.state.strength<60) action='CONDITIONAL FOLLOW';
+    return {action:action,assumption:a,reasons:[...new Set(reasons)]};
+  }
+  function v12ShortRegime(data){
+    const micro=v10TopBinary(data.slice(-MODEL.v12MicroRegimeWindow));
+    const short=v10TopBinary(data.slice(-MODEL.v12ShortRegimeWindow));
+    return {micro:micro,short:short,lead:micro.side||short.side,aligned:!!micro.side&&!!short.side&&micro.side===short.side};
+  }
+  function v12StateMachine(analysis,v9,evaluations){
+    const t=v9.v10, loss=recentFollowLossStreak(evaluations||[]), recovery=loss>=MODEL.v12FollowLossStreak;
+    const state=t&&t.state?t.state:{strength:0,mode:'mixed',side:v9.top,mtf:{consensus:0}};
+    const transition=t&&t.transition?t.transition:{breakPressure:0,reversalPressure:0,label:'UNKNOWN',score:0};
+    const counter=t&&t.counter?t.counter:{pressure:0};
+    let machine='NORMAL';
+    if(recovery) machine='RECOVERY';
+    else if(transition.reversalPressure>=MODEL.v12ReversalConfirm) machine='REVERSAL WATCH';
+    else if(transition.breakPressure>=MODEL.v12CutThreshold || counter.pressure>=MODEL.v12HardCutCounter) machine='BREAK';
+    else if(state.mode==='run' && state.strength>=65) machine='FOLLOW';
+    else if(state.mode==='chop') machine='CHOP';
+    else if(counter.pressure>=MODEL.v12WarningCounter || transition.score>=0.42) machine='WARNING';
+    return {machine:machine,loss:loss,recovery:recovery,state:state,transition:transition,counter:counter,mtf:state.mtf};
+  }
+  function v12CaseMemory(analysis,v9,evaluations,data){
+    const rows=(evaluations||[]).slice(-MODEL.v12CaseMemoryWindow);
+    const current=v11CurrentSnapshot(analysis,v9);
+    const matches=rows.filter(function(e){
+      const snap=e.v12&&e.v12.snapshot ? e.v12.snapshot : v11SimpleSnapshot(e.history||[],e);
+      return v11ScenarioSimilarity(snap,current)>=MODEL.v12CaseSimilarityFloor;
+    });
+    const follow=matches.filter(e=>e.v12&&e.v12.action==='FOLLOW');
+    const conditional=matches.filter(e=>e.v12&&e.v12.action==='CONDITIONAL FOLLOW');
+    const followLoss=follow.filter(e=>e.top!==e.actual).length;
+    const conditionalLoss=conditional.filter(e=>e.top!==e.actual).length;
+    const miss=matches.filter(e=>e.top!==e.actual).length;
+    const actualRows=matches.length;
+    const missRate=actualRows?miss/actualRows:null;
+    return {count:actualRows,missRate:missRate,penalty:actualRows>=MODEL.v12CaseMinimum&&missRate>=0.60,boost:actualRows>=MODEL.v12CaseMinimum&&missRate<=0.35,followLoss:followLoss,conditionalLoss:conditionalLoss};
+  }
+  function v12Counterfactual(evaluations){
+    const rows=evaluations||[]; let follow=0,reverse=0,observe=0;
+    rows.forEach(function(e){
+      const opp=e.top==='P'?'B':'P';
+      if(e.top===e.actual) follow++;
+      if(opp===e.actual) reverse++;
+      if(e.v12&&e.v12.action==='OBSERVE') observe++;
+    });
+    const total=rows.length||1; return {follow:follow,reverse:reverse,observe:observe,total:rows.length,best:follow>=reverse?'FOLLOW':'REVERSE',followRate:follow/total,reverseRate:reverse/total};
+  }
+  function v12Decision(analysis,v9,evaluations,data){
+    const machine=v12StateMachine(analysis,v9,evaluations), cases=v12CaseMemory(analysis,v9,evaluations,data), cf=v12Counterfactual(evaluations);
+    const top=v9.top; let action=v9.mode; const reasons=[];
+    if(machine.recovery){ action='OBSERVE'; reasons.push('FOLLOW LOSS 3+ → OBSERVE 1 HAND'); }
+    else if(machine.machine==='BREAK'){ action='CUT'; reasons.push('break/counter ถึงจุดตัด'); }
+    else if(machine.machine==='REVERSAL WATCH'){ action='CONDITIONAL FOLLOW'; reasons.push('reversal watch → รอ confirmation'); }
+    else if(cases.penalty){ action=action==='FOLLOW'?'CONDITIONAL FOLLOW':action; reasons.push('case memory เคยพลาดสูงในสถานการณ์คล้ายกัน'); }
+    if(machine.counter.pressure>=MODEL.v12HardCutCounter){ action='CUT'; reasons.push('counter pressure สูงมาก'); }
+    if(action==='FOLLOW' && v9.quality<MODEL.v12FollowThreshold) action='CONDITIONAL FOLLOW';
+    if(action==='CONDITIONAL FOLLOW' && v9.quality<MODEL.v12ConditionalThreshold) action='WAIT';
+    const short=v12ShortRegime(data);
+    if(short.lead && short.lead!==top && action==='FOLLOW'){ action='CONDITIONAL FOLLOW'; reasons.push('micro/short regime สวน prediction'); }
+    const followGate=Math.round(clamp(0.45*v9.quality+0.25*machine.state.strength+0.15*(machine.mtf.consensus*100)+0.15*(1-machine.counter.pressure)*100,0,100));
+    const followRule='FOLLOW เมื่อ quality≥'+MODEL.v12FollowThreshold+' และ state≥60 และ counter<'+Math.round(MODEL.v12WarningCounter*100)+'%';
+    const cutRule='CUT เมื่อ break≥'+Math.round(MODEL.v12CutThreshold*100)+'% หรือ counter≥'+Math.round(MODEL.v12HardCutCounter*100)+'%';
+    const learning=cases.penalty?'ลดความเชื่อ + บังคับ confirmation':cases.boost?'case คล้ายกันเคยทำได้ดี · ใช้เป็น supporting evidence':'หลักฐานเคสยังผสม · ไม่เพิ่มน้ำหนัก pattern โดยอัตโนมัติ';
+    return {action:action,machine:machine.machine,machineInfo:machine,cases:cases,counterfactual:cf,followGate:followGate,followRule:followRule,cutRule:cutRule,shortRegime:short,reasons:[...new Set(reasons)],learning:learning,top:top,snapshot:v11CurrentSnapshot(analysis,v9)};
+  }
+
+  /* ======================= V14 ADAPTIVE TACTICAL ENGINE ======================
+     V14 separates prediction skill from tactical action quality. Historical
+     decisions are still generated from prefixes only. Replay uses only
+     outcomes that already existed at the point being evaluated.
+  */
+  function v14ActionUtility(action, actual, top, risk, reversalState){
+    if(actual==null) return null;
+    const correct=top===actual, highRisk=(risk||0)>=55;
+    if(action==='FOLLOW') return correct?1:-1;
+    if(action==='CONDITIONAL FOLLOW') return correct?0.70:-0.70;
+    if(action==='CUT') return (!correct || highRisk)?0.55:-0.35;
+    if(action==='WAIT') return highRisk?(correct?0.18:0.45):(correct?-0.05:0.35);
+    if(action==='OBSERVE') return highRisk?(correct?0.20:0.50):(correct?-0.02:0.30);
+    if(action==='REVERSAL') return (!correct && reversalState)?1:-0.80;
+    return 0;
+  }
+  function v14ActionOutcomeRate(rows, action){
+    const usable=(rows||[]).filter(function(e){ return e.v14&&e.v14.action===action&&Number.isFinite(e.v14.actionUtility); });
+    if(usable.length<MODEL.v14ActionMinimum) return {total:usable.length,mean:null,skill:0,positive:0};
+    const mean=usable.reduce(function(a,e){return a+e.v14.actionUtility;},0)/usable.length;
+    const positive=usable.filter(function(e){return e.v14.actionUtility>0;}).length/usable.length;
+    return {total:usable.length,mean:mean,skill:mean,positive:positive};
+  }
+  function v14ActionMemory(evaluations){
+    const rows=evaluations||[], actions=['FOLLOW','CONDITIONAL FOLLOW','WAIT','CUT','OBSERVE','REVERSAL'];
+    const stats={}, recentStats={};
+    actions.forEach(function(a){stats[a]=v14ActionOutcomeRate(rows,a); recentStats[a]=v14ActionOutcomeRate(rows.slice(-MODEL.v14ActionRecentWindow),a);});
+    return {stats:stats,recent:recentStats};
+  }
+  function v14TrajectorySimilarity(a,b){
+    const ah=(a&&a.trajectory)||[], bh=(b&&b.trajectory)||[];
+    if(!ah.length||!bh.length) return 0;
+    const n=Math.min(ah.length,bh.length,8); let same=0;
+    for(let i=1;i<=n;i++) if(ah[ah.length-i]===bh[bh.length-i]) same++;
+    return same/n;
+  }
+  function v14Replay(analysis,v9,evaluations,data){
+    const rows=(evaluations||[]).slice(-MODEL.v14CaseReplayWindow), current=v11CurrentSnapshot(analysis,v9);
+    current.trajectory=(data||[]).slice(-8); const matches=[];
+    rows.forEach(function(e){
+      const snap=e.v14&&e.v14.snapshot ? e.v14.snapshot : (e.v13&&e.v13.snapshot ? e.v13.snapshot : v11SimpleSnapshot([],e));
+      const base=v11ScenarioSimilarity(snap,current), traj=v14TrajectorySimilarity(snap,current);
+      const similarity=(1-MODEL.v14TrajectoryWeight)*base+MODEL.v14TrajectoryWeight*traj;
+      if(similarity>=MODEL.v14ReplaySimilarityFloor) matches.push({e:e,s:snap,similarity:similarity});
+    });
+    matches.sort(function(a,b){return b.similarity-a.similarity;});
+    const topMatches=matches.slice(0,MODEL.v14ReplayTopK), paths={P:0,B:0,T:0};
+    const utility={FOLLOW:0,'CONDITIONAL FOLLOW':0,WAIT:0,CUT:0,OBSERVE:0,REVERSAL:0};
+    const utilityN={FOLLOW:0,'CONDITIONAL FOLLOW':0,WAIT:0,CUT:0,OBSERVE:0,REVERSAL:0};
+    topMatches.forEach(function(m){
+      const idx=m.e.index;
+      for(let h=0;h<MODEL.v14ReplayHorizon;h++){ const actual=data[idx+1+h]; if(actual) paths[actual]++; }
+      if(m.e.v14&&Number.isFinite(m.e.v14.actionUtility)){ const a=m.e.v14.action; utility[a]+=m.e.v14.actionUtility; utilityN[a]++; }
+    });
+    const totalPath=paths.P+paths.B+paths.T, actionUtility={};
+    Object.keys(utility).forEach(function(a){actionUtility[a]=utilityN[a]?utility[a]/utilityN[a]:null;});
+    return {count:matches.length,topMatches:topMatches.slice(0,5),paths:paths,pathProb:totalPath?normalise(paths):null,actionUtility:actionUtility,actionN:utilityN};
+  }
+  function v14NextStateSimulation(analysis,v9,v12,data){
+    const base=data||analysis._data||[], outcomes=['P','B','T'], branches={};
+    outcomes.forEach(function(side){
+      const hist=base.concat(side), fakeAnalysis=adaptiveAnalysis(hist,transitionMaps(hist),outcomeCounts(hist),[]);
+      fakeAnalysis._data=hist; fakeAnalysis.regimeV91=v91RegimeForecast(hist,BASE);
+      const fakeV9=v93Decision(fakeAnalysis,emptyValidation(),[]), tm=fakeV9.v10;
+      const mode=tm&&tm.state?tm.state.mode:'mixed', transition=tm&&tm.transition?tm.transition.label:'UNKNOWN';
+      const machine=(transition==='REVERSAL'||(tm&&tm.counter&&tm.counter.pressure>=MODEL.v12HardCutCounter))?'BREAK':(mode==='run'?'FOLLOW':(mode==='chop'?'CHOP':'NORMAL'));
+      branches[side]={machine:machine,mode:mode,transition:transition,strength:tm&&tm.state?tm.state.strength:0,counter:tm&&tm.counter?tm.counter.pressure:0,reversal:tm&&tm.transition?tm.transition.reversalPressure:0};
+    });
+    return branches;
+  }
+  function v14ReversalLadder(v12,data){
+    const t=v12.machineInfo&&v12.machineInfo.transition?v12.machineInfo.transition:{breakPressure:0,reversalPressure:0};
+    const history=(data||[]).filter(function(x){return x==='P'||x==='B';}), last=history.slice(-6);
+    const lastSide=last.length?last[last.length-1]:null, opp=lastSide==='P'?'B':'P';
+    const run=last.length>=2&&last[last.length-1]===last[last.length-2];
+    const breakWatch=t.breakPressure>=MODEL.v14ReversalBreakThreshold, confirmed=t.reversalPressure>=MODEL.v14ReversalConfirmThreshold, strong=t.reversalPressure>=MODEL.v14ReversalStrongThreshold;
+    let level=0; if(breakWatch) level=1; if(confirmed&&run) level=2; if(strong) level=3;
+    const labels=['NONE','BREAK WATCH','REVERSAL CANDIDATE','REVERSAL CONFIRMED'];
+    return {level:level,label:labels[level],side:opp,run:run,breakPressure:t.breakPressure,reversalPressure:t.reversalPressure};
+  }
+  function v14ConfidenceCalibration(v9,evaluations){
+    const rows=(evaluations||[]).filter(function(e){return e.v14&&Number.isFinite(e.v14.rawConfidence)&&e.actual!=null;});
+    if(rows.length<MODEL.v14ActionMinimum) return {raw:v9.quality,adjusted:v9.quality,error:null,n:rows.length};
+    const bins=rows.filter(function(e){return Math.abs(e.v14.rawConfidence-v9.quality)<=15;});
+    if(bins.length<MODEL.v14ActionMinimum) return {raw:v9.quality,adjusted:v9.quality,error:null,n:rows.length};
+    const empirical=bins.filter(function(e){return e.top===e.actual;}).length/bins.length, target=empirical*100;
+    const adjusted=Math.round(clamp(v9.quality*(1-MODEL.v14CalibrationShrink)+target*MODEL.v14CalibrationShrink,0,100));
+    return {raw:v9.quality,adjusted:adjusted,error:Math.abs(v9.quality-target)/100,n:bins.length,target:target};
+  }
+  function v14ErrorVector(v9,v12,action,actual){
+    if(actual==null) return {prediction:0,action:0,timing:0,transition:0,counter:0,regime:0,state:0};
+    const wrong=v9.top!==actual, opp=v9.top==='P'?'B':'P', m=v12.machineInfo, short=v12.shortRegime;
+    return {prediction:wrong?1:0,action:(action==='FOLLOW'||action==='CONDITIONAL FOLLOW')&&wrong?1:0,timing:(action==='FOLLOW'||action==='CONDITIONAL FOLLOW')&&wrong&&m.transition.breakPressure>=MODEL.v14ReversalBreakThreshold?1:0,transition:wrong&&m.transition.breakPressure>=MODEL.v10BreakPressure?1:0,counter:wrong&&m.counter.pressure>=MODEL.v11CounterIgnoreThreshold&&actual===opp?1:0,regime:wrong&&short.lead&&short.lead!==v9.top?1:0,state:wrong&&m.state.mode==='run'&&m.state.side===v9.top?1:0};
+  }
+  function v14ErrorLearning(evaluations){
+    const rows=(evaluations||[]).slice(-MODEL.v14ActionRecentWindow), sums={prediction:0,action:0,timing:0,transition:0,counter:0,regime:0,state:0};
+    rows.forEach(function(e){const v=e.v14&&e.v14.errorVector; if(!v)return; Object.keys(sums).forEach(function(k){sums[k]+=v[k]||0;});});
+    let dominant='NONE',score=0; Object.keys(sums).forEach(function(k){if(sums[k]>score){score=sums[k];dominant=k;}});
+    return {counts:sums,dominant:dominant,score:score,total:rows.length};
+  }
+  function v14Decision(analysis,v9,v12,evaluations,data,actual,historical){
+    const followLoss=recentFollowLossStreak(evaluations||[]), recovery=followLoss>=MODEL.v14RecoveryLossStreak;
+    const actionMemory=v14ActionMemory(evaluations||[]), replay=v14Replay(analysis,v9,evaluations||[],data||[]), next=v14NextStateSimulation(analysis,v9,v12,data||[]), reversal=v14ReversalLadder(v12,data||[]);
+    const calibration=v14ConfidenceCalibration(v9,evaluations||[]), calibrated=calibration.adjusted;
+    const risk=Math.round(clamp(100-(0.55*calibrated+0.20*v12.machineInfo.state.strength+0.15*(1-v12.machineInfo.counter.pressure)*100+0.10*(1-v12.machineInfo.transition.breakPressure)*100),0,100));
+    const actions=['FOLLOW','CONDITIONAL FOLLOW','WAIT','CUT','OBSERVE','REVERSAL'], scores={};
+    actions.forEach(function(a){ const am=actionMemory.recent[a].mean, cm=replay.actionUtility[a]; const actionPart=Number.isFinite(am)?am:0, casePart=Number.isFinite(cm)?cm:0, predPart=(a==='FOLLOW'||a==='CONDITIONAL FOLLOW')?(v9.core.probabilities[v9.top]-0.5)*2:0; scores[a]=MODEL.v14ActionMemoryWeight*actionPart+MODEL.v14CaseMemoryWeight*casePart+MODEL.v14PredictionWeight*predPart; });
+    let action=v12.action, reasons=[];
+    if(recovery){action='OBSERVE'; reasons.push('FOLLOW LOSS '+followLoss+'+ → OBSERVE 1 HAND แล้ว REASSESS');}
+    if(reversal.level>=3){action='CONDITIONAL FOLLOW'; reasons.push('REVERSAL CONFIRMED → เปลี่ยนแผนแบบ conditional');}
+    else if(reversal.level===2 && action==='FOLLOW'){action='WAIT'; reasons.push('REVERSAL CANDIDATE → ห้ามฝืนตามฝั่งเดิม');}
+    if(!recovery && action==='FOLLOW' && calibrated<60){action='CONDITIONAL FOLLOW'; reasons.push('calibrated confidence ต่ำ');}
+    if(!recovery && v12.machineInfo.counter.pressure>=MODEL.v12HardCutCounter){action='CUT'; reasons.push('counter pressure ถึง hard cut');}
+    if(!recovery && v12.machineInfo.transition.breakPressure>=MODEL.v12CutThreshold){action='CUT'; reasons.push('break pressure ถึงจุดตัด');}
+    const bestAction=actions.reduce(function(best,a){return scores[a]>scores[best]?a:best;},'WAIT');
+    if(!recovery && risk>=70 && bestAction==='WAIT'){action='WAIT'; reasons.push('historical action utility ชี้ให้พักมากกว่าฝืน');}
+    if(!recovery && action==='FOLLOW' && Number.isFinite(actionMemory.recent.FOLLOW.mean) && actionMemory.recent.FOLLOW.mean<0){action='CONDITIONAL FOLLOW'; reasons.push('FOLLOW action-skill ล่าสุดติดลบ');}
+    if(!recovery && action==='CONDITIONAL FOLLOW' && calibrated<MODEL.v14RecoveryReassessThreshold){action='WAIT'; reasons.push('confidence ต่ำกว่า tactical reassess threshold');}
+    const error=v14ErrorLearning(evaluations||[]), quality=Math.round(clamp(0.45*calibrated+0.20*v12.machineInfo.state.strength+0.15*v12.machineInfo.mtf.consensus*100+0.10*(1-v12.machineInfo.counter.pressure)*100+0.10*(1-v12.machineInfo.transition.breakPressure)*100,0,100));
+    const utility=actual==null?null:v14ActionUtility(action,actual,v9.top,risk,reversal.level>=2), snapshot=Object.assign({},v12.snapshot,{trajectory:(data||[]).slice(-8),risk:risk,calibratedConfidence:calibrated,reversalLevel:reversal.level});
+    return {action:action,state:recovery?'RECOVERY':v12.machine,actionMemory:actionMemory,replay:replay,nextState:next,reversal:reversal,calibration:calibration,risk:risk,scores:scores,bestAction:bestAction,errorLearning:error,quality:quality,followRule:'FOLLOW เมื่อ calibrated confidence ≥60 + action-skill ไม่ติดลบ + state แข็งแรง',cutRule:'CUT เมื่อ break≥68% หรือ counter≥72% · reversal confirmed ให้เปลี่ยนแผน',nextRule:'P/B/T แต่ละ branch จะถูกคำนวณ state ใหม่ก่อนตัดสินใจ',learning:error.dominant==='action'?'แก้ action ก่อน prediction':error.dominant==='transition'?'อ่าน transition ให้ไวขึ้น':error.dominant==='counter'?'ยกระดับ counter signal':'เก็บ evidence ต่อและไม่ไล่ตามผล',reasons:[...new Set(reasons)],snapshot:snapshot,attribution:actual==null?'NONE':(v9.top===actual?'CORRECT':error.dominant),confidence:calibrated,rawConfidence:v9.quality,actionUtility:utility,errorVector:actual==null?null:v14ErrorVector(v9,v12,action,actual)};
+  }
+
+  function v11Engine(analysis,v9,evaluations,data){
+    const profile=v11LearningProfile(analysis,v9,evaluations,data);
+    const plan=v11GamePlan(profile,v9);
+    const errorLabel={COUNTER_IGNORED:'COUNTER ถูกมองข้าม',TRANSITION_MISS:'อ่านจุดเปลี่ยนช้า',REGIME_MISS:'อ่าน regime ผิด',STATE_MISS:'อ่าน state ผิด',MODEL_MISS:'โมเดลรวมพลาด',NONE:'ยังไม่มี pattern ความผิดพลาด'};
+    const learnMsg=profile.rows.length<MODEL.v11ErrorMinimum?'ยังมี historical evidence น้อย · เก็บข้อมูลต่อ':profile.scenario.penalty?'สถานการณ์ใกล้เคียงนี้มีประวัติพลาดสูง → ลดการตามและต้องการ confirmation':profile.scenario.boost?'สถานการณ์คล้ายกันมีผลย้อนหลังค่อนข้างดี → ยังใช้เป็น supporting evidence ได้':'หลักฐานยังผสมกัน → ไม่เพิ่มน้ำหนักจากรูปทรงเพียงอย่างเดียว';
+    return {profile:profile,plan:plan,errorLabel:errorLabel[profile.errors.dominant]||profile.errors.dominant,learningMessage:learnMsg};
+  }
+  function v93Decision(analysis,validation,evaluations){
+    const core=v93CoreEnsemble(analysis,evaluations),p=core.probabilities,top=core.top,edge=p[top]-BASE[top],margin=binaryMargin(p),recent=v91RecentForecast(analysis._data||[]),divergence=totalVariation(p,recent.probabilities),evidence=v91EvidenceDepth(analysis,validation),regime=analysis.regimeV91||v91RegimeForecast(analysis._data||[],BASE),regimeShift=regime.shift,quality=v91SignalQuality(edge,margin,evidence,core.disagreement,regimeShift,validation),reasons=[];
+    if(!validation.total)reasons.push('ยังไม่มี walk-forward ของ V9.3');
+    if(validation.total<60)reasons.push('audit ยังน้อยกว่า 60 ตา');
+    if(!Number.isFinite(validation.skill)||validation.skill<=0)reasons.push('โมเดลยังไม่พิสูจน์ว่าเหนือ baseline');
+    if(evidence<12)reasons.push('evidence depth ต่ำ'); if(edge<.015)reasons.push('edge ต่ำกว่า 1.5%'); if(margin<.02)reasons.push('P/B ห่างกันน้อย');
+    if(core.disagreement>.055)reasons.push('core experts เห็นต่างกัน'); if(regime.previousWindow<12)reasons.push('ข้อมูล previous regime ยังน้อยกว่า 12 ตา'); else if(regimeShift>.12)reasons.push('regime ล่าสุดเปลี่ยนจากช่วงก่อนหน้า');
+    if(divergence>.10)reasons.push('recent กับ long-term prediction ต่างกันมาก'); if(validation.recent&&validation.recent.skill<=0)reasons.push('recent validation ไม่เหนือ baseline');
+    if(validation.recent&&Number.isFinite(validation.recent.skillDelta)&&validation.recent.skillDelta<-.01)reasons.push('recent skill แย่ลงจากระยะยาว');
+    const f=core.memory.failures,stateFailure=f.state.rate!==null&&f.state.total>=MODEL.v93StateMinimum&&f.state.rate>=.65,regimeFailure=f.regime.rate!==null&&f.regime.total>=MODEL.v93RegimeMinimum&&f.regime.rate>=.65;
+    if(stateFailure)reasons.push('state นี้มีอัตราพลาดย้อนหลังสูง'); if(regimeFailure)reasons.push('regime นี้มีอัตราพลาดย้อนหลังสูง');
+    const missStreak=recentMissStreak(evaluations),followLossStreak=recentFollowLossStreak(evaluations),recovery=followLossStreak>=MODEL.v12FollowLossStreak; if(recovery)reasons.push('RECOVERY: ตามแล้วแพ้ติดกัน '+followLossStreak+' ตา → ต้อง observe 1 hand');
+    const hardFail=!validation.total||validation.skill<=0||evidence<8||edge<.01||core.disagreement>.08||regime.previousWindow<12||regimeShift>.20||stateFailure||regimeFailure||(recovery&&(margin<MODEL.v93RecoveryMargin||quality<MODEL.v93RecoveryQuality));
+    let mode='NO EDGE'; if(!hardFail&&reasons.length<=2&&quality>=60)mode='FOLLOW'; else if(!hardFail&&quality>=42)mode='WATCH';
+    const baseDecision={core:core,top:top,edge:edge,margin:margin,recent:recent,divergence:divergence,sample:evidence,confidence:quality,quality:quality,mode:mode,reasons:reasons,regime:regime,missStreak:missStreak,followLossStreak:followLossStreak,recovery:recovery};
+    const tactical=v10TacticalGate(analysis,validation,evaluations,core,baseDecision);
+    const tacticalReasons=reasons.concat(tactical.reasons);
+    let finalMode=tactical.action;
+    if(finalMode==='FOLLOW' && (quality<MODEL.v10FollowQuality)) finalMode='CONDITIONAL FOLLOW';
+    if(finalMode==='CONDITIONAL FOLLOW' && quality<MODEL.v10ConditionalQuality && !tactical.recovery) finalMode='WAIT';
+    return Object.assign({},baseDecision,{mode:finalMode,reasons:[...new Set(tacticalReasons)],v10:tactical});
+  }
+  function render() {
+    const audit = auditFor(rounds);
+    const analysis = audit.analysis;
+    analysis._data = auditCache ? auditCache.data : rounds;
+    analysis.regimeV91 = v91RegimeForecast(analysis._data, BASE);
+    const validation = audit.validation;
+    const v9 = v93Decision(analysis, validation, audit.evaluations);
+    const v11 = v11Engine(analysis, v9, audit.evaluations, analysis._data);
+    const v12 = v12Decision(analysis, v9, audit.evaluations, analysis._data);
+    const v13 = v14Decision(analysis, v9, v12, audit.evaluations, analysis._data);
+    const p = v9.core.probabilities;
+    const top = v9.top;
+    const counts = analysis.overallCounts;
+    const has = rounds.length > 0;
+    const abstention = v91AbstentionRate(audit.evaluations);
+
+    dom.handsRecorded.textContent = rounds.length + ' ตา';
+    dom.historyProbability.textContent = rounds.length ? probabilityText(countsToProb(counts),1) : '--';
+    dom.forecastProbability.innerHTML = has ? coloredProbabilityHTML(p,1) : 'รอข้อมูลจริง';
+    dom.nextSide.textContent = has ? (top === 'P' ? '🔵 PLAYER' : '🔴 BANKER') + ' · ' + percent(p[top],1) : 'รอข้อมูล';
+    if (has) {
+      const pickClass = top === 'P' ? 'player' : 'banker';
+      dom.recommendation.innerHTML = '<span class="forecast-label">คาดการณ์ตาถัดไป · ' + (v13.action === 'FOLLOW' ? 'พร้อมติดตาม' : 'ยังไม่ใช่สัญญาณเล่น') + '</span>' +
+        '<span class="forecast-pick ' + pickClass + '"><span class="pick-code">' + top + '</span><span class="pick-name">' + OUTCOME_NAME[top] + '</span></span>';
+      dom.recommendation.style.color = top === 'P' ? 'var(--player)' : 'var(--banker)';
+    } else {
+      dom.recommendation.textContent = 'รอข้อมูล';
+      dom.recommendation.style.color = '#a7a7b0';
+    }
+    dom.matchedContext.textContent = analysis.context ? contextText(analysis.context, rounds.length) : '--';
+    dom.observedRatio.textContent = has ? probabilityText(countsToProb(counts),1) : '--';
+
+    dom.v9Edge.textContent = has ? signedPercent(v9.edge,2) : '--';
+    dom.v9EdgeDetail.textContent = has ? OUTCOME_NAME[top] + ' ' + percent(p[top],1) + ' vs baseline ' + percent(BASE[top],1) : '--';
+    dom.v9Confidence.textContent = has ? v9.quality + '/100' : '--';
+    dom.v9ConfidenceDetail.textContent = 'heuristic score · P/B margin ' + percent(v9.margin,1) + ' · disagreement ' + percent(v9.core.disagreement,1);
+    dom.v9Sample.textContent = has ? String(v9.sample) : '--';
+    dom.v9SampleDetail.textContent = 'context ' + (analysis.context ? analysis.context.total : 0) + ' · audit ' + validation.total + ' · recent ' + (validation.recent ? validation.recent.total : 0);
+    dom.v9Regime.textContent = has ? (v9.regime.shift > 0.12 ? 'SHIFT' : 'STABLE') : '--';
+    dom.v9RegimeDetail.textContent = has ? 'recent vs previous ' + percent(v9.regime.shift,1) + ' · recent vs long ' + percent(v9.regime.recentShift,1) + ' · windows ' + v9.regime.window + '/' + v9.regime.previousWindow : '--';
+    dom.v9Consensus.textContent = has ? (v9.core.disagreement <= 0.03 ? 'HIGH' : v9.core.disagreement <= 0.055 ? 'MEDIUM' : 'LOW') : '--';
+    dom.v9ConsensusDetail.textContent = 'core expert disagreement ' + percent(v9.core.disagreement,1);
+    dom.v9Divergence.textContent = has ? (v9.divergence > 0.10 ? 'DIVERGENT' : 'ALIGNED') : '--';
+    dom.v9DivergenceDetail.textContent = has ? 'prediction distance ' + percent(v9.divergence,1) + ' · recent ' + v9.recent.window + ' ตา · skill delta ' + (validation.recent && Number.isFinite(validation.recent.skillDelta) ? signedPercent(validation.recent.skillDelta,1) : '--') : '--';
+    dom.v9Decision.textContent = has ? 'DECISION · ' + v9.mode + (v9.mode === 'NO EDGE' ? '' : ' · ' + OUTCOME_NAME[top]) : 'DECISION · รอข้อมูล';
+    dom.v9Decision.style.color = !has ? '#a7a7b0' : v9.mode === 'FOLLOW' ? 'var(--aqua)' : v9.mode === 'NO EDGE' ? 'var(--red)' : 'var(--gold)';
+    dom.v9Reasons.textContent = has ? (v9.reasons.length ? 'WHY NOT FOLLOW · ' + v9.reasons.join(' · ') : 'WHY FOLLOW · edge / evidence / validation / consensus ผ่านเกณฑ์') : 'บันทึกผลจริงเพื่อสร้างหลักฐาน';
+    dom.v9Failure.textContent = v91ErrorAttribution(audit.evaluations);
+    if (dom.v93Memory) { const mem=v9.core.memory, f=mem.failures; const sr=f.state.rate===null?'--':percent(f.state.rate,0), rr=f.regime.rate===null?'--':percent(f.regime.rate,0); dom.v93Memory.textContent='V9.3 ADAPTIVE MEMORY · CTX '+mem.experts.context.multiplier.toFixed(2)+' · TRANS '+mem.experts.transition.multiplier.toFixed(2)+' · STATE '+mem.experts.state.multiplier.toFixed(2)+' · state miss '+sr+' · regime miss '+rr+(v9.recovery?' · RECOVERY ×'+v9.missStreak:''); }
+    dom.v9Abstention.textContent = abstention.total ? 'ABSTENTION RATE · NO EDGE+WATCH ' + percent((abstention.noEdge+abstention.watch)/abstention.total,1) + ' · NO EDGE ' + percent(abstention.rate,1) + ' · FOLLOW ' + percent(abstention.follow/abstention.total,1) + ' · รวม ' + abstention.total + ' ตา' : 'ABSTENTION RATE · ยังไม่มีข้อมูล';
+
+    dom.contextDetail.textContent = analysis.context ? contextName(analysis.context) + ' · sample ' + analysis.context.total : '--';
+    dom.gameState.textContent = gameStateText(analysis);
+    dom.mirageFilter.textContent = has ? (v9.reasons.length ? 'FILTER · ' + v9.reasons.slice(0,3).join(' · ') : 'FILTER CLEAR · หลักฐานสอดคล้อง') : 'รอข้อมูลจริง';
+    dom.tacticalDecision.textContent = has ? 'V13 · ' + v13.action + (['CUT','WAIT','OBSERVE'].includes(v13.action) ? '' : ' · ' + OUTCOME_NAME[top]) + ' · edge ' + signedPercent(v9.edge,2) + ' · quality ' + v9.quality + '/100' : 'รอข้อมูล';
+    dom.ensembleEvidence.textContent = has ? 'V9.3 CORE = Context + Transition + State · adaptive error memory · Pattern = research-only · disagreement ' + percent(v9.core.disagreement,1) : 'รอข้อมูล';
+    dom.repairPlan.textContent = has ? 'V13 เรียนรู้จาก case replay, action skill, next-state, reversal ladder, confidence decay และ error attribution · 3 follow-loss = observe 1 hand' : 'รอข้อมูล';
+    dom.riskReasons.textContent = has ? (v9.reasons.length ? v9.reasons.join(' · ') : 'ไม่มี blocker หลัก') : 'รอข้อมูล';
+
+    dom.recentSkillDelta.textContent = validation.recent && Number.isFinite(validation.recent.skillDelta) ? signedPercent(validation.recent.skillDelta,1) : '--';
+    dom.abstentionRate.textContent = abstention.total ? 'NO EDGE+WATCH ' + percent((abstention.noEdge+abstention.watch)/abstention.total,1) + ' · FOLLOW ' + percent(abstention.follow/abstention.total,1) : '--';
+
+    if (!has) {
+      dom.walkForward.textContent='รอข้อมูล'; dom.brierSkill.textContent='--'; dom.auditRecord.textContent='รอข้อมูล'; dom.brierScore.textContent='--'; dom.calibration.textContent='--'; dom.auditStatus.textContent='กำลังเก็บข้อมูล'; dom.riskGuard.textContent='รอข้อมูล'; dom.timingMode.textContent='WAIT'; dom.riskIndex.textContent='--'; dom.adaptationStatus.textContent='รอข้อมูล';
+    } else {
+      dom.walkForward.textContent='V9.3 ถูก '+validation.correct+' · ผิด '+validation.wrong+' · ฐาน '+validation.baseCorrect+'/'+validation.total;
+      dom.brierSkill.textContent=signedPercent(validation.skill,1)+' · lower95 '+signedPercent(validation.skillLower,1)+(validation.recent ? ' · recent '+signedPercent(validation.recent.skill,1) : '');
+      dom.auditRecord.textContent='V9.3 ถูก '+validation.correct+' · ผิด '+validation.wrong+' (รวม '+validation.total+')';
+      dom.brierScore.textContent='V9.1 '+score(validation.modelBrier)+' · ฐาน '+score(validation.baselineBrier);
+      dom.calibration.textContent='ECE '+percent(validation.calibration.error,1);
+      dom.auditStatus.textContent='V11 · '+v11.plan.action;
+      dom.riskGuard.textContent=v11.plan.action+' · adaptive decision gate';
+      dom.timingMode.textContent=v11.plan.action;
+      dom.riskIndex.textContent=Math.round(100-v9.quality)+'/100 · uncertainty';
+      dom.adaptationStatus.textContent='No chase · ไม่เพิ่มน้ำหนักเพราะแพ้ตาเดียว';
+    }
+    if (has) {
+      const lp=v11.profile, er=lp.errors, sc=lp.scenario;
+      dom.v11Mode.textContent=v11.plan.action;
+      dom.v11ModeDetail.textContent=lp.recovery?'RECOVERY · observe '+MODEL.v11RecoveryObserveHands+' hand':(sc.penalty?'ADAPT · ลดความเชื่อจาก scenario memory':sc.boost?'CONFIRM · scenario history หนุน':'LEARN · เก็บหลักฐานต่อ');
+      dom.v11Scenario.textContent=sc.count+' match';
+      dom.v11ScenarioDetail.textContent=sc.count?('similarity ≥ '+Math.round(MODEL.v11ScenarioSimilarityFloor*100)+'% · miss '+percent(sc.missRate||0,0)):'ยังไม่พบสถานการณ์ใกล้เคียงมากพอ';
+      dom.v11Error.textContent=v11.errorLabel;
+      dom.v11ErrorDetail.textContent='recent learning '+lp.rows.length+' cases · dominant '+er.dominantN;
+      dom.v11Assumption.textContent='ASSUME '+OUTCOME_NAME[v9.top];
+      dom.v11AssumptionDetail.textContent=v11.plan.assumption.support.join(' · ')+' | INVALID: '+(v11.plan.assumption.invalid.join(' · ')||'ยังไม่พบ blocker');
+      dom.v11Reversal.textContent=lp.reversal.rate===null?'--':percent(lp.reversal.rate,0);
+      dom.v11ReversalDetail.textContent='reversal/break cases '+lp.reversal.total+' · catches '+lp.reversal.hits;
+      dom.v11Recovery.textContent=lp.recovery?'OBSERVE 1 HAND':'NORMAL';
+      dom.v11RecoveryDetail.textContent='follow-loss '+lp.followLossStreak+' · 3 follow-loss = force reassess';
+      dom.v11Plan.innerHTML='<strong>GAME PLAN · '+v11.plan.action+'</strong><br>Prediction: '+OUTCOME_NAME[v9.top]+' · '+percent(v9.core.probabilities[v9.top],1)+'<br>Support: '+v11.plan.assumption.support.join(' · ')+'<br>Cut / Reassess: '+(v11.plan.assumption.invalid.join(' · ')||'เมื่อ state หรือ transition เปลี่ยนอย่างมีนัยสำคัญ')+'<br>'+(v11.plan.reasons.length?'Tactical repair: '+v11.plan.reasons.join(' · '):'Tactical repair: ยังไม่มี blocker ใหม่');
+      const bars=[['state',er.state.rate],['transition',er.transition.rate],['counter',er.counter.rate],['regime',er.regime.rate]];
+      bars.forEach(function(item){ const rate=Number.isFinite(item[1])?item[1]:0; const id=item[0]; dom['v11'+id.charAt(0).toUpperCase()+id.slice(1)+'MissBar'].style.width=Math.round(rate*100)+'%'; dom['v11'+id.charAt(0).toUpperCase()+id.slice(1)+'Miss'].textContent=Number.isFinite(item[1])?percent(item[1],0):'--'; });
+      dom.v11LearningMessage.textContent=v11.learningMessage;
+      dom.v11LearningMessage.className=(sc.penalty||lp.recovery)?'v11-warning':(sc.boost?'v11-good':'');
+    } else {
+      dom.v11Mode.textContent='--'; dom.v11ModeDetail.textContent='--'; dom.v11Scenario.textContent='--'; dom.v11ScenarioDetail.textContent='--'; dom.v11Error.textContent='--'; dom.v11ErrorDetail.textContent='--'; dom.v11Assumption.textContent='--'; dom.v11AssumptionDetail.textContent='--'; dom.v11Reversal.textContent='--'; dom.v11ReversalDetail.textContent='--'; dom.v11Recovery.textContent='--'; dom.v11RecoveryDetail.textContent='--'; dom.v11Plan.textContent='รอข้อมูลเพื่อสร้าง GAME PLAN'; dom.v11LearningMessage.textContent='ยังไม่มี historical learning evidence';
+      ['v11StateMissBar','v11TransitionMissBar','v11CounterMissBar','v11RegimeMissBar'].forEach(function(id){dom[id].style.width='0%';});
+      ['v11StateMiss','v11TransitionMiss','v11CounterMiss','v11RegimeMiss'].forEach(function(id){dom[id].textContent='--';});
+    }
+
+    if (has) {
+      const cf=v12.counterfactual, cm=v12.cases, m=v12.machineInfo;
+      dom.v12State.textContent=v12.machine;
+      dom.v12StateDetail.textContent='mode '+m.state.mode+' · strength '+m.state.strength+'/100 · transition '+percent(m.transition.score,0)+' · counter '+percent(m.counter.pressure,0);
+      dom.v12FollowLoss.textContent=String(m.loss)+' / '+MODEL.v12FollowLossStreak;
+      dom.v12FollowLossDetail.textContent='นับเฉพาะตาที่ระบบอนุญาต FOLLOW / CONDITIONAL FOLLOW แล้วผลผิด';
+      dom.v12Recovery.textContent=m.recovery?'OBSERVE 1 HAND':'NORMAL';
+      dom.v12RecoveryDetail.textContent=m.recovery?'หยุดดูตาถัดไป แล้วใช้ผลตานี้สร้างแผนใหม่':'ยังไม่เข้า recovery';
+      dom.v12Case.textContent=cm.count+' match';
+      dom.v12CaseDetail.textContent=cm.count?'miss '+percent(cm.missRate||0,0)+' · penalty '+(cm.penalty?'YES':'NO'):'ยังไม่มี case ใกล้เคียงพอ';
+      dom.v12Counterfactual.textContent=cf.best;
+      dom.v12CounterfactualDetail.textContent='follow '+percent(cf.followRate,0)+' · reverse '+percent(cf.reverseRate,0)+' · observe '+cf.observe;
+      dom.v12Adaptation.textContent=v12.action;
+      dom.v12AdaptationDetail.textContent=v12.reasons.length?v12.reasons.join(' · '):'ไม่มี blocker ใหม่';
+      dom.v12Decision.textContent='V12 ENGINE · '+v12.action+(['CUT','WAIT','OBSERVE'].includes(v12.action)?'':' · '+OUTCOME_NAME[top])+' · gate '+v12.followGate+'/100';
+      dom.v12Decision.style.color=v12.action==='FOLLOW'?'var(--aqua)':(['CUT','WAIT','OBSERVE'].includes(v12.action)?'var(--red)':'var(--gold)');
+      dom.v12Matrix.textContent=v12.followRule+' · '+v12.cutRule+' · short regime '+(v12.shortRegime.lead?v12.shortRegime.lead:'--')+' · '+(v12.shortRegime.aligned?'aligned':'divergent');
+      dom.v12Learning.textContent='V12 CASE LEARNING · '+v12.learning+' · follow-loss '+m.loss+' · counterfactual best = '+cf.best;
+      dom.v12Learning.className='v12-learning '+(cm.penalty||m.recovery?'v12-warning':(cm.boost?'v12-good':''));
+    } else {
+      dom.v12State.textContent='--'; dom.v12StateDetail.textContent='--'; dom.v12FollowLoss.textContent='--'; dom.v12FollowLossDetail.textContent='--'; dom.v12Recovery.textContent='--'; dom.v12RecoveryDetail.textContent='--'; dom.v12Case.textContent='--'; dom.v12CaseDetail.textContent='--'; dom.v12Counterfactual.textContent='--'; dom.v12CounterfactualDetail.textContent='--'; dom.v12Adaptation.textContent='--'; dom.v12AdaptationDetail.textContent='--'; dom.v12Decision.textContent='V12 DECISION · รอข้อมูล'; dom.v12Matrix.textContent='FOLLOW / CUT MATRIX · รอข้อมูล'; dom.v12Learning.textContent='V12 LEARNING · ยังไม่มี historical decision evidence'; dom.v12Learning.className='v12-learning';
+    }
+
+    if (has) {
+      dom.v13State.textContent=v13.state+' · '+v13.quality+'/100';
+      dom.v13StateDetail.textContent='machine '+v13.state+' · calibrated '+v13.confidence+'/100 · risk '+v13.risk+'/100 · action '+v13.action;
+      const fs=v13.actionMemory.stats['FOLLOW'], rs=v13.actionMemory.stats['CONDITIONAL FOLLOW'], ws=v13.actionMemory.stats['WAIT'], cs=v13.actionMemory.stats['CUT'];
+      dom.v13ActionSkill.textContent='F '+(fs.mean===null?'--':fs.mean.toFixed(2))+' · CF '+(rs.mean===null?'--':rs.mean.toFixed(2))+' · W '+(ws.mean===null?'--':ws.mean.toFixed(2));
+      dom.v13ActionSkillDetail.textContent='utility · F n='+fs.total+' · CF n='+rs.total+' · WAIT n='+ws.total+' · CUT n='+cs.total;
+      dom.v13CaseReplay.textContent=v13.replay.count+' replay';
+      dom.v13CaseReplayDetail.textContent=v13.replay.count?'matches '+v13.replay.count+' · horizon '+MODEL.v14ReplayHorizon+' · action utility replay':'ยังไม่มีเคสคล้ายพอ';
+      dom.v13NextState.textContent='P→'+v13.nextState.P.machine+' · B→'+v13.nextState.B.machine+' · T→'+v13.nextState.T.machine;
+      dom.v13NextStateDetail.textContent='P '+v13.nextState.P.strength+' · B '+v13.nextState.B.strength+' · T '+v13.nextState.T.strength;
+      dom.v13Reversal.textContent=v13.reversal.label;
+      dom.v13ReversalDetail.textContent='level '+v13.reversal.level+'/3 · target '+OUTCOME_NAME[v13.reversal.side]+' · break '+percent(v13.reversal.breakPressure,0)+' · reversal '+percent(v13.reversal.reversalPressure,0);
+      dom.v13Decay.textContent=v13.calibration.adjusted+'/100';
+      dom.v13DecayDetail.textContent='raw '+v13.calibration.raw+'/100 · empirical '+(v13.calibration.target===undefined?'--':Math.round(v13.calibration.target)+'/100')+' · n '+v13.calibration.n;
+      dom.v13Error.textContent=v13.errorLearning.dominant;
+      dom.v13ErrorDetail.textContent='prediction '+v13.errorLearning.counts.prediction+' · action '+v13.errorLearning.counts.action+' · transition '+v13.errorLearning.counts.transition+' · counter '+v13.errorLearning.counts.counter;
+      dom.v13Recovery.textContent=v13.state==='RECOVERY'?'OBSERVE 1 HAND':'NORMAL';
+      dom.v13RecoveryDetail.textContent=v13.state==='RECOVERY'?'hard lock · observe แล้ว reassess state/action':'recovery inactive';
+      dom.v13Decision.textContent='V14 DECISION · '+v13.action+(['CUT','WAIT','OBSERVE'].includes(v13.action)?'':' · '+OUTCOME_NAME[top])+' · tactical '+v13.quality+'/100';
+      dom.v13Decision.style.color=v13.action==='FOLLOW'?'var(--aqua)':(['CUT','WAIT','OBSERVE'].includes(v13.action)?'var(--red)':'var(--gold)');
+      dom.v13Matrix.textContent=v13.followRule+' · '+v13.cutRule+' · best historical action '+v13.bestAction+' · '+v13.nextRule;
+      dom.v13Learning.textContent='V14 LEARNING · '+v13.learning+' · dominant '+v13.errorLearning.dominant+' · replay '+v13.replay.count+' · reversal '+v13.reversal.level+'/3 · utility '+(v13.actionUtility===null?'pending':v13.actionUtility.toFixed(2));
+      dom.v13Learning.className='v13-learning '+((v13.errorLearning.dominant!=='NONE')||v13.state==='RECOVERY'?'v13-warning':(v13.bestAction==='FOLLOW'?'v13-good':''));
+    } else {
+      ['v13State','v13ActionSkill','v13CaseReplay','v13NextState','v13Reversal','v13Decay','v13Error','v13Recovery'].forEach(function(id){dom[id].textContent='--';});
+      ['v13StateDetail','v13ActionSkillDetail','v13CaseReplayDetail','v13NextStateDetail','v13ReversalDetail','v13DecayDetail','v13ErrorDetail','v13RecoveryDetail'].forEach(function(id){dom[id].textContent='--';});
+      dom.v13Decision.textContent='V14 DECISION · รอข้อมูล'; dom.v13Matrix.textContent='ACTION MATRIX · รอข้อมูล'; dom.v13Learning.textContent='V14 LEARNING · ยังไม่มี historical tactical evidence'; dom.v13Learning.className='v13-learning';
+    }
+
+    const t=v9.v10;
+    if (has && t) {
+      dom.v10State.textContent=t.state.mode.toUpperCase()+' / '+t.state.regime;
+      dom.v10StateDetail.textContent='side '+(t.state.side?OUTCOME_NAME[t.state.side]:'--')+' · strength '+t.state.strength+'/100 · run '+t.state.run+' · chop '+t.state.chop;
+      dom.v10Transition.textContent=t.transition.label;
+      dom.v10TransitionDetail.textContent=t.transition.details;
+      dom.v10Strength.textContent=t.state.strength+'/100';
+      dom.v10StrengthDetail.textContent='ยิ่งสูง = state แข็งแรง · regime '+t.state.regime;
+      dom.v10Break.textContent=percent(t.transition.breakPressure,0);
+      dom.v10BreakDetail.textContent='reversal '+percent(t.transition.reversalPressure,0)+' · chop '+percent(t.transition.chopPressure,0);
+      dom.v10Counter.textContent=percent(t.counter.pressure,0);
+      dom.v10CounterDetail.textContent=t.counter.reasons.length?t.counter.reasons.join(' · '):'ไม่มี counter หลัก';
+      dom.v10Mtf.textContent=(t.mtf.lead?OUTCOME_NAME[t.mtf.lead]:'--')+' · '+Math.round(t.mtf.consensus*100)+'%';
+      dom.v10MtfDetail.textContent=t.mtf.reads.map(r=>r.name+':'+(r.side||'--')).join(' · ');
+      dom.v10Matrix.textContent='EXPERT MATRIX · '+v10Matrix(analysis,v9.core)+' · regime '+t.state.regime+' · action '+t.action+' · tactical quality '+t.quality+'/100';
+      dom.v10Decision.textContent='V10 TACTICAL · '+t.action+(t.action==='CUT'||t.action==='WAIT'||t.action==='REASSESS'?'':' · '+OUTCOME_NAME[top]);
+      dom.v10Decision.style.color=t.action==='FOLLOW'?'var(--aqua)':(t.action==='CUT'||t.action==='WAIT'||t.action==='REASSESS'?'var(--red)':'var(--gold)');
+      dom.v10Reasons.textContent=t.reasons.length?t.reasons.join(' · '):'V10 ไม่มี blocker หลัก';
+    } else {
+      dom.v10State.textContent='--'; dom.v10StateDetail.textContent='--'; dom.v10Transition.textContent='--'; dom.v10TransitionDetail.textContent='--'; dom.v10Strength.textContent='--'; dom.v10StrengthDetail.textContent='--'; dom.v10Break.textContent='--'; dom.v10BreakDetail.textContent='--'; dom.v10Counter.textContent='--'; dom.v10CounterDetail.textContent='--'; dom.v10Mtf.textContent='--'; dom.v10MtfDetail.textContent='--'; dom.v10Matrix.textContent='รอข้อมูล'; dom.v10Decision.textContent='V10 TACTICAL · รอข้อมูล'; dom.v10Reasons.textContent='บันทึกผลจริงเพื่อเริ่มอ่านสถานะ';
+    }
+    dom.message.textContent = has ? 'คาดการณ์: ' + (top==='P'?'🔵 PLAYER':'🔴 BANKER') + ' · V12 ACTION = ' + v12.action + ' · ' + v12.learning : 'เริ่มบันทึกผลจริงเพื่อสร้างหลักฐาน';
+    dom.undo.disabled=!rounds.length; dom.reset.disabled=!rounds.length;
+    renderHistory();
+  }
+  function countsToProb(counts) {
+    const total = counts.P + counts.B + counts.T;
+    return total ? {P:counts.P/total,B:counts.B/total,T:counts.T/total} : BASE;
+  }
+
+  function record(result) {
+    if (!isOutcome(result)) return;
+    rounds.push(result);
+    if (auditCache && auditCache.data.length === rounds.length - 1) appendAuditResult(auditCache, result);
+    save();
+    render();
+  }
+  function undo() {
+    if (!rounds.length) return;
+    if (auditCache && auditCache.data.length === rounds.length && !removeAuditResult(auditCache)) auditCache = null;
+    rounds.pop();
+    save();
+    render();
+  }
+  function reset() {
+    if (!rounds.length) return;
+    if (!window.confirm('รีเซ็ตประวัติทั้งหมดของ SHOE นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้')) return;
+    rounds = [];
+    auditCache = null;
+    save();
+    render();
+  }
+
+  document.querySelectorAll('[data-result]').forEach(function(button) {
+    button.addEventListener('click', function() { record(button.dataset.result); });
+  });
+  dom.undo.addEventListener('click', undo);
+  dom.reset.addEventListener('click', reset);
+  load();
+  render();
+  </script>
+</body>
+</html>

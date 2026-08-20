@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>NEURAL APEX | วิเคราะห์ประวัติบาคาร่า</title>
+  <style>
+    :root {
+      --player: #1683ff;
+      --banker: #ff4b43;
+      --tie: #6f707b;
+      --aqua: #24e8d7;
+      --gold: #ffd24a;
+      --red: #ff6f8e;
+      --bg: #050507;
+      --surface: #0c0c10;
+      --surface-raised: #111117;
+      --line: #292931;
+      --text: #f7f7f9;
+      --muted: #90909b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: radial-gradient(circle at top, #112426 0, var(--bg) 43rem);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 14px 36px; }
+    .app-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(12, 12, 16, .96);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .28);
+    }
+    header { padding: 26px 20px 18px; text-align: center; }
+    .eyebrow { color: var(--aqua); font-size: 10px; font-weight: 900; letter-spacing: .19em; }
+    h1 { margin: 8px 0 6px; font-size: 25px; letter-spacing: -.05em; }
+    .subtitle { max-width: 590px; margin: 0 auto; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 14px 14px; }
+    .metric { min-height: 73px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #08080b; }
+    .metric-label { display: block; color: #82828c; font-size: 8px; font-weight: 900; letter-spacing: .07em; }
+    .metric output { display: block; margin-top: 7px; color: #e0e0e5; font-size: 12px; font-weight: 850; line-height: 1.32; overflow-wrap: anywhere; }
+
+    .forecast {
+      margin: 0 14px;
+      padding: 19px 14px 18px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+    #recommendation { min-height: 43px; font-size: 30px; font-weight: 950; letter-spacing: -.055em; }
+    #forecast-probability { margin-top: 3px; color: #d6d6dc; font-size: 13px; font-weight: 800; }
+    #message { min-height: 36px; max-width: 580px; margin: 8px auto 0; color: var(--muted); font-size: 11px; font-weight: 700; line-height: 1.5; }
+
+    .result-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px; }
+    .result-button {
+      min-height: 82px;
+      border: 0;
+      border-bottom: 6px solid rgba(0, 0, 0, .35);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 34px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: filter .14s ease, transform .14s ease;
+    }
+    .result-button:hover { filter: brightness(1.08); }
+    .result-button:active, .small-button:active { transform: translateY(2px); }
+    .player { background: var(--player); }
+    .banker { background: var(--banker); }
+    .tie { background: #555560; font-size: 25px; }
+
+    .section { margin: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #08080b; }
+    .section-title { margin: 0 0 5px; color: var(--aqua); font-size: 10px; font-weight: 950; letter-spacing: .08em; }
+    .section-description { margin: 0 0 12px; color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.45; }
+
+    /* Baccarat-road order: top-left downward for six outcomes, then right. */
+    .history {
+      display: grid;
+      grid-template-rows: repeat(6, 42px);
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(42px, 1fr);
+      gap: 8px;
+      min-height: 292px;
+      padding: 2px 0;
+      overflow-x: auto;
+    }
+    .history-empty {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      display: grid;
+      min-height: 44px;
+      place-items: center;
+      border: 1px dashed #30303a;
+      border-radius: 11px;
+      color: #7f7f8b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .history-node {
+      display: grid;
+      min-width: 0;
+      min-height: 42px;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 950;
+      box-shadow: inset 0 -2px rgba(0, 0, 0, .16);
+    }
+    .history-node.player { background: var(--player); }
+    .history-node.banker { background: var(--banker); }
+    .history-node.tie { background: var(--tie); font-size: 14px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    .small-button {
+      min-height: 35px;
+      border: 1px solid #373742;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--surface-raised);
+      color: #e1e1e7;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .small-button:hover:not(:disabled) { border-color: #626270; }
+    .small-button.danger { border-color: #733447; color: #ffb0c0; }
+    .small-button:disabled { cursor: not-allowed; opacity: .42; }
+
+    .analysis-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .detail { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #0b0b0f; }
+    .detail-wide { grid-column: 1 / -1; }
+    .detail-label { display: block; color: #868690; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+    .detail output { display: block; margin-top: 6px; color: #dedee4; font-size: 12px; font-weight: 850; line-height: 1.35; overflow-wrap: anywhere; }
+
+    .notice { margin: 15px 18px 19px; color: #85858f; font-size: 10px; line-height: 1.55; text-align: center; }
+    .notice strong { color: #d3d3da; }
+
+    @media (max-width: 440px) {
+      .shell { padding: 9px 8px 28px; }
+      .app-card { border-radius: 20px; }
+      header { padding: 22px 16px 16px; }
+      .metrics { gap: 6px; padding: 0 10px 10px; }
+      .metric { min-height: 68px; padding: 8px; }
+      .metric output { font-size: 11px; }
+      #recommendation { font-size: 27px; }
+      .history { gap: 6px; }
+      .history { grid-template-rows: repeat(6, 39px); min-height: 270px; }
+      .history-node { min-height: 39px; }
+      .analysis-details { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="app-card">
+      <header>
+        <div class="eyebrow">HISTORY · PROBABILITY · AUDIT</div>
+        <h1>NEURAL APEX</h1>
+        <p class="subtitle">บันทึกผล P / B / T แล้วดูสถิติจากประวัติทั้งหมดอย่างตรวจสอบได้ การประเมินนี้เป็นข้อมูลเชิงสถิติ ไม่ใช่คำแนะนำเดิมพันหรือการรับประกันผล</p>
+      </header>
+
+      <div class="metrics" aria-live="polite">
+        <div class="metric"><span class="metric-label">คาดการณ์เชิงสถิติตาถัดไป</span><output id="next-side">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">P / B / T ฐานความถี่ Bayesian</span><output id="history-probability">--</output></div>
+        <div class="metric"><span class="metric-label">จำนวนตาที่บันทึก</span><output id="hands-recorded">0 ตา</output></div>
+        <div class="metric"><span class="metric-label">บริบทล่าสุดที่เทียบได้</span><output id="matched-context">--</output></div>
+        <div class="metric"><span class="metric-label">Walk-forward · ถูก / ผิด</span><output id="walk-forward">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">BRIER SKILL เทียบฐานความถี่</span><output id="brier-skill">--</output></div>
+      </div>
+
+      <section class="forecast" aria-live="polite">
+        <div id="recommendation">NO EDGE</div>
+        <div id="forecast-probability">P 44.62% · B 45.86% · T 9.52%</div>
+        <div id="message">เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะคำนวณใหม่จากประวัติทั้งหมดทันที</div>
+      </section>
+
+      <div class="result-buttons" aria-label="บันทึกผลของตาที่เพิ่งจบ">
+        <button class="result-button player" type="button" data-result="P" aria-label="บันทึก Player ชนะ">P</button>
+        <button class="result-button banker" type="button" data-result="B" aria-label="บันทึก Banker ชนะ">B</button>
+        <button class="result-button tie" type="button" data-result="T" aria-label="บันทึก Tie">T</button>
+      </div>
+
+      <section class="section" aria-label="ประวัติผล">
+        <h2 class="section-title">ประวัติผล</h2>
+        <p class="section-description">เริ่มที่มุมซ้ายบน แล้วเรียงลงล่างทีละตา; ครบ 6 ตาแล้วเริ่มชุดถัดไปทางขวาอัตโนมัติ</p>
+        <div id="history" class="history"></div>
+        <div class="actions">
+          <button class="small-button" id="undo" type="button">ย้อนกลับ 1 ตา</button>
+          <button class="small-button danger" id="reset" type="button">รีเซ็ตประวัติ</button>
+        </div>
+      </section>
+
+      <section class="section" aria-label="รายละเอียดการวิเคราะห์">
+        <h2 class="section-title">การตรวจสอบโมเดล</h2>
+        <p class="section-description">สแกนประวัติทั้งหมดเพื่อหาเค้าไพ่ที่ตรงกับสถานะปัจจุบันอย่างน้อย 5 ตาติดต่อกัน แล้วนับเฉพาะผลจริงที่เคยออกหลังเค้าที่ตรงกันทุกชุดมาเปรียบเทียบ เก็บคะแนน walk-forward จากข้อมูลก่อนหน้าเท่านั้น</p>
+        <div class="analysis-details">
+          <div class="detail"><span class="detail-label">สัดส่วนผลจริง P / B / T</span><output id="observed-ratio">--</output></div>
+          <div class="detail"><span class="detail-label">เค้าไพ่ตรงกัน ≥ 5 ตา · ผลหลังเค้า</span><output id="context-detail">--</output></div>
+          <div class="detail"><span class="detail-label">ประวัติคาดการณ์ · ชนะ / แพ้</span><output id="audit-record">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">BRIER SCORE · โมเดล / ฐาน</span><output id="brier-score">--</output></div>
+          <div class="detail"><span class="detail-label">CALIBRATION (ECE)</span><output id="calibration">--</output></div>
+          <div class="detail"><span class="detail-label">สถานะการตรวจสอบ</span><output id="audit-status">กำลังเก็บข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">RISK GUARD · จังหวะตัด</span><output id="risk-guard">รอข้อมูล</output></div>
+          <div class="detail"><span class="detail-label">ปรับตัวหลังผลล่าสุด</span><output id="adaptation-status">รอข้อมูล</output></div>
+          <div class="detail detail-wide"><span class="detail-label">สาเหตุความเสี่ยง</span><output id="risk-reasons">รอข้อมูล</output></div>
+        </div>
+      </section>
+
+      <p class="notice"><strong>หลักการสำคัญ:</strong> ระบบคำนวณความน่าจะเป็นและคาดการณ์ทุกตาจากผลจริงที่บันทึกไว้ทั้งหมด โดยไม่สุ่มสัญญาณหรือไล่เดิมพันแก้ตัว เมื่อคาดการณ์ผิด ผลที่เกิดขึ้นจะถูกเพิ่มเป็นข้อมูลสำหรับตาถัดไปเท่านั้น ส่วน <strong>NO EDGE / ยังไม่พบความเหนือกว่า</strong> หมายถึงยังไม่ผ่านเกณฑ์การให้สัญญาณ ไม่ได้หยุดการคำนวณคาดการณ์</p>
+    </section>
+  </main>
+
+  <script>
+  'use strict';
+
+  /*
+   * Results-only statistical audit.  The model is deterministic: equal input
+   * history always gives equal output.  It uses every recorded outcome, then
+   * measures itself with expanding-window walk-forward validation.
+   */
+  const STORAGE_KEY = 'neural-apex-history-audit-v2';
+  const LEGACY_KEYS = Object.freeze([
+    'neural-apex-baccarat-audit-v4',
+    'neural-apex-baccarat-audit-v3',
+    'neural-apex-audited-forecast-v3'
+  ]);
+  const OUTCOMES = Object.freeze(['P', 'B', 'T']);
+  const OUTCOME_NAME = Object.freeze({ P: 'PLAYER', B: 'BANKER', T: 'TIE' });
+  const BASE = Object.freeze({ P: 0.446246609, B: 0.458597423, T: 0.095155968 });
+  const MODEL = Object.freeze({
+    globalPrior: 24,
+    patternLength: 5,
+    patternPrior: 12,
+    minimumPatternExamples: 5,
+    // Start the first walk-forward check on the 10th recorded hand.
+    minimumWalkForwardHistory: 9,
+    reviewSample: 300,
+    recentReviewSample: 100,
+    meaningfulSkill: 0.01,
+    minimumForecastMargin: 0.015,
+    maximumCalibrationError: 0.03,
+    confidenceZ: 1.96
+  });
+
+  let rounds = [];
+  let auditCache = null;
+  const dom = {
+    nextSide: document.getElementById('next-side'),
+    historyProbability: document.getElementById('history-probability'),
+    handsRecorded: document.getElementById('hands-recorded'),
+    matchedContext: document.getElementById('matched-context'),
+    walkForward: document.getElementById('walk-forward'),
+    brierSkill: document.getElementById('brier-skill'),
+    recommendation: document.getElementById('recommendation'),
+    forecastProbability: document.getElementById('forecast-probability'),
+    message: document.getElementById('message'),
+    history: document.getElementById('history'),
+    observedRatio: document.getElementById('observed-ratio'),
+    contextDetail: document.getElementById('context-detail'),
+    auditRecord: document.getElementById('audit-record'),
+    brierScore: document.getElementById('brier-score'),
+    calibration: document.getElementById('calibration'),
+    auditStatus: document.getElementById('audit-status'),
+    riskGuard: document.getElementById('risk-guard'),
+    adaptationStatus: document.getElementById('adaptation-status'),
+    riskReasons: document.getElementById('risk-reasons'),
+    undo: document.getElementById('undo'),
+    reset: document.getElementById('reset')
+  };
+
+  function isOutcome(value) {
+    return OUTCOMES.includes(value);
+  }
+  function percent(value, digits) {
+    return Number.isFinite(value) ? (value * 100).toFixed(digits === undefined ? 2 : digits) + '%' : '--';
+  }
+  function signedPercent(value, digits) {
+    return Number.isFinite(value) ? (value >= 0 ? '+' : '') + (value * 100).toFixed(digits === undefined ? 1 : digits) + '%' : '--';
+  }
+  function score(value) {
+    return Number.isFinite(value) ? value.toFixed(3) : '--';
+  }
+  function topOutcome(probabilities) {
+    return OUTCOMES.reduce(function(best, side) {
+      return probabilities[side] > probabilities[best] ? side : best;
+    }, 'P');
+  }
+  function normalise(probabilities) {
+    const total = OUTCOMES.reduce(function(sum, side) { return sum + probabilities[side]; }, 0);
+    if (!Number.isFinite(total) || total <= 0) return { P: BASE.P, B: BASE.B, T: BASE.T };
+    return {
+      P: probabilities.P / total,
+      B: probabilities.B / total,
+      T: probabilities.T / total
+    };
+  }
+  function outcomeCounts(data) {
+    const counts = { P: 0, B: 0, T: 0 };
+    for (const result of data) counts[result]++;
+    return counts;
+  }
+  function posterior(counts, prior, strength) {
+    return normalise({
+      P: counts.P + prior.P * strength,
+      B: counts.B + prior.B * strength,
+      T: counts.T + prior.T * strength
+    });
+  }
+  function emptyMaps() {
+    return [];
+  }
+  function addTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    // Store every preceding context length.  For each key, all occurrences
+    // before this target contribute to its P/B/T continuation counts.
+    for (let depth = 1; depth <= targetIndex; depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth] || (maps[depth] = new Map());
+      const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
+      entry[outcome]++;
+      entry.total++;
+      map.set(key, entry);
+    }
+  }
+  function removeTransition(maps, data, targetIndex) {
+    const outcome = data[targetIndex];
+    let key = '';
+    for (let depth = 1; depth <= targetIndex; depth++) {
+      key = data[targetIndex - depth] + key;
+      const map = maps[depth];
+      const entry = map && map.get(key);
+      // A missing entry means the cache is no longer trustworthy; rebuild it
+      // from the saved rounds instead of producing a silently wrong forecast.
+      if (!entry) return false;
+      entry[outcome]--;
+      entry.total--;
+      if (entry.total === 0) map.delete(key);
+    }
+    return true;
+  }
+  function transitionMaps(data) {
+    const maps = emptyMaps();
+    for (let targetIndex = 1; targetIndex < data.length; targetIndex++) addTransition(maps, data, targetIndex);
+    return maps;
+  }
+
+  function sequenceMatches(data, leftStart, rightStart, length) {
+    for (let offset = 0; offset < length; offset++) {
+      if (data[leftStart + offset] !== data[rightStart + offset]) return false;
+    }
+    return true;
+  }
+  function findHistoricalPatternMatches(data) {
+    const matches = [];
+    const minimum = MODEL.patternLength;
+    const totalHands = data.length;
+
+    /*
+     * Compare the current sequence with every earlier, completed sequence in
+     * the full history.  Each earlier position contributes one observation
+     * only when its longest exact match is at least five consecutive hands;
+     * the known real result immediately after that earlier sequence is the
+     * observation used for the forecast.  The earlier result is required to
+     * occur before the current matched sequence, so no current hand can be
+     * treated as evidence for itself.
+     */
+    for (let start = 0; start < totalHands; start++) {
+      const longestPossible = Math.floor((totalHands - start - 1) / 2);
+      for (let length = longestPossible; length >= minimum; length--) {
+        const currentStart = totalHands - length;
+        if (!sequenceMatches(data, start, currentStart, length)) continue;
+        matches.push({
+          start: start,
+          length: length,
+          outcome: data[start + length]
+        });
+        break;
+      }
+    }
+    return matches;
+  }
+  function analyseState(data, totalHands, maps, overallCounts) {
+    // The pooled Bayesian frequency remains the safe fallback whenever the
+    // history contains no earlier exact pattern of five or more hands.
+    const overall = posterior(overallCounts, BASE, MODEL.globalPrior);
+    const matches = findHistoricalPatternMatches(data.slice(0, totalHands));
+    const counts = { P: 0, B: 0, T: 0 };
+    let longestMatch = 0;
+    for (const match of matches) {
+      counts[match.outcome]++;
+      if (match.length > longestMatch) longestMatch = match.length;
+    }
+
+    const probabilities = matches.length
+      ? posterior(counts, overall, MODEL.patternPrior)
+      : overall;
+    const context = matches.length ? {
+      key: data.slice(totalHands - longestMatch, totalHands).join(''),
+      depth: longestMatch,
+      total: matches.length,
+      counts: counts,
+      probabilities: probabilities,
+      enoughExamples: matches.length >= MODEL.minimumPatternExamples,
+      matchedExamples: matches.length
+    } : null;
+    return {
+      probabilities: probabilities,
+      top: topOutcome(probabilities),
+      overallCounts: overallCounts,
+      overall: overall,
+      context: context,
+      matchedExamples: matches.length
+    };
+  }
+  function analyse(data) {
+    return analyseState(data, data.length, transitionMaps(data), outcomeCounts(data));
+  }
+  function brier(probabilities, actual) {
+    return OUTCOMES.reduce(function(sum, side) {
+      return sum + Math.pow(probabilities[side] - (side === actual ? 1 : 0), 2);
+    }, 0);
+  }
+  function calibrationScore(evaluations) {
+    const bucketCount = 10;
+    const byOutcome = {};
+    for (const side of OUTCOMES) {
+      const buckets = Array.from({ length: bucketCount }, function() {
+        return { count: 0, predicted: 0, actual: 0 };
+      });
+      for (const evaluation of evaluations) {
+        const probability = evaluation.probabilities[side];
+        const bucket = Math.min(bucketCount - 1, Math.floor(probability * bucketCount));
+        buckets[bucket].count++;
+        buckets[bucket].predicted += probability;
+        buckets[bucket].actual += side === evaluation.actual ? 1 : 0;
+      }
+      byOutcome[side] = evaluations.length ? buckets.reduce(function(total, bucket) {
+        if (!bucket.count) return total;
+        return total + bucket.count * Math.abs(bucket.predicted / bucket.count - bucket.actual / bucket.count);
+      }, 0) / evaluations.length : null;
+    }
+    const error = OUTCOMES.reduce(function(worst, side) {
+      return Math.max(worst, byOutcome[side] || 0);
+    }, 0);
+    return { error: evaluations.length ? error : null, byOutcome: byOutcome, observations: evaluations.length };
+  }
+  function summariseEvaluations(evaluations) {
+    let correct = 0;
+    let baseCorrect = 0;
+    let modelLoss = 0;
+    let baseLoss = 0;
+    let deltaSum = 0;
+    let deltaSquareSum = 0;
+    for (const evaluation of evaluations) {
+      if (evaluation.top === evaluation.actual) correct++;
+      if (evaluation.baseTop === evaluation.actual) baseCorrect++;
+      const modelRoundLoss = brier(evaluation.probabilities, evaluation.actual);
+      const baseRoundLoss = brier(evaluation.baseline, evaluation.actual);
+      const delta = baseRoundLoss - modelRoundLoss;
+      modelLoss += modelRoundLoss;
+      baseLoss += baseRoundLoss;
+      deltaSum += delta;
+      deltaSquareSum += delta * delta;
+    }
+    const total = evaluations.length;
+    const modelBrier = total ? modelLoss / total : null;
+    const baselineBrier = total ? baseLoss / total : null;
+    const meanDelta = total ? deltaSum / total : null;
+    const variance = total > 1 ? Math.max(0, (deltaSquareSum - total * meanDelta * meanDelta) / (total - 1)) : null;
+    const lowerDelta = total > 1 ? meanDelta - MODEL.confidenceZ * Math.sqrt(variance / total) : null;
+    return {
+      total: total,
+      correct: correct,
+      wrong: total - correct,
+      baseCorrect: baseCorrect,
+      baseWrong: total - baseCorrect,
+      modelBrier: modelBrier,
+      baselineBrier: baselineBrier,
+      skill: baselineBrier > 0 ? (baselineBrier - modelBrier) / baselineBrier : null,
+      skillLower: baselineBrier > 0 && Number.isFinite(lowerDelta) ? lowerDelta / baselineBrier : null,
+      calibration: calibrationScore(evaluations)
+    };
+  }
+  function emptyValidation() {
+    return {
+      total: 0,
+      correct: 0,
+      wrong: 0,
+      baseCorrect: 0,
+      baseWrong: 0,
+      modelBrier: null,
+      baselineBrier: null,
+      skill: null,
+      skillLower: null,
+      recent: null,
+      calibration: { error: null, observations: 0 }
+    };
+  }
+  function makeEvaluation(history, maps, counts, actual) {
+    const forecast = analyseState(history, history.length, maps, counts);
+    const baseline = posterior(counts, BASE, MODEL.globalPrior);
+    return {
+      probabilities: forecast.probabilities,
+      top: forecast.top,
+      baseline: baseline,
+      baseTop: topOutcome(baseline),
+      actual: actual
+    };
+  }
+  function validationFromEvaluations(evaluations) {
+    if (!evaluations.length) return emptyValidation();
+    const summary = summariseEvaluations(evaluations);
+    const recent = evaluations.length >= MODEL.recentReviewSample
+      ? summariseEvaluations(evaluations.slice(-MODEL.recentReviewSample))
+      : null;
+    return Object.assign(summary, { recent: recent });
+  }
+  function walkForward(data) {
+    const start = MODEL.minimumWalkForwardHistory;
+    if (data.length <= start) return emptyValidation();
+
+    const maps = emptyMaps();
+    const prefixCounts = { P: 0, B: 0, T: 0 };
+    const evaluations = [];
+
+    for (let index = 0; index < data.length; index++) {
+      if (index >= start) {
+        evaluations.push(makeEvaluation(data.slice(0, index), maps, prefixCounts, data[index]));
+      }
+      addTransition(maps, data, index);
+      prefixCounts[data[index]]++;
+    }
+    return validationFromEvaluations(evaluations);
+  }
+  function buildAuditCache(data) {
+    const cache = { data: [], maps: emptyMaps(), counts: { P: 0, B: 0, T: 0 }, evaluations: [] };
+    for (const result of data) appendAuditResult(cache, result);
+    return cache;
+  }
+  function appendAuditResult(cache, result) {
+    const index = cache.data.length;
+    if (index >= MODEL.minimumWalkForwardHistory) {
+      cache.evaluations.push(makeEvaluation(cache.data, cache.maps, cache.counts, result));
+    }
+    cache.data.push(result);
+    addTransition(cache.maps, cache.data, index);
+    cache.counts[result]++;
+  }
+  function removeAuditResult(cache) {
+    const index = cache.data.length - 1;
+    if (index < 0) return true;
+    if (index >= MODEL.minimumWalkForwardHistory) cache.evaluations.pop();
+    if (!removeTransition(cache.maps, cache.data, index)) return false;
+    cache.counts[cache.data[index]]--;
+    cache.data.pop();
+    return true;
+  }
+  function sharesPrefix(left, right, length) {
+    if (left.length < length || right.length < length) return false;
+    for (let index = 0; index < length; index++) {
+      if (left[index] !== right[index]) return false;
+    }
+    return true;
+  }
+  function auditFor(data) {
+    if (!auditCache) {
+      auditCache = buildAuditCache(data);
+    } else if (data.length === auditCache.data.length + 1 && sharesPrefix(data, auditCache.data, auditCache.data.length)) {
+      appendAuditResult(auditCache, data[data.length - 1]);
+    } else if (data.length + 1 === auditCache.data.length && sharesPrefix(data, auditCache.data, data.length)) {
+      if (!removeAuditResult(auditCache)) auditCache = buildAuditCache(data);
+    } else if (data.length !== auditCache.data.length || !sharesPrefix(data, auditCache.data, data.length)) {
+      auditCache = buildAuditCache(data);
+    }
+    return {
+      analysis: analyseState(auditCache.data, auditCache.data.length, auditCache.maps, auditCache.counts),
+      validation: validationFromEvaluations(auditCache.evaluations)
+    };
+  }
+  function probabilityText(probabilities, digits) {
+    return 'P ' + percent(probabilities.P, digits) + ' · B ' + percent(probabilities.B, digits) + ' · T ' + percent(probabilities.T, digits);
+  }
+  function contextName(context) {
+    if (!context) return 'ยังไม่มีบริบทที่เทียบได้';
+    const shownHands = 8;
+    const visible = context.key.length > shownHands ? '…-' + context.key.slice(-shownHands).split('').join('-') : context.key.split('').join('-');
+    return 'เค้าไพ่ที่ตรงกัน ' + context.depth + ' ตา (' + visible + ') → ?';
+  }
+  function contextText(context) {
+    if (!context) return 'ยังไม่มีบริบทที่เทียบได้';
+    return 'พบเค้าไพ่ตรงกัน ≥ ' + MODEL.patternLength + ' ตา ' + context.total + ' ชุด · ยาวสุด ' + context.depth + ' ตา';
+  }
+  function predictionMargin(probabilities) {
+    const values = OUTCOMES.map(function(side) { return probabilities[side]; }).sort(function(left, right) { return right - left; });
+    return values[0] - values[1];
+  }
+  function assessEdge(analysis, validation) {
+    const reasons = [];
+    if (!analysis.context) {
+      reasons.push('ยังไม่พบเค้าไพ่ก่อนหน้าที่ตรงกันอย่างน้อย ' + MODEL.patternLength + ' ตา');
+    } else {
+      if (!analysis.context.enoughExamples) {
+        reasons.push('พบเค้าไพ่ที่ตรงกันเพียง ' + analysis.context.total + ' ชุด (ต้องมีอย่างน้อย ' + MODEL.minimumPatternExamples + ' ชุด)');
+      }
+    }
+    if (predictionMargin(analysis.probabilities) < MODEL.minimumForecastMargin) {
+      reasons.push('ความน่าจะเป็นของผลนำยังสูสีกับผลรอง (ต่างกันน้อยกว่า ' + percent(MODEL.minimumForecastMargin, 1) + ')');
+    }
+    if (!validation.total) {
+      reasons.push('ยังไม่มีผล walk-forward สำหรับตรวจสอบความแม่น');
+    } else {
+      if (validation.total < MODEL.reviewSample) {
+        reasons.push('ตัวอย่าง walk-forward ' + validation.total + '/' + MODEL.reviewSample + ' ตา ยังไม่พอ');
+      }
+      if (!Number.isFinite(validation.skill) || validation.skill <= 0) {
+        reasons.push('Brier Skill ยังไม่เหนือฐานความถี่ จึงเสี่ยงที่โมเดลกำลังเสียความแม่น');
+      }
+      if (!Number.isFinite(validation.calibration.error)) {
+        reasons.push('ยังไม่มีข้อมูล calibration สำหรับตรวจสอบความน่าเชื่อถือ');
+      } else if (validation.calibration.error > MODEL.maximumCalibrationError) {
+        reasons.push('calibration สูงกว่าเกณฑ์ ECE ' + percent(MODEL.maximumCalibrationError, 0));
+      }
+    }
+    if (validation.total >= MODEL.reviewSample) {
+      if (!Number.isFinite(validation.skillLower) || validation.skillLower <= MODEL.meaningfulSkill) {
+        reasons.push('Brier Skill ทั้งชุดยังไม่เหนือฐานความถี่เกินเกณฑ์');
+      }
+      if (!validation.recent || validation.recent.skillLower <= MODEL.meaningfulSkill) {
+        reasons.push('Brier Skill ช่วงล่าสุดยังไม่เหนือฐานความถี่อย่างต่อเนื่อง');
+      }
+    }
+    return { hasEdge: reasons.length === 0, reason: reasons[0] || '', reasons: reasons };
+  }
+  function latestOutcomeReview(data) {
+    // Score the latest completed hand using only the history that existed
+    // before it.  This makes the adaptation report auditable and prevents a
+    // current result from being used to justify its own prediction.
+    if (data.length < 2) return null;
+    const history = data.slice(0, -1);
+    const forecast = analyse(history);
+    const actual = data[data.length - 1];
+    return { top: forecast.top, actual: actual, correct: forecast.top === actual };
+  }
+  function riskReasonText(reasons) {
+    return reasons.map(function(reason, index) { return (index + 1) + '. ' + reason; }).join(' · ');
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, rounds: rounds }));
+    } catch (_) {
+      // The app remains usable even when browser storage is unavailable.
+    }
+  }
+  function extractResults(saved) {
+    if (!saved || !Array.isArray(saved.rounds)) return [];
+    return saved.rounds.map(function(round) {
+      return typeof round === 'string' ? round : round && round.result;
+    }).filter(isOutcome);
+  }
+  function load() {
+    auditCache = null;
+    const keys = [STORAGE_KEY].concat(LEGACY_KEYS);
+    for (const key of keys) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(key));
+        const imported = extractResults(saved);
+        if (saved && Array.isArray(saved.rounds)) {
+          rounds = imported;
+          // Repair malformed records and migrate legacy data once, so the
+          // on-disk state cannot keep reintroducing invalid outcomes.
+          if (key !== STORAGE_KEY || imported.length !== saved.rounds.length) save();
+          return;
+        }
+      } catch (_) {
+        // Ignore malformed saved data and try the next safe source.
+      }
+    }
+    rounds = [];
+  }
+  function setColor(element, color) {
+    element.style.color = color;
+  }
+  function renderHistory() {
+    dom.history.replaceChildren();
+    if (!rounds.length) {
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'ยังไม่มีประวัติ';
+      dom.history.append(empty);
+      return;
+    }
+    const fragment = document.createDocumentFragment();
+    rounds.forEach(function(result, index) {
+      const node = document.createElement('div');
+      const className = result === 'P' ? 'player' : result === 'B' ? 'banker' : 'tie';
+      node.className = 'history-node ' + className;
+      node.textContent = result;
+      node.title = 'ตาที่ ' + (index + 1) + ': ' + OUTCOME_NAME[result];
+      node.setAttribute('aria-label', node.title);
+      fragment.append(node);
+    });
+    dom.history.append(fragment);
+  }
+  function render() {
+    const audit = auditFor(rounds);
+    const analysis = audit.analysis;
+    const validation = audit.validation;
+    const probabilities = analysis.probabilities;
+    const top = analysis.top;
+    const counts = analysis.overallCounts;
+    const currentContext = analysis.context;
+    const edge = assessEdge(analysis, validation);
+    const latestReview = latestOutcomeReview(rounds);
+    const observed = rounds.length ? {
+      P: counts.P / rounds.length,
+      B: counts.B / rounds.length,
+      T: counts.T / rounds.length
+    } : null;
+
+    dom.handsRecorded.textContent = rounds.length + ' ตา';
+    dom.historyProbability.textContent = rounds.length ? probabilityText(analysis.overall, 1) : '--';
+    dom.forecastProbability.textContent = rounds.length ? probabilityText(probabilities) : 'รอผลจริงอย่างน้อย 1 ตา';
+    dom.nextSide.textContent = rounds.length ? OUTCOME_NAME[top] + ' · ' + percent(probabilities[top], 1) : 'รอข้อมูล';
+    dom.recommendation.textContent = rounds.length ? 'คาดการณ์ ' + OUTCOME_NAME[top] : 'รอข้อมูล';
+    dom.recommendation.style.color = top === 'P' ? 'var(--player)' : top === 'B' ? 'var(--banker)' : 'var(--gold)';
+    dom.matchedContext.textContent = contextText(currentContext);
+    dom.contextDetail.textContent = currentContext
+      ? contextName(currentContext) + ' · P ' + currentContext.counts.P + ' / B ' + currentContext.counts.B + ' / T ' + currentContext.counts.T + ' · ใช้รวม ' + currentContext.matchedExamples + ' ตัวอย่าง'
+      : '--';
+    dom.observedRatio.textContent = observed ? probabilityText(observed, 1) : '--';
+
+    if (!rounds.length) {
+      dom.riskGuard.textContent = 'รอข้อมูลจริง';
+      setColor(dom.riskGuard, '#a7a7b0');
+      dom.riskReasons.textContent = 'เริ่มบันทึกผลจริงก่อน ระบบจึงจะประเมินความเสี่ยงได้';
+      setColor(dom.riskReasons, '#a7a7b0');
+    } else if (edge.hasEdge) {
+      dom.riskGuard.textContent = 'ผ่าน Risk Guard · เฝ้าตรวจต่อเนื่อง';
+      setColor(dom.riskGuard, 'var(--aqua)');
+      dom.riskReasons.textContent = 'ไม่พบเงื่อนไขเสี่ยงตามเกณฑ์ภายใน ณ ข้อมูลปัจจุบัน';
+      setColor(dom.riskReasons, 'var(--aqua)');
+    } else {
+      dom.riskGuard.textContent = 'งดใช้ผลคาดการณ์';
+      setColor(dom.riskGuard, 'var(--red)');
+      dom.riskReasons.textContent = riskReasonText(edge.reasons);
+      setColor(dom.riskReasons, 'var(--red)');
+    }
+
+    if (!latestReview) {
+      dom.adaptationStatus.textContent = 'รอผลจริงตาที่ 2 เพื่อเทียบกับคาดการณ์ตาก่อนหน้า';
+      setColor(dom.adaptationStatus, '#a7a7b0');
+    } else if (latestReview.correct) {
+      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ตรงคาด · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
+      setColor(dom.adaptationStatus, 'var(--aqua)');
+    } else {
+      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ผิดแล้วบันทึกและปรับ · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
+      setColor(dom.adaptationStatus, 'var(--red)');
+    }
+
+    if (!validation.total) {
+      dom.walkForward.textContent = 'รออย่างน้อย ' + (MODEL.minimumWalkForwardHistory + 1) + ' ตา';
+      dom.brierSkill.textContent = '--';
+      setColor(dom.brierSkill, '#dedee4');
+      dom.auditRecord.textContent = 'รอข้อมูลทดสอบ';
+      dom.brierScore.textContent = '--';
+      setColor(dom.brierScore, '#dedee4');
+      dom.calibration.textContent = '--';
+      setColor(dom.calibration, '#dedee4');
+    } else {
+      dom.walkForward.textContent = 'ชนะ ' + validation.correct + ' · แพ้ ' + validation.wrong + ' · ฐาน ' + validation.baseCorrect + '/' + validation.total;
+      dom.brierSkill.textContent = signedPercent(validation.skill, 1) + (validation.recent ? ' · ล่าสุด ' + signedPercent(validation.recent.skill, 1) : '');
+      setColor(dom.brierSkill, validation.skillLower > 0 ? 'var(--gold)' : validation.skill < 0 ? 'var(--red)' : '#dedee4');
+      dom.brierSkill.textContent += ' Â· 95% lower ' + signedPercent(validation.skillLower, 1);
+      dom.auditRecord.textContent = 'ชนะ/คาดถูก ' + validation.correct + ' · แพ้/คาดผิด ' + validation.wrong + ' (รวม ' + validation.total + ')';
+      dom.brierScore.textContent = 'โมเดล ' + score(validation.modelBrier) + ' · ฐาน ' + score(validation.baselineBrier);
+      setColor(dom.brierScore, validation.modelBrier < validation.baselineBrier ? 'var(--gold)' : 'var(--red)');
+      dom.calibration.textContent = 'ECE ' + percent(validation.calibration.error, 1) + ' · เกณฑ์ ≤ ' + percent(MODEL.maximumCalibrationError, 0);
+      setColor(dom.calibration, validation.calibration.error <= MODEL.maximumCalibrationError ? 'var(--aqua)' : 'var(--red)');
+      dom.calibration.textContent = 'ECE worst ' + percent(validation.calibration.error, 1) + ' (P ' + percent(validation.calibration.byOutcome.P, 1) + ' / B ' + percent(validation.calibration.byOutcome.B, 1) + ' / T ' + percent(validation.calibration.byOutcome.T, 1) + ')';
+    }
+
+    if (!rounds.length) {
+      dom.auditStatus.textContent = 'เริ่มบันทึกผลเพื่อสร้างข้อมูล';
+      setColor(dom.auditStatus, '#a7a7b0');
+      dom.message.textContent = 'เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะคำนวณความน่าจะเป็นใหม่จากข้อมูลที่มีอยู่ก่อนทุกตา';
+      setColor(dom.message, 'var(--muted)');
+    } else if (edge.hasEdge) {
+      dom.auditStatus.textContent = 'ผ่านเกณฑ์สถิติภายใน · เฝ้าตรวจต่อเนื่อง';
+      setColor(dom.auditStatus, 'var(--aqua)');
+      dom.message.textContent = 'บริบทล่าสุดมีตัวอย่างพอ และ Brier Skill เหนือฐานความถี่ทั้งชุดกับช่วงล่าสุด พร้อม calibration ผ่านเกณฑ์ ผลใหม่จะถูกใช้ปรับการคาดการณ์ของตาถัดไปเท่านั้น';
+      setColor(dom.message, 'var(--aqua)');
+    } else {
+      dom.auditStatus.textContent = 'NO EDGE / ยังไม่พบความเหนือกว่า';
+      setColor(dom.auditStatus, 'var(--red)');
+      dom.message.textContent = 'ยังคำนวณความน่าจะเป็นทุกตาจากข้อมูลก่อนหน้า แต่ไม่ออกสัญญาณ: ' + edge.reason + ' การคาดการณ์ที่ผิดจะถูกนับเป็นแพ้ และผลจริงจะเข้าแบบจำลองเฉพาะตาถัดไป';
+      setColor(dom.message, 'var(--red)');
+    }
+
+    dom.undo.disabled = !rounds.length;
+    dom.reset.disabled = !rounds.length;
+    renderHistory();
+  }
+  function record(result) {
+    if (!isOutcome(result)) return;
+    rounds.push(result);
+    if (auditCache && auditCache.data.length === rounds.length - 1) appendAuditResult(auditCache, result);
+    save();
+    render();
+  }
+  function undo() {
+    if (!rounds.length) return;
+    if (auditCache && auditCache.data.length === rounds.length && !removeAuditResult(auditCache)) auditCache = null;
+    rounds.pop();
+    save();
+    render();
+  }
+  function reset() {
+    if (!rounds.length) return;
+    if (!window.confirm('รีเซ็ตประวัติทั้งหมดของ SHOE นี้หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้')) return;
+    rounds = [];
+    auditCache = null;
+    save();
+    render();
+  }
+
+  document.querySelectorAll('[data-result]').forEach(function(button) {
+    button.addEventListener('click', function() { record(button.dataset.result); });
+  });
+  dom.undo.addEventListener('click', undo);
+  dom.reset.addEventListener('click', reset);
+  load();
+  render();
+  </script>
+</body>
+</html>

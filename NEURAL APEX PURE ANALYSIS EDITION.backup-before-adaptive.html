@@ -138,7 +138,6 @@
     .analysis-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .detail { padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: #0b0b0f; }
     .detail-wide { grid-column: 1 / -1; }
-    .detail-decision { border-color: #3e4d56; background: linear-gradient(135deg, #0c1719, #0b0b0f 58%); }
     .detail-label { display: block; color: #868690; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
     .detail output { display: block; margin-top: 6px; color: #dedee4; font-size: 12px; font-weight: 850; line-height: 1.35; overflow-wrap: anywhere; }
 
@@ -166,11 +165,11 @@
       <header>
         <div class="eyebrow">HISTORY · PROBABILITY · AUDIT</div>
         <h1>NEURAL APEX</h1>
-        <p class="subtitle">อ่านข้อมูล P / B / T จริงครบทุกตาด้วยฐานข้อมูลทั้งหมด, บริบทซ้ำ, จังหวะต่อ/สลับ, รูปทรง run และ regime ล่าสุด ก่อนคาดการณ์ตาถัดไป พร้อมตัดสัญญาณเมื่อหลักฐานไม่พอ ผลลัพธ์เป็นข้อมูลเชิงสถิติ ไม่ใช่คำแนะนำเดิมพันหรือการรับประกันผล</p>
+        <p class="subtitle">บันทึกผล P / B / T แล้วคาดการณ์ทุกตาจากประวัติทั้งหมดที่บันทึกไว้ โดยผสานความถี่รวมและทุกบริบทที่เคยเกิดในอดีต การประเมินนี้เป็นข้อมูลเชิงสถิติ ไม่ใช่คำแนะนำเดิมพันหรือการรับประกันผล</p>
       </header>
 
       <div class="metrics" aria-live="polite">
-        <div class="metric"><span class="metric-label">มุมมองเชิงสถิติตาถัดไป</span><output id="next-side">รอข้อมูล</output></div>
+        <div class="metric"><span class="metric-label">คาดการณ์เชิงสถิติตาถัดไป</span><output id="next-side">รอข้อมูล</output></div>
         <div class="metric"><span class="metric-label">P / B / T ฐานความถี่ Bayesian</span><output id="history-probability">--</output></div>
         <div class="metric"><span class="metric-label">จำนวนตาที่บันทึก</span><output id="hands-recorded">0 ตา</output></div>
         <div class="metric"><span class="metric-label">บริบทล่าสุดที่เทียบได้</span><output id="matched-context">--</output></div>
@@ -202,28 +201,21 @@
 
       <section class="section" aria-label="รายละเอียดการวิเคราะห์">
         <h2 class="section-title">การตรวจสอบโมเดล</h2>
-        <p class="section-description">ให้ฐานความถี่ทั้งหมด, บริบทซ้ำหลายชั้น, ผลต่อจากตาล่าสุด, รูปทรง run/สลับ และสภาพล่าสุด เป็น ensemble เดียว น้ำหนักของแต่ละมุมมองมาจากผลงานย้อนหลังของมันเอง ระบบจำแนกทุกตาเป็น FOLLOW / WATCH / CUT จากความเสี่ยง, calibration และการพลาดติดกัน โดยทุกคะแนนใช้เฉพาะข้อมูลที่มีอยู่ก่อนตานั้น</p>
+        <p class="section-description">ใช้ผลจริงทุกตาที่บันทึกไว้เป็นฐานความถี่ แล้วผสานผลต่อเนื่องที่เคยเกิดในประวัติทั้งหมดหลายระดับบริบท (1–16 ตา) เพื่อคาดการณ์ทุกตา คะแนน walk-forward ใช้ข้อมูลก่อนหน้าของแต่ละตาเท่านั้น</p>
         <div class="analysis-details">
           <div class="detail"><span class="detail-label">สัดส่วนผลจริง P / B / T</span><output id="observed-ratio">--</output></div>
-          <div class="detail"><span class="detail-label">บริบทหลักจากประวัติทั้งหมด</span><output id="context-detail">--</output></div>
+          <div class="detail"><span class="detail-label">เค้าไพ่ตรงกัน ≥ 5 ตา · ผลหลังเค้า</span><output id="context-detail">--</output></div>
           <div class="detail"><span class="detail-label">ผลทดสอบย้อนหลัง · ถูก / ผิด</span><output id="audit-record">รอข้อมูล</output></div>
           <div class="detail"><span class="detail-label">BRIER SCORE · โมเดล / ฐาน</span><output id="brier-score">--</output></div>
           <div class="detail"><span class="detail-label">CALIBRATION (ECE)</span><output id="calibration">--</output></div>
           <div class="detail"><span class="detail-label">สถานะการตรวจสอบ</span><output id="audit-status">กำลังเก็บข้อมูล</output></div>
           <div class="detail"><span class="detail-label">RISK GUARD · จังหวะตัด</span><output id="risk-guard">รอข้อมูล</output></div>
           <div class="detail"><span class="detail-label">ปรับตัวหลังผลล่าสุด</span><output id="adaptation-status">รอข้อมูล</output></div>
-          <div class="detail"><span class="detail-label">TIMING MODE · ตาม / เฝ้า / ตัด</span><output id="timing-mode">รอข้อมูล</output></div>
-          <div class="detail"><span class="detail-label">RISK INDEX · ความเสี่ยงสัญญาณ</span><output id="risk-index">--</output></div>
-          <div class="detail"><span class="detail-label">GAME STATE · สภาพลำดับล่าสุด</span><output id="game-state">รอข้อมูล</output></div>
-          <div class="detail"><span class="detail-label">MIRAGE FILTER · ภาพลวงตา</span><output id="mirage-filter">รอข้อมูล</output></div>
-          <div class="detail detail-wide detail-decision"><span class="detail-label">TACTICAL READ · จังหวะอ่าน / ตัดสัญญาณ</span><output id="tactical-decision">รอข้อมูล</output></div>
-          <div class="detail detail-wide"><span class="detail-label">ENSEMBLE EVIDENCE · น้ำหนักและความเห็นของโมเดล</span><output id="ensemble-evidence">รอข้อมูล</output></div>
-          <div class="detail detail-wide"><span class="detail-label">การเรียนรู้และแก้ความคลาดเคลื่อน</span><output id="repair-plan">รอข้อมูล</output></div>
           <div class="detail detail-wide"><span class="detail-label">สาเหตุความเสี่ยง</span><output id="risk-reasons">รอข้อมูล</output></div>
         </div>
       </section>
 
-      <p class="notice"><strong>หลักการสำคัญ:</strong> ลำดับผลที่ผ่านมาไม่พิสูจน์ว่าตาถัดไปถูกควบคุมหรือ “หลอก” ได้ ระบบจึงเรียกสิ่งที่พบว่าเป็น <em>ภาพลวงตาทางสถิติ</em> และจะลดความเชื่อในสัญญาณเฉพาะรูปทรงเมื่อการทดสอบย้อนหลัง, จำนวนตัวอย่าง, regime หรือโมเดลหลายมุมมองไม่สนับสนุนกัน แม้ยังคงคาดการณ์เชิงความน่าจะเป็นทุกตา</p>
+      <p class="notice"><strong>หลักการสำคัญ:</strong> ระบบคำนวณและคาดการณ์ทุกตาจากผลจริงทั้งหมดที่บันทึกไว้ พร้อมทดสอบย้อนหลังแบบ walk-forward โดยไม่สุ่มสัญญาณหรือไล่เดิมพันแก้ตัว สถานะการตรวจสอบเป็นตัวบอกคุณภาพของโมเดล ไม่ได้ปิดผลคาดการณ์</p>
     </section>
   </main>
 
@@ -231,14 +223,12 @@
   'use strict';
 
   /*
-   * Results-only statistical audit. The model is deterministic: equal input
-   * history always gives equal output. It reads every saved outcome through
-   * complementary experts, and measures each one with expanding-window
-   * walk-forward validation before trusting its influence.
+   * Results-only statistical audit.  The model is deterministic: equal input
+   * history always gives equal output.  It uses every recorded outcome, then
+   * measures itself with expanding-window walk-forward validation.
    */
-  const STORAGE_KEY = 'neural-apex-history-audit-v4';
+  const STORAGE_KEY = 'neural-apex-history-audit-v2';
   const LEGACY_KEYS = Object.freeze([
-    'neural-apex-history-audit-v3',
     'neural-apex-baccarat-audit-v4',
     'neural-apex-baccarat-audit-v3',
     'neural-apex-audited-forecast-v3'
@@ -254,11 +244,6 @@
     maximumContextDepth: 16,
     contextPrior: 12,
     globalEvidenceWeight: 1,
-    adaptiveMinimumObservations: 12,
-    adaptiveRecentWindow: 100,
-    adaptivePrior: 24,
-    adaptiveStrength: 0.60,
-    adaptiveCap: 0.04,
     // Start the first walk-forward check on the 10th recorded hand.
     minimumWalkForwardHistory: 9,
     reviewSample: 300,
@@ -266,31 +251,7 @@
     meaningfulSkill: 0.01,
     minimumForecastMargin: 0.015,
     maximumCalibrationError: 0.03,
-    confidenceZ: 1.96,
-    ensembleMinimumObservations: 18,
-    ensembleRecentWindow: 96,
-    ensembleTemperature: 4,
-    ensembleFloor: 0.12,
-    featurePrior: 14,
-    minimumFeatureObservations: 5,
-    regimeRecentWindow: 24,
-    regimePrior: 18,
-    regimeShiftThreshold: 0.12,
-    maximumExpertDisagreement: 0.055,
-    minimumTacticalHistory: 48,
-    minimumTacticalValidation: 36,
-    minimumFollowMargin: 0.025,
-    maximumFollowRisk: 35,
-    criticalMissStreak: 3,
-    expertBaseWeights: Object.freeze({ global: 1.00, context: 0.92, transition: 0.72, state: 0.62, regime: 0.44 })
-  });
-  const EXPERTS = Object.freeze(['global', 'context', 'transition', 'state', 'regime']);
-  const EXPERT_NAME = Object.freeze({
-    global: 'ฐานข้อมูลทั้งหมด',
-    context: 'บริบทซ้ำหลายชั้น',
-    transition: 'จังหวะต่อเนื่อง',
-    state: 'รูปทรง run / สลับ',
-    regime: 'สมดุลช่วงล่าสุด'
+    confidenceZ: 1.96
   });
 
   let rounds = [];
@@ -314,13 +275,6 @@
     auditStatus: document.getElementById('audit-status'),
     riskGuard: document.getElementById('risk-guard'),
     adaptationStatus: document.getElementById('adaptation-status'),
-    timingMode: document.getElementById('timing-mode'),
-    riskIndex: document.getElementById('risk-index'),
-    gameState: document.getElementById('game-state'),
-    mirageFilter: document.getElementById('mirage-filter'),
-    tacticalDecision: document.getElementById('tactical-decision'),
-    ensembleEvidence: document.getElementById('ensemble-evidence'),
-    repairPlan: document.getElementById('repair-plan'),
     riskReasons: document.getElementById('risk-reasons'),
     undo: document.getElementById('undo'),
     reset: document.getElementById('reset')
@@ -366,169 +320,6 @@
   }
   function emptyMaps() {
     return [];
-  }
-  function clamp(value, minimum, maximum) {
-    return Math.max(minimum, Math.min(maximum, value));
-  }
-  function totalVariation(left, right) {
-    return OUTCOMES.reduce(function(total, side) {
-      return total + Math.abs(left[side] - right[side]);
-    }, 0) / 2;
-  }
-  function addFeature(map, key, outcome) {
-    const entry = map.get(key) || { P: 0, B: 0, T: 0, total: 0 };
-    entry[outcome]++;
-    entry.total++;
-    map.set(key, entry);
-  }
-  function entryProbability(entry, fallback, prior) {
-    return entry && entry.total ? posterior(entry, fallback, prior) : fallback;
-  }
-  function makeSequenceState(last, side, runLength, alternatingLength) {
-    const runBucket = side ? Math.min(runLength, 6) : 0;
-    const alternatingBucket = side ? Math.min(alternatingLength, 8) : 0;
-    const mode = !side ? 'none' : runLength >= 3 ? 'run' : alternatingLength >= 4 ? 'chop' : 'mixed';
-    return {
-      last: last,
-      side: side,
-      runLength: runLength,
-      alternatingLength: alternatingLength,
-      mode: mode,
-      transitionKey: 'last:' + (last || 'none'),
-      runKey: 'run:' + (side || 'none') + ':' + runBucket,
-      chopKey: 'chop:' + (side || 'none') + ':' + alternatingBucket,
-      stateKey: 'state:' + mode + ':' + (side || 'none') + ':' + runBucket + ':' + alternatingBucket + ':' + (last || 'none')
-    };
-  }
-  function stepSequenceState(summary, outcome) {
-    const next = {
-      last: outcome,
-      side: summary.side,
-      runLength: summary.runLength,
-      alternatingLength: summary.alternatingLength
-    };
-    if (outcome !== 'T') {
-      if (outcome === summary.side) {
-        next.runLength++;
-        next.alternatingLength = 1;
-      } else {
-        next.side = outcome;
-        next.runLength = 1;
-        next.alternatingLength = summary.side ? summary.alternatingLength + 1 : 1;
-      }
-    }
-    return next;
-  }
-  function sequenceState(data, endIndex) {
-    const end = endIndex === undefined ? data.length : endIndex;
-    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
-    for (let index = 0; index < end; index++) summary = stepSequenceState(summary, data[index]);
-    return makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
-  }
-  function featureMaps(data) {
-    const maps = {
-      transition: new Map(),
-      run: new Map(),
-      chop: new Map(),
-      state: new Map()
-    };
-    // Each target is indexed only by the state that existed before it. This
-    // preserves the same no-peeking rule used by walk-forward validation.
-    let summary = { last: null, side: null, runLength: 0, alternatingLength: 0 };
-    for (let targetIndex = 0; targetIndex < data.length; targetIndex++) {
-      if (targetIndex) {
-        const state = makeSequenceState(summary.last, summary.side, summary.runLength, summary.alternatingLength);
-        const outcome = data[targetIndex];
-        addFeature(maps.transition, state.transitionKey, outcome);
-        addFeature(maps.run, state.runKey, outcome);
-        addFeature(maps.chop, state.chopKey, outcome);
-        addFeature(maps.state, state.stateKey, outcome);
-      }
-      summary = stepSequenceState(summary, data[targetIndex]);
-    }
-    return maps;
-  }
-  function blendFeatureEntries(entries, fallback, prior) {
-    let totalWeight = 1;
-    const blended = { P: fallback.P, B: fallback.B, T: fallback.T };
-    let support = 0;
-    const used = [];
-    for (const item of entries) {
-      if (!item.entry || !item.entry.total) continue;
-      const probability = entryProbability(item.entry, fallback, prior);
-      const reliability = item.entry.total / (item.entry.total + prior);
-      const weight = reliability * (item.bias || 1);
-      blended.P += probability.P * weight;
-      blended.B += probability.B * weight;
-      blended.T += probability.T * weight;
-      totalWeight += weight;
-      support += item.entry.total;
-      used.push({ label: item.label, total: item.entry.total, probability: probability });
-    }
-    return {
-      probabilities: normalise({ P: blended.P / totalWeight, B: blended.B / totalWeight, T: blended.T / totalWeight }),
-      support: support,
-      used: used
-    };
-  }
-  function regimeForecast(data, global) {
-    const window = Math.min(MODEL.regimeRecentWindow, data.length);
-    if (!window) return { probabilities: global, support: 0, shift: 0, window: 0 };
-    const recentCounts = outcomeCounts(data.slice(-window));
-    const recent = posterior(recentCounts, global, MODEL.regimePrior);
-    const observedRecent = normalise(recentCounts);
-    const observedAll = normalise(outcomeCounts(data));
-    return {
-      probabilities: recent,
-      support: window,
-      shift: totalVariation(observedRecent, observedAll),
-      window: window
-    };
-  }
-  function expertPerformance(evaluations, name) {
-    const usable = evaluations.filter(function(evaluation) {
-      return evaluation.experts && evaluation.experts[name] && evaluation.experts.global;
-    });
-    if (!usable.length) return { observations: 0, skill: 0, recentSkill: null };
-    function skillFor(sample) {
-      let expertLoss = 0;
-      let globalLoss = 0;
-      for (const evaluation of sample) {
-        expertLoss += brier(evaluation.experts[name], evaluation.actual);
-        globalLoss += brier(evaluation.experts.global, evaluation.actual);
-      }
-      return globalLoss > 0 ? (globalLoss - expertLoss) / globalLoss : 0;
-    }
-    const recentSample = usable.slice(-MODEL.ensembleRecentWindow);
-    return {
-      observations: usable.length,
-      skill: skillFor(usable),
-      recentSkill: recentSample.length >= MODEL.ensembleMinimumObservations ? skillFor(recentSample) : null
-    };
-  }
-  function combineExperts(experts, evaluations) {
-    const weights = {};
-    const performance = {};
-    let totalWeight = 0;
-    for (const name of EXPERTS) {
-      const stats = expertPerformance(evaluations, name);
-      const combinedSkill = stats.recentSkill === null ? stats.skill : stats.skill * 0.35 + stats.recentSkill * 0.65;
-      const confidence = stats.observations / (stats.observations + MODEL.featurePrior);
-      const adjusted = 1 + clamp(combinedSkill * MODEL.ensembleTemperature * confidence, -0.65, 1.25);
-      const weight = Math.max(MODEL.ensembleFloor, MODEL.expertBaseWeights[name] * adjusted);
-      weights[name] = weight;
-      performance[name] = Object.assign(stats, { combinedSkill: combinedSkill });
-      totalWeight += weight;
-    }
-    const probabilities = { P: 0, B: 0, T: 0 };
-    for (const name of EXPERTS) {
-      const share = weights[name] / totalWeight;
-      weights[name] = share;
-      for (const side of OUTCOMES) probabilities[side] += experts[name][side] * share;
-    }
-    let disagreement = 0;
-    for (const name of EXPERTS) disagreement = Math.max(disagreement, totalVariation(experts[name], probabilities));
-    return { probabilities: normalise(probabilities), weights: weights, performance: performance, disagreement: disagreement };
   }
   function addTransition(maps, data, targetIndex) {
     const outcome = data[targetIndex];
@@ -620,95 +411,7 @@
     };
   }
   function analyse(data) {
-    return adaptiveAnalysis(data, transitionMaps(data), outcomeCounts(data), []);
-  }
-  function residualProfile(evaluations) {
-    const expected = { P: 0, B: 0, T: 0 };
-    const observed = { P: 0, B: 0, T: 0 };
-    for (const evaluation of evaluations) {
-      for (const side of OUTCOMES) expected[side] += evaluation.probabilities[side];
-      observed[evaluation.actual]++;
-    }
-    const total = evaluations.length;
-    const residuals = { P: 0, B: 0, T: 0 };
-    if (total) {
-      for (const side of OUTCOMES) residuals[side] = (observed[side] - expected[side]) / total;
-    }
-    return { total: total, expected: expected, observed: observed, residuals: residuals };
-  }
-  function adaptiveCorrection(evaluations) {
-    const observations = evaluations.length;
-    const adjustment = { P: 0, B: 0, T: 0 };
-    if (observations < MODEL.adaptiveMinimumObservations) {
-      return { active: false, observations: observations, adjustment: adjustment, dominant: null };
-    }
-    const full = residualProfile(evaluations);
-    const recent = residualProfile(evaluations.slice(-MODEL.adaptiveRecentWindow));
-    const shrinkage = observations / (observations + MODEL.adaptivePrior);
-    let dominant = 'P';
-    for (const side of OUTCOMES) {
-      const residual = full.residuals[side] * 0.4 + recent.residuals[side] * 0.6;
-      adjustment[side] = Math.max(-MODEL.adaptiveCap, Math.min(MODEL.adaptiveCap, residual * shrinkage * MODEL.adaptiveStrength));
-      if (Math.abs(adjustment[side]) > Math.abs(adjustment[dominant])) dominant = side;
-    }
-    return { active: true, observations: observations, adjustment: adjustment, dominant: dominant, full: full, recent: recent };
-  }
-  function applyAdaptiveCorrection(probabilities, evaluations) {
-    const correction = adaptiveCorrection(evaluations);
-    const adjusted = normalise({
-      P: Math.max(0.001, probabilities.P + correction.adjustment.P),
-      B: Math.max(0.001, probabilities.B + correction.adjustment.B),
-      T: Math.max(0.001, probabilities.T + correction.adjustment.T)
-    });
-    return { probabilities: adjusted, correction: correction };
-  }
-  function adaptiveAnalysis(data, maps, counts, evaluations) {
-    const raw = analyseState(data, data.length, maps, counts);
-    const state = sequenceState(data);
-    const features = featureMaps(data);
-    const transition = blendFeatureEntries([
-      { label: 'ผลล่าสุด', entry: features.transition.get(state.transitionKey), bias: 1 }
-    ], raw.overall, MODEL.featurePrior);
-    const stateForecast = blendFeatureEntries([
-      { label: 'run', entry: features.run.get(state.runKey), bias: state.mode === 'run' ? 1.45 : 0.80 },
-      { label: 'สลับ', entry: features.chop.get(state.chopKey), bias: state.mode === 'chop' ? 1.45 : 0.80 },
-      { label: 'รูปทรงตรง', entry: features.state.get(state.stateKey), bias: 1.20 }
-    ], raw.overall, MODEL.featurePrior);
-    const regime = regimeForecast(data, raw.overall);
-    const experts = {
-      global: raw.overall,
-      context: raw.probabilities,
-      transition: transition.probabilities,
-      state: stateForecast.probabilities,
-      regime: regime.probabilities
-    };
-    const ensemble = combineExperts(experts, evaluations);
-    const adaptive = applyAdaptiveCorrection(ensemble.probabilities, evaluations);
-    return Object.assign({}, raw, {
-      rawProbabilities: ensemble.probabilities,
-      probabilities: adaptive.probabilities,
-      top: topOutcome(adaptive.probabilities),
-      adaptation: adaptive.correction,
-      experts: experts,
-      ensemble: ensemble,
-      state: state,
-      transition: transition,
-      stateForecast: stateForecast,
-      regime: regime
-    });
-  }
-  function repairPlanText(adaptation, latestReview, timing) {
-    if (!latestReview) return 'กำลังเก็บผลจริงเพื่อสร้างชุดเรียนรู้แรก';
-    if (timing && timing.mode === 'CUT') {
-      return 'โหมด CUT · หยุดยกน้ำหนักสัญญาณที่อ่อน, เก็บผลจริงใหม่เพื่อรีคาลิเบรต และไม่ไล่แก้จากผลที่พลาด';
-    }
-    if (!adaptation.active) return 'บันทึกผลล่าสุดแล้ว · รอผลทดสอบย้อนหลัง ' + adaptation.observations + '/' + MODEL.adaptiveMinimumObservations + ' ตา ก่อนเริ่มปรับสมดุล';
-    const side = adaptation.dominant;
-    const amount = adaptation.adjustment[side];
-    const direction = amount >= 0 ? 'เพิ่ม' : 'ลด';
-    const change = percent(Math.abs(amount), 1);
-    if (latestReview.correct) return 'ตรวจสอบความคลาดเคลื่อนต่อเนื่อง · ' + direction + ' น้ำหนัก ' + OUTCOME_NAME[side] + ' ' + change + ' จากผลทดสอบย้อนหลัง ' + adaptation.observations + ' ตา';
-    return 'คาดล่าสุดผิด · ปรับสมดุล ' + direction + ' น้ำหนัก ' + OUTCOME_NAME[side] + ' ' + change + ' จากความคลาดเคลื่อนทั้งชุดและช่วงล่าสุด โดยไม่ไล่แก้แพ้';
+    return analyseState(data, data.length, transitionMaps(data), outcomeCounts(data));
   }
   function brier(probabilities, actual) {
     return OUTCOMES.reduce(function(sum, side) {
@@ -791,20 +494,15 @@
       calibration: { error: null, observations: 0 }
     };
   }
-  function makeEvaluation(history, maps, counts, actual, priorEvaluations) {
-    const forecast = adaptiveAnalysis(history, maps, counts, priorEvaluations || []);
-    const baseline = forecast.experts.global;
+  function makeEvaluation(history, maps, counts, actual) {
+    const forecast = analyseState(history, history.length, maps, counts);
+    const baseline = posterior(counts, BASE, MODEL.globalPrior);
     return {
       probabilities: forecast.probabilities,
-      rawProbabilities: forecast.rawProbabilities,
       top: forecast.top,
       baseline: baseline,
       baseTop: topOutcome(baseline),
-      actual: actual,
-      adjustment: forecast.adaptation,
-      experts: forecast.experts,
-      ensemble: forecast.ensemble,
-      state: forecast.state
+      actual: actual
     };
   }
   function validationFromEvaluations(evaluations) {
@@ -825,7 +523,7 @@
 
     for (let index = 0; index < data.length; index++) {
       if (index >= start) {
-        evaluations.push(makeEvaluation(data.slice(0, index), maps, prefixCounts, data[index], evaluations));
+        evaluations.push(makeEvaluation(data.slice(0, index), maps, prefixCounts, data[index]));
       }
       addTransition(maps, data, index);
       prefixCounts[data[index]]++;
@@ -840,7 +538,7 @@
   function appendAuditResult(cache, result) {
     const index = cache.data.length;
     if (index >= MODEL.minimumWalkForwardHistory) {
-      cache.evaluations.push(makeEvaluation(cache.data, cache.maps, cache.counts, result, cache.evaluations));
+      cache.evaluations.push(makeEvaluation(cache.data, cache.maps, cache.counts, result));
     }
     cache.data.push(result);
     addTransition(cache.maps, cache.data, index);
@@ -873,7 +571,7 @@
       auditCache = buildAuditCache(data);
     }
     return {
-      analysis: adaptiveAnalysis(auditCache.data, auditCache.maps, auditCache.counts, auditCache.evaluations),
+      analysis: analyseState(auditCache.data, auditCache.data.length, auditCache.maps, auditCache.counts),
       validation: validationFromEvaluations(auditCache.evaluations),
       evaluations: auditCache.evaluations
     };
@@ -932,179 +630,20 @@
         reasons.push('Brier Skill ช่วงล่าสุดยังไม่เหนือฐานความถี่อย่างต่อเนื่อง');
       }
     }
-    if (analysis.ensemble && analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
-      reasons.push('ผู้เชี่ยวชาญแต่ละมุมมองเห็นต่างกัน ' + percent(analysis.ensemble.disagreement, 1) + ' จึงตัดความเชื่อในสัญญาณเชิงรูปทรง');
-    }
-    if (analysis.state && (analysis.state.mode === 'run' || analysis.state.mode === 'chop') && analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
-      reasons.push('รูปทรง ' + analysis.state.mode + ' ที่ตรงปัจจุบันมีตัวอย่างย้อนหลังเพียง ' + analysis.stateForecast.support + ' จุด จึงยังไม่ยืนยันจังหวะต่อหรือกลับ');
-    }
-    if (analysis.regime && analysis.regime.shift > MODEL.regimeShiftThreshold) {
-      reasons.push('สัดส่วนช่วงล่าสุดเบี่ยงจากข้อมูลทั้งหมด ' + percent(analysis.regime.shift, 1) + ' จึงเฝ้าระวัง regime shift และไม่ไล่ตามผลระยะสั้น');
-    }
     return { isStrong: reasons.length === 0, reason: reasons[0] || '', reasons: reasons };
   }
-  function latestOutcomeReview(data, evaluations) {
-    // Use the exact adaptive forecast that existed before the latest outcome.
+  function latestOutcomeReview(data) {
+    // Score the latest hand only from the full history that existed before it.
+    // This remains auditable while forecasts are available on every hand.
     if (data.length < 2) return null;
-    const actual = data[data.length - 1];
-    if (data.length - 1 >= MODEL.minimumWalkForwardHistory && evaluations.length) {
-      const evaluation = evaluations[evaluations.length - 1];
-      return { top: evaluation.top, actual: actual, correct: evaluation.top === actual };
-    }
     const history = data.slice(0, -1);
     const forecast = analyse(history);
+    const actual = data[data.length - 1];
     return {
       top: forecast.top,
       actual: actual,
       correct: forecast.top === actual
     };
-  }
-  function recentMissStreak(evaluations) {
-    let misses = 0;
-    for (let index = evaluations.length - 1; index >= 0; index--) {
-      if (evaluations[index].top === evaluations[index].actual) break;
-      misses++;
-    }
-    return misses;
-  }
-  function timingAssessment(analysis, validation, evaluations) {
-    if (!analysis.state.last) {
-      return { mode: 'WAIT', risk: null, reasons: ['ยังไม่มีผลจริง'], missStreak: 0, margin: 0, summary: 'รอข้อมูลจริง' };
-    }
-    const margin = predictionMargin(analysis.probabilities);
-    const missStreak = recentMissStreak(evaluations);
-    const reasons = [];
-    let risk = 6;
-    if (!validation.total) {
-      risk += 28;
-      reasons.push('ยังไม่มี walk-forward audit');
-    } else {
-      if (validation.total < MODEL.minimumTacticalValidation) {
-        risk += 18 * (1 - validation.total / MODEL.minimumTacticalValidation);
-        reasons.push('ชุดตรวจสอบยังไม่ครบ ' + MODEL.minimumTacticalValidation + ' ตา');
-      }
-      if (!Number.isFinite(validation.skill) || validation.skill <= 0) {
-        risk += 18;
-        reasons.push('Brier Skill ไม่เหนือฐานความถี่');
-      } else if (validation.skill < MODEL.meaningfulSkill) {
-        risk += 7;
-        reasons.push('Brier Skill บวกเพียงเล็กน้อย');
-      }
-      if (validation.correct <= validation.baseCorrect) {
-        risk += 10;
-        reasons.push('จำนวนที่คาดถูกยังไม่เหนือฐาน');
-      }
-      if (!Number.isFinite(validation.calibration.error)) {
-        risk += 8;
-        reasons.push('ยังไม่มี calibration');
-      } else if (validation.calibration.error > MODEL.maximumCalibrationError) {
-        risk += 14 * clamp(validation.calibration.error / MODEL.maximumCalibrationError, 1, 2);
-        reasons.push('calibration เกินเกณฑ์');
-      }
-    }
-    if (margin < MODEL.minimumFollowMargin) {
-      risk += 10;
-      reasons.push('ผลนำห่างผลรองเพียง ' + percent(margin, 1));
-    }
-    if (analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
-      risk += 12 * clamp(analysis.ensemble.disagreement / MODEL.maximumExpertDisagreement, 1, 2);
-      reasons.push('ensemble เห็นต่างกัน ' + percent(analysis.ensemble.disagreement, 1));
-    }
-    if ((analysis.state.mode === 'run' || analysis.state.mode === 'chop') && analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
-      risk += 8;
-      reasons.push('ตัวอย่างรูปทรงปัจจุบันน้อย');
-    }
-    if (analysis.regime.shift > MODEL.regimeShiftThreshold) {
-      risk += 10;
-      reasons.push('regime ล่าสุดเปลี่ยนจากภาพรวม');
-    }
-    if (missStreak >= MODEL.criticalMissStreak) {
-      risk += 18;
-      reasons.push('โมเดลพลาดติดกัน ' + missStreak + ' ครั้ง');
-    } else if (missStreak === 2) {
-      risk += 8;
-      reasons.push('โมเดลพลาด 2 ครั้งติด');
-    }
-    risk = Math.round(clamp(risk, 0, 100));
-    const enoughAudit = validation.total >= MODEL.minimumTacticalValidation;
-    const calibrated = Number.isFinite(validation.calibration.error) && validation.calibration.error <= MODEL.maximumCalibrationError;
-    const follow = enoughAudit && validation.skill > MODEL.meaningfulSkill &&
-      validation.correct > validation.baseCorrect && calibrated &&
-      margin >= MODEL.minimumFollowMargin &&
-      analysis.ensemble.disagreement <= MODEL.maximumExpertDisagreement &&
-      analysis.regime.shift <= MODEL.regimeShiftThreshold &&
-      missStreak < MODEL.criticalMissStreak && risk <= MODEL.maximumFollowRisk;
-    const cut = enoughAudit && (
-      validation.skill <= 0 ||
-      validation.correct <= validation.baseCorrect ||
-      !calibrated ||
-      analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement * 1.5 ||
-      missStreak >= MODEL.criticalMissStreak
-    );
-    const mode = follow ? 'FOLLOW' : cut ? 'CUT' : 'WATCH';
-    const summary = mode === 'FOLLOW'
-      ? 'ตามสัญญาณเชิงสถิติ · risk ' + risk + '/100'
-      : mode === 'CUT'
-        ? 'ตัดน้ำหนักสัญญาณ · risk ' + risk + '/100'
-        : 'เฝ้าดูและเก็บหลักฐาน · risk ' + risk + '/100';
-    return { mode: mode, risk: risk, reasons: reasons, missStreak: missStreak, margin: margin, summary: summary };
-  }
-  function gameStateText(analysis) {
-    const state = analysis.state;
-    if (!state.last) return 'รอผลจริงเพื่อระบุรูปทรงลำดับ';
-    if (state.last === 'T') return 'ผลล่าสุด T · เก็บ T เป็นข้อมูลจริงแยกจาก P/B และคงรูปทรง P/B ก่อนหน้าไว้ตรวจต่อ';
-    if (state.mode === 'run') {
-      return 'RUN ' + OUTCOME_NAME[state.side] + ' × ' + state.runLength + ' · ตรวจทั้งแรงต่อและแรงตัดจากรูปทรงซ้ำย้อนหลัง';
-    }
-    if (state.mode === 'chop') {
-      return 'CHOP / สลับ × ' + state.alternatingLength + ' · ตรวจว่าการสลับมีหลักฐานต่อเนื่องหรือเป็นเพียงความบังเอิญ';
-    }
-    return 'MIXED · ' + OUTCOME_NAME[state.side] + ' ล่าสุด · ยังไม่มี run หรือจังหวะสลับที่ยาวพอจะตั้งเป็นรูปทรงหลัก';
-  }
-  function mirageText(analysis, validation) {
-    const warnings = [];
-    if (analysis.stateForecast.support < MODEL.minimumFeatureObservations) {
-      warnings.push('รูปทรงตรงปัจจุบันมีตัวอย่างเพียง ' + analysis.stateForecast.support + ' จุด');
-    }
-    if (analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement) {
-      warnings.push('มุมมองต่างกัน ' + percent(analysis.ensemble.disagreement, 1));
-    }
-    if (analysis.regime.shift > MODEL.regimeShiftThreshold) {
-      warnings.push('ข้อมูลล่าสุดแกว่งจากภาพรวม ' + percent(analysis.regime.shift, 1));
-    }
-    if (!validation.total || validation.skill === null || validation.skill <= 0) {
-      warnings.push('ผลย้อนหลังยังไม่ยืนยันว่าเหนือฐานความถี่');
-    }
-    return warnings.length
-      ? 'ตัดภาพลวงตา · ' + warnings.join(' · ')
-      : 'ไม่พบสัญญาณภาพลวงตาตามเกณฑ์ปัจจุบัน แต่ยังตรวจซ้ำทุกตา';
-  }
-  function tacticalDecisionText(analysis, timing) {
-    const state = analysis.state;
-    if (!state.last) return 'รอผลจริงก่อน ระบบจึงจะอ่านจังหวะและสร้างคาดการณ์ตาถัดไปได้';
-    const support = analysis.stateForecast.support;
-    const stateLabel = state.mode === 'run'
-      ? 'RUN ' + OUTCOME_NAME[state.side] + ' × ' + state.runLength
-      : state.mode === 'chop'
-        ? 'CHOP × ' + state.alternatingLength
-        : 'MIXED';
-    const tacticalTop = topOutcome(analysis.stateForecast.probabilities);
-    if (timing.mode === 'CUT') {
-      return stateLabel + ' · CUT · ลดน้ำหนักสัญญาณรูปทรงและไม่ไล่แก้ผล · ' + timing.reasons.slice(0, 2).join(' / ') + ' · แต่ยังคาดการณ์ ' + OUTCOME_NAME[analysis.top] + ' ทุกตา';
-    }
-    if (timing.mode === 'FOLLOW') {
-      return stateLabel + ' · FOLLOW · รูปทรงอ่านไปทาง ' + OUTCOME_NAME[tacticalTop] + ' (' + percent(analysis.stateForecast.probabilities[tacticalTop], 1) + ') และผ่านเกณฑ์ audit ปัจจุบัน · ตรวจซ้ำทันทีหลังผลจริง';
-    }
-    const read = tacticalTop === analysis.top ? 'สอดคล้องกับ ensemble' : 'ต่างจาก ensemble จึงลดน้ำหนักแล้ว';
-    return stateLabel + ' · WATCH · หลักฐานรูปทรง ' + support + ' จุด · รูปทรงอ่านไปทาง ' + OUTCOME_NAME[tacticalTop] + ' (' + percent(analysis.stateForecast.probabilities[tacticalTop], 1) + ') · ' + read + ' · คาดการณ์ต่อและตรวจคุณภาพทุกตา';
-  }
-  function ensembleEvidenceText(analysis) {
-    return EXPERTS.map(function(name) {
-      const probability = analysis.experts[name];
-      const stats = analysis.ensemble.performance[name];
-      const recent = stats.recentSkill === null ? '' : ' / ล่าสุด ' + signedPercent(stats.recentSkill, 1);
-      return EXPERT_NAME[name] + ' ' + percent(analysis.ensemble.weights[name], 0) + ' → ' + OUTCOME_NAME[topOutcome(probability)] + ' ' + percent(probability[topOutcome(probability)], 1) + ' · skill ' + signedPercent(stats.skill, 1) + recent;
-    }).join(' | ');
   }
   function riskReasonText(reasons) {
     return reasons.map(function(reason, index) { return (index + 1) + '. ' + reason; }).join(' · ');
@@ -1176,9 +715,8 @@
     const counts = analysis.overallCounts;
     const currentContext = analysis.context;
     const quality = assessForecastQuality(analysis, validation);
-    const timing = timingAssessment(analysis, validation, audit.evaluations);
     const hasForecast = rounds.length > 0;
-    const latestReview = latestOutcomeReview(rounds, audit.evaluations);
+    const latestReview = latestOutcomeReview(rounds);
     const observed = rounds.length ? {
       P: counts.P / rounds.length,
       B: counts.B / rounds.length,
@@ -1204,51 +742,22 @@
       ? contextName(currentContext) + ' · P ' + currentContext.counts.P + ' / B ' + currentContext.counts.B + ' / T ' + currentContext.counts.T + ' · พบในอดีต ' + currentContext.total + ' ครั้ง'
       : '--';
     dom.observedRatio.textContent = observed ? probabilityText(observed, 1) : '--';
-    dom.gameState.textContent = gameStateText(analysis);
-    setColor(dom.gameState, rounds.length ? '#dedee4' : '#a7a7b0');
-    dom.mirageFilter.textContent = rounds.length ? mirageText(analysis, validation) : 'รอข้อมูลจริง';
-    setColor(dom.mirageFilter, !rounds.length ? '#a7a7b0' : quality.isStrong ? 'var(--aqua)' : 'var(--gold)');
-    dom.tacticalDecision.textContent = tacticalDecisionText(analysis, timing);
-    setColor(dom.tacticalDecision, !rounds.length ? '#a7a7b0' : timing.mode === 'FOLLOW' ? 'var(--aqua)' : timing.mode === 'CUT' ? 'var(--red)' : 'var(--gold)');
-    dom.ensembleEvidence.textContent = rounds.length ? ensembleEvidenceText(analysis) : 'รอผลจริงเพื่อสร้างผู้เชี่ยวชาญแต่ละมุมมอง';
-    setColor(dom.ensembleEvidence, !rounds.length ? '#a7a7b0' : analysis.ensemble.disagreement > MODEL.maximumExpertDisagreement ? 'var(--gold)' : '#dedee4');
 
     if (!rounds.length) {
       dom.riskGuard.textContent = 'รอข้อมูลจริง';
       setColor(dom.riskGuard, '#a7a7b0');
-      dom.timingMode.textContent = 'WAIT · รอข้อมูลจริง';
-      setColor(dom.timingMode, '#a7a7b0');
-      dom.riskIndex.textContent = '--';
-      setColor(dom.riskIndex, '#a7a7b0');
       dom.riskReasons.textContent = 'เริ่มบันทึกผลจริงก่อน ระบบจึงจะประเมินความเสี่ยงได้';
       setColor(dom.riskReasons, '#a7a7b0');
-    } else if (timing.mode === 'FOLLOW') {
-      dom.riskGuard.textContent = 'ผ่าน Risk Guard · ตรวจผลจริงต่อเนื่อง';
+    } else if (quality.isStrong) {
+      dom.riskGuard.textContent = 'ผ่าน Risk Guard · เฝ้าตรวจต่อเนื่อง';
       setColor(dom.riskGuard, 'var(--aqua)');
-      dom.timingMode.textContent = 'FOLLOW · ตามสัญญาณเชิงสถิติ';
-      setColor(dom.timingMode, 'var(--aqua)');
-      dom.riskIndex.textContent = timing.risk + '/100 · margin ' + percent(timing.margin, 1);
-      setColor(dom.riskIndex, 'var(--aqua)');
-      dom.riskReasons.textContent = 'ผ่านเกณฑ์สัญญาณปัจจุบัน แต่ผลจริงใหม่จะตรวจซ้ำและปรับน้ำหนักทันที';
+      dom.riskReasons.textContent = 'ไม่พบเงื่อนไขเสี่ยงตามเกณฑ์ภายใน ณ ข้อมูลปัจจุบัน';
       setColor(dom.riskReasons, 'var(--aqua)');
-    } else if (timing.mode === 'CUT') {
-      dom.riskGuard.textContent = 'CUT · ตัดน้ำหนักสัญญาณเสี่ยง';
-      setColor(dom.riskGuard, 'var(--red)');
-      dom.timingMode.textContent = 'CUT · คงคาดการณ์ แต่ไม่ยกสัญญาณขึ้นนำ';
-      setColor(dom.timingMode, 'var(--red)');
-      dom.riskIndex.textContent = timing.risk + '/100 · พลาดติด ' + timing.missStreak + ' ตา';
-      setColor(dom.riskIndex, 'var(--red)');
-      dom.riskReasons.textContent = riskReasonText(timing.reasons);
-      setColor(dom.riskReasons, 'var(--red)');
     } else {
-      dom.riskGuard.textContent = 'WATCH · คาดการณ์ต่อและเก็บหลักฐาน';
-      setColor(dom.riskGuard, 'var(--gold)');
-      dom.timingMode.textContent = 'WATCH · ยังไม่ผ่านเกณฑ์ตาม/ตัด';
-      setColor(dom.timingMode, 'var(--gold)');
-      dom.riskIndex.textContent = timing.risk + '/100 · margin ' + percent(timing.margin, 1);
-      setColor(dom.riskIndex, 'var(--gold)');
-      dom.riskReasons.textContent = riskReasonText(timing.reasons);
-      setColor(dom.riskReasons, 'var(--gold)');
+      dom.riskGuard.textContent = 'คาดการณ์ต่อเนื่อง · เฝ้าตรวจคุณภาพ';
+      setColor(dom.riskGuard, 'var(--red)');
+      dom.riskReasons.textContent = riskReasonText(quality.reasons);
+      setColor(dom.riskReasons, 'var(--red)');
     }
 
     if (!latestReview) {
@@ -1258,16 +767,8 @@
       dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ตรงคาด · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
       setColor(dom.adaptationStatus, 'var(--aqua)');
     } else {
-      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ผิดแล้วบันทึกและปรับสมดุลจากผลทดสอบ · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
+      dom.adaptationStatus.textContent = 'ตาล่าสุดคาด ' + OUTCOME_NAME[latestReview.top] + ' · ผลจริง ' + OUTCOME_NAME[latestReview.actual] + ' · ผิดแล้วบันทึกและปรับ · ตาถัดไปวิเคราะห์จากข้อมูลจริงครบ ' + rounds.length + ' ตา';
       setColor(dom.adaptationStatus, 'var(--red)');
-    }
-
-    if (!rounds.length) {
-      dom.repairPlan.textContent = 'เริ่มบันทึกผลจริงก่อน ระบบจึงจะเรียนรู้ความคลาดเคลื่อนได้';
-      setColor(dom.repairPlan, '#a7a7b0');
-    } else {
-      dom.repairPlan.textContent = repairPlanText(analysis.adaptation, latestReview, timing);
-      setColor(dom.repairPlan, timing.mode === 'CUT' ? 'var(--red)' : latestReview && !latestReview.correct ? 'var(--gold)' : '#dedee4');
     }
 
     if (!validation.total) {
@@ -1297,16 +798,6 @@
       setColor(dom.auditStatus, '#a7a7b0');
       dom.message.textContent = 'เริ่มบันทึกด้วยปุ่ม P, B หรือ T ด้านล่าง ระบบจะคำนวณความน่าจะเป็นใหม่จากข้อมูลที่มีอยู่ก่อนทุกตา';
       setColor(dom.message, 'var(--muted)');
-    } else if (timing.mode === 'CUT') {
-      dom.auditStatus.textContent = 'CUT · รีคาลิเบรตจากผลจริง';
-      setColor(dom.auditStatus, 'var(--red)');
-      dom.message.textContent = 'ระบบยังคาดการณ์ตาถัดไปจากข้อมูลจริงครบทั้งหมด แต่ลดน้ำหนักสัญญาณที่ไม่ผ่าน audit และไม่ไล่แก้จากผลที่พลาด';
-      setColor(dom.message, 'var(--red)');
-    } else if (timing.mode === 'FOLLOW') {
-      dom.auditStatus.textContent = 'FOLLOW · ผ่านเกณฑ์สัญญาณชั่วคราว';
-      setColor(dom.auditStatus, 'var(--aqua)');
-      dom.message.textContent = 'สัญญาณผ่านเกณฑ์จาก audit ปัจจุบัน ผลจริงใหม่จะถูกเพิ่มเข้า ensemble และตรวจจังหวะใหม่ทุกตา';
-      setColor(dom.message, 'var(--aqua)');
     } else if (quality.isStrong) {
       dom.auditStatus.textContent = 'ผ่านเกณฑ์สถิติภายใน · เฝ้าตรวจต่อเนื่อง';
       setColor(dom.auditStatus, 'var(--aqua)');

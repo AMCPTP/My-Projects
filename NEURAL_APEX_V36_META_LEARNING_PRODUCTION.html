@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V36 · META-LEARNING PRODUCTION CORE</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,820px);margin:0 auto;padding:16px 12px 32px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 16px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.19em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.subtitle{max-width:700px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric{min-height:70px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecast{font-size:29px;font-weight:950;letter-spacing:-.045em}#forecast-detail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:680px;margin:7px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:78px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.v32-console{border:1px solid rgba(255,210,74,.24);background:linear-gradient(145deg,rgba(25,21,10,.98),rgba(8,8,11,.98))}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.card{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;background:rgba(255,255,255,.025);min-height:84px}.card span{display:block;color:#aaa18a;font-size:9px;letter-spacing:.08em;font-weight:900}.card strong{display:block;margin-top:5px;font-size:1.05rem}.card small{display:block;margin-top:4px;color:#a7a39a;line-height:1.45}.decision{margin-top:10px;padding:13px;border:1px solid rgba(255,210,74,.22);border-radius:12px;background:linear-gradient(135deg,#1b170c,#0a0a0e 62%);font-size:16px;font-weight:950;line-height:1.48}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.good{color:var(--good)}.warn{color:var(--warn)}.bar{display:grid;grid-template-columns:108px 1fr 58px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.hyp{display:grid;gap:5px;margin-top:7px}.hyp-item{border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:8px;background:#0a0a0e}.hyp-item b{display:block;font-size:9px}.hyp-item small{display:block;margin-top:3px;color:#a7a7b0;line-height:1.4}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}@media(max-width:520px){.shell{padding:8px}h1{font-size:22px}.grid{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card"><header><div class="eyebrow">ADAPTIVE FORECAST · CHALLENGER · UNCERTAINTY · LEARNING</div><h1>NEURAL APEX <span class="badge">V36 META-LEARNING PRODUCTION</span></h1><p class="subtitle">V36 แยก forecast P/B จาก Tie และเพิ่ม historical matching, contradiction/null evidence, OOS skill gate, calibration, abstention และ change-point detection: state → forecast → uncertainty → challenger → policy → outcome → root-cause → repair → shadow promotion</p></header>
+<div class="metrics"><div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0 ตา</output></div><div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div><div class="metric"><span class="metric-label">FORECAST</span><output id="next">รอข้อมูล</output></div><div class="metric"><span class="metric-label">ACTION</span><output id="action">รอข้อมูล</output></div><div class="metric"><span class="metric-label">REGIME</span><output id="regime">--</output></div><div class="metric"><span class="metric-label">SIGNAL MARGIN / UNCERTAINTY</span><output><span id="edge">--</span> / <span id="uncertainty">--</span></output></div><div class="metric"><span class="metric-label">HISTORICAL MATCH</span><output id="historyMatch">--</output></div><div class="metric"><span class="metric-label">CONTRADICTION / NULL</span><output id="contradiction">--</output></div><div class="metric"><span class="metric-label">DRIFT / CHANGE POINT</span><output id="driftCp">--</output></div></div>
+<section class="forecast"><div id="forecast">รอข้อมูล</div><div id="forecast-detail">กด P / B / T เพื่อเริ่มเก็บประวัติ</div><div id="message">V36 จะลดระดับหรือ WAIT เมื่อหลักฐานไม่พอ, regime ยังไม่นิ่ง, challenger แข็งแรง, calibration เพี้ยน, drift สูง หรือ candidate ยังไม่ชนะ champion</div></section>
+<div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div>
+<section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T ถูกเก็บในประวัติ แต่ไม่ถูกนำไปสร้างลำดับ decisive ของ Markov / motif โดยตรง</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button></div></section>
+<section class="section v32-console"><h2 class="section-title">V36 · META-LEARNING PRODUCTION CORE</h2><p class="section-description">ลดความซ้ำซ้อนให้เหลือแกนเดียว: expert ensemble + regime persistence + calibrated uncertainty + independent challenger + error attribution + repair + champion/shadow promotion</p>
+<div class="grid"><div class="card"><span>FINAL ACTION</span><strong id="v32-action">--</strong><small id="v32-action-detail">--</small></div><div class="card"><span>ADAPTIVE WEIGHTS</span><strong id="v32-weight">--</strong><small id="v32-weight-detail">--</small></div><div class="card"><span>CHALLENGER</span><strong id="v32-challenger">--</strong><small id="v32-challenger-detail">--</small></div><div class="card"><span>UNCERTAINTY</span><strong id="v32-unc">--</strong><small id="v32-unc-detail">--</small></div><div class="card"><span>CALIBRATION</span><strong id="v32-cal">--</strong><small id="v32-cal-detail">--</small></div><div class="card"><span>REGIME STATE</span><strong id="v32-regskill">--</strong><small id="v32-regskill-detail">--</small></div><div class="card"><span>ERROR ROOT</span><strong id="v32-error">--</strong><small id="v32-error-detail">--</small></div><div class="card"><span>CHAMPION / SHADOW</span><strong id="v32-shadow">--</strong><small id="v32-shadow-detail">--</small></div></div>
+<div class="decision" id="v32-decision">V36 DECISION · รอข้อมูล</div>
+<div class="columns"><div class="panel"><b>MAIN / COUNTER / NULL</b><div id="v32-hypotheses" class="hyp">ยังไม่มีข้อมูล</div></div><div class="panel"><b>WHY WAIT / DOWNGRADE</b><div id="v32-abstain" class="list">ยังไม่มีข้อมูล</div></div></div>
+<div class="columns"><div class="panel"><b>EXPERT WEIGHTS AFTER LEARNING</b><div id="v32-weights">ยังไม่มีข้อมูล</div></div><div class="panel"><b>REGIME AWARENESS</b><div id="v32-regime">ยังไม่มีข้อมูล</div></div></div>
+<div class="columns"><div class="panel"><b>ACTION CALIBRATION</b><div id="v32-action-cal" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>ERROR → REPAIR</b><div id="v32-repair" class="list">ยังไม่มีข้อมูล</div></div></div>
+<div class="columns"><div class="panel"><b>WHAT WOULD CHANGE MY MIND</b><div id="v32-change" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>MODEL AUDIT</b><div id="v32-audit" class="list">ยังไม่มีข้อมูล</div></div></div><div class="columns"><div class="panel"><b>EVIDENCE CONTRIBUTION</b><div id="v32-contrib" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>COUNTERFACTUAL / WHAT-IF</b><div id="v32-counterfactual" class="list">ยังไม่มีข้อมูล</div></div></div><div class="columns"><div class="panel"><b>DECISION STABILITY / DRIFT</b><div id="v32-stability" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>LEARNING / PROMOTION</b><div id="v32-promotion" class="list">ยังไม่มีข้อมูล</div></div></div>
+</section>
+<div class="notice"><strong>หมายเหตุ:</strong> ระบบนี้เป็นเครื่องมือวิเคราะห์/จัดระดับสัญญาณจากประวัติที่ป้อนเข้า ไม่สามารถเปลี่ยนกระบวนการสุ่มให้คาดเดาได้แน่นอน 100% และคำว่า “ปรับตัว” ใน V36 หมายถึงการปรับน้ำหนัก/threshold/policy จาก historical out-of-sample evidence เท่านั้น</div>
+</section></main>
+<script>(function(){
+'use strict';
+
+/* =========================================================
+   NEURAL APEX V36 · META-LEARNING PRODUCTION CORE
+   เป้าหมาย:
+   1) หลักการไม่ซ้ำหน้าที่กัน (orthogonal experts)
+   2) walk-forward / prequential scoring เท่านั้น
+   3) forecast ≠ action
+   4) adaptive threshold จากหลักฐานจริง
+   5) hard data validation + deterministic cache
+   6) challenger / null / calibration / drift แยกชั้น
+   7) ไม่อ้างความแม่น 100% เพราะข้อมูลสุ่มไม่รับประกันผล
+   ========================================================= */
+
+const KEY='neural-apex-history-audit-v36';
+const OUT=Object.freeze(['P','B','T']);
+const DEC=Object.freeze(['P','B']);
+const BASE=Object.freeze({P:.446246609,B:.458597423,T:.095155968});
+
+const CFG=Object.freeze({
+  minEval:14, maxEval:60, decay:.985, learningRate:.38,
+  prior:2, minLocal:8, minMotif:7, minRegime:12,
+  calibrationMin:20, calibrationBins:6, driftWindow:30,
+  minFollowMargin:.085, minConditionalMargin:.045,
+  maxFollowUnc:.115, maxConditionalUnc:.22,
+  maxFollowRisk:.38, maxConditionalRisk:.64,
+  stabilityMin:.62, promotionMin:20, promotionMargin:.008,
+  thresholdMinSamples:18, maxHistory:3000, cacheLimit:600,
+  minHistoryMatch:24, historyK:14, historyTau:.18, historyRadius:.42,
+  metaHistoryWeight:.23, contradictionCap:.30, nullPenaltyCap:.10
+});
+
+const C={forecast:new Map(),decision:new Map(),audit:new Map(),weights:new Map(),shadow:new Map(),walk:new Map(),raw:new Map(),extra:new Map()};
+
+const el=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(+x)?+x:0));
+const pct=x=>Number.isFinite(+x)?((+x)*100).toFixed(0)+'%':'--';
+const sideName=x=>x==='P'?'PLAYER':x==='B'?'BANKER':'TIE';
+const opp=x=>x==='P'?'B':x==='B'?'P':null;
+const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const decisive=d=>(Array.isArray(d)?d:[]).filter(x=>x==='P'||x==='B');
+const counts=d=>{const c={P:0,B:0,T:0};(Array.isArray(d)?d:[]).forEach(x=>{if(c[x]!==undefined)c[x]++});return c};
+const normalize=w=>{const keys=Object.keys(w),z=keys.reduce((s,k)=>s+Math.max(0,+w[k]||0),0)||1,o={};keys.forEach(k=>o[k]=Math.max(0,+w[k]||0)/z);return o};
+const posterior=(c,prior=CFG.prior)=>{const den=(c.P||0)+(c.B||0)+(c.T||0)+prior*3;return{P:((c.P||0)+prior)/den,B:((c.B||0)+prior)/den,T:((c.T||0)+prior)/den}};
+const binary=p=>{const z=(p.P||0)+(p.B||0);return z?{P:p.P/z,B:p.B/z}:{P:.5,B:.5}};
+const binaryPosterior=d=>{const c=counts(decisive(d)),bp=BASE.P/(BASE.P+BASE.B),bb=BASE.B/(BASE.P+BASE.B),z=c.P+c.B+CFG.prior;return z?{P:(c.P+CFG.prior*bp)/z,B:(c.B+CFG.prior*bb)/z}:{P:bp,B:bb};};
+const brier=(p,a)=>DEC.reduce((s,k)=>s+(binary(p)[k]-(k===a?1:0))**2,0);
+const top2=p=>{const q=binary(p),top=q.P>=q.B?'P':'B';return{top,second:opp(top),q,margin:Math.abs(q.P-q.B)}};
+
+function jsDiv(a,b){
+  let d=0;
+  DEC.forEach(k=>{
+    const x=clamp(binary(a)[k],.0001,.9999),y=clamp(binary(b)[k],.0001,.9999),m=(x+y)/2;
+    d+=.5*x*Math.log(x/m)+.5*y*Math.log(y/m);
+  });
+  return clamp(d/Math.log(2));
+}
+function safeProb(q){
+  const p=clamp(q.P,.0001,.9999),b=clamp(q.B,.0001,.9999),z=p+b;
+  return{P:p/z,B:b/z};
+}
+function runInfo(d){
+  const x=decisive(d); if(!x.length)return{side:null,run:0,switchRate:0,velocity:0};
+  const side=x[x.length-1]; let run=1;
+  for(let i=x.length-2;i>=0&&x[i]===side;i--)run++;
+  const switchRate=w=>{
+    const z=x.slice(-w); if(z.length<2)return 0;
+    let k=0; for(let i=1;i<z.length;i++)if(z[i]!==z[i-1])k++;
+    return k/(z.length-1);
+  };
+  const s12=switchRate(12),s24=switchRate(24);
+  return{side,run,switchRate:s12,velocity:Math.abs(s12-s24)};
+}
+function stateOf(d){
+  const x=decisive(d),r=runInfo(d);
+  if(x.length<8)return'EARLY';
+  const a=x.slice(-6),b=x.slice(-12,-6);
+  const shift=jsDiv(posterior(counts(a),1),posterior(counts(b.length?b:a),1));
+  if(shift>=.24)return'TRANSITION';
+  if(r.switchRate>=.72&&r.run<=3)return'CHOP';
+  if(r.run>=4&&r.switchRate<.5)return'RUN';
+  if(r.velocity>=.17)return'UNSTABLE';
+  return'MIXED';
+}
+function regime(d){
+  const x=decisive(d),st=stateOf(d);
+  if(x.length<8)return{state:'EARLY',confidence:.2,persistence:0,shift:0};
+  const cp=Math.min(3,x.length-7); let m=0;
+  for(let k=0;k<cp;k++)if(stateOf(x.slice(0,x.length-k))===st)m++;
+  const persistence=clamp(m/Math.max(1,cp));
+  const shift=x.length>=12?jsDiv(binaryPosterior(x.slice(-6)),binaryPosterior(x.slice(-12,-6))):0;
+  let confidence=.35+.35*persistence+.25*(1-clamp(shift/.35));
+  if(st==='TRANSITION')confidence*=.65;
+  return{state:st,confidence:clamp(confidence),persistence,shift};
+}
+function recentStats(d,w=12){
+  const x=decisive(d),z=x.slice(-w),c=counts(z),n=z.length;
+  return{n,p:z.P/n||0.5,b:z.B/n||0.5,switches:n>1?z.slice(1).reduce((s,v,i)=>s+(v!==z[i]?1:0),0)/(n-1):0};
+}
+
+/* ---------- ORTHOGONAL EXPERTS ----------
+   Each expert owns a distinct signal family. Walk-forward
+   learning is computed once per history, then reused.
+--------------------------------------------------------- */
+
+function expertFreq(d){
+  const x=decisive(d),q=binaryPosterior(x);
+  return{p:{P:q.P,B:q.B,T:0},sample:x.length,quality:clamp(x.length/60)};
+}
+function expertMomentum(d){
+  const x=decisive(d); if(x.length<10)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  const a=x.slice(-8),b=x.slice(-16,-8),pa=counts(a),pb=counts(b);
+  const da=pa.P/(a.length||1)-pb.P/(b.length||1),strength=clamp(Math.abs(da)/.30);
+  const sign=da>=0?'P':'B',q=clamp(.5+.28*strength);
+  return{p:{P:sign==='P'?q:1-q,B:sign==='B'?q:1-q,T:0},sample:8,quality:strength};
+}
+function expertRun(d){
+  const r=runInfo(d); if(!r.side||r.run<3)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  const q=clamp(.53+.045*Math.min(5,r.run-3));
+  return{p:{P:r.side==='P'?q:1-q,B:r.side==='B'?q:1-q,T:0},sample:r.run,quality:clamp((r.run-2)/6)};
+}
+function expertChop(d){
+  const x=decisive(d); if(x.length<12)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  const z=x.slice(-10),sw=z.slice(1).reduce((s,v,i)=>s+(v!==z[i]?1:0),0)/(z.length-1);
+  const last=z[z.length-1],q=sw>=.62?.54:sw<=.38?.46:.5,side=sw>=.62?opp(last):last;
+  return{p:{P:side==='P'?q:1-q,B:side==='B'?q:1-q,T:0},sample:9,quality:clamp(Math.abs(sw-.5)*2)};
+}
+function expertMotif(d){
+  const x=decisive(d),max=5; if(x.length<max+2)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  for(let L=max;L>=2;L--){
+    const key=x.slice(-L).join(''),c={P:0,B:0,T:0};
+    for(let i=L;i<x.length;i++)if(x.slice(i-L,i).join('')===key)c[x[i]]++;
+    const n=c.P+c.B;
+    if(n>=CFG.minMotif){const b=binary(posterior(c,CFG.prior));return{p:{P:b.P,B:b.B,T:0},sample:n,quality:clamp(n/(n+18))}}
+  }
+  return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+}
+function expertTransition(d){
+  const x=decisive(d),rg=regime(d); if(x.length<12)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  const a=x.slice(-6),b=x.slice(-12,-6),pa=counts(a),pb=counts(b),da=pa.P/6-pb.P/6;
+  const strength=clamp(Math.abs(da)/.28);
+  if(rg.state!=='TRANSITION'||strength<.30)return{p:{P:.5,B:.5,T:0},sample:0,quality:0};
+  const q=clamp(.5+.26*strength),side=da>=0?'P':'B';
+  return{p:{P:side==='P'?q:1-q,B:side==='B'?q:1-q,T:0},sample:6,quality:strength*rg.confidence};
+}
+function expertPrior(){const b=binary(BASE);return{p:{P:b.P,B:b.B,T:0},sample:999,quality:.25}}
+const EXPERTS=Object.freeze({FREQ:expertFreq,MOMENTUM:expertMomentum,RUN:expertRun,CHOP:expertChop,MOTIF:expertMotif,TRANSITION:expertTransition,PRIOR:()=>expertPrior()});
+const INITIAL=Object.freeze({FREQ:.23,MOMENTUM:.17,RUN:.13,CHOP:.13,MOTIF:.12,TRANSITION:.12,PRIOR:.10});
+
+
+function stateVector(d){
+  const x=decisive(d),r=runInfo(x),rg=regime(x),s12=recentStats(x,12),s24=recentStats(x,24);
+  return{run:Math.min(8,r.run||0)/8,sw:s12.switches,sw24:s24.switches,p:s12.p,delta:Math.abs(s12.p-s24.p),shift:rg.shift,persist:rg.persistence,state:rg.state};
+}
+function stateDistance(a,b){
+  const A=[a.run,a.sw,a.sw24,a.p,a.delta,a.shift,a.persist],B=[b.run,b.sw,b.sw24,b.p,b.delta,b.shift,b.persist],W=[1,.9,.65,1.1,1.15,1.1,.8];
+  let s=0,z=0;for(let i=0;i<A.length;i++){s+=W[i]*Math.abs(A[i]-B[i]);z+=W[i]}return s/z+(a.state===b.state?0:.12);
+}
+
+function calibrateTopProbability(p,cal){
+  const q=binary(p),top=q.P>=q.B?'P':'B',raw=q[top];
+  if(!cal||!cal.bins||cal.n<CFG.calibrationMin)return q;
+  const idx=Math.min(cal.bins.length-1,Math.floor(raw*cal.bins.length)),b=cal.bins[idx];
+  if(!b||b.n<3)return q;
+  // Empirical reliability mapping, heavily shrunk toward the raw forecast to avoid overfit.
+  const empirical=(b.sumY+2)/(b.n+4),shrink=b.n/(b.n+40),candidate=raw*(1-shrink)+empirical*shrink,target=clamp(candidate,raw-.08,raw+.08),rest=1-target;
+  return top==='P'?{P:target,B:rest}:{P:rest,B:target};
+}
+function historicalMatch(d){
+  const sig='HIST|'+d.join(''),hit=C.extra.get(sig);if(hit)return hit;
+  const x=decisive(d);if(x.length<CFG.minHistoryMatch){const r={n:0,p:{P:.5,B:.5},quality:0,coverage:0,bestDistance:1,hits:[]};C.extra.set(sig,r);return r}
+  const cur=stateVector(x),cand=[];
+  for(let i=10;i<x.length;i++){const h=x.slice(0,i),sv=stateVector(h);cand.push({i,dist:stateDistance(cur,sv),next:x[i],state:sv.state})}
+  cand.sort((a,b)=>a.dist-b.dist);const top=cand.slice(0,Math.min(CFG.historyK,cand.length));let P=0,B=0,Z=0;
+  top.forEach((m,j)=>{const w=Math.exp(-m.dist/Math.max(.01,CFG.historyTau))/(1+j*.16);Z+=w;if(m.next==='P')P+=w;else B+=w});
+  const q=Z?{P:(P+CFG.prior)/(Z+2*CFG.prior),B:(B+CFG.prior)/(Z+2*CFG.prior)}:{P:.5,B:.5};
+  const coverage=clamp(top.filter(m=>m.dist<=CFG.historyRadius).length/Math.max(1,CFG.historyK));
+  const bestDist=top[0]?.dist??1;const similarity=clamp(1-bestDist/CFG.historyRadius);const consistency=clamp(Math.abs(q.P-q.B)*2);const quality=clamp(.40*coverage+.35*similarity+.25*consistency);
+  const r={n:top.length,available:x.length,p:q,quality,coverage,consistency,bestDistance:bestDist,hits:top.slice(0,8).map(m=>({index:m.i+1,next:m.next,state:m.state,distance:m.dist}))};
+  C.extra.set(sig,r);return r;
+}
+function nullEvidence(d){
+  const x=decisive(d);if(x.length<12)return{score:0,penalty:0};
+  const base=binaryPosterior(x),s=recentStats(x,Math.min(12,x.length));
+  const z=Math.abs(s.p-base.P)/Math.sqrt(Math.max(.002,base.P*(1-base.P)/Math.max(2,s.n)));
+  const score=clamp((z-1)/3),penalty=score>.6?0:(1-score)*(stateOf(x)==='MIXED'?.28:.14);
+  return{score,penalty};
+}
+function changePoint(d){
+  const x=decisive(d);if(x.length<24)return{score:0,persistence:0,confirmed:false};
+  const w=6,now=x.slice(-w),old=x.slice(-18,-w),mag=jsDiv(posterior(counts(now),1),posterior(counts(old),1));
+  let c=0;for(let k=0;k<3;k++){const xx=x.slice(0,x.length-k);if(jsDiv(posterior(counts(xx.slice(-w)),1),posterior(counts(xx.slice(-18,-w)),1))>=.18)c++}
+  const persistence=c/3,score=clamp(.55*clamp(mag/.32)+.45*persistence);return{score,persistence,confirmed:score>.55&&persistence>=.67,magnitude:mag};
+}
+function conditionalSkillRows(d){
+  const x=decisive(d),start=Math.max(CFG.minEval,x.length-CFG.maxEval),out={};for(const n of Object.keys(EXPERTS))out[n]={regimes:{}};
+  for(let i=start;i<x.length;i++){
+    const h=x.slice(0,i),a=x[i],ex=rawExperts(h),rg=stateOf(h),decay=Math.pow(CFG.decay,Math.max(0,x.length-i-1));
+    for(const n of Object.keys(EXPERTS)){const r=out[n].regimes[rg]||{n:0,score:0};r.n++;r.score+=decay*(top2(ex[n].p).top===a?1:-1);out[n].regimes[rg]=r;}
+  }
+  for(const n of Object.keys(out))for(const r of Object.values(out[n].regimes))r.score/=Math.max(1,r.n);return out;
+}
+function abstentionLearning(d){
+  const x=decisive(d),start=Math.max(CFG.minEval,x.length-CFG.maxEval),wf=buildWalkForward(d),rows=[];
+  for(let i=start;i<x.length;i++){const h=x.slice(0,i),snap=wf.snapshots.get(i);if(!snap)continue;const q=top2(blendExperts(h,snap.weights).p);rows.push({margin:q.margin,hit:q.top===x[i]});}
+  const high=rows.filter(r=>r.margin>=.10),hit=high.length?high.filter(r=>r.hit).length/high.length:null;return{n:rows.length,highN:high.length,highHit:hit,learnedPenalty:clamp(((hit==null?.25:1-hit)/.55))};
+}
+function contradictionAudit(d,q0,history,ch){
+  const base=top2(binaryPosterior(d)),main=q0.top,histTop=history.p.P>=history.p.B?'P':'B';
+  const histConflict=history.available>=CFG.minHistoryMatch&&histTop!==main?history.quality:0,baseConflict=base.top!==main?Math.abs(base.q[main]-base.q[base.top]):0;
+  const score=clamp(.45*ch.risk+.30*histConflict+.25*baseConflict);return{score,historical:histConflict,base:baseConflict,challenger:ch.risk};
+}
+function rawExperts(d){
+  const sig=d.join(''),cached=C.raw.get(sig);if(cached)return cached;
+  const o={};for(const [name,fn] of Object.entries(EXPERTS))o[name]=fn(d);
+  if(C.raw.size<CFG.cacheLimit)C.raw.set(sig,o);return o;
+}
+function weightFromRows(rows){
+  const w={...INITIAL};
+  for(const r of rows){
+    const sample=clamp(r.total/(r.total+35)), local=r.reg>=CFG.minRegime?r.regSkill:r.skill;
+    const advantage=Math.tanh(local*6),quality=clamp(r.quality);
+    w[r.n]*=Math.exp(CFG.learningRate*sample*advantage)*(0.86+0.28*quality);
+    w[r.n]=clamp(w[r.n],.025,.40);
+  }
+  const normalized=normalize(w),capped={};let excess=0;
+  for(const [k,v] of Object.entries(normalized)){capped[k]=Math.min(.36,v);excess+=Math.max(0,v-.36)}
+  if(excess>0){const small=Object.keys(capped).filter(k=>capped[k]<.36),room=small.reduce((s,k)=>s+(.36-capped[k]),0)||1;small.forEach(k=>capped[k]+=excess*(.36-capped[k])/room)}
+  return normalize(capped);
+}
+function buildWalkForward(d){
+  const sig=d.join(''),cached=C.walk.get(sig);if(cached)return cached;
+  const x=decisive(d),start=Math.max(CFG.minEval,x.length-CFG.maxEval),names=Object.keys(EXPERTS);
+  const rows=names.map(n=>({n,total:0,reg:0,model:0,base:0,regModel:0,regBase:0,baseMass:0,regMass:0,sumD:0,sumD2:0,nD:0}));
+  const snapshots=new Map();
+  for(let i=0;i<x.length;i++){
+    const h=x.slice(0,i),rg=stateOf(h);
+    if(i>=start)snapshots.set(i,{weights:weightFromRows(rows),regime:rg});
+    if(i<start)continue;
+    const ex=rawExperts(h),base=binaryPosterior(h),a=x[i],decay=Math.pow(CFG.decay,Math.max(0,x.length-i-1));
+    for(const row of rows){
+      const e=ex[row.n]||expertPrior();row.total++;const bm=brier(base,a),mm=brier(e.p,a),dd=bm-mm;row.model+=decay*mm;row.base+=decay*bm;row.baseMass+=decay;row.sumD+=decay*dd;row.sumD2+=decay*dd*dd;row.nD++;
+      if(rg===stateOf(x.slice(0,i))){row.reg++;row.regModel+=decay*brier(e.p,a);row.regBase+=decay*brier(base,a);row.regMass+=decay}
+    }
+  }
+  rows.forEach(r=>{r.skill=r.total?(r.base-r.model)/Math.max(1,r.baseMass):0;r.se=r.nD>1?Math.sqrt(Math.max(0,(r.sumD2/r.nD)-(r.sumD/r.nD)**2)/r.nD):0;r.lower95=r.skill-1.96*r.se;r.regSkill=r.reg>=CFG.minRegime?(r.regBase-r.regModel)/Math.max(1,r.regMass):r.skill;r.quality=clamp(.5+.5*Math.tanh(r.regSkill*7))});
+  const final={weights:weightFromRows(rows),rows,snapshots};
+  if(C.walk.size<CFG.cacheLimit)C.walk.set(sig,final);return final;
+}
+function adaptiveWeights(d){
+  const sig=d.join(''),hit=C.weights.get(sig);if(hit)return hit;
+  const wf=buildWalkForward(d),result={weights:wf.weights,rows:wf.rows,reg:stateOf(d),snapshots:wf.snapshots};
+  if(C.weights.size<CFG.cacheLimit)C.weights.set(sig,result);return result;
+}
+function blendExperts(d,weights){
+  const ex=rawExperts(d),p={P:0,B:0,T:0},contrib={};
+  Object.entries(weights).forEach(([n,w])=>{
+    const e=ex[n],b=binary(e.p);
+    p.P+=w*b.P;p.B+=w*b.B;
+    contrib[n]={weight:w,P:w*b.P,B:w*b.B,delta:w*(b.P-b.B),sample:e.sample,quality:e.quality};
+  });
+  p.T=0;
+  return{p,ex,contrib};
+}
+
+/* ---------- CALIBRATION / DRIFT / THRESHOLD ---------- */
+
+function calibrationAudit(d){
+  const sig='CAL'+d.join(''),cached=C.audit.get(sig);if(cached)return cached;
+  const x=decisive(d),wf=buildWalkForward(d),start=Math.max(CFG.minEval,x.length-CFG.maxEval),rows=[];
+  for(let i=start;i<x.length;i++){
+    const h=x.slice(0,i),snap=wf.snapshots.get(i);if(!snap)continue;
+    const mix=blendExperts(h,snap.weights),q=top2(mix.p),a=x[i];
+    rows.push({p:q.q[q.top],hit:q.top===a,brier:brier(mix.p,a),base:brier(binaryPosterior(h),a),margin:q.margin,regime:stateOf(h)});
+  }
+  const bins=Array.from({length:CFG.calibrationBins},()=>({n:0,sumP:0,sumY:0}));
+  rows.forEach(r=>{const i=Math.min(CFG.calibrationBins-1,Math.floor(r.p*CFG.calibrationBins)),b=bins[i];b.n++;b.sumP+=r.p;b.sumY+=r.hit?1:0});
+  let ece=0,mce=0;bins.forEach(b=>{if(!b.n)return;const gap=Math.abs(b.sumP/b.n-b.sumY/b.n);ece+=(b.n/Math.max(1,rows.length))*gap;mce=Math.max(mce,gap);b.conf=b.sumP/b.n;b.acc=b.sumY/b.n});
+  let adjustedEce=0;rows.forEach(r=>{const i=Math.min(CFG.calibrationBins-1,Math.floor(r.p*CFG.calibrationBins)),b=bins[i];if(!b||!b.n)return;const target=.40*r.p+.60*((b.sumY+2)/(b.n+4));adjustedEce+=(1/Math.max(1,rows.length))*Math.abs(target-(r.hit?1:0));});
+  const res={n:rows.length,ece,mce,adjustedEce,bins,hit:rows.length?rows.filter(r=>r.hit).length/rows.length:null,rows};
+  C.audit.set(sig,res);return res;
+}
+function driftScore(d){
+  const x=decisive(d); if(x.length<CFG.driftWindow*2)return 0;
+  const a=x.slice(-CFG.driftWindow),b=x.slice(-CFG.driftWindow*2,-CFG.driftWindow);
+  return jsDiv(posterior(counts(a),1),posterior(counts(b),1));
+}
+function stability(d){
+  const rg=regime(d),dr=driftScore(d);
+  return clamp(.52*rg.persistence+.28*(1-clamp(dr/.25))+.20*rg.confidence);
+}
+function dynamicThresholds(d,v){
+  const cal=calibrationAudit(d),stab=stability(d),n=decisive(d).length,rg=regime(d);
+  const sample=clamp(n/120),calPenalty=clamp((cal.ece||0)/.18),drift=driftScore(d);
+  const harder=clamp(.55*(1-sample)+.55*calPenalty+.35*clamp(drift/.25)+.45*(1-stab));
+  return{
+    followMargin:clamp(CFG.minFollowMargin+.035*harder),
+    conditionalMargin:clamp(CFG.minConditionalMargin+.025*harder),
+    followUnc:clamp(CFG.maxFollowUnc-.02*sample+.035*harder),
+    conditionalUnc:clamp(CFG.maxConditionalUnc-.015*sample+.025*harder),
+    followRisk:clamp(CFG.maxFollowRisk-.05*sample+.10*harder),
+    conditionalRisk:clamp(CFG.maxConditionalRisk-.04*sample+.08*harder),
+    stabilityMin:clamp(CFG.stabilityMin-.05*sample+.08*harder),
+    regime:rg,cal,drift,stab
+  };
+}
+
+/* ---------- FORECAST LAYER ---------- */
+
+function currentForecast(d){
+  const sig=d.join(''),hit=C.forecast.get(sig);if(hit)return hit;
+  const aw=adaptiveWeights(d),mix=blendExperts(d,aw.weights),rawQ=top2(mix.p),cal=calibrationAudit(d),calQ=calibrateTopProbability(rawQ.q,cal),q0={...rawQ,q:calQ,margin:Math.abs(calQ.P-calQ.B),top:calQ.P>=calQ.B?'P':'B',second:calQ.P>=calQ.B?'B':'P'},base=top2(binaryPosterior(d));
+  const ch=independentChallenger(d,mix),history=historicalMatch(d),cp=changePoint(d),nullE=nullEvidence(d),cond=conditionalSkillRows(d),abst=abstentionLearning(d);
+  const h=binary(history.p),histW=CFG.metaHistoryWeight*history.quality;let P=q0.q.P*(1-histW)+h.P*histW,B=q0.q.B*(1-histW)+h.B*histW;
+  const contra=contradictionAudit(d,q0,history,ch),penalty=CFG.contradictionCap*contra.score+CFG.nullPenaltyCap*nullE.penalty;
+  if(P>=B){P=clamp(P-penalty);B=1-P}else{B=clamp(B-penalty);P=1-B}
+  const rg=regime(d),bias=Object.entries(cond).reduce((s,[n,v])=>{const rr=v.regimes[rg.state];return s+(rr&&rr.n>=CFG.minRegime?Math.tanh(rr.score/Math.max(1,rr.n)*3)*aw.weights[n]:0)},0);
+  const tilt=clamp(bias*.05,-.05,.05);if(P>=B){P=clamp(P+tilt);B=1-P}else{B=clamp(B-tilt);P=1-B}
+  const oosSkill=Object.entries(aw.weights).reduce((sum,[n,w])=>{const r=aw.rows.find(z=>z.n===n);return sum+w*(r?.skill||0)},0);
+  const oosLower=Object.entries(aw.weights).reduce((sum,[n,w])=>{const r=aw.rows.find(z=>z.n===n);return sum+w*(r?.lower95||0)},0);
+  const skillGate=clamp((oosLower+.003)/.018);P=base.q.P+(P-base.q.P)*skillGate;B=1-P;
+  const p={P,B,T:0},q=top2(p),drift=driftScore(d),stab=stability(d),disagreement=Object.values(mix.contrib).reduce((s,c)=>s+c.weight*Math.abs((c.P/(c.P+c.B||1))-q.q.P),0)*2;
+  const n=decisive(d).length,uncertainty=clamp(.18*clamp(1-q.margin/.30)+.15*clamp(disagreement/.22)+.16*clamp(1-n/70)+.13*clamp((1-rg.persistence)*.75+(rg.state==='TRANSITION'?.25:0))+.13*clamp((cal.adjustedEce||cal.ece||0)/.18)+.11*clamp(drift/.25)+.10*(history.n<CFG.minHistoryMatch?1-history.quality:1-history.quality)+.04*contra.score);
+  const thresholds=dynamicThresholds(d,{uncertainty});thresholds.followUnc=clamp(thresholds.followUnc+.05*abst.learnedPenalty);thresholds.conditionalUnc=clamp(thresholds.conditionalUnc+.03*abst.learnedPenalty);thresholds.followMargin=clamp(thresholds.followMargin+.02*abst.learnedPenalty);
+  const result={p,q,base,mix,weights:aw.weights,rows:aw.rows,contrib:mix.contrib,oosSkill,oosLower,skillGate,challenger:ch,history,contradiction:contra,nullEvidence:nullE,changePoint:cp,conditionalSkill:cond,abstention:abst,disagreement,uncertainty,edge:Math.max(0,q.margin-.02),regime:rg,calibration:cal,drift,stability:stab,thresholds};C.forecast.set(sig,result);return result;
+}
+
+/* ---------- CHALLENGER: structurally different from main ---------- */
+function independentChallenger(d,mix){
+  const x=decisive(d);
+  const pFreq=expertFreq(d).p,pRun=expertRun(d).p,pChop=expertChop(d).p;
+  const weights={FREQ:.45,RUN:.25,CHOP:.30},p={P:0,B:0,T:0};
+  [[weights.FREQ,pFreq],[weights.RUN,pRun],[weights.CHOP,pChop]].forEach(([w,e])=>{const b=binary(e);p.P+=w*b.P;p.B+=w*b.B});
+  const q=top2(p),main=top2(mix.p).top;
+  const counterPressure=clamp(Math.max(0,q.q[opp(main)]-.5)*2.0);
+  const disagreement=clamp(Math.abs(q.q.P-top2(mix.p).q.P)/.18);
+  const nullQ=binary(BASE),nullTop=nullQ.P>=nullQ.B?'P':'B';
+  const nullPressure=clamp(Math.abs(top2(mix.p).q.P-nullQ.P)/.15);
+  const risk=clamp(.55*counterPressure+.30*disagreement+.15*nullPressure);
+  return{top:q.top,second:q.second,q:q.q,p,main,counterPressure,disagreement,nullPressure,risk,n:x.length};
+}
+
+/* ---------- ERROR / ROOT CAUSE ----------
+   Root cause is attribution, not a new prediction expert.
+--------------------------------------------------------- */
+function rootCause(v,action){
+  const candidates=[
+    ['CONTRADICTION',v.contradiction?.score||0],
+    ['HISTORICAL MISMATCH',(v.history?.n>=CFG.minHistoryMatch&&v.history.coverage>=.35&&v.history.quality<.25)?1-v.history.quality:0],
+    ['CHANGE POINT',(v.changePoint?.confirmed?v.changePoint.score:0)],
+    ['MODEL DISAGREEMENT',v.disagreement],
+    ['CHALLENGER',v.challenger.risk],
+    ['REGIME INSTABILITY',1-v.regime.persistence],
+    ['DRIFT',clamp(v.drift/.25)],
+    ['UNCERTAINTY',v.uncertainty],
+    ['THIN EDGE',1-clamp(v.edge/.08)],
+    ['POLICY EXPOSURE',action&&action!=='WAIT'?1:0]
+  ];
+  return candidates.sort((a,b)=>b[1]-a[1])[0]||['PREDICTION',.5];
+}
+function errorAudit(d){
+  const sig='ERR'+d.join(''),cached=C.audit.get(sig);if(cached)return cached;
+  const x=decisive(d),start=Math.max(CFG.minEval,x.length-CFG.maxEval),wf=buildWalkForward(d),count={prediction:0,regime:0,drift:0,challenger:0,timing:0,policy:0,total:0},rows=[];
+  for(let i=start;i<x.length;i++){
+    const h=x.slice(0,i),snap=wf.snapshots.get(i);if(!snap)continue;
+    const mix=blendExperts(h,snap.weights),q=top2(mix.p),a=x[i];if(q.top===a)continue;
+    const rg=regime(h),dr=driftScore(h),unc=clamp(1-q.margin/.30),dis=Object.values(mix.contrib).reduce((s,c)=>s+c.weight*Math.abs(c.P/(c.P+c.B||1)-.5),0)*2;
+    const tmp={uncertainty:unc,disagreement:dis,regime:rg,drift:dr,edge:Math.max(0,q.margin-.02),challenger:independentChallenger(h,mix)};
+    const reason=rootCause(tmp,'WAIT');
+    const type=reason[0]==='CHALLENGER'?'challenger':reason[0]==='REGIME INSTABILITY'?'regime':reason[0]==='DRIFT'?'drift':reason[0]==='UNCERTAINTY'?'timing':'prediction';
+    count[type]++;count.total++;rows.push({i,actual:a,pred:q.top,type,root:reason[0],reg:rg.state});
+  }
+  const root=Object.entries(count).filter(([k])=>k!=='total').sort((a,b)=>b[1]-a[1])[0]?.[0]||'prediction';
+  const repair={prediction:'ลดน้ำหนัก expert ที่เสีย baseline และเพิ่ม shrinkage',regime:'เพิ่ม persistence ก่อนอนุญาตให้ regime เปลี่ยน action',drift:'ยกระดับ threshold ชั่วคราวจน distribution เสถียร',challenger:'ลดระดับ action เมื่อโครงสร้างคู่แข่งสวนทาง',timing:'ใช้ uncertainty gate และ WAIT',policy:'แยก forecast score ออกจาก action threshold'}[root];
+  const result={rows,count,root,repair};C.audit.set(sig,result);return result;
+}
+
+/* ---------- POLICY: final action only ---------- */
+function policy(v,d){
+  const t=v.thresholds,ch=v.challenger, reasons=[],n=decisive(d).length;
+  let action='WAIT';
+  const local=v.rows.find(r=>r.n===v.q.top)?.regSkill ?? 0;
+  if(n<CFG.minEval)reasons.push('ข้อมูลยังไม่ถึง minimum evaluation');
+  if(v.regime.state==='TRANSITION'&&v.regime.persistence<.67)reasons.push('regime ยังไม่ยืนยัน');
+  if(v.uncertainty>t.followUnc)reasons.push('uncertainty สูง');
+  if(ch.risk>t.followRisk)reasons.push('challenger / disagreement สูง');
+  if(local<-.003&&v.regime.state!=='EARLY')reasons.push('local skill ต่ำกว่า baseline');
+  if(v.calibration.n>=CFG.calibrationMin&&v.calibration.ece>.16)reasons.push('calibration drift สูง');
+  if(v.stability<t.stabilityMin)reasons.push('decision stability ต่ำ');
+  if(v.contradiction.score>CFG.contradictionCap)reasons.push('หลักฐานสวนทางมากเกินไป');
+  if(v.changePoint.confirmed&&v.changePoint.score>.70)reasons.push('change point ยังไม่เสถียร');
+  if(n>=CFG.minEval&&v.edge>=t.followMargin&&v.uncertainty<=t.followUnc&&ch.risk<=t.followRisk&&local>=-.003&&v.stability>=t.stabilityMin&&v.contradiction.score<=CFG.contradictionCap&&!(v.regime.state==='TRANSITION'&&v.regime.persistence<.67)&&!(v.changePoint.confirmed&&v.changePoint.score>.70)){
+    action='FOLLOW';
+  }else if(n>=CFG.minEval&&v.edge>=t.conditionalMargin&&v.uncertainty<=t.conditionalUnc&&ch.risk<=t.conditionalRisk){
+    action='CONDITIONAL FOLLOW';
+  }
+  if(!reasons.length)reasons.push('ผ่าน forecast margin + uncertainty + challenger + stability gates');
+  return{action,reasons,local};
+}
+
+/* ---------- SHADOW / PROMOTION ---------- */
+function shadowTest(d){
+  const sig='SH'+d.join(''),cached=C.shadow.get(sig);if(cached)return cached;
+  const x=decisive(d),n=x.length;if(n<CFG.promotionMin)return{ready:false,n};
+  const start=Math.max(CFG.minEval,n-50),wf=buildWalkForward(d),rows=[];
+  for(let i=start;i<n;i++){
+    const h=x.slice(0,i),snap=wf.snapshots.get(i),a=x[i];if(!snap)continue;
+    const mix=blendExperts(h,snap.weights),q=top2(mix.p),base=top2(binaryPosterior(h)),ch=independentChallenger(h,mix);
+    rows.push({cand:brier(mix.p,a),base:brier(binaryPosterior(h),a),ch:brier(ch.p,a),hc:q.top===a,hb:base.top===a,hch:ch.top===a});
+  }
+  const mean=k=>rows.length?rows.reduce((s,r)=>s+r[k],0)/rows.length:null;
+  const paired=(a,b)=>{
+    if(rows.length<2)return{mean:null,se:null,lower95:null};
+    const ds=rows.map(r=>r[a]-r[b]),m=ds.reduce((s,z)=>s+z,0)/ds.length;
+    const v=ds.reduce((s,z)=>s+(z-m)**2,0)/(ds.length-1),se=Math.sqrt(v/ds.length);
+    return{mean:m,se,lower95:m-1.96*se};
+  };
+  const candidate=mean('cand'),base=mean('base'),challenger=mean('ch'),pb=paired('cand','base'),pc=paired('cand','ch');
+  const promote=rows.length>=CFG.promotionMin&&(base-candidate)>=CFG.promotionMargin&&(challenger-candidate)>=CFG.promotionMargin&&pb.lower95<=-CFG.promotionMargin&&pc.lower95<=-CFG.promotionMargin;
+  const res={ready:true,n:rows.length,candidate,base,challenger,deltaBase:base-candidate,deltaCh:challenger-candidate,pairedBase:pb,pairedChallenger:pc,promote,hitCandidate:rows.filter(r=>r.hc).length/Math.max(1,rows.length)};
+  C.shadow.set(sig,res);return res;
+}
+
+function decision(d){
+  const sig=d.join(''),cached=C.decision.get(sig);if(cached)return cached;
+  const v=currentForecast(d),pol=policy(v,d),sh=shadowTest(d),er=errorAudit(d),root=rootCause(v,pol.action);
+  let action=pol.action,reasons=pol.reasons.slice();
+  if(v.calibration.n>=CFG.calibrationMin&&v.calibration.ece>.16&&action==='FOLLOW'){action='CONDITIONAL FOLLOW';reasons.push('calibration ต้องลดระดับ')}
+  if(sh.ready&&!sh.promote&&action==='FOLLOW'){action='CONDITIONAL FOLLOW';reasons.push('candidate ยังไม่ชนะ champion จาก shadow test')}
+  if(v.drift>.25&&action==='FOLLOW'){action='CONDITIONAL FOLLOW';reasons.push('distribution drift สูง')}
+  const res={...v,...pol,action,reasons,shadow:sh,errors:er,rootCause:root[0],rootScore:root[1],main:v.q.top,counter:v.q.second,mainProb:v.q.q[v.q.top]};
+  C.decision.set(sig,res);return res;
+}
+
+/* ---------- STORAGE / VALIDATION ---------- */
+function sanitizeRounds(a){
+  if(!Array.isArray(a))return[];
+  const out=[];
+  for(const raw of a.slice(-CFG.maxHistory)){
+    const r=typeof raw==='string'?raw:raw&&raw.result;
+    if(OUT.includes(r))out.push(r);
+  }
+  return out;
+}
+function readRounds(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY)||'null');
+    return sanitizeRounds(s&&s.rounds);
+  }catch(_){return[]}
+}
+function persist(rounds){
+  try{localStorage.setItem(KEY,JSON.stringify({version:36,rounds:sanitizeRounds(rounds)}));return true}catch(_){return false}
+}
+function migrate(){
+  try{
+    if(localStorage.getItem(KEY))return;
+    for(const k of ['neural-apex-history-audit-v35','neural-apex-history-audit-v34','neural-apex-history-audit-v33','neural-apex-history-audit-v32','neural-apex-history-audit-v31']){
+      const raw=localStorage.getItem(k);if(!raw)continue;
+      const s=JSON.parse(raw),r=sanitizeRounds(s&&s.rounds);
+      if(r.length||Array.isArray(s&&s.rounds)){persist(r);break}
+    }
+  }catch(_){}
+}
+function clearCaches(){Object.values(C).forEach(m=>m.clear())}
+
+function renderHistory(d){
+  const box=el('history');if(!box)return;box.replaceChildren();
+  if(!d.length){const e=document.createElement('div');e.className='history-empty';e.textContent='ยังไม่มีประวัติ';box.append(e);return}
+  const f=document.createDocumentFragment();
+  d.forEach((r,i)=>{const e=document.createElement('div');e.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');e.textContent=r;e.title='ตา '+(i+1)+' · '+sideName(r);f.append(e)});
+  box.append(f);
+}
+function set(id,x,h=false){const e=el(id);if(e)h?e.innerHTML=x:e.textContent=x}
+function listHtml(items){return items.length?items.map(x=>'<div class="item">'+esc(x)+'</div>').join(''):'<div class="item">ยังไม่มีข้อมูล</div>'}
+
+function render(){
+  const d=readRounds(),c=counts(d),n=d.length; renderHistory(d);
+  set('hands',n+' ตา');
+  set('dist',n?'P '+pct(c.P/n)+' · B '+pct(c.B/n)+' · T '+pct(c.T/n):'--');
+  if(!n){
+    ['next','action','regime','edge','uncertainty','historyMatch','contradiction','driftCp'].forEach(id=>set(id,'รอข้อมูล'));
+    set('forecast','รอข้อมูล');set('forecast-detail','กด P / B / T เพื่อเริ่มเก็บประวัติ');set('message','ระบบจะไม่ออกสัญญาณก่อนมีหลักฐานเพียงพอ');
+    ['v32-action','v32-weight','v32-challenger','v32-unc','v32-cal','v32-regskill','v32-error','v32-shadow','v32-decision'].forEach(id=>set(id,'รอข้อมูล'));
+    ['v32-hypotheses','v32-abstain','v32-weights','v32-regime','v32-action-cal','v32-repair','v32-change','v32-audit','v32-contrib','v32-counterfactual','v32-stability','v32-promotion'].forEach(id=>set(id,'ยังไม่มีข้อมูล'));
+    return;
+  }
+  const v=decision(d),cal=v.calibration,sh=v.shadow,er=v.errors;
+  set('forecast',sideName(v.main)+' · '+pct(v.mainProb));
+  set('forecast-detail','P '+pct(v.q.q.P)+' · B '+pct(v.q.q.B)+' · T '+pct(v.p.T)+' · edge '+pct(v.edge));
+  set('next',sideName(v.main));set('action',v.action+' · conf '+pct(1-v.uncertainty));
+  set('regime',v.regime.state+' · '+(v.regime.persistence>=.67?'CONFIRMED':v.regime.persistence>=.34?'PROVISIONAL':'EARLY'));
+  set('edge',pct(v.edge));set('uncertainty',pct(v.uncertainty));set('historyMatch',v.history.available?v.history.available+' hands · q '+pct(v.history.quality):'น้อยไป');set('contradiction',pct(v.contradiction.score)+' · null '+pct(v.nullEvidence.penalty));set('driftCp',pct(v.drift)+' · '+pct(v.changePoint.score));set('message',v.reasons.join(' · '));
+
+  const topW=Object.entries(v.weights).sort((a,b)=>b[1]-a[1])[0];
+  set('v32-action',v.action);set('v32-action-detail',v.reasons.join(' · '));
+  set('v32-weight',topW?topW[0]+' '+pct(topW[1]):'--');set('v32-weight-detail','orthogonal experts · adaptive walk-forward');
+  set('v32-challenger',pct(v.challenger.risk));set('v32-challenger-detail','independent FREQ/RUN/CHOP · '+sideName(v.challenger.top));
+  set('v32-unc',pct(v.uncertainty));set('v32-unc-detail','margin/model/data/regime/calibration/drift');
+  set('v32-cal',cal&&cal.ece!=null?pct(1-cal.ece):'--');set('v32-cal-detail',cal?cal.n+' obs · ECE '+cal.ece.toFixed(3):'--');
+  set('v32-regskill',v.regime.state);set('v32-regskill-detail','persistence '+pct(v.regime.persistence)+' · stability '+pct(v.stability));
+  set('v32-error',er?er.root.toUpperCase():'--');set('v32-error-detail',er?er.count.total+' recent errors':'--');
+  set('v32-shadow',sh&&sh.ready?(sh.promote?'PROMOTE':'HOLD'):'WAIT');set('v32-shadow-detail',sh&&sh.ready?'cand '+sh.candidate.toFixed(3)+' · base '+sh.base.toFixed(3)+' · ch '+sh.challenger.toFixed(3):'sample เพิ่ม');
+  set('v32-decision','V36 DECISION · '+v.action+' · '+sideName(v.main)+' · edge '+pct(v.edge)+' · uncertainty '+pct(v.uncertainty)+' · '+v.rootCause);
+
+  set('v32-hypotheses',[
+    ['MAIN',v.main,pct(v.mainProb)+' · orthogonal ensemble'],
+    ['COUNTER',v.counter,pct(v.q.q[v.counter])+' · challenger '+sideName(v.challenger.top)],
+    ['NULL',top2(BASE).top,pct(binary(BASE)[top2(BASE).top])+' · fixed prior']
+  ].map(x=>'<div class="hyp-item"><b>'+x[0]+' · '+sideName(x[1])+'</b><small>'+x[2]+'</small></div>').join(''),true);
+
+  set('v32-abstain',listHtml(v.reasons),true);
+  set('v32-weights',Object.entries(v.weights).sort((a,b)=>b[1]-a[1]).map(([k,w])=>'<div class="bar"><label>'+k+'</label><div class="track"><span style="width:'+Math.round(w*100)+'%"></span></div><div class="value">'+pct(w)+'</div></div>').join(''),true);
+  set('v32-regime',v.rows.slice().sort((a,b)=>b.regSkill-a.regSkill).map(r=>'<div class="bar"><label>'+r.n+'</label><div class="track"><span style="width:'+Math.round(clamp(.5+.5*r.regSkill)*100)+'%"></span></div><div class="value">Δ '+pct(r.regSkill)+'</div></div>').join(''),true);
+
+  const actionStats={
+    FOLLOW:v.calibration.rows.filter(r=>r.action==='FOLLOW'),
+    WAIT:v.calibration.rows.filter(r=>r.action==='WAIT')
+  };
+  set('v32-action-cal',[
+    'ECE '+(cal?cal.ece.toFixed(3):'--'),
+    'Hit '+(cal&&cal.hit!=null?pct(cal.hit):'--'),
+    'Dynamic thresholds · F '+pct(v.thresholds.followMargin)+' · C '+pct(v.thresholds.conditionalMargin)
+  ].map(x=>'<div class="item">'+esc(x)+'</div>').join(''),true);
+
+  set('v32-repair',(er?Object.entries(er.count).filter(([k])=>k!=='total').map(([k,n])=>'<div class="item">'+k.toUpperCase()+': '+n+'</div>').join(''):'')+(er?'<div class="item good">ROOT '+esc(er.root.toUpperCase())+' → '+esc(er.repair)+'</div>':''),true);
+
+  set('v32-change',[
+    v.challenger.risk>v.thresholds.followRisk?'challenger ต้องอ่อนลง':'challenger ผ่าน',
+    v.regime.state==='TRANSITION'?'transition ต้องยืนยัน persistence':'regime stable enough',
+    v.drift>.25?'drift สูง → threshold ถูกยก':'drift ปกติ',
+    v.stability<v.thresholds.stabilityMin?'stability ต่ำ → downgrade':'stability ผ่าน'
+  ].map(x=>'<div class="item">'+esc(x)+'</div>').join(''),true);
+
+  set('v32-audit',
+    '<div class="item">Candidate vs Base Δ Brier: '+(sh&&sh.ready?pct(sh.deltaBase):'--')+'</div>'+
+    '<div class="item">Candidate vs Challenger Δ Brier: '+(sh&&sh.ready?pct(sh.deltaCh):'--')+'</div>'+
+    '<div class="item">ECE: '+(cal?cal.ece.toFixed(3):'--')+'</div>'+
+    '<div class="item">Drift: '+pct(v.drift)+'</div>'+
+    '<div class="item">Historical quality: '+pct(v.history.quality)+'</div>'+
+    '<div class="item">Contradiction: '+pct(v.contradiction.score)+'</div>'+
+    '<div class="item">Change point: '+pct(v.changePoint.score)+' · '+(v.changePoint.confirmed?'CONFIRMED':'not confirmed')+'</div>'+
+    '<div class="item">OOS ensemble skill: '+pct(v.oosSkill)+' · gate '+pct(v.skillGate)+'</div>'+
+    '<div class="item">False-confidence penalty: '+pct(v.abstention.learnedPenalty)+'</div>'+
+    '<div class="item">Walk-forward prefix only</div>',true);
+
+  set('v32-contrib',Object.entries(v.contrib).sort((a,b)=>Math.abs(b[1].delta)-Math.abs(a[1].delta)).map(([k,z])=>'<div class="item">'+k+' · weight '+pct(z.weight)+' · P-B '+pct(z.delta)+'</div>').join(''),true);
+
+  set('v32-counterfactual',[
+    'REMOVE '+v.main+' → ดู margin sensitivity',
+    'ZERO RUN → ตรวจว่าผลยังยืนหรือไม่',
+    'ZERO CHOP → ตรวจว่าผลยังยืนหรือไม่',
+    'ZERO MOTIF → ตรวจว่าผลยังยืนหรือไม่'
+  ].map(x=>'<div class="item">'+esc(x)+'</div>').join(''),true);
+
+  set('v32-stability',
+    '<div class="item">REGIME '+(v.regime.persistence>=.67?'HIGH':v.regime.persistence>=.34?'MEDIUM':'LOW')+' · persistence '+pct(v.regime.persistence)+'</div>'+
+    '<div class="item">model disagreement '+pct(v.disagreement)+'</div>'+
+    '<div class="item">drift '+pct(v.drift)+' · stability '+pct(v.stability)+'</div>',true);
+
+  set('v32-promotion',sh&&sh.ready?
+    '<div class="item">'+(sh.promote?'PROMOTE ADAPTIVE':'HOLD / NEED MORE EVIDENCE')+'</div>'+
+    '<div class="item">Δ base '+pct(sh.deltaBase)+' · Δ challenger '+pct(sh.deltaCh)+'</div>':
+    '<div class="item">shadow sample ยังไม่ถึง '+CFG.promotionMin+'</div>',true);
+}
+
+function pushResult(r){
+  if(!OUT.includes(r))return;
+  const d=readRounds();d.push(r);if(persist(d)){clearCaches();render()}
+}
+function undoLast(){
+  const d=readRounds();if(!d.length)return;d.pop();if(persist(d)){clearCaches();render()}
+}
+function resetAll(){if(persist([])){clearCaches();render()}}
+
+migrate();
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>pushResult(b.getAttribute('data-result'))));
+el('undo')?.addEventListener('click',undoLast);
+el('reset')?.addEventListener('click',resetAll);
+render();
+
+})();</script></body></html>

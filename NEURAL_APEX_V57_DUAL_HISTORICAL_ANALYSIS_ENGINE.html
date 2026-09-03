@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V57 · DUAL HISTORICAL ANALYSIS ENGINE</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,900px);margin:0 auto;padding:16px 12px 32px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 15px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.19em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.subtitle{max-width:760px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric{min-height:70px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecast{font-size:30px;font-weight:950;letter-spacing:-.045em}#forecast-detail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:740px;margin:7px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:76px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.card{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;background:rgba(255,255,255,.025);min-height:84px}.card span{display:block;color:#aaa18a;font-size:9px;letter-spacing:.08em;font-weight:900}.card strong{display:block;margin-top:5px;font-size:1.05rem}.card small{display:block;margin-top:4px;color:#a7a39a;line-height:1.45}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.good{color:var(--good)}.warn{color:var(--warn)}.bar{display:grid;grid-template-columns:100px 1fr 58px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.pill{display:inline-block;padding:3px 6px;border:1px solid rgba(98,229,207,.25);border-radius:999px;color:#b8fff2;font-size:8px;font-weight:900}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}@media(max-width:850px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.columns{grid-template-columns:1fr}}@media(max-width:520px){.shell{padding:8px}h1{font-size:22px}.grid{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card"><header><div class="eyebrow">STATE · EVIDENCE · ADAPTATION · REPAIR</div><h1>NEURAL APEX <span class="badge">V57 DUAL HISTORICAL ANALYSIS</span></h1><p class="subtitle">V57 แยกการวิเคราะห์เป็น 2 ชั้น: หลัก = Exact 3-Hand จากประวัติทั้งหมดและรายงานตรง/ไม่ตรงโดยไม่ฝืนหลักฐาน; รอง = Historical Full-Data Ensemble ให้คาดการณ์ทุกตา โดยเลือกน้ำหนักจาก Walk-Forward ที่ไม่ใช้ข้อมูลอนาคต</p></header>
+<div class="metrics">
+<div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0 ตา</output></div>
+<div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div>
+<div class="metric"><span class="metric-label">หลัก · 3-HAND</span><output id="primaryStatus">ยังไม่มีข้อมูล</output></div>
+<div class="metric"><span class="metric-label">รอง · ทุกตา</span><output id="secondaryNext">ยังไม่มีข้อมูล</output></div>
+<div class="metric"><span class="metric-label">PRIMARY MATCH</span><output id="primaryMatchCount">0</output></div>
+<div class="metric"><span class="metric-label">PRIMARY AGREEMENT</span><output id="primaryAgreement">--</output></div>
+<div class="metric"><span class="metric-label">SECONDARY SCORE</span><output id="secondaryScore">--</output></div>
+<div class="metric"><span class="metric-label">SECONDARY MODEL</span><output id="secondaryModel">--</output></div>
+</div>
+<section class="forecast">
+<div id="forecast">ยังไม่มีข้อมูล</div>
+<div id="forecast-detail">กด P / B / T เพื่อเริ่มเก็บประวัติ</div>
+<div id="message">หลัก: ต้องค้นประวัติทั้งหมด หา Exact 3 ตา และเปรียบเทียบผลถัดไปทุกจุด · รอง: ต้องคาดการณ์ทุกตาโดยใช้ Full-History Ensemble + Walk-Forward Audit</div>
+</section>
+<div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div>
+<section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T แสดงในประวัติ แต่ไม่นำไปสร้างความได้เปรียบ P/B โดยตรง</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button></div></section>
+<section class="section"><h2 class="section-title">V57 · การวิเคราะห์หลัก — EXACT 3-HAND FULL-HISTORY</h2>
+<p class="section-description">กฎหลัก: ย้อนดูประวัติทั้งหมด → ใช้ 3 ตาล่าสุดเป็นบริบท → ต้องตรงครบ 3 ตา → ตรวจผลถัดไปของทุกจุด → เปรียบเทียบทุกจุดที่ตรง. มีผลถัดไปไม่ตรงกัน = รายงาน “ไม่ตรง” และไม่สร้างคำคาดการณ์หลัก.</p>
+<div class="grid">
+<div class="card"><span>PRIMARY STATUS</span><strong id="mode">--</strong><small id="mode-detail">--</small></div>
+<div class="card"><span>CURRENT 3-HAND</span><strong id="recent">--</strong><small id="recent-detail">--</small></div>
+<div class="card"><span>EXACT MATCHES</span><strong id="lane-mid">--</strong><small id="lane-mid-detail">--</small></div>
+<div class="card"><span>INDEPENDENT</span><strong id="lane-indep">--</strong><small id="lane-indep-detail">--</small></div>
+<div class="card"><span>NEXT P / B / T</span><strong id="lane-transition">--</strong><small id="lane-transition-detail">--</small></div>
+<div class="card"><span>PRIMARY RESULT</span><strong id="lane-memory">--</strong><small id="lane-memory-detail">--</small></div>
+<div class="card"><span>SEARCHED HISTORY</span><strong id="lane-search">--</strong><small id="lane-search-detail">--</small></div>
+<div class="card"><span>OVERLAP BLOCKED</span><strong id="lane-overlap">--</strong><small id="lane-overlap-detail">--</small></div>
+</div>
+<div class="columns"><div class="panel"><b>หลักการตัดสินหลัก</b><div id="principles" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>เหตุผลเชิงหลักฐาน</b><div id="change-mind" class="list">ยังไม่มีข้อมูล</div></div></div>
+</section>
+<section class="section"><h2 class="section-title">V57 · ALL EXACT 3-HAND MATCHES</h2><div id="match-list" class="list"><div class="item">ยังไม่มีข้อมูล</div></div></section>
+<section class="section"><h2 class="section-title">V57 · การวิเคราะห์รอง — FULL-HISTORY ENSEMBLE</h2>
+<p class="section-description">การวิเคราะห์รองต้องมีคำคาดการณ์ทุกตา. ใช้ข้อมูลย้อนหลังทั้งหมดในหลายระดับบริบท, ความถี่จริง, recency แบบถ่วงน้ำหนัก และผลย้อนหลังจาก exact 3-hand; น้ำหนักโมเดลคัดจาก Walk-Forward Audit ที่แต่ละจุดเห็นเฉพาะอดีต.</p>
+<div class="grid">
+<div class="card"><span>SECONDARY FORECAST</span><strong id="secondaryForecast">--</strong><small id="secondaryForecastDetail">--</small></div>
+<div class="card"><span>ENSEMBLE SCORE</span><strong id="secondaryProb">--</strong><small>คะแนนเชิงประวัติ ไม่ใช่การรับประกัน</small></div>
+<div class="card"><span>TOP MODEL</span><strong id="secondaryTopModel">--</strong><small id="secondaryTopDetail">--</small></div>
+<div class="card"><span>WALK-FORWARD HIT</span><strong id="wfHit">--</strong><small id="wfDetail">--</small></div>
+<div class="card"><span>MODEL COVERAGE</span><strong id="wfCoverage">--</strong><small>สัดส่วนจุดที่มีคำตอบจากโมเดล</small></div>
+<div class="card"><span>FULL-HISTORY SAMPLES</span><strong id="secondarySamples">--</strong><small id="secondarySamplesDetail">--</small></div>
+<div class="card"><span>TOP CONTEXT</span><strong id="secondaryContext">--</strong><small id="secondaryContextDetail">--</small></div>
+<div class="card"><span>SECONDARY CONFIDENCE</span><strong id="secondaryConfidence">--</strong><small>ความชัดของ ensemble ภายในข้อมูลย้อนหลัง</small></div>
+</div>
+<div class="columns"><div class="panel"><b>โมเดลที่ใช้</b><div id="model-breakdown" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>ตรวจความน่าเชื่อถือ</b><div id="secondary-audit" class="list">ยังไม่มีข้อมูล</div></div></div>
+</section>
+<section class="section"><h2 class="section-title">V57 · PRINCIPLES & AUDIT</h2><div class="columns"><div class="panel"><b>หลักการบังคับ</b><div class="list">
+<div class="item">1. FULL HISTORY FIRST — ตรวจประวัติทั้งหมดก่อนสร้างคำตอบ</div>
+<div class="item">2. PRIMARY = EXACT 3-HAND — 3 ตาล่าสุดต้องตรง 100%</div>
+<div class="item">3. COMPARE ALL — ไม่เลือกเฉพาะ match ที่สนับสนุนคำตอบ</div>
+<div class="item">4. NO OVERLAP / NO LEAKAGE — จุดอ้างอิงและผลถัดไปต้องมาก่อนบริบทปัจจุบัน</div>
+<div class="item">5. PRIMARY CONFLICT = “ไม่ตรง” — ไม่ฝืนคาดการณ์หลัก</div>
+<div class="item">6. SECONDARY ALWAYS FORECAST — ใช้ ensemble จากประวัติทั้งหมด</div>
+<div class="item">7. WALK-FORWARD — ประเมินย้อนหลังโดยไม่เปิดข้อมูลอนาคต</div>
+</div></div><div class="panel"><b>ข้อควรอ่าน</b><div class="list"><div class="item">คะแนนรองเป็นผลจากข้อมูลย้อนหลัง ไม่ใช่ความน่าจะเป็นที่รับประกันผลจริง</div><div class="item">เมื่อหลักฐานหลักไม่ตรง ระบบจะแสดง “ไม่ตรง” ตามที่กำหนด แม้การวิเคราะห์รองจะยังให้คำคาดการณ์</div><div class="item">T ถูกเก็บและวิเคราะห์เป็นผลจริงทั้งใน primary และ secondary</div></div></div></div></section>
+<div class="notice"><strong>หมายเหตุ:</strong> ผลลัพธ์เป็นการวิเคราะห์เชิงสถิติจากประวัติ และไม่ใช่การรับประกันผลล่วงหน้า · PRIMARY “ไม่ตรง” หมายถึง historical exact 3-hand มีข้อมูลไม่สอดคล้องหรือไม่พบ match; SECONDARY ยังให้คำคาดการณ์เพื่อใช้เปรียบเทียบเท่านั้น</div>
+</section></main>
+<script>(function(){'use strict';
+const KEY='neural-apex-history-audit-v57-dual-historical',OUT=Object.freeze(['P','B','T']);
+const CFG=Object.freeze({primaryLen:3,secondaryMaxLen:12,minSecondaryContext:1,laplace:1,recencyDecay:.985});
+const el=id=>document.getElementById(id);
+const pct=x=>Number.isFinite(+x)?((+x)*100).toFixed(0)+'%':'--';
+const sideName=x=>x==='P'?'PLAYER':x==='B'?'BANKER':x==='T'?'TIE':'--';
+const counts=d=>{const c={P:0,B:0,T:0};(d||[]).forEach(x=>{if(c[x]!==undefined)c[x]++});return c};
+function sanitize(a){return(Array.isArray(a)?a:[]).map(x=>typeof x==='string'?x:x?.result).filter(x=>OUT.includes(x));}
+function readStore(key){try{const r=JSON.parse(localStorage.getItem(key)||'null');return r?.rounds?sanitize(r.rounds):null}catch(e){return null}}
+function read(){const cur=readStore(KEY);if(cur)return cur;for(const k of ['neural-apex-history-audit-v56-3hand-full-history-max-audited','neural-apex-history-audit-v55-3hand-full-history-audited','neural-apex-history-audit-v54-full-history-strict','neural-apex-history-audit-v53-3hand','neural-apex-history-audit-v52-strict-historical','neural-apex-history-audit-v51-adaptive-ensemble','neural-apex-history-audit-v50-historical-match','neural-apex-history-audit-v49-minimal-core','neural-apex-history-audit-v48-adaptive-state']){const old=readStore(k);if(old)return old}return[]}
+function save(r){try{localStorage.setItem(KEY,JSON.stringify({version:57,rounds:sanitize(r)}));return true}catch(e){return false}}
+function probsFromCounts(c,alpha=CFG.laplace){const z=(c.P||0)+(c.B||0)+(c.T||0)+3*alpha;return{P:((c.P||0)+alpha)/z,B:((c.B||0)+alpha)/z,T:((c.T||0)+alpha)/z}}
+function argmax(p){return OUT.reduce((a,b)=>p[b]>p[a]?b:a,OUT[0])}
+function exact3Evidence(x){
+ const n=x.length,current=x.slice(Math.max(0,n-CFG.primaryLen)),currentStart=n-CFG.primaryLen;let matches=[],searched=0,overlapExcluded=0;
+ if(n<CFG.primaryLen)return{status:'ไม่ตรง',reason:'ยังมีประวัติไม่ถึง 3 ตา',current,matches,searched,totalMatches:0,independentMatches:0,pCount:0,bCount:0,tCount:0,consensus:0};
+ for(let end=CFG.primaryLen-1;end<=currentStart-2;end++){
+   searched++;const start=end-CFG.primaryLen+1,h=x.slice(start,end+1);
+   if(h.join('')!==current.join(''))continue;
+   const nextIndex=end+1;
+   if(nextIndex>=currentStart){overlapExcluded++;continue}
+   matches.push({start,end,h,next:x[nextIndex]});
+ }
+ const seen=new Set();matches=matches.filter(m=>{if(seen.has(m.end))return false;seen.add(m.end);return true}).sort((a,b)=>b.end-a.end);
+ const blocked=[];const independent=[];
+ for(const m of matches){const a=m.start,b=m.end+1;if(blocked.some(r=>!(b<r.a||a>r.b)))continue;independent.push(m);blocked.push({a,b});}
+ const c={P:0,B:0,T:0};matches.forEach(m=>c[m.next]++);const total=matches.length;const best=argmax(c),max=total?c[best]:0,consensus=total?max/total:0;
+ const allSame=total>0 && matches.every(m=>m.next===matches[0].next);
+ const status=allSame?'ตรง':'ไม่ตรง';
+ const forecast=allSame?matches[0].next:null;
+ let reason='';
+ if(!total)reason='ไม่พบ 3 ตาที่ตรงกันในประวัติทั้งหมด';
+ else if(!allSame)reason='พบ 3 ตาที่ตรงกัน แต่ผลถัดไปของ historical match มีมากกว่า 1 แบบ';
+ else reason='พบ 3 ตาที่ตรงกัน และผลถัดไปของ historical match ตรงกันทั้งหมด';
+ return{status,reason,current,matches,searched,totalMatches:total,independentMatches:independent.length,pCount:c.P,bCount:c.B,tCount:c.T,consensus,forecast,allSame,overlapExcluded,best:matches[0]||null};
+}
+function contextEvidence(x,len){
+ if(x.length<len+1)return{len,samples:0,counts:{P:0,B:0,T:0},probs:{P:1/3,B:1/3,T:1/3}};
+ const cur=x.slice(-len),countsNext={P:0,B:0,T:0};let samples=0;
+ for(let end=len-1;end<=x.length-2;end++){
+   const h=x.slice(end-len+1,end+1);
+   if(h.join('')===cur.join('')){countsNext[x[end+1]]++;samples++;}
+ }
+ return{len,samples,counts:countsNext,probs:probsFromCounts(countsNext)};
+}
+function recencyEvidence(x){
+ const w={P:0,B:0,T:0};let total=0;
+ for(let i=0;i<x.length;i++){const age=x.length-1-i;const wt=Math.pow(CFG.recencyDecay,age);w[x[i]]+=wt;total+=wt}
+ const probs={P:(w.P+CFG.laplace)/(total+3*CFG.laplace),B:(w.B+CFG.laplace)/(total+3*CFG.laplace),T:(w.T+CFG.laplace)/(total+3*CFG.laplace)};
+ return{probs,samples:x.length};
+}
+function secondaryMethods(x){
+ const methods=[];
+ methods.push({name:'GLOBAL',probs:probsFromCounts(counts(x)),samples:x.length,detail:'ความถี่รวมทั้งประวัติ'});
+ for(const len of [1,2,3,4,5,6,8,10,12]){if(len<=x.length-1){const e=contextEvidence(x,len);methods.push({name:'MARKOV-'+len,probs:e.probs,samples:e.samples,detail:'บริบท '+len+' ตาย้อนหลัง'})}}
+ const e3=exact3Evidence(x);if(e3.totalMatches){methods.push({name:'EXACT-3',probs:probsFromCounts({P:e3.pCount,B:e3.bCount,T:e3.tCount}),samples:e3.totalMatches,detail:'ผลถัดไปจาก exact 3-hand ทั้งหมด'})}
+ const re=recencyEvidence(x);methods.push({name:'RECENCY',probs:re.probs,samples:re.samples,detail:'ความถี่ถ่วงน้ำหนักตามอายุข้อมูล'});
+ return methods;
+}
+function methodPredictAt(x,cut,name){
+ const d=x.slice(0,cut);if(!d.length)return null;
+ if(name==='GLOBAL')return argmax(probsFromCounts(counts(d)));
+ if(name==='RECENCY')return argmax(recencyEvidence(d).probs);
+ if(name==='EXACT-3'){const e=exact3Evidence(d);return e.forecast||null;}
+ const m=/MARKOV-(\d+)/.exec(name);if(m){const len=+m[1];if(d.length<=len)return null;return argmax(contextEvidence(d,len).probs)}
+ return null;
+}
+function walkForwardModelScores(x,names){
+ const scores={};names.forEach(name=>scores[name]={name,evaluated:0,hits:0,accuracy:0});
+ const start=Math.max(4,3);
+ for(let cut=start;cut<x.length;cut++){
+   const actual=x[cut];
+   for(const name of names){const pred=methodPredictAt(x,cut,name);if(!pred)continue;scores[name].evaluated++;if(pred===actual)scores[name].hits++}
+ }
+ for(const k of Object.keys(scores)){const s=scores[k];s.accuracy=s.evaluated?s.hits/s.evaluated:1/3;s.score=(s.accuracy+0.02)/(1+0.02*s.evaluated/Math.max(1,s.evaluated));}
+ return scores;
+}
+function secondaryForecast(x){
+ if(!x.length)return{forecast:'--',prob:{P:1/3,B:1/3,T:1/3},models:[],top:null,wf:{evaluated:0,hits:0,accuracy:0,coverage:0},context:null};
+ const methods=secondaryMethods(x),names=methods.map(m=>m.name),scores=walkForwardModelScores(x,names);
+ let totalW=0,ensemble={P:0,B:0,T:0};
+ const enriched=methods.map(m=>{const s=scores[m.name]||{accuracy:1/3,evaluated:0,hits:0};let w=s.evaluated?Math.max(.05,s.accuracy):.20; if(m.name==='MARKOV-3'&&m.samples)w*=1.15; if(m.name==='EXACT-3'&&m.samples)w*=1.30; totalW+=w;return{...m,accuracy:s.accuracy,evaluated:s.evaluated,hits:s.hits,weight:w}});
+ enriched.forEach(m=>OUT.forEach(k=>ensemble[k]+=m.probs[k]*m.weight));OUT.forEach(k=>ensemble[k]/=totalW||1);
+ const forecast=argmax(ensemble),sorted=enriched.slice().sort((a,b)=>b.weight-a.weight),top=sorted[0];
+ const topContext=enriched.filter(m=>/^MARKOV-/.test(m.name)&&m.samples).sort((a,b)=>b.samples-a.samples)[0]||null;
+ let wfEval=0,wfHits=0;for(const m of enriched){wfEval+=m.evaluated;wfHits+=m.hits}const wfAcc=wfEval?wfHits/wfEval:0;
+ const topProb=ensemble[forecast],second=OUT.filter(k=>k!==forecast).sort((a,b)=>ensemble[b]-ensemble[a])[0],margin=topProb-ensemble[second];
+ const confidence=Math.max(0,Math.min(1,(margin*1.6)+(Math.min(0.9,wfAcc)*0.4)));
+ return{forecast,prob:ensemble,models:enriched.sort((a,b)=>b.weight-a.weight),top,wf:{evaluated:wfEval,hits:wfHits,accuracy:wfAcc,coverage:x.length?wfEval/Math.max(1,(x.length-4)*Math.max(1,enriched.length)):0},context:topContext,confidence};
+}
+function bar(n,w){return '<div class="bar"><label>'+n+'</label><div class="track"><span style="width:'+Math.round(Math.max(0,Math.min(1,w))*100)+'%"></span></div><div class="value">'+pct(w)+'</div></div>'}
+function set(id,v,html=false){const e=el(id);if(e)html?e.innerHTML=v:e.textContent=v}
+function renderHistory(d){const b=el('history');b.replaceChildren();if(!d.length){const e=document.createElement('div');e.className='history-empty';e.textContent='ยังไม่มีประวัติ';b.append(e);return}d.forEach((r,i)=>{const e=document.createElement('div');e.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');e.textContent=r;e.title='ตา '+(i+1)+' · '+sideName(r);b.append(e)})}
+function render(){
+ const d=read(),n=d.length,c=counts(d);renderHistory(d);set('hands',n+' ตา');set('dist',n?'P '+pct(c.P/n)+' · B '+pct(c.B/n)+' · T '+pct(c.T/n):'--');
+ if(!n){['primaryStatus','secondaryNext','primaryMatchCount','primaryAgreement','secondaryScore','secondaryModel','forecast','forecast-detail','message','mode','mode-detail','recent','recent-detail','lane-mid','lane-mid-detail','lane-indep','lane-indep-detail','lane-transition','lane-transition-detail','lane-memory','lane-memory-detail','lane-search','lane-search-detail','lane-overlap','lane-overlap-detail','principles','change-mind','match-list','secondaryForecast','secondaryForecastDetail','secondaryProb','secondaryTopModel','secondaryTopDetail','wfHit','wfDetail','wfCoverage','secondarySamples','secondarySamplesDetail','secondaryContext','secondaryContextDetail','secondaryConfidence','model-breakdown','secondary-audit'].forEach(id=>set(id,'ยังไม่มีข้อมูล'));return}
+ const p=exact3Evidence(d),s=secondaryForecast(d);
+ set('primaryStatus',p.status);set('secondaryNext',sideName(s.forecast));set('primaryMatchCount',String(p.totalMatches));set('primaryAgreement',p.totalMatches?pct(p.consensus):'0%');set('secondaryScore',pct(s.prob[s.forecast]));set('secondaryModel',s.top?s.top.name:'ENSEMBLE');
+ set('forecast',p.status==='ตรง'&&p.forecast?('หลัก: '+sideName(p.forecast)+' · ตรง'):'หลัก: ไม่ตรง · รอง: '+sideName(s.forecast));
+ set('forecast-detail','หลัก '+p.reason+' · รอง '+sideName(s.forecast)+' · ensemble '+pct(s.prob[s.forecast]));
+ set('message',p.status==='ตรง'&&p.forecast?'หลักพบ exact 3-hand และผลถัดไปตรงกันทั้งหมด · รองคาดการณ์ด้วย full-history ensemble':'หลักรายงาน “ไม่ตรง” เพราะ historical 3-hand มีหลักฐานไม่สอดคล้อง/ไม่พบ · รองยังคาดการณ์ทุกตาด้วย full-history ensemble');
+ set('mode',p.status);set('mode-detail',p.reason);set('recent',p.current.length===3?p.current.join(''):'--');set('recent-detail','3 ตาล่าสุด · ค้นย้อนหลังทั้งประวัติ');set('lane-mid',String(p.totalMatches));set('lane-mid-detail','exact 3-hand ที่มีผลถัดไป');set('lane-indep',String(p.independentMatches));set('lane-indep-detail','จุดที่ไม่ทับช่วงกัน');set('lane-transition','P '+p.pCount+' / B '+p.bCount+' / T '+p.tCount);set('lane-transition-detail','ผลถัดไปจากทุก exact match');set('lane-memory',p.status==='ตรง'&&p.forecast?sideName(p.forecast):'ไม่ตรง');set('lane-memory-detail',p.status==='ตรง'?'ผลถัดไป historical ทุกจุดตรงกัน':'มีไม่ตรง จึงไม่สร้างคำคาดการณ์หลัก');set('lane-search',String(p.searched));set('lane-search-detail','จุดใน full history ที่ถูกตรวจ');set('lane-overlap',String(p.overlapExcluded||0));set('lane-overlap-detail','candidate ที่ทับบริบทปัจจุบัน');
+ set('principles','<div class="item">1. FULL HISTORY = ตรวจ '+p.searched+' historical endpoints</div><div class="item">2. CURRENT 3 = '+(p.current.join('')||'--')+'</div><div class="item">3. EXACT = '+p.totalMatches+' จุด</div><div class="item">4. COMPARE ALL = P '+p.pCount+' · B '+p.bCount+' · T '+p.tCount+'</div><div class="item">5. STATUS = '+p.status+'</div><div class="item">6. PRIMARY FORECAST = '+(p.forecast?sideName(p.forecast):'ไม่สร้าง เพราะมีไม่ตรง')+'</div>',true);
+ const reasons=[];if(!p.totalMatches)reasons.push('ไม่พบ historical sequence 3 ตาที่ตรงครบ 100%');else if(!p.allSame)reasons.push('ผลถัดไปของ exact match ไม่เป็นค่าเดียวกัน');else reasons.push('ผลถัดไปของ exact match ตรงกันทั้งหมด');if(p.overlapExcluded)reasons.push('ตัด '+p.overlapExcluded+' จุดที่ overlap กับบริบทปัจจุบัน');set('change-mind',reasons.map(x=>'<div class="item">'+x+'</div>').join(''),true);
+ const ml=p.matches.length?p.matches.map((m,i)=>'<div class="item"><b>#'+(i+1)+'</b> · ตา '+(m.start+1)+'-'+(m.end+1)+' = '+m.h.join('')+' → <strong>'+sideName(m.next)+'</strong></div>').join(''):'<div class="item">ไม่มี exact 3-hand match ที่มีผลถัดไป</div>';set('match-list',ml,true);
+ set('secondaryForecast',sideName(s.forecast));set('secondaryForecastDetail','ensemble score '+pct(s.prob[s.forecast])+' · top model '+(s.top?.name||'ENSEMBLE'));set('secondaryProb',pct(s.prob[s.forecast]));set('secondaryTopModel',s.top?.name||'ENSEMBLE');set('secondaryTopDetail',s.top?('walk-forward '+pct(s.top.accuracy)+' · '+s.top.samples+' samples'):'--');set('wfHit',s.wf.evaluated?pct(s.wf.accuracy):'--');set('wfDetail',s.wf.evaluated?(s.wf.hits+' / '+s.wf.evaluated+' model-evaluations'):'ยังไม่มี audit');set('wfCoverage',pct(Math.min(1,s.wf.coverage)));set('secondarySamples',String(d.length));set('secondarySamplesDetail','ประวัติทั้งหมด');set('secondaryContext',s.context?s.context.name:'GLOBAL');set('secondaryContextDetail',s.context?('samples '+s.context.samples):'ใช้ global baseline');set('secondaryConfidence',pct(s.confidence));
+ const modelHtml=s.models.slice(0,8).map(m=>'<div class="item"><b>'+m.name+'</b> · weight '+pct(m.weight/Math.max(.0001,s.models.reduce((z,q)=>z+q.weight,0)))+' · hit '+(m.evaluated?pct(m.accuracy):'--')+' · n='+m.samples+'</div>').join('');set('model-breakdown',modelHtml||'<div class="item">ไม่มีโมเดล</div>',true);
+ set('secondary-audit','<div class="item">ผลรอง = '+sideName(s.forecast)+' · score '+pct(s.prob[s.forecast])+'</div><div class="item">Walk-forward = '+(s.wf.evaluated?(s.wf.hits+'/'+s.wf.evaluated+' = '+pct(s.wf.accuracy)):'--')+'</div><div class="item">Top model = '+(s.top?.name||'ENSEMBLE')+'</div><div class="item">ใช้ full history = '+d.length+' ตา</div><div class="item">Primary status = '+p.status+' · '+(p.totalMatches||0)+' exact matches</div>'+bar('P',s.prob.P)+bar('B',s.prob.B)+bar('T',s.prob.T),true);
+}
+function push(r){const d=read();d.push(r);save(d);render()}function undo(){const d=read();if(d.length){d.pop();save(d);render()}}function reset(){save([]);render()}
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));el('undo')?.addEventListener('click',undo);el('reset')?.addEventListener('click',reset);render();})();</script></body></html>

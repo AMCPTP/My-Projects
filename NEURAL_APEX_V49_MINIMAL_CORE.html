@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V49 · MINIMAL CORE</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,900px);margin:0 auto;padding:16px 12px 32px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 15px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.19em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.subtitle{max-width:760px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric{min-height:70px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecast{font-size:30px;font-weight:950;letter-spacing:-.045em}#forecast-detail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:740px;margin:7px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:76px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.card{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;background:rgba(255,255,255,.025);min-height:84px}.card span{display:block;color:#aaa18a;font-size:9px;letter-spacing:.08em;font-weight:900}.card strong{display:block;margin-top:5px;font-size:1.05rem}.card small{display:block;margin-top:4px;color:#a7a39a;line-height:1.45}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.good{color:var(--good)}.warn{color:var(--warn)}.bar{display:grid;grid-template-columns:100px 1fr 58px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.pill{display:inline-block;padding:3px 6px;border:1px solid rgba(98,229,207,.25);border-radius:999px;color:#b8fff2;font-size:8px;font-weight:900}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}@media(max-width:850px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.columns{grid-template-columns:1fr}}@media(max-width:520px){.shell{padding:8px}h1{font-size:22px}.grid{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card"><header><div class="eyebrow">STATE · EVIDENCE · ADAPTATION · REPAIR</div><h1>NEURAL APEX <span class="badge">V49 MINIMAL CORE</span></h1><p class="subtitle">แกนวิเคราะห์แบบลดความซ้ำซ้อน: SHORT + MID + CHANGE + STATE แล้วตัดสินใจ FOLLOW / CUT / WAIT โดยให้ข้อมูลใหม่ชนะประวัติเมื่อ State เปลี่ยน</p></header>
+<div class="metrics"><div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0 ตา</output></div><div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div><div class="metric"><span class="metric-label">FORECAST</span><output id="next">รอข้อมูล</output></div><div class="metric"><span class="metric-label">ACTION</span><output id="action">รอข้อมูล</output></div><div class="metric"><span class="metric-label">STATE</span><output id="regime">--</output></div><div class="metric"><span class="metric-label">EDGE / UNCERTAINTY</span><output><span id="edge">--</span> / <span id="uncertainty">--</span></output></div><div class="metric"><span class="metric-label">CHANGE SCORE</span><output id="driftCp">--</output></div><div class="metric"><span class="metric-label">AGREEMENT</span><output id="agreement">--</output></div></div>
+<section class="forecast"><div id="forecast">รอข้อมูล</div><div id="forecast-detail">กด P / B / T เพื่อเริ่มเก็บประวัติ</div><div id="message">V48 ไม่ใช้ Pattern เดียวเป็นคำตอบ และไม่อ้างความแม่นยำ 100%; ทุกการเปลี่ยน action ต้องมีเหตุผลจาก state + evidence ล่าสุด</div></section>
+<div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div>
+<section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T แสดงในประวัติ แต่ไม่นำไปสร้างความได้เปรียบ P/B โดยตรง</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button></div></section>
+<section class="section"><h2 class="section-title">V49 · MINIMAL DECISION CORE</h2><div class="grid"><div class="card"><span>STATE</span><strong id="mode">--</strong><small id="mode-detail">--</small></div><div class="card"><span>SHORT</span><strong id="recent">--</strong><small id="recent-detail">--</small></div><div class="card"><span>MID</span><strong id="structure">--</strong><small id="structure-detail">--</small></div><div class="card"><span>CHANGE</span><strong id="change">--</strong><small id="change-detail">--</small></div><div class="card"><span>EDGE</span><strong id="lane-short">--</strong><small id="lane-short-detail">--</small></div><div class="card"><span>CONFLICT</span><strong id="lane-mid">--</strong><small id="lane-mid-detail">--</small></div><div class="card"><span>DECISION</span><strong id="lane-transition">--</strong><small id="lane-transition-detail">--</small></div><div class="card"><span>DATA</span><strong id="lane-memory">--</strong><small id="lane-memory-detail">--</small></div></div><div class="columns"><div class="panel"><b>หลักการตัดสิน</b><div id="principles" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>เหตุผลที่ยอมเปลี่ยนใจ</b><div id="change-mind" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V49 · LOCAL AUDIT</h2><div class="columns"><div class="panel"><b>RECENT AUDIT</b><div id="lane-skill" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>FAILURE ROOT</b><div id="failure-root" class="list">ยังไม่มีข้อมูล</div></div></div><div class="columns"><div class="panel"><b>CORE WEIGHTS</b><div id="weights" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>STATE SNAPSHOT</b><div id="state-snapshot" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V49 · MODEL AUDIT</h2><div class="columns"><div class="panel"><b>WHAT THIS ENGINE DOES</b><div class="list"><div class="item">1. อ่าน STATE ก่อน</div><div class="item">2. ใช้ SHORT + MID เป็นหลัก</div><div class="item">3. ใช้ CHANGE ตรวจการเปลี่ยนเกม</div><div class="item">4. State เปลี่ยน → ให้ข้อมูลใหม่มีน้ำหนักสูงขึ้น</div><div class="item">5. ตัดสินใจ FOLLOW / CUT / WAIT</div></div></div><div class="panel"><b>WHAT THIS ENGINE REMOVES</b><div class="list"><div class="item">ตัด Pattern ที่ซ้ำซ้อนและไม่มีหลักฐานเพิ่ม</div><div class="item">ตัดการตาม/สวน streak แบบอัตโนมัติ</div><div class="item">ตัด historical analogy ออกจากตัวตัดสินหลัก</div><div class="item">ตัดการนับโมเดลที่ใช้ข้อมูลเดียวกันเป็น evidence อิสระ</div><div class="item">ตัด global penalty และเหลือ local audit</div></div></div></div></section>
+<div class="notice"><strong>หมายเหตุ:</strong> ผล P/B เป็นผลลัพธ์ของกระบวนการสุ่ม จึงไม่มีระบบใดรับประกันผลล่วงหน้าได้ · V48 เป็นเครื่องมือวิเคราะห์/ทดสอบการตอบสนองของโมเดลจากประวัติ ไม่ใช่คำรับประกันผลจริง</div>
+</section></main>
+<script>(function(){'use strict';
+const KEY='neural-apex-history-audit-v48-adaptive-state',OUT=Object.freeze(['P','B','T']),DEC=Object.freeze(['P','B']);
+const CFG=Object.freeze({maxHistory:3000,minReady:8});
+const C={decision:new Map()};
+const el=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>{const n=Number(x);return Math.max(a,Math.min(b,Number.isFinite(n)?n:a));};
+const pct=x=>Number.isFinite(+x)?((+x)*100).toFixed(0)+'%':'--';
+const sideName=x=>x==='P'?'PLAYER':x==='B'?'BANKER':'TIE';
+const opp=x=>x==='P'?'B':'P';
+const counts=d=>{const c={P:0,B:0,T:0};(Array.isArray(d)?d:[]).forEach(x=>{if(c[x]!==undefined)c[x]++;});return c;};
+const decisive=d=>(Array.isArray(d)?d:[]).filter(x=>x==='P'||x==='B');
+const entropy=p=>{const q=clamp(p,1e-6,.999999);return -(q*Math.log(q)+(1-q)*Math.log(1-q))/Math.log(2);};
+const top=p=>p.P>=p.B?'P':'B';
+const margin=p=>Math.abs(p.P-p.B);
+
+function stats(x,w){
+  const z=x.slice(-w),n=z.length;
+  if(!n)return{n:0,p:.5,sw:.5,run:0,side:null,ent:1};
+  const c=counts(z);let sw=0;
+  for(let i=1;i<n;i++)if(z[i]!==z[i-1])sw++;
+  const side=z[n-1];let run=1;
+  for(let i=n-2;i>=0&&z[i]===side;i--)run++;
+  return{n,p:c.P/n,sw:n>1?sw/(n-1):0,run,side,ent:entropy(c.P/n)};
+}
+
+function lane(x,w){
+  const s=stats(x,w);
+  return {p:{P:s.p,B:1-s.p},quality:clamp(s.n/Math.max(8,w*.75)),stats:s};
+}
+
+function change(x){
+  if(x.length<12)return{mode:'EARLY',score:0,noise:0,flip:false};
+  const s=stats(x,4),m=stats(x,12),old=stats(x,24);
+  const d1=Math.abs(s.p-m.p),d2=Math.abs(s.sw-m.sw),d3=Math.abs(m.p-old.p);
+  const noise=clamp((Math.abs(stats(x,3).p-s.p)+Math.abs(s.p-stats(x,5).p))/.30);
+  const score=clamp(.52*d1/.22+.25*d2/.28+.23*d3/.20)*(1-.45*noise);
+  const flip=s.side!==m.side&&d1>.08;
+  let mode='STABLE';
+  if(noise>.75)mode='NOISY';
+  else if(flip&&score>=.44)mode='HARD-CHANGE';
+  else if(score>=.44)mode='TRANSITION';
+  return{mode,score,noise,flip,short:s,mid:m,old};
+}
+
+function state(x,ch){
+  if(x.length<CFG.minReady)return{mode:'EARLY',stability:.20};
+  const s=stats(x,4),m=stats(x,12);
+  if(ch.mode==='NOISY')return{mode:'CHOP',stability:.35};
+  if(ch.mode==='HARD-CHANGE')return{mode:'REVERSAL',stability:.42};
+  if(s.run>=3&&s.sw<.55&&Math.abs(s.p-.5)>.10)return{mode:'RUN',stability:.78};
+  if(s.sw>=.76&&s.run<=2)return{mode:'CHOP',stability:.38};
+  if(ch.score>=.42)return{mode:'TRANSITION',stability:.52};
+  if(Math.abs(s.p-m.p)<.07&&Math.abs(s.sw-m.sw)<.12)return{mode:'STABLE',stability:.72};
+  return{mode:'MIXED',stability:.58};
+}
+
+function decide(d){
+  const x=decisive(d),n=x.length;
+  if(!n)return null;
+  if(n<CFG.minReady){
+    const c=counts(x),p=(c.P+2)/(c.P+c.B+4);
+    return{main:p>=.5?'P':'B',prob:Math.max(p,1-p),action:'WAIT',
+      state:{mode:'EARLY',stability:.20},edge:0,unc:.72,reasons:['ข้อมูลยังไม่ถึงขั้นต่ำ']};
+  }
+
+  const ch=change(x),st=state(x,ch);
+  const S=lane(x,5),M=lane(x,20);
+  const shortTop=top(S.p),midTop=top(M.p);
+  const shortMargin=margin(S.p),midMargin=margin(M.p);
+
+  // Core weighting: recent dominates; mid validates; memory is diagnostic only.
+  let ws=.62,wm=.38;
+  if(st.mode==='REVERSAL'||st.mode==='TRANSITION'){ws=.78;wm=.22;}
+  if(st.mode==='RUN'){ws=.55;wm=.45;}
+  if(st.mode==='CHOP'){ws=.45;wm=.55;}
+
+  let P=ws*S.p.P+wm*M.p.P;
+  const q={P:clamp(P,.08,.92),B:1-clamp(P,.08,.92)};
+  const qTop=top(q),qMargin=margin(q);
+
+  const conflict=shortTop!==midTop;
+  let unc=.12+.22*(1-qMargin/.26)+.14*(1-st.stability)+.12*ch.noise;
+  if(conflict)unc+=.10;
+  if(st.mode==='REVERSAL')unc+=.05;
+  unc=clamp(unc,.08,.80);
+
+  let action='WAIT',reasons=[];
+  if(ch.mode==='NOISY'){
+    action='WAIT';reasons.push('noise สูง → งดไล่ตามการแกว่ง');
+  }else if(st.mode==='REVERSAL'&&shortMargin>=.16&&ch.score>=.44){
+    action='FOLLOW '+shortTop;
+    reasons.push('reversal ยืนยันจากข้อมูลล่าสุด');
+  }else if(!conflict&&qMargin>=.10&&unc<=.46){
+    action='FOLLOW '+qTop;
+    reasons.push('SHORT + MID สอดคล้อง');
+  }else if(conflict&&ch.score>=.38&&shortMargin>=.12){
+    action='CUT / WATCH '+shortTop;
+    reasons.push('SHORT เปลี่ยนก่อน MID → รอยืนยัน');
+  }else if(qMargin>=.07&&unc<=.55){
+    action='CONDITIONAL '+qTop;
+    reasons.push('มี edge แต่หลักฐานยังไม่พอสำหรับ FOLLOW');
+  }else{
+    reasons.push('หลักฐานยังไม่พอ');
+  }
+
+  const main=(action.includes('FOLLOW')||action.includes('CONDITIONAL'))?action.split(' ').pop():qTop;
+  const prob=Math.max(q[main],1-q[main]);
+  const edge=Math.max(0,qMargin-.015*unc-.02*ch.noise);
+
+  return{main,prob,action,state:st,change:ch,short:S,mid:M,
+    weights:{SHORT:ws,MID:wm},edge,unc,reasons,conflict};
+}
+
+function readRounds(){
+  try{
+    const raw=JSON.parse(localStorage.getItem('neural-apex-history-audit-v49-minimal-core')||'null');
+    if(raw?.rounds)return sanitizeRounds(raw.rounds);
+    // One-way migration from V48 and earlier versions.
+    for(const k of [
+      'neural-apex-history-audit-v48-adaptive-state',
+      'neural-apex-history-audit-v47-rapid-game-adapt',
+      'neural-apex-history-audit-v46-trusted-analog',
+      'neural-apex-history-audit-v45-rapid-reasoning-full-history-verified',
+      'neural-apex-history-audit-v44-rapid-adapt-full-history'
+    ]){
+      const old=JSON.parse(localStorage.getItem(k)||'null');
+      if(old?.rounds)return sanitizeRounds(old.rounds);
+    }
+    return[];
+  }catch(e){return[];}
+}
+function sanitizeRounds(a){
+  if(!Array.isArray(a))return[];
+  const out=[];
+  for(const raw of a.slice(-CFG.maxHistory)){
+    const r=typeof raw==='string'?raw:raw&&raw.result;
+    if(['P','B','T'].includes(r))out.push(r);
+  }
+  return out;
+}
+function persist(r){
+  try{
+    localStorage.setItem('neural-apex-history-audit-v49-minimal-core',
+      JSON.stringify({version:49,rounds:sanitizeRounds(r)}));
+    return true;
+  }catch(e){return false;}
+}
+function set(id,x,html=false){
+  const e=el(id);if(e){if(html)e.innerHTML=x;else e.textContent=x;}
+}
+function renderHistory(d){
+  const box=el('history');if(!box)return;
+  box.replaceChildren();
+  if(!d.length){
+    const e=document.createElement('div');e.className='history-empty';
+    e.textContent='ยังไม่มีประวัติ';box.append(e);return;
+  }
+  const f=document.createDocumentFragment();
+  d.forEach((r,i)=>{
+    const e=document.createElement('div');
+    e.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');
+    e.textContent=r;e.title='ตา '+(i+1)+' · '+sideName(r);f.append(e);
+  });
+  box.append(f);
+}
+function resetPanel(){
+  ['next','action','regime','edge','uncertainty','driftCp','agreement','forecast',
+   'forecast-detail','message','mode','mode-detail','recent','recent-detail',
+   'structure','structure-detail','change','change-detail','lane-short',
+   'lane-short-detail','lane-mid','lane-mid-detail','lane-transition',
+   'lane-transition-detail','lane-memory','lane-memory-detail','principles',
+   'change-mind','lane-skill','failure-root','weights','state-snapshot']
+  .forEach(id=>set(id,'รอข้อมูล'));
+}
+function bar(name,w){
+  return '<div class="bar"><label>'+name+'</label><div class="track"><span style="width:'+
+    Math.round(w*100)+'%"></span></div><div class="value">'+pct(w)+'</div></div>';
+}
+function render(){
+  const d=readRounds(),c=counts(d),n=d.length;
+  renderHistory(d);set('hands',n+' ตา');
+  set('dist',n?'P '+pct(c.P/n)+' · B '+pct(c.B/n)+' · T '+pct(c.T/n):'--');
+  if(!n){resetPanel();return;}
+  const v=decide(d);if(!v)return;
+
+  set('forecast',sideName(v.main)+' · '+pct(v.prob));
+  set('forecast-detail','ACTION '+v.action+' · edge '+pct(v.edge)+' · uncertainty '+pct(v.unc));
+  set('next',sideName(v.main));
+  set('action',v.action+' · conf '+pct(1-v.unc));
+  set('regime',v.state.mode+' · '+pct(v.state.stability));
+  set('edge',pct(v.edge));set('uncertainty',pct(v.unc));
+  set('driftCp',v.change.mode+' · '+pct(v.change.score));
+  set('agreement',v.conflict?'SHORT ≠ MID':'SHORT = MID');
+  set('message',v.reasons.join(' · '));
+
+  set('mode',v.state.mode);set('mode-detail',v.change.mode+' · shift '+pct(v.change.score));
+  set('recent',sideName(top(v.short.p))+' '+pct(margin(v.short.p)));
+  set('recent-detail','5 ตาล่าสุด · switch '+pct(v.short.stats.sw));
+  set('structure',sideName(top(v.mid.p))+' '+pct(margin(v.mid.p)));
+  set('structure-detail','20 ตาล่าสุด · switch '+pct(v.mid.stats.sw));
+  set('change',v.change.mode);
+  set('change-detail','noise '+pct(v.change.noise)+' · '+(v.change.flip?'direction flip':'direction hold'));
+
+  set('lane-short',pct(v.edge));set('lane-short-detail','edge หลังหัก uncertainty/noise');
+  set('lane-mid',v.conflict?'CONFLICT':'ALIGNED');
+  set('lane-mid-detail',v.conflict?'SHORT กับ MID ขัดกัน':'SHORT + MID ไปทางเดียวกัน');
+  set('lane-transition',v.action);
+  set('lane-transition-detail','FOLLOW = ยืนยัน · CUT = รอยืนยัน · WAIT = งดตัดสิน');
+  set('lane-memory',d.length+' ตา');
+  set('lane-memory-detail','ใช้เป็นบริบท ไม่ใช่ตัวบังคับคำตอบ');
+
+  set('principles',(
+    '<div class="item">STATE: '+v.state.mode+'</div>'+
+    '<div class="item">SHORT '+sideName(top(v.short.p))+' · MID '+sideName(top(v.mid.p))+'</div>'+
+    '<div class="item">CHANGE '+v.change.mode+' · edge '+pct(v.edge)+'</div>'+
+    '<div class="item">DECISION '+v.action+'</div>'
+  ),true);
+
+  const cm=[];
+  if(v.state.mode==='REVERSAL')cm.push('recent evidence ชนะ history เมื่อ shift ชัด');
+  if(v.conflict)cm.push('SHORT ≠ MID → ไม่รีบยืนยัน');
+  if(v.action.startsWith('WAIT'))cm.push('WAIT เมื่อ noise/uncertainty สูง');
+  if(v.action.startsWith('CUT'))cm.push('CUT / WATCH เมื่อข้อมูลใหม่มาก่อนประวัติ');
+  if(!cm.length)cm.push('เปลี่ยนใจเมื่อ State หรือ evidence ล่าสุดเปลี่ยนจริง');
+  set('change-mind',cm.map(x=>'<div class="item">'+x+'</div>').join(''),true);
+
+  set('lane-skill',
+    '<div class="item"><b>SHORT</b> · weight '+pct(v.weights.SHORT)+'</div>'+
+    '<div class="item"><b>MID</b> · weight '+pct(v.weights.MID)+'</div>'+
+    '<div class="item"><b>CHANGE</b> · score '+pct(v.change.score)+'</div>',true);
+
+  set('failure-root',
+    '<div class="item">ROOT = '+(v.conflict?'SHORT/MID conflict':'ไม่มี conflict หลัก')+'</div>'+
+    '<div class="item">Repair = ปรับเฉพาะการตีความ State/evidence ไม่ลงโทษทั้งระบบ</div>',true);
+
+  set('weights',
+    bar('SHORT',v.weights.SHORT)+bar('MID',v.weights.MID),true);
+
+  set('state-snapshot',
+    '<div class="item">STATE '+v.state.mode+' · stability '+pct(v.state.stability)+'</div>'+
+    '<div class="item">SHORT P '+pct(v.short.p.P)+' · switch '+pct(v.short.stats.sw)+'</div>'+
+    '<div class="item">MID P '+pct(v.mid.p.P)+' · switch '+pct(v.mid.stats.sw)+'</div>'+
+    '<div class="item">CHANGE '+pct(v.change.score)+' · noise '+pct(v.change.noise)+'</div>'+
+    '<div class="item">ACTION '+v.action+'</div>',true);
+
+  C.decision.set('D49|'+d.join(''),v);
+}
+function pushResult(r){
+  const d=readRounds(),next=d.slice();next.push(r);
+  persist(next);C.decision.clear();render();
+}
+function undoLast(){
+  const d=readRounds();if(d.length){d.pop();persist(d);C.decision.clear();render();}
+}
+function resetAll(){
+  persist([]);C.decision.clear();render();
+}
+document.querySelectorAll('[data-result]').forEach(b=>
+  b.addEventListener('click',()=>pushResult(b.getAttribute('data-result'))));
+el('undo')?.addEventListener('click',undoLast);
+el('reset')?.addEventListener('click',resetAll);
+render();
+})();</script></body></html>

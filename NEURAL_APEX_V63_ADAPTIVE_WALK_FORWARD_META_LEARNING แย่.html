@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V63 · ADAPTIVE WALK-FORWARD META-LEARNING ENGINE</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,980px);margin:0 auto;padding:14px 10px 30px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 15px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.18em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.subtitle{max-width:860px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label,.card span{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output,.card strong{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecastBig{font-size:32px;font-weight:950;letter-spacing:-.045em}#forecastDetail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:900px;margin:8px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:74px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:6px 5px;border-bottom:1px solid #202027;text-align:left}.table th{color:#9999a5;font-size:8px;letter-spacing:.05em}.bar{display:grid;grid-template-columns:105px 1fr 55px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}.tag{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border:1px solid #333842;border-radius:999px;font-size:8px;font-weight:900}.good{color:var(--good)}.warn{color:var(--warn)}
+@media(max-width:850px){.metrics,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.columns{grid-template-columns:1fr}}@media(max-width:520px){h1{font-size:22px}.grid,.metrics{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card">
+<header><div class="eyebrow">FULL HISTORY · STATE · POLICY · REGIME · ERROR REPAIR · OOS</div><h1>NEURAL APEX <span class="badge">V63 ADAPTIVE WALK-FORWARD META-LEARNING</span></h1><p class="subtitle">V63 เปลี่ยนจาก “รวมสูตรให้มากขึ้น” เป็น walk-forward learning: ทุกตาถูกทำนายด้วยข้อมูลก่อนตานั้นเท่านั้น → ตรวจ regime/state → เลือก expert ที่พิสูจน์ผลงานได้ในบริบทใกล้เคียง → ลดน้ำหนักโมเดลที่กำลังพลาด → calibrate confidence → ตรวจ OOS, baseline และ oracle gap → เมื่อเกิดผลจริงจึงเรียนรู้และซ่อม policy สำหรับตาถัดไป โดยไม่ใช้ข้อมูลอนาคตรั่วกลับมาช่วยทำนาย</p></header>
+<div class="metrics"><div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0</output></div><div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div><div class="metric"><span class="metric-label">FORECAST</span><output id="forecast">--</output></div><div class="metric"><span class="metric-label">CONFIDENCE</span><output id="confidence">--</output></div><div class="metric"><span class="metric-label">STATE</span><output id="regime">--</output></div><div class="metric"><span class="metric-label">POLICY</span><output id="policy">--</output></div><div class="metric"><span class="metric-label">OOS HIT</span><output id="oos">--</output></div><div class="metric"><span class="metric-label">DECISION</span><output id="decision">--</output></div><div class="metric"><span class="metric-label">CONSENSUS</span><output id="consensus">--</output></div><div class="metric"><span class="metric-label">SAMPLE QUALITY</span><output id="sampleQuality">--</output></div></div>
+<section class="forecast"><div id="forecastBig">ยังไม่มีข้อมูล</div><div id="forecastDetail">กด P / B / T เพื่อเริ่ม</div><div id="message">ระบบจะ replay ประวัติทั้งหมดแบบ prequential และเรียนรู้จากข้อผิดพลาดทีละตา</div><div id="diagnostic" class="notice" style="margin-top:7px">ต้องมีหลักฐานมากพอจึงค่อย FOLLOW · ไม่มี edge ให้ WAIT</div></section>
+<div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div>
+<section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T ถูกเก็บเป็นผลจริง แต่ระบบจะไม่สร้างคำอธิบายเชิงเหตุผลปลอมเมื่อหลักฐานไม่พอ</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button></div></section>
+<section class="section"><h2 class="section-title">V63 · STATE & REGIME ENGINE</h2><div class="grid"><div class="card"><span>REGIME</span><strong id="state">--</strong><small id="stateDetail">--</small></div><div class="card"><span>REGIME MIX</span><strong id="regimeMix">--</strong><small>ความน่าจะเป็นของ state</small></div><div class="card"><span>SWITCH RATE</span><strong id="switchRate">--</strong><small>recent 8</small></div><div class="card"><span>RUN</span><strong id="runState">--</strong><small>run ล่าสุด</small></div><div class="card"><span>ENTROPY</span><strong id="entropy">--</strong><small>recent distribution</small></div><div class="card"><span>TRANSITION SHIFT</span><strong id="transShift">--</strong><small>recent vs baseline</small></div><div class="card"><span>STATE SIMILARITY</span><strong id="stateSimilarity">--</strong><small>nearest historical states</small></div><div class="card"><span>CHANGE POINT</span><strong id="changePoint">--</strong><small>state transition pressure</small></div></div><div class="columns"><div class="panel"><b>State signals</b><div id="stateSignals" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Interpretation</b><div id="stateInterpretation" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V63 · POLICY / EXPERT COMPETITION</h2><p class="section-description">น้ำหนักไม่ได้ขึ้นกับ win rate อย่างเดียว แต่ใช้ historical log-loss, recent regret, regime-specific performance, nearest-state performance และ error repair</p><div class="columns"><div class="panel"><b>Expert leaderboard</b><div style="overflow:auto"><table class="table"><thead><tr><th>EXPERT</th><th>NOW</th><th>WEIGHT</th><th>HIT</th><th>LOSS</th><th>STATE</th><th>REGIME</th><th>REGRET</th></tr></thead><tbody id="leaderboard"><tr><td colspan="8">ยังไม่มีข้อมูล</td></tr></tbody></table></div></div><div class="panel"><b>Policy reasoning</b><div id="policyReasons" class="list">ยังไม่มีข้อมูล</div><div id="policyBars"></div></div></div></section>
+<section class="section"><h2 class="section-title">V63 · PATTERN / MEMORY / SIMILARITY</h2><div class="grid"><div class="card"><span>SHORT</span><strong id="shortMem">--</strong><small id="shortMemD">--</small></div><div class="card"><span>MEDIUM</span><strong id="medMem">--</strong><small id="medMemD">--</small></div><div class="card"><span>LONG</span><strong id="longMem">--</strong><small id="longMemD">--</small></div><div class="card"><span>EXACT-3</span><strong id="exact3">--</strong><small id="exact3D">--</small></div><div class="card"><span>BEST CONTEXT</span><strong id="bestContext">--</strong><small id="bestContextD">--</small></div><div class="card"><span>SOFT SIM</span><strong id="softSim">--</strong><small id="softSimD">--</small></div><div class="card"><span>CONTINUATION</span><strong id="continuation">--</strong><small>สัญญาณไปต่อ</small></div><div class="card"><span>REVERSAL</span><strong id="reversal">--</strong><small>สัญญาณกลับตัว</small></div></div><div class="columns"><div class="panel"><b>Pattern evidence</b><div id="patternEvidence" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Conflict control</b><div id="patternConflict" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V63 · ERROR LEDGER / SELF-REPAIR / REGRET</h2><div class="grid"><div class="card"><span>RECENT ERRORS</span><strong id="recentErrors">--</strong><small>rolling 24</small></div><div class="card"><span>OVERCONFIDENCE</span><strong id="overconfident">--</strong><small>มั่นใจสูงแต่ผิด</small></div><div class="card"><span>MISSED CONTINUATION</span><strong id="missedContinuation">--</strong><small>พลาดการต่อ</small></div><div class="card"><span>FALSE REVERSAL</span><strong id="falseReversal">--</strong><small>กลับตัวผิด</small></div><div class="card"><span>TIE MISS</span><strong id="tieMiss">--</strong><small>พลาด T</small></div><div class="card"><span>POLICY REGRET</span><strong id="policyRegret">--</strong><small>ช่องว่างจาก expert ที่ดีที่สุด</small></div><div class="card"><span>CALIBRATION</span><strong id="calibration">--</strong><small>confidence vs hit</small></div><div class="card"><span>MODEL HEALTH</span><strong id="modelHealth">--</strong><small>เสถียรภาพล่าสุด</small></div></div><div class="columns"><div class="panel"><b>บทเรียน</b><div id="lessons" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Repair action</b><div id="repairs" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V63 · FULL-HISTORY AUDIT / NO-LEAKAGE</h2><div class="grid"><div class="card"><span>OOS SAMPLE</span><strong id="oosN">--</strong><small>prequential events</small></div><div class="card"><span>OOS LOG LOSS</span><strong id="oosLogLoss">--</strong><small>lower is better</small></div><div class="card"><span>BASELINE LOSS</span><strong id="baseLogLoss">--</strong><small>global baseline</small></div><div class="card"><span>LOSS GAP</span><strong id="oosGap">--</strong><small>ensemble - baseline</small></div><div class="card"><span>OOS BRIER</span><strong id="oosBrier">--</strong><small>lower is better</small></div><div class="card"><span>ORACLE GAP</span><strong id="oracleGap">--</strong><small>policy vs best expert</small></div><div class="card"><span>STATE COVERAGE</span><strong id="stateCoverage">--</strong><small>historical comparable states</small></div><div class="card"><span>EDGE</span><strong id="edge">--</strong><small>vs global current forecast</small></div></div><div class="columns"><div class="panel"><b>Audit verdict</b><div id="auditVerdict" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Confidence controls</b><div id="confidenceReasons" class="list">ยังไม่มีข้อมูล</div></div></div></section>
+<section class="section"><h2 class="section-title">V63 · หลักการบังคับ</h2><div class="list"><div class="item">1. FULL REPLAY — ย้อนทุกตาเพื่อสร้าง state และประสบการณ์ก่อนผลจริง</div><div class="item">2. PREQUENTIAL — prediction ของตาใดต้องใช้ข้อมูลก่อนตานั้นเท่านั้น</div><div class="item">3. STATE BEFORE MODEL — จำแนกสภาพเกมก่อนเลือกวิธีวิเคราะห์</div><div class="item">4. MIXTURE OF REGIMES — state อาจเป็นส่วนผสม ไม่บังคับว่าเป็นแบบเดียวเสมอ</div><div class="item">5. STATE SIMILARITY — ค้นหาอดีตที่ “คล้ายกัน” ไม่ใช่เพียง sequence ที่ตรง 100%</div><div class="item">6. EXPERT POLICY — เรียนรู้ว่า expert ไหนเก่งใน state แบบใด</div><div class="item">7. REGRET LEARNING — วัดว่าที่เลือกมานั้นแพ้ expert อื่นมากแค่ไหน</div><div class="item">8. ERROR TAXONOMY — แยก missed continuation / false reversal / tie miss / overconfidence</div><div class="item">9. REPAIR POLICY — ความผิดพลาดชนิดเดิมต้องเปลี่ยนการให้น้ำหนักครั้งต่อไป</div><div class="item">10. CALIBRATION — confidence ต้องสอดคล้องกับ hit จริง</div><div class="item">11. COUNTERFACTUAL AUDIT — หลังจบประวัติ ต้องดูว่าตอนนั้น expert ตัวอื่นทำได้ดีกว่าหรือไม่</div><div class="item">12. NO EDGE = WAIT — เมื่อ evidence ไม่ชนะ baseline แบบ out-of-sample ให้ลดความมั่นใจ</div><div class="item">13. SAMPLE GATE — context/exact/state ที่มีตัวอย่างน้อยเกินไปจะไม่ถูกปล่อยให้ครอง ensemble</div><div class="item">14. CHANGE-POINT ADAPT — เมื่อ distribution หรือ transition เปลี่ยน ให้ลดน้ำหนัก long-memory ชั่วคราว</div><div class="item">15. DIVERSIFICATION — โมเดลที่ให้คำตอบซ้ำกันไม่ได้เพิ่มหลักฐานเป็นหลายเท่า</div><div class="item">16. POST-UPDATE — ทุกตาต้อง update expert score, regret, error type และ calibration หลังรู้ผลจริง</div><div class="item">17. COUNTERFACTUAL SAFETY — ห้ามอัปเกรด expert เพราะแค่ “ชนะล่าสุด”; ต้องดู loss + sample + state fit</div><div class="item">18. ABSTENTION — เมื่อ disagreement สูง, sample ต่ำ หรือ OOS แพ้ baseline ให้หยุดคาดการณ์เชิงมั่นใจ</div></div></section>
+<div class="notice"><strong>หมายเหตุ:</strong> V63 เป็นระบบวิเคราะห์เชิงสถิติจากลำดับ P/B/T ไม่ใช่เครื่องทำนายผลที่รับประกันอนาคต โดยเฉพาะข้อมูลที่มีความสุ่มสูง ความได้เปรียบใด ๆ ต้องพิสูจน์ด้วย out-of-sample และต้องยอมรับ “NO EDGE / WAIT” เมื่อหลักฐานไม่แข็งแรง</div>
+</section></main>
+<script>
+(function(){'use strict';
+const KEY='neural-apex-history-audit-v63-adaptive-walk-forward-meta-learning';
+const OLD_KEYS=['neural-apex-history-audit-v62-state-policy-meta-learning','neural-apex-history-audit-v61-regime-online-meta-learning','neural-apex-history-audit-v60-adaptive-meta-learning','neural-apex-history-audit-v58-adaptive-dual-historical','neural-apex-history-audit-v56-3hand-full-history-max-audited','neural-apex-history-audit-v55-3hand-full-history-audited','neural-apex-history-audit-v54-full-history-strict','neural-apex-history-audit-v53-3hand','neural-apex-history-audit-v57-dual-historical','neural-apex-history-audit-v52-strict-historical','neural-apex-history-audit-v51-adaptive-ensemble','neural-apex-history-audit-v50-historical-match','neural-apex-history-audit-v49-minimal-core','neural-apex-history-audit-v48-adaptive-state'];
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function sanitize(a){return(Array.isArray(a)?a:[]).map(v=>typeof v==='string'?v:v&&v.result).filter(v=>['P','B','T'].includes(v))}
+function readStore(k){const r=safeJSON(k);return r&&r.rounds?sanitize(r.rounds):null}
+function readHistory(){const a=readStore(KEY);if(a)return a;for(const k of OLD_KEYS){const x=readStore(k);if(x)return x}return[]}
+function saveHistory(x){try{localStorage.setItem(KEY,JSON.stringify({version:63,rounds:sanitize(x)}));return true}catch(e){return false}}
+const CFG={
+  short:8, medium:32, stateK:10, similarityFloor:.58,
+  eta:.22, fastEta:.38, decay:.985, recentN:24, calBins:6,
+  minHistory:8, exactMin:3, knnMin:3, followOOSMin:20,
+  disagreementGate:.48, edgeGate:.035, marginGate:.055,
+  samplePenalty:.62, shiftPenalty:.55
+};
+const OUT=['P','B','T'];
+const MODEL_NAMES=['GLOBAL','RECENT6','RECENT12','RECENT24','TRANSITION','MARKOV1','MARKOV2','MARKOV3','MARKOV4','CONTINUE','REVERSAL','RUN','EXACT3','EXACT4','EXACT5','SOFTSIM','STATE-KNN'];
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+const pct=x=>Number.isFinite(+x)?Math.round(+x*100)+'%':'--';
+const side=x=>x==='P'?'PLAYER':x==='B'?'BANKER':x==='T'?'TIE':'--';
+const priorProb=()=>({P:1/3,B:1/3,T:1/3});
+function counts(x){const c={P:0,B:0,T:0};x.forEach(v=>{if(c[v]!=null)c[v]++});return c}
+function probs(c,a=1){const z=Object.values(c).reduce((s,v)=>s+(v||0),0)+3*a;return{P:((c.P||0)+a)/z,B:((c.B||0)+a)/z,T:((c.T||0)+a)/z}}
+function argmax(p){return OUT.reduce((a,b)=>p[b]>p[a]?b:a,'P')}
+function entropy(p){return OUT.reduce((s,k)=>s-(p[k]>0?p[k]*Math.log(p[k]):0),0)/Math.log(3)}
+function logLoss(p,a){return -Math.log(clamp(p[a],1e-6,1))}
+function brier(p,a){return OUT.reduce((s,k)=>s+Math.pow(p[k]-(k===a?1:0),2),0)}
+function mixProb(a,b,w=.5){return{P:(1-w)*a.P+w*b.P,B:(1-w)*a.B+w*b.B,T:(1-w)*a.T+w*b.T}}
+function switches(x){if(x.length<2)return 0;let n=0;for(let i=1;i<x.length;i++)if(x[i]!==x[i-1])n++;return n/(x.length-1)}
+function runInfo(x){if(!x.length)return{last:0,avg:0,runs:[]};const r=[];let n=1;for(let i=1;i<x.length;i++){if(x[i]===x[i-1])n++;else{r.push(n);n=1}}r.push(n);return{last:n,avg:mean(r),runs:r}}
+function transitionMatrix(x,a=1){const m={P:{P:0,B:0,T:0},B:{P:0,B:0,T:0},T:{P:0,B:0,T:0}};for(let i=1;i<x.length;i++)m[x[i-1]][x[i]]++;for(const r of OUT){const z=OUT.reduce((s,c)=>s+m[r][c],3*a);for(const c of OUT)m[r][c]=(m[r][c]+a)/z}return m}
+function jsd(a,b){const m={};for(const k of OUT)m[k]=(a[k]+b[k])/2;const kl=(p,q)=>OUT.reduce((s,k)=>s+(p[k]>0?p[k]*Math.log(p[k]/q[k]):0),0);return .5*kl(a,m)+.5*kl(b,m)}
+function matrixJSD(a,b){return mean(OUT.map(r=>jsd(a[r],b[r])))}
+function alternation(x){if(x.length<3)return 0;let n=0,d=0;for(let i=1;i<x.length;i++){if(x[i]==='T'||x[i-1]==='T')continue;d++;if(x[i]!==x[i-1]&&i>=2&&x[i]===x[i-2])n++}return d?n/d:0}
+function stateVector(x){
+  const s=x.slice(-CFG.short),m=x.slice(-CFG.medium),c=counts(s),p=probs(c),r=runInfo(s),tr=transitionMatrix(s),tm=transitionMatrix(m);
+  const switchRate=switches(s),dom=Math.max(p.P,p.B),bias=p.P-p.B,ent=entropy(p),same=(r.last>=3?1:0);
+  return{
+    switchRate,dom,bias,ent,lastRun:r.last,avgRun:r.avg,alternation:alternation(s),
+    p:p.P,b:p.B,t:p.T,repeatPP:tr.P.P,repeatBB:tr.B.B,repeatTT:tr.T.T,
+    transitionShift:matrixJSD(tr,tm),recent:s,medium:m
+  };
+}
+function regime(x){
+  if(x.length<CFG.minHistory)return{kind:'BOOTSTRAP',mix:{BOOTSTRAP:1},confidence:0,state:stateVector(x),reasons:['ข้อมูลยังน้อย'],distShift:0,changePoint:0};
+  const v=stateVector(x), baseSlice=x.slice(0,Math.max(0,x.length-v.recent.length)), base=stateVector(baseSlice);
+  const d=jsd({P:v.p,B:v.b,T:v.t},{P:base.p,B:base.b,T:base.t});
+  const shift=clamp(.55*d/.18+.45*v.transitionShift/.22);
+  const streak=clamp((v.lastRun-1)/5)*.65+clamp((v.avgRun-1.4)/2.6)*.35;
+  const chop=clamp((v.switchRate-.55)/.35);
+  const trend=clamp((.44-v.switchRate)/.28)*.7+clamp(Math.abs(v.bias)/.45)*.3;
+  const stable=clamp(1-Math.max(streak,chop,trend,shift));
+  let raw={STABLE:stable+.12,STREAK:streak+.05,CHOP:chop+.05,TREND:trend+.05,SHIFT:shift+.06};
+  if(v.lastRun>=4)raw.STREAK+=.28;
+  if(v.alternation>=.72)raw.CHOP+=.18;
+  if(shift>=.60)raw.SHIFT+=.36;
+  const z=Object.values(raw).reduce((a,b)=>a+b,0);for(const k of Object.keys(raw))raw[k]/=z;
+  const sorted=Object.entries(raw).sort((a,b)=>b[1]-a[1]),kind=sorted[0][0],conf=clamp((sorted[0][1]-sorted[1][1])*2);
+  const reasons=[];
+  if(shift>.45)reasons.push('พบการเปลี่ยน distribution/transition');
+  if(streak>.45)reasons.push('run ล่าสุดยาวขึ้น');
+  if(chop>.45)reasons.push('switch ถี่');
+  if(trend>.45)reasons.push('อัตราสลับต่ำ + bias สูง');
+  if(!reasons.length)reasons.push('โครงสร้างล่าสุดยังค่อนข้างเสถียร');
+  return{kind,mix:raw,confidence:conf,state:v,reasons,distShift:d,changePoint:shift};
+}
+function exact(x,len){
+  if(x.length<len+1)return{matches:0,probs:priorProb(),purity:0,pattern:'--'};
+  const cur=x.slice(-len).join(''),c={P:0,B:0,T:0};let n=0;
+  for(let i=len;i<x.length;i++)if(x.slice(i-len,i).join('')===cur){c[x[i]]++;n++}
+  return{matches:n,probs:probs(c),purity:n?Math.max(...Object.values(c))/n:0,pattern:cur};
+}
+function softSim(x,len=6){
+  if(x.length<len+1)return{matches:0,weight:0,probs:priorProb(),purity:0,pattern:'--'};
+  const cur=x.slice(-len),c={P:0,B:0,T:0};let wsum=0,n=0;
+  for(let i=len;i<x.length;i++){
+    const h=x.slice(i-len,i);let diff=0;
+    for(let j=0;j<len;j++)if(h[j]!==cur[j])diff++;
+    const sim=1-diff/len;if(sim<CFG.similarityFloor)continue;
+    const age=x.length-1-i,w=Math.pow(sim,4)*Math.pow(.985,age);
+    c[x[i]]+=w;wsum+=w;n++;
+  }
+  return{matches:n,weight:wsum,probs:wsum?{P:c.P/wsum,B:c.B/wsum,T:c.T/wsum}:priorProb(),purity:wsum?Math.max(...Object.values(c))/wsum:0,pattern:cur.join('')};
+}
+function contextProb(x,len){
+  if(x.length<len+1)return{n:0,probs:priorProb(),purity:0};
+  const cur=x.slice(-len).join(''),c={P:0,B:0,T:0};let n=0;
+  for(let i=len;i<x.length;i++)if(x.slice(i-len,i).join('')===cur){c[x[i]]++;n++}
+  return{n,probs:probs(c),purity:n?Math.max(...Object.values(c))/n:0};
+}
+function stateSimilarityRows(x,historyStates){
+  if(!historyStates.length)return[];
+  const cur=stateVector(x),keys=['switchRate','dom','bias','ent','lastRun','avgRun','alternation','p','b','t','repeatPP','repeatBB','repeatTT','transitionShift'];
+  const scale={switchRate:.3,dom:.35,bias:.7,ent:.7,lastRun:.18,avgRun:.3,alternation:.35,p:1,b:1,t:1,repeatPP:.5,repeatBB:.5,repeatTT:.5,transitionShift:.6};
+  const rows=[];
+  for(const h of historyStates){
+    if(!h||!h.actual)continue;
+    let d=0,w=0;
+    for(const k of keys){
+      const a=cur[k],b=h.vector[k];
+      if(!Number.isFinite(a)||!Number.isFinite(b))continue;
+      d+=Math.pow((a-b)*scale[k],2);w+=scale[k]*scale[k];
+    }
+    const sim=Math.exp(-Math.sqrt(d/(w||1))*2.2);
+    if(sim<.25)continue;
+    rows.push({sim,actual:h.actual,age:x.length-h.index-1,state:h.vector,preds:h.preds||null});
+  }
+  return rows.sort((a,b)=>b.sim-a.sim);
+}
+function knnState(x,historyStates){
+  const rows=stateSimilarityRows(x,historyStates);if(!rows.length)return{n:0,probs:priorProb(),avgSim:0,states:[]};
+  const top=rows.slice(0,CFG.stateK),c={P:0,B:0,T:0};let ws=0;
+  for(const r of top){const w=r.sim*Math.pow(.99,r.age);c[r.actual]+=w;ws+=w}
+  const p=ws?{P:c.P/ws,B:c.B/ws,T:c.T/ws}:priorProb();
+  return{n:top.length,probs:p,avgSim:mean(top.map(r=>r.sim)),states:top};
+}
+function localExpertScores(x,historyStates){
+  const rows=stateSimilarityRows(x,historyStates).slice(0,CFG.stateK);
+  const out={n:rows.length,avgSim:rows.length?mean(rows.map(r=>r.sim)):0,byModel:{}};
+  for(const n of MODEL_NAMES)out.byModel[n]={ll:Math.log(3),acc:1/3,weight:0,n:0};
+  if(!rows.length)return out;
+  for(const n of MODEL_NAMES){
+    let wsum=0,ll=0,h=0;
+    for(const r of rows){
+      if(!r.preds||!r.preds[n])continue;
+      const w=r.sim*Math.pow(.99,r.age),pp=r.preds[n];
+      ll+=w*logLoss(pp,r.actual);h+=w*(argmax(pp)===r.actual?1:0);wsum+=w;
+    }
+    if(wsum)out.byModel[n]={ll:ll/wsum,acc:h/wsum,weight:wsum,n:rows.length};
+  }
+  return out;
+}
+function recentRate(arr,fn,n=CFG.recentN){const a=arr.slice(-n);return a.length?mean(a.map(fn)):0}
+function recency(x,n,decay=.88){const d=x.slice(-n),c={P:0,B:0,T:0};d.forEach((v,i)=>c[v]+=Math.pow(decay,d.length-1-i));return probs(c,.5)}
+function markov(x,o){
+  if(x.length<=o)return priorProb();
+  const cur=x.slice(-o).join(''),c={P:0,B:0,T:0};for(let i=o;i<x.length;i++)if(x.slice(i-o,i).join('')===cur)c[x[i]]++;
+  return probs(c);
+}
+function runModel(x){
+  if(!x.length)return priorProb();
+  const r=runInfo(x),c={P:0,B:0,T:0};
+  if(r.last<=0)return priorProb();
+  for(let i=1;i<x.length-1;i++){
+    let len=1;for(let j=i-1;j>=0&&x[j]===x[i-1];j--)len++;
+    if(len===r.last)c[x[i]]++;
+  }
+  return probs(c);
+}
+function expertProbs(x,name,historyStates){
+  const last=x[x.length-1];
+  if(!x.length)return priorProb();
+  if(name==='GLOBAL')return probs(counts(x));
+  if(name==='RECENT6')return recency(x,6);
+  if(name==='RECENT12')return recency(x,12);
+  if(name==='RECENT24')return recency(x,24);
+  if(name==='TRANSITION'){const m=transitionMatrix(x);return last?m[last]:priorProb();}
+  if(name==='MARKOV1')return markov(x,1);
+  if(name==='MARKOV2')return markov(x,2);
+  if(name==='MARKOV3')return markov(x,3);
+  if(name==='MARKOV4')return markov(x,4);
+  if(name==='CONTINUE'){
+    if(last==='T')return probs(counts(x.slice(-6)));
+    const p=priorProb();p[last]=.60;for(const k of OUT.filter(k=>k!==last))p[k]=.20;return p;
+  }
+  if(name==='REVERSAL'){
+    if(last==='T')return probs(counts(x.slice(-6)));
+    const p=priorProb();if(last==='P'){p.B=.55;p.P=.25;p.T=.20}else{p.P=.55;p.B=.25;p.T=.20}return p;
+  }
+  if(name==='RUN')return runModel(x);
+  if(name==='EXACT3'){const e=exact(x,3);return e.matches>=CFG.exactMin?e.probs:mixProb(e.probs,priorProb(),.70);}
+  if(name==='EXACT4'){const e=exact(x,4);return e.matches>=CFG.exactMin?e.probs:mixProb(e.probs,priorProb(),.75);}
+  if(name==='EXACT5'){const e=exact(x,5);return e.matches>=CFG.exactMin?e.probs:mixProb(e.probs,priorProb(),.80);}
+  if(name==='SOFTSIM'){const e=softSim(x);return e.matches>=CFG.knnMin?e.probs:mixProb(e.probs,priorProb(),.65);}
+  if(name==='STATE-KNN'){
+    const k=knnState(x,historyStates);return k.n>=CFG.knnMin&&k.avgSim>=.48?k.probs:mixProb(k.probs,priorProb(),.55);
+  }
+  return priorProb();
+}
+function newStats(){const o={};for(const n of MODEL_NAMES)o[n]={n:0,hits:0,ll:Math.log(3),brier:2/3,recent:[],recentLL:[],regime:{},regret:0,over:0,lossStreak:0,lastError:null};return o}
+function cell(s,r){s.regime[r] ||= {n:0,hits:0,ll:Math.log(3)};return s.regime[r]}
+function errorType(pred,actual,prev,conf){
+  if(pred===actual)return'NONE';
+  if(actual==='T')return'TIE_MISS';
+  if(conf>=.65)return'OVERCONFIDENCE';
+  if(pred===prev&&actual!==prev)return'FALSE_REVERSAL';
+  if(pred!==prev&&actual===prev)return'MISSED_CONTINUATION';
+  return'OTHER';
+}
+function recentErrorVector(events){
+  const e=events.slice(-CFG.recentN);if(!e.length)return{pressure:.5,over:0,mc:0,fr:0,tm:0,other:0};
+  let over=0,mc=0,fr=0,tm=0,other=0;
+  for(const v of e){if(v.error==='OVERCONFIDENCE')over++;if(v.error==='MISSED_CONTINUATION')mc++;if(v.error==='FALSE_REVERSAL')fr++;if(v.error==='TIE_MISS')tm++;if(v.error==='OTHER')other++}
+  return{pressure:mean(e.map(v=>v.hit?0:1)),over,mc,fr,tm,other};
+}
+function modelWeights(stats,reg,knn,errors){
+  const raw={},prior=1/MODEL_NAMES.length;let z=0;
+  for(const n of MODEL_NAMES){
+    const s=stats[n];
+    const ll=s.n?s.ll:Math.log(3), recent=s.recent.length?mean(s.recent):1/3;
+    let regimeAcc=recent,regimeLL=ll,regWeight=0,accSum=0,llSum=0;
+    for(const [rk,mix] of Object.entries(reg.mix||{})){
+      const c=s.regime[rk];
+      if(c&&c.n>=3){accSum+=mix*(c.hits/c.n);llSum+=mix*c.ll;regWeight+=mix;}
+    }
+    if(regWeight>=.35){regimeAcc=accSum/regWeight;regimeLL=llSum/regWeight}
+    const lossScore=Math.exp(clamp(-1.20*(regimeLL-Math.log(3)),-3,1.5));
+    const recentScore=.65+.80*clamp(recent);
+    const regimeScore=.70+1.00*clamp(regimeAcc);
+    let w=.08*prior+.42*lossScore+.26*recentScore+.24*regimeScore;
+    if(s.n<6)w*=.78;
+    if(s.lossStreak>=3)w*=.78;
+    if(reg.kind==='SHIFT'&&['GLOBAL','RECENT24','EXACT5'].includes(n))w*=.72;
+    if(errors.mc>errors.fr&&['CONTINUE','MARKOV1','MARKOV2','RUN'].includes(n))w*=1.12;
+    if(errors.fr>errors.mc&&['REVERSAL','TRANSITION'].includes(n))w*=1.08;
+    if(errors.over>=3)w*=.95;
+    if(errors.tm>=3&&n==='GLOBAL')w*=.97;
+    const local=knn&&knn.byModel?knn.byModel[n]:null;
+    if(local&&local.n>=3){
+      const localLoss=Math.exp(clamp(-1.05*(local.ll-Math.log(3)),-2,1.2));
+      w*=.78+.46*localLoss;
+      if(local.acc>=.60)w*=1.06;
+    }
+    raw[n]=Math.max(.001,w);z+=raw[n];
+  }
+  for(const n of MODEL_NAMES)raw[n]/=z||1;
+  return raw;
+}
+function ensemble(preds,w){
+  const o={P:0,B:0,T:0};let z=0;
+  for(const n of MODEL_NAMES){const a=w[n]||0;z+=a;for(const k of OUT)o[k]+=a*preds[n][k]}
+  for(const k of OUT)o[k]/=z||1;
+  return o;
+}
+function confidenceRaw(p){
+  const top=p[argmax(p)], ent=entropy(p);
+  const margin=top-Math.max(...OUT.filter(k=>k!==argmax(p)).map(k=>p[k]));
+  return clamp(.42*(1-ent)+.38*(top-1/3)*1.9+.20*margin/.5);
+}
+function consensus(preds,w,f){
+  let agree=0,total=0;
+  for(const n of MODEL_NAMES){const a=w[n]||0;total+=a;if(argmax(preds[n])===f)agree+=a}
+  return total?agree/total:0;
+}
+function calibration(events,currentP){
+  const rows=events.slice(-120);
+  if(!rows.length)return{state:'INSUFFICIENT',cal:0,raw:currentP?confidenceRaw(currentP):0,mae:0,n:0};
+  const raw=currentP?confidenceRaw(currentP):confidenceRaw(rows[rows.length-1].ensemble);
+  const bin=Math.min(CFG.calBins-1,Math.floor(raw*CFG.calBins));
+  const same=rows.filter(e=>Math.min(CFG.calBins-1,Math.floor(e.confidence*CFG.calBins))===bin);
+  const hit=same.length>=5?mean(same.map(e=>e.hit?1:0)):mean(rows.map(e=>e.hit?1:0));
+  const mae=mean(rows.map(e=>Math.abs(e.confidence-(e.hit?1:0))));
+  return{state:mae<.18?'GOOD':mae<.28?'WATCH':'WEAK',cal:hit,raw,mae,n:rows.length};
+}
+function audit(events,x){
+  if(!events.length)return{n:0,hit:0,ll:0,br:0,baseLL:0,gap:0,oracleGap:0,randomLL:Math.log(3)};
+  const r=events.slice(-Math.min(200,events.length));let ll=0,br=0,bll=0,h=0,or=0;
+  for(const e of r){
+    ll+=logLoss(e.ensemble,e.actual);br+=brier(e.ensemble,e.actual);h+=e.hit?1:0;or+=e.regret;
+    const c={P:0,B:0,T:0};for(let j=0;j<e.i;j++)c[x[j]]++;bll+=logLoss(probs(c),e.actual);
+  }
+  return{n:r.length,hit:h/r.length,ll:ll/r.length,br:br/r.length,baseLL:bll/r.length,gap:ll/r.length-bll/r.length,oracleGap:or/r.length,randomLL:Math.log(3)};
+}
+let xGlobal=[];
+function replay(x){
+  const stats=newStats(),events=[],states=[];
+  for(let i=Math.max(6,CFG.minHistory-2);i<x.length;i++){
+    const past=x.slice(0,i),r=regime(past),kn=localExpertScores(past,states),errs=recentErrorVector(events);
+    const w=modelWeights(stats,r,kn,errs),preds={};
+    for(const n of MODEL_NAMES)preds[n]=expertProbs(past,n,states);
+    const ens=ensemble(preds,w),f=argmax(ens),rawConf=confidenceRaw(ens),cons=consensus(preds,w,f),actual=x[i],hit=f===actual;
+    let bestN=null,bestLL=Infinity;for(const n of MODEL_NAMES){const ll=logLoss(preds[n],actual);if(ll<bestLL){bestLL=ll;bestN=n}}
+    const regret=Math.max(0,logLoss(ens,actual)-bestLL);
+    const err=errorType(f,actual,past[past.length-1],rawConf);
+    const ev={i,actual,forecast:f,ensemble:ens,confidence:rawConf,consensus:cons,preds,weights:w,regime:r.kind,regimeMix:r.mix,state:stateVector(past),knn:kn,hit,error:err,bestExpert:bestN,regret};
+    events.push(ev);states.push({index:i,vector:ev.state,actual,preds});
+    for(const n of MODEL_NAMES){
+      const s=stats[n],pp=preds[n],ll=logLoss(pp,actual),br=brier(pp,actual),ok=argmax(pp)===actual,c=cell(s,r.kind);
+      s.n++;s.hits+=ok?1:0;s.ll=CFG.decay*s.ll+(1-CFG.decay)*ll;s.brier=CFG.decay*s.brier+(1-CFG.decay)*br;
+      s.recent.push(ok?1:0);if(s.recent.length>CFG.recentN)s.recent.shift();
+      s.recentLL.push(ll);if(s.recentLL.length>CFG.recentN)s.recentLL.shift();
+      if(ok)s.lossStreak=0;else s.lossStreak++;
+      s.lastError=ok?null:errorType(argmax(pp),actual,past[past.length-1],confidenceRaw(pp));
+      c.n++;c.hits+=ok?1:0;c.ll=CFG.decay*c.ll+(1-CFG.decay)*ll;
+      s.regret+=Math.max(0,ll-bestLL);if(!ok&&confidenceRaw(pp)>=.65)s.over++;
+    }
+  }
+  return{stats,events,states};
+}
+function multimemory(x){
+  const arr=[['SHORT',Math.min(8,x.length)],['MEDIUM',Math.min(32,x.length)],['LONG',x.length]];
+  return arr.map(([name,n])=>{const p=probs(counts(x.slice(-n)));return{name,n,p,forecast:argmax(p)}});
+}
+function topContext(x){
+  const rows=[];for(const len of [2,3,4,5,6,8,10,12]){
+    const e=contextProb(x,len);if(e.n)rows.push({len,n:e.n,best:argmax(e.probs),purity:e.purity});
+  }
+  return rows.sort((a,b)=>(b.purity-1/3)*Math.log(1+b.n)-(a.purity-1/3)*Math.log(1+a.n)).sort((a,b)=>b.purity*b.n-a.purity*a.n)[0]||null;
+}
+function sampleQuality(x,kn,e3,soft){
+  const hist=clamp(x.length/80),state=kn.n?clamp(kn.n/5)*kn.avgSim:0,context=e3.matches>=3?clamp(e3.matches/10)*e3.purity:0,softq=soft.matches>=3?clamp(soft.matches/10)*soft.purity:0;
+  return{score:clamp(.35*hist+.30*state+.20*context+.15*softq),parts:{history:hist,state,exact:context,soft:softq}};
+}
+function decision(s){
+  const f=s.forecast,edge=s.prob[f]-s.global[f],margin=s.prob[f]-Math.max(...OUT.filter(k=>k!==f).map(k=>s.prob[k]));
+  const cal=s.calibration.n>=5?s.calibration.cal:s.rawConf,oos=s.oos,dis=s.disagreement,q=s.sample.score,cons=s.consensus;
+  let d='WAIT';
+  const oosOkay=oos.n<CFG.followOOSMin||oos.gap<=.015;
+  if(edge>=CFG.edgeGate&&margin>=CFG.marginGate&&(cal||0)>=.46&&oosOkay&&dis<=CFG.disagreementGate&&s.errorPressure<=.58&&cons>=.58&&q>=.35)d='FOLLOW';
+  if(s.regime.kind==='SHIFT'&&margin<.09)d='WAIT';
+  if(s.errorPressure>.62)d='CUT';
+  const reasons=[`คาดการณ์ ${side(f)} · margin ${pct(margin)} · edge เทียบ Global ${pct(edge)}`];
+  if(s.regime.kind==='SHIFT')reasons.push('SHIFT → ลด long-memory และเพิ่ม recent/state-similar');
+  if(dis>.5)reasons.push('expert แตกความเห็นสูง → ลด confidence');
+  if(cons<.58)reasons.push('consensus ต่ำ → ยังไม่มีเสียงส่วนใหญ่');
+  if(s.errorPressure>.58)reasons.push('error pressure ล่าสุดสูง → CUT / reassess');
+  if(q<.35)reasons.push('sample quality ต่ำ → WAIT');
+  if(oos.n>=CFG.followOOSMin&&oos.gap>.015)reasons.push('OOS log-loss แย่กว่า baseline → ไม่มี edge');
+  if(!s.knn.n)reasons.push('ยังไม่มี historical state ที่คล้ายพอ');
+  if(d==='WAIT')reasons.push('หลักฐานยังไม่หนาพอ → NO EDGE / WAIT');
+  return{d,edge,margin,reasons};
+}
+function compute(x){
+  xGlobal=x;if(!x.length)return null;
+  const rp=replay(x),r=regime(x),kn=localExpertScores(x,rp.states),kstate=knnState(x,rp.states),errors=recentErrorVector(rp.events),w=modelWeights(rp.stats,r,kn,errors),preds={};
+  for(const n of MODEL_NAMES)preds[n]=expertProbs(x,n,rp.states);
+  const p=ensemble(preds,w),f=argmax(p),rawConf=confidenceRaw(p),cal=calibration(rp.events,p),oos=audit(rp.events,x);
+  const dis=mean(MODEL_NAMES.map(n=>argmax(preds[n])===f?0:1)),cons=consensus(preds,w,f);
+  const mr=multimemory(x),e3=exact(x,3),soft=softSim(x),tc=topContext(x),stateSim=kstate.avgSim;
+  const policyGap=rp.events.length?mean(rp.events.slice(-Math.min(60,rp.events.length)).map(e=>e.regret)):0;
+  const errorPressure=rp.events.length?mean(rp.events.slice(-CFG.recentN).map(e=>e.hit?0:1)):.5;
+  const sample=sampleQuality(x,kstate,e3,soft);
+  const d=decision({forecast:f,prob:p,global:preds.GLOBAL,calibration:cal,rawConf,oos,disagreement:dis,consensus:cons,errorPressure,regime:r,knn:kstate,sample});
+  return{x,rp,r,kn,kstate,w,preds,p,f,rawConf,cal,oos,dis,cons,errorPressure,mr,e3,soft,tc,stateSim,policyGap,decision:d,errors,sample};
+}
+function set(id,v,html){
+  const e=$(id);if(!e)return;
+  if(html)e.innerHTML=v;else e.textContent=v;
+}
+function bar(n,w){return `<div class="bar"><label>${n}</label><div class="track"><span style="width:${Math.round(clamp(w)*100)}%"></span></div><div class="value">${pct(w)}</div></div>`}
+function renderHistory(x){const b=$('history');b.replaceChildren();if(!x.length){const e=document.createElement('div');e.className='history-empty';e.textContent='ยังไม่มีประวัติ';b.append(e);return}x.forEach((r,i)=>{const e=document.createElement('div');e.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');e.textContent=r;e.title=`ตา ${i+1} · ${side(r)}`;b.append(e)})}
+function bar(n,w){return `<div class="bar"><label>${n}</label><div class="track"><span style="width:${Math.round(clamp(w)*100)}%"></span></div><div class="value">${pct(w)}</div></div>`}
+function render(){
+  const x=readHistory();renderHistory(x);
+  set('hands',x.length+' ตา');
+  const c=counts(x);set('dist',x.length?`P ${pct(c.P/x.length)} · B ${pct(c.B/x.length)} · T ${pct(c.T/x.length)}`:'--');
+  if(!x.length){
+    ['forecast','confidence','regime','policy','oos','decision','consensus','sampleQuality','forecastBig','forecastDetail','message','diagnostic','state','stateDetail','regimeMix','switchRate','runState','entropy','transShift','stateSimilarity','changePoint','stateSignals','stateInterpretation','leaderboard','policyReasons','policyBars','shortMem','shortMemD','medMem','medMemD','longMem','longMemD','exact3','exact3D','bestContext','bestContextD','softSim','softSimD','continuation','reversal','patternEvidence','patternConflict','recentErrors','overconfident','missedContinuation','falseReversal','tieMiss','policyRegret','calibration','modelHealth','lessons','repairs','oosN','oosLogLoss','baseLogLoss','oosGap','oosBrier','oracleGap','stateCoverage','edge','auditVerdict','confidenceReasons'].forEach(id=>set(id,'ยังไม่มีข้อมูล'));
+    return;
+  }
+  const s=compute(x);
+  set('forecast',side(s.f));
+  set('confidence',pct(s.cal.n>=5?s.cal.cal:s.rawConf));
+  set('regime',s.r.kind);set('policy',s.decision.d);set('oos',s.oos.n?pct(s.oos.hit):'--');set('decision',s.decision.d);
+  set('consensus',pct(s.cons));set('sampleQuality',pct(s.sample.score));
+  set('forecastBig',`${side(s.f)} · ${s.decision.d}`);
+  set('forecastDetail',`P ${pct(s.p.P)} · B ${pct(s.p.B)} · T ${pct(s.p.T)} · raw ${pct(s.rawConf)} · calibrated ${pct(s.cal.n>=5?s.cal.cal:s.rawConf)}`);
+  set('message',s.decision.reasons.join(' · '));
+  const dq=s.decision.d==='FOLLOW'
+    ? `FOLLOW ได้เมื่อ edge/margin/OOS/consensus/sample ผ่าน gate พร้อมกัน`
+    : `ตอนนี้ระบบเลือก ${s.decision.d}: หลักฐานยังไม่ผ่าน gate สำหรับการตาม`;
+  set('diagnostic',dq);
+  set('state',s.r.kind);set('stateDetail',s.r.reasons.join(' · '));
+  set('regimeMix',Object.entries(s.r.mix).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`${k} ${pct(v)}`).join(' · '));
+  set('switchRate',pct(s.r.state.switchRate));set('runState',String(s.r.state.lastRun));set('entropy',pct(s.r.state.ent));
+  set('transShift',s.r.state.transitionShift.toFixed(3));set('stateSimilarity',s.kstate.n?`${pct(s.stateSim)} · n=${s.kstate.n}`:'ไม่มี');set('changePoint',pct(s.r.changePoint));
+  set('stateSignals',[`switch ${pct(s.r.state.switchRate)}`,`avg run ${s.r.state.avgRun.toFixed(2)}`,`bias P-B ${s.r.state.bias.toFixed(2)}`,`alternation ${pct(s.r.state.alternation)}`,`transition shift ${s.r.state.transitionShift.toFixed(3)}`].map(v=>`<div class="item">${v}</div>`).join(''),true);
+  set('stateInterpretation',s.r.reasons.map(v=>`<div class="item">${v}</div>`).join(''),true);
+
+  const rows=MODEL_NAMES.map(n=>{
+    const z=s.rp.stats[n]||newStats()[n],cell=z.regime[s.r.kind],ra=cell&&cell.n>=3?pct(cell.hits/cell.n):'--',pp=s.preds[n]||priorProb();
+    return `<tr><td><b>${n}</b></td><td>${side(argmax(pp))}</td><td>${pct(s.w[n]||0)}</td><td>${z.n?pct(z.hits/z.n):'--'}</td><td>${z.ll.toFixed(3)}</td><td>${z.recent.length?pct(mean(z.recent)):'--'}</td><td>${ra}</td><td>${z.n?pct(z.regret/Math.max(1,z.n)):'--'}</td></tr>`
+  }).join('');
+  set('leaderboard',rows,true);
+  set('policyReasons',[
+    (s.kstate.n?`Nearest-state evidence ${s.kstate.n} states · avg similarity ${pct(s.kstate.avgSim)}`:'ยังไม่มี nearest-state evidence'),
+    `Consensus ${pct(s.cons)} · disagreement ${pct(s.dis)}`,
+    `Error pressure ${pct(s.errorPressure)} · MC ${s.errors.mc} / FR ${s.errors.fr}`,
+    `Policy regret ล่าสุดเฉลี่ย ${(s.policyGap||0).toFixed(3)}`
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+  set('policyBars',MODEL_NAMES.slice().sort((a,b)=>s.w[b]-s.w[a]).slice(0,7).map(n=>bar(n,s.w[n])).join(''),true);
+
+  const mm=s.mr;
+  set('shortMem',side(mm[0].forecast));set('shortMemD',`n=${mm[0].n} · P ${pct(mm[0].p.P)} / B ${pct(mm[0].p.B)} / T ${pct(mm[0].p.T)}`);
+  set('medMem',side(mm[1].forecast));set('medMemD',`n=${mm[1].n}`);
+  set('longMem',side(mm[2].forecast));set('longMemD',`n=${mm[2].n} · entropy ${pct(entropy(mm[2].p))}`);
+  set('exact3',String(s.e3.matches));set('exact3D',`${s.e3.pattern||'--'} · purity ${pct(s.e3.purity)}`);
+  set('bestContext',s.tc?`N${s.tc.len} → ${side(s.tc.best)}`:'--');set('bestContextD',s.tc?`n=${s.tc.n} · purity ${pct(s.tc.purity)}`:'--');
+  set('softSim',String(s.soft.matches));set('softSimD',`${s.soft.pattern} · purity ${pct(s.soft.purity)}`);
+  const con=argmax(s.preds.CONTINUE),rev=argmax(s.preds.REVERSAL);
+  set('continuation',side(con));set('reversal',side(rev));
+  set('patternEvidence',[
+    `EXACT3 ${s.e3.matches} matches → ${side(argmax(s.e3.probs))}`,
+    `SOFTSIM ${s.soft.matches} matches · weighted ${s.soft.weight.toFixed(2)} → ${side(argmax(s.soft.probs))}`,
+    `KNN state ${s.kstate.n} states · similarity ${pct(s.kstate.avgSim)} → ${side(argmax(s.kstate.probs))}`,
+    s.tc?`Best context N${s.tc.len} → ${side(s.tc.best)} · purity ${pct(s.tc.purity)}`:'ไม่มี context ที่มี sample'
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+  set('patternConflict',[
+    `Short ${side(mm[0].forecast)} · Medium ${side(mm[1].forecast)} · Long ${side(mm[2].forecast)}`,
+    `Continue ${side(con)} vs Reversal ${side(rev)}`,
+    `Ensemble ${side(s.f)} · consensus ${pct(s.cons)} · disagreement ${pct(s.dis)}`
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+
+  const errs=s.rp.events.slice(-CFG.recentN),recent=s.errors;
+  set('recentErrors',String(errs.filter(e=>!e.hit).length));set('overconfident',String(recent.over));set('missedContinuation',String(recent.mc));set('falseReversal',String(recent.fr));set('tieMiss',String(recent.tm));
+  set('policyRegret',(s.policyGap||0).toFixed(3));set('calibration',s.cal.state);set('modelHealth',pct(1-s.errorPressure));
+  const weakest=MODEL_NAMES.slice().sort((a,b)=>s.rp.stats[b].ll-s.rp.stats[a].ll)[0],best=MODEL_NAMES.slice().sort((a,b)=>s.w[b]-s.w[a])[0];
+  set('lessons',[
+    `best policy expert ตอนนี้ = ${best||'--'}`,
+    `weakest loss = ${weakest||'--'} → ${weakest?s.rp.stats[weakest].ll.toFixed(3):'--'}`,
+    `error pattern: MC ${recent.mc} / FR ${recent.fr} / over ${recent.over} / T ${recent.tm}`,
+    `sample quality = ${pct(s.sample.score)} · consensus = ${pct(s.cons)}`
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+  const reps=[];
+  if(s.r.kind==='SHIFT')reps.push('SHIFT → ลด long-memory และเพิ่ม recent/state-similar');
+  if(recent.mc>recent.fr)reps.push('พลาด continuation มากกว่า → boost CONTINUE / MARKOV / RUN');
+  else if(recent.fr>recent.mc)reps.push('false reversal มากกว่า → ลด REVERSAL และพึ่ง transition/continuation มากขึ้น');
+  if(recent.over>=3)reps.push('overconfidence ≥3 → ลด confidence ผ่าน calibration');
+  if(s.dis>.5)reps.push('expert disagreement สูง → WAIT / ลดน้ำหนักการตัดสิน');
+  if(s.kstate.n<3)reps.push('historical state ยังน้อย → ห้ามฝืน KNN');
+  if(s.sample.score<.35)reps.push('sample quality ต่ำ → จำกัด FOLLOW จนกว่าจะมีหลักฐานเพิ่ม');
+  if(!reps.length)reps.push('ไม่มี repair trigger รุนแรง → รักษาสมดุล');
+  set('repairs',reps.map(v=>`<div class="item">${v}</div>`).join(''),true);
+
+  set('oosN',String(s.oos.n));set('oosLogLoss',s.oos.n?s.oos.ll.toFixed(3):'--');set('baseLogLoss',s.oos.n?s.oos.baseLL.toFixed(3):'--');
+  set('oosGap',s.oos.n?(s.oos.gap>=0?'+':'')+s.oos.gap.toFixed(3):'--');set('oosBrier',s.oos.n?s.oos.br.toFixed(3):'--');
+  set('oracleGap',s.oos.n?s.oos.oracleGap.toFixed(3):'--');set('stateCoverage',s.kstate.n?`${s.kstate.n} / ${s.rp.states.length}`:'0');set('edge',pct(s.decision.edge));
+  set('auditVerdict',[
+    s.oos.n<20?'OOS sample ยังเล็ก':'มี OOS sample ตรวจสอบได้',
+    s.oos.n&&s.oos.gap>0.015?'ensemble log-loss แพ้ baseline':'ensemble log-loss ไม่แพ้ baseline อย่างชัดเจน',
+    s.oos.oracleGap>.05?'policy ยังตาม expert ที่ดีที่สุดไม่ทัน':'policy regret อยู่ในระดับต่ำ'
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+  set('confidenceReasons',[
+    `raw ${pct(s.rawConf)} · calibrated ${pct(s.cal.cal)}`,
+    `calibration ${s.cal.state} · MAE ${pct(s.cal.mae)}`,
+    `consensus ${pct(s.cons)} · disagreement ${pct(s.dis)}`,
+    `sample quality ${pct(s.sample.score)}`,
+    `error pressure ${pct(s.errorPressure)}`,
+    s.r.kind==='SHIFT'?'SHIFT penalty applied':'ไม่มี shift penalty รุนแรง'
+  ].map(v=>`<div class="item">${v}</div>`).join(''),true);
+}
+function push(r){const d=readHistory();d.push(r);saveHistory(d);render()}function undo(){const d=readHistory();if(d.length){d.pop();saveHistory(d);render()}}function reset(){saveHistory([]);render()}
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);render();
+})();
+</script></body></html>

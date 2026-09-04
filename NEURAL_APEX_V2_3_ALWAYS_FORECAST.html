@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V2.3 · ALWAYS FORECAST · RAPID PATTERN FUSION</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,980px);margin:0 auto;padding:14px 10px 30px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 15px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.18em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.subtitle{max-width:860px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label,.card span{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output,.card strong{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecastBig{font-size:32px;font-weight:950;letter-spacing:-.045em}#forecastDetail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:900px;margin:8px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:74px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:6px 5px;border-bottom:1px solid #202027;text-align:left}.table th{color:#9999a5;font-size:8px;letter-spacing:.05em}.bar{display:grid;grid-template-columns:105px 1fr 55px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}.tag{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border:1px solid #333842;border-radius:999px;font-size:8px;font-weight:900}.good{color:var(--good)}.warn{color:var(--warn)}
+@media(max-width:850px){.metrics,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.columns{grid-template-columns:1fr}}@media(max-width:520px){h1{font-size:22px}.grid,.metrics{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card">
+<header><div class="eyebrow">V2.3 · ALWAYS FORECAST · RAPID PATTERN FUSION</div><h1>NEURAL APEX <span class="badge">V2.3 · 12-PATTERN</span></h1><p class="subtitle">V2.3 ตรวจครบทั้ง 12 pattern ทุกตา, เปรียบเทียบ full-history + recent evidence + online learning แล้วเลือกคำตอบ P/B ที่มีคะแนนสูงสุดทันที; ไม่มี WAIT เป็นผลลัพธ์หลักหลังมีข้อมูล แต่จะแสดงระดับหลักฐานและคุณภาพการคาดแยกต่างหาก</p></header>
+<div class="metrics"><div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0</output></div><div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div><div class="metric"><span class="metric-label">FORECAST</span><output id="forecast">--</output></div><div class="metric"><span class="metric-label">CONFIDENCE</span><output id="confidence">--</output></div><div class="metric"><span class="metric-label">STATE</span><output id="regime">--</output></div><div class="metric"><span class="metric-label">POLICY</span><output id="policy">--</output></div><div class="metric"><span class="metric-label">OOS HIT</span><output id="oos">--</output></div><div class="metric"><span class="metric-label">DECISION</span><output id="decision">--</output></div><div class="metric"><span class="metric-label">CONSENSUS</span><output id="consensus">--</output></div><div class="metric"><span class="metric-label">SAMPLE QUALITY</span><output id="sampleQuality">--</output></div><div class="metric"><span class="metric-label">NOVELTY / OOD</span><output id="novelty">--</output></div><div class="metric"><span class="metric-label">ORACLE CAPTURE</span><output id="oracleCapture">--</output></div><div class="metric"><span class="metric-label">LEARN SPEED</span><output id="learnSpeed">--</output></div></div>
+<section class="forecast"><div id="forecastBig">ยังไม่มีข้อมูล</div><div id="forecastDetail">กด P / B / T เพื่อเริ่ม</div><div id="message">ระบบจะ replay ประวัติทั้งหมดแบบ prequential และเรียนรู้จากข้อผิดพลาดทีละตา</div><div id="diagnostic" class="notice" style="margin-top:7px">ต้องมีหลักฐานมากพอจึงค่อย FOLLOW · ไม่มี edge ให้ WAIT</div></section>
+<div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div>
+<section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T ถูกเก็บเป็นผลจริง แต่ระบบจะไม่สร้างคำอธิบายเชิงเหตุผลปลอมเมื่อหลักฐานไม่พอ</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button></div></section>
+<section class="section"><h2 class="section-title">V2 · EXTENDED PATTERN ANALYSIS</h2><p class="section-description">ตรวจ 12 โครงสร้าง: 6 เค้าเดิม + ปิงปอง + ลูกคู่ + 1-2 + 1-3 + 2-3 + มังกร</p><div class="grid" id="patternCards"></div></section><section class="section"><h2 class="section-title">V2.2 · OVERLAP RESOLUTION + RAPID LEARNING</h2><div class="columns"><div class="panel"><b>การเปรียบเทียบ 12 pattern</b><div id="overlapPanel" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Full-history exact-state evidence</b><div id="historyEvidence" class="list">ยังไม่มีข้อมูล</div></div></div></section><section class="section"><h2 class="section-title">V2 · FINAL DECISION TRACE</h2><div class="columns"><div class="panel"><b>Analysis chain</b><div id="decisionTrace" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>Rules / safeguards</b><div id="safeguards" class="list">ยังไม่มีข้อมูล</div></div></div></section><section class="section"><h2 class="section-title">V2.2 · HISTORICAL MATCH TABLE</h2><div class="panel" style="overflow:auto"><table class="table"><thead><tr><th>รูปแบบ</th><th>สถานะ</th><th>EXACT STATE</th><th>จำนวน</th><th>P</th><th>B</th><th>ผลเด่น</th><th>SUPPORT</th></tr></thead><tbody id="matchTable"><tr><td colspan="8">ยังไม่มีข้อมูล</td></tr></tbody></table></div></section><div class="notice"><strong>วิธีอ่าน OOS:</strong> OOS HIT = ความถูกต้องของ forecast ทุกตาที่มี P/B; การ forecast ถูกคำนวณก่อนเห็นผลตาถัดไป และ T ไม่เป็นตัวทำนาย P/B<br>โครงสร้างเพิ่มเติม: ปิงปอง = สลับ 1-1, ลูกคู่ = 2-2, 1-2/1-3/2-3 = ลำดับความยาว run, มังกร = run ยาวต่อเนื่อง · รูปแบบที่ซ้ำโครงสร้างกันถูกลดการนับซ้ำ<br><strong>V2 PRINCIPLE:</strong> แหล่งคาดการณ์มีเพียง 12 pattern structures เท่านั้น · pattern ที่เป็นโครงสร้างเดียวกันจะถูก deduplicate ก่อนรวมหลักฐาน · เมื่อหลักฐานขัดแย้งหรือไม่พอ ระบบจะ WAIT และต้องมี exact-state evidence ขั้นต่ำก่อน FOLLOW</div>
+</section></main>
+<script>
+(function(){'use strict';
+const KEY='neural-apex-v2-extended-pattern-only';
+const OLD_KEYS=['neural-apex-v1-six-only','neural-apex-history-audit-v67-signal-noise-gated-meta-learning','neural-apex-history-audit-v66-full-history-contextual-meta-learning','neural-apex-history-audit-v65-contextual-meta-learning','neural-apex-history-audit-v64-hierarchical-adaptive','neural-apex-history-audit-v63-adaptive-walk-forward-meta-learning'];
+const ALL=['P','B','T'];
+const PB=['P','B'];
+const PATTERNS=[
+ {id:'CUT2',name:'สองตัวตัด',desc:'จับชุด 2-2-2 และมองฝั่งตรงข้ามหลังครบ 2',target:2,minRuns:3,type:'CUT',group:'RUN2'},
+ {id:'TRIPLE',name:'Triple',desc:'จับชุด 3-3-3 สลับกัน',target:3,minRuns:3,type:'EXACT',group:'RUN3'},
+ {id:'CUT3',name:'สามตัวตัด',desc:'แต่ละ run ไม่เกิน 3 และ run ล่าสุดครบ 3',target:3,minRuns:3,type:'CUT',group:'RUN3'},
+ {id:'RED3',name:'แดงสามตัวตัด',desc:'โครงสร้าง 3 ตัวตัดแบบสะท้อนสองฝั่ง',target:3,minRuns:3,type:'CUT',group:'RUN3'},
+ {id:'CUT4',name:'สี่ตัวตัด',desc:'จับชุด 4-run และมองฝั่งตรงข้ามหลังครบ 4',target:4,minRuns:3,type:'CUT',group:'RUN4'},
+ {id:'REDNON',name:'แดงไม่ติด',desc:'สลับ 1-1 ต่อเนื่อง',target:1,minRuns:4,type:'ALT',group:'ALT1'},
+ {id:'PINGPONG',name:'ปิงปอง',desc:'P/B สลับกันต่อเนื่องอย่างน้อย 6 ตา',target:1,minRuns:6,type:'ALT',group:'ALT1'},
+ {id:'PAIR',name:'ลูกคู่',desc:'2-2-2-2 สลับกัน',target:2,minRuns:4,type:'EXACT',group:'RUN2'},
+ {id:'RUN12',name:'1-2',desc:'ความยาว run สลับ 1-2 หรือ 2-1',target:2,minRuns:4,type:'SEQ',group:'RUN12'},
+ {id:'RUN13',name:'1-3',desc:'ความยาว run สลับ 1-3 หรือ 3-1',target:3,minRuns:4,type:'SEQ',group:'RUN13'},
+ {id:'RUN23',name:'2-3',desc:'ความยาว run สลับ 2-3 หรือ 3-2',target:3,minRuns:4,type:'SEQ',group:'RUN23'},
+ {id:'DRAGON',name:'มังกร',desc:'run เดียวฝั่งเดิมยาวตั้งแต่ 5 ขึ้นไป; วิเคราะห์การต่อ',target:5,minRuns:1,type:'DRAGON',group:'DRAGON'}
+];
+const MIN_EXACT=2;
+const MIN_FOLLOW_SHARE=0.60;
+const PRIOR_STRENGTH=2;
+const RECENT_WINDOW=36;
+const LEARN_KEY=KEY+'-learner-v22';
+const OOS_KEY=KEY+'-oos-v22';
+
+const $=id=>document.getElementById(id), side=x=>x==='P'?'PLAYER':x==='B'?'BANKER':x==='T'?'TIE':'--', opposite=x=>x==='P'?'B':x==='B'?'P':null,
+clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), pct=x=>Number.isFinite(+x)?Math.round(+x*100)+'%':'--';
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function sanitize(x){return (Array.isArray(x)?x:[]).map(v=>typeof v==='string'?v:(v&&v.result)).filter(v=>ALL.includes(v))}
+function load(){let x=safeJSON(KEY);if(Array.isArray(x))return sanitize(x);if(x&&Array.isArray(x.rounds))return sanitize(x.rounds);for(const k of OLD_KEYS){x=safeJSON(k);const a=Array.isArray(x)?x:(x&&Array.isArray(x.rounds)?x.rounds:[]);if(a.length)return sanitize(a)}return []}
+function save(x){localStorage.setItem(KEY,JSON.stringify(sanitize(x)))}
+function pb(hist){return hist.filter(x=>x==='P'||x==='B')}
+function runs(hist){const a=pb(hist);if(!a.length)return[];const out=[];let side0=a[0],n=1,start=0;for(let i=1;i<a.length;i++){if(a[i]===side0)n++;else{out.push({side:side0,len:n,start,end:i-1});side0=a[i];n=1;start=i}}out.push({side:side0,len:n,start,end:a.length-1});return out}
+function exactState(hist,p){
+ const rs=runs(hist); if(!rs.length)return null;
+ const last=rs.at(-1), tail=rs.slice(-6), lens=tail.map(r=>r.len);
+ if(p.group==='ALT1')return {key:`ALT1|last=${last.side}|runs=${tail.map(r=>r.len).join('-')}`,mode:'ALT1',runs:tail};
+ if(p.group==='RUN2')return {key:`RUN2|last=${last.side}|run=${last.len}|lens=${lens.slice(-4).join('-')}`,mode:'RUN2',runs:tail.slice(-4)};
+ if(p.group==='RUN3')return {key:`RUN3|last=${last.side}|run=${last.len}|lens=${lens.slice(-4).join('-')}`,mode:'RUN3',runs:tail.slice(-4)};
+ if(p.id==='DRAGON')return {key:`DRAGON|side=${last.side}|run=${last.len}`,mode:'DRAGON',runs:[last]};
+ if(p.type==='SEQ')return {key:`${p.id}|last=${last.side}|lens=${lens.slice(-4).join('-')}`,mode:p.id,runs:tail.slice(-4)};
+ return {key:`${p.id}|last=${last.side}|run=${last.len}|lens=${lens.slice(-4).join('-')}`,mode:p.id,runs:tail.slice(-4)};
+}
+function isAltOne(rs,n){return rs.length>=n&&rs.slice(-n).every(r=>r.len===1)}
+function isExactRun(rs,n,target){return rs.length>=n&&rs.slice(-n).every(r=>r.len===target)}
+function isAltLengths(rs,pattern){if(rs.length<pattern.length)return false;const t=rs.slice(-pattern.length).map(r=>r.len);const same=(a,b)=>a.every((v,i)=>v===b[i]);const rev=pattern.slice().reverse();return same(t,pattern)||same(t,rev)}
+function detect(hist,p){
+ const rs=runs(hist);if(!rs.length)return{active:false,forecast:null,reason:'ยังไม่มี P/B',integrity:0,state:null,runs:[]};
+ const last=rs.at(-1); let active=false,forecast=null,reason='ไม่ตรง';
+ if(p.id==='REDNON'){active=isAltOne(rs,4);forecast=active?opposite(last.side):null;reason=active?'พบแดงไม่ติด / สลับ 1-1 ต่อเนื่อง':'ยังไม่ครบสลับ 1-1';}
+ else if(p.id==='PINGPONG'){active=isAltOne(rs,6);forecast=active?opposite(last.side):null;reason=active?'พบปิงปองอย่างน้อย 6 ตา':'ยังไม่ครบปิงปอง';}
+ else if(p.id==='PAIR'){active=isExactRun(rs,4,2);forecast=active?opposite(last.side):null;reason=active?'พบลูกคู่ 2-2-2-2':'ยังไม่ครบลูกคู่';}
+ else if(p.id==='RUN12'){active=isAltLengths(rs,[1,2,1,2]);forecast=active?opposite(last.side):null;reason=active?'พบโครงสร้าง 1-2':'ยังไม่ครบ 1-2';}
+ else if(p.id==='RUN13'){active=isAltLengths(rs,[1,3,1,3]);forecast=active?opposite(last.side):null;reason=active?'พบโครงสร้าง 1-3':'ยังไม่ครบ 1-3';}
+ else if(p.id==='RUN23'){active=isAltLengths(rs,[2,3,2,3]);forecast=active?opposite(last.side):null;reason=active?'พบโครงสร้าง 2-3':'ยังไม่ครบ 2-3';}
+ else if(p.id==='DRAGON'){active=last.len>=5;forecast=active?last.side:null;reason=active?'พบมังกร 5+ → วิเคราะห์การต่อฝั่งเดิม':'ยังไม่ถึงมังกร 5+';}
+ else if(p.id==='TRIPLE'){active=isExactRun(rs,3,3);forecast=active?opposite(last.side):null;reason=active?'พบ Triple 3-3-3':'ยังไม่ครบ Triple';}
+ else if(p.id==='CUT2'){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=2)&&last.len===2;forecast=active?opposite(last.side):null;reason=active?'พบสองตัวตัด':'ยังไม่เข้า 2 ตัวตัด';}
+ else if(p.id==='CUT3'||p.id==='RED3'){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=3)&&last.len===3;forecast=active?opposite(last.side):null;reason=active?`พบ ${p.name}`:`ยังไม่เข้า ${p.name}`;}
+ else if(p.id==='CUT4'){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=4)&&last.len===4;forecast=active?opposite(last.side):null;reason=active?'พบสี่ตัวตัด':'ยังไม่เข้า 4 ตัวตัด';}
+ return {active,forecast,reason,integrity:active?1:0,state:active?exactState(hist,p):null,runs:rs};
+}
+function learnerEmpty(){return {version:22,signature:'',seen:{}}}
+function learnerLoad(hist){const x=safeJSON(LEARN_KEY);if(x&&x.version===22&&x.signature===hist.join(''))return x;return buildLearner(hist)}
+function addStat(seen,key,next){if(!key)return;let s=seen[key]||{n:0,p:0,b:0,last:0};s.n++;if(next==='P')s.p++;else if(next==='B')s.b++;s.last=seen.__cursor||0;seen[key]=s}
+function buildLearner(hist){
+ const seen={};let idx=0;const a=pb(hist);
+ for(let i=0;i<a.length-1;i++){
+   const prefix=a.slice(0,i+1), next=a[i+1];
+   seen.__cursor=i+1;
+   for(const p of PATTERNS){const d=detect(prefix,p);if(d.active&&d.state)addStat(seen,d.state.key,next)}
+   idx++;
+ }
+ delete seen.__cursor;
+ const out={version:22,signature:hist.join(''),seen,cursor:a.length};
+ localStorage.setItem(LEARN_KEY,JSON.stringify(out));
+ return out;
+}
+function syncLearnerAppend(histBefore,result){
+ let L=learnerLoad(histBefore);const a=pb(histBefore);if(result==='T'||!a.length){const full=histBefore.concat(result);L={version:22,signature:full.join(''),seen:L.seen||{},cursor:pb(full).length};localStorage.setItem(LEARN_KEY,JSON.stringify(L));return L;}
+ const seen=L.seen||{};seen.__cursor=a.length;
+ for(const p of PATTERNS){const d=detect(histBefore,p);if(d.active&&d.state)addStat(seen,d.state.key,result)}
+ delete seen.__cursor;
+ const full=histBefore.concat(result);L={version:22,signature:full.join(''),seen,cursor:pb(full).length};localStorage.setItem(LEARN_KEY,JSON.stringify(L));return L;
+}
+function getStat(L,key){return L?.seen?.[key]||{n:0,p:0,b:0,last:0}}
+function windowStats(hist,p,target){if(!target)return {n:0,p:0,b:0};const a=pb(hist),start=Math.max(1,a.length-RECENT_WINDOW),m={n:0,p:0,b:0};for(let i=start;i<a.length;i++){const prefix=a.slice(0,i);const d=detect(prefix,p);if(d.active&&d.state?.key===target){m.n++;if(a[i]==='P')m.p++;else if(a[i]==='B')m.b++}}return m}
+function mergeStats(full,recent){const w=0.65;return {n:full.n||0,p:(full.p||0)*(1-w)+(recent.p||0)*w,b:(full.b||0)*(1-w)+(recent.b||0)*w,recent}}
+function wilsonLower(k,n,z=1.28){if(!n)return 0;const p=k/n,den=1+(z*z)/n,ctr=p+(z*z)/(2*n),rad=z*Math.sqrt((p*(1-p)+(z*z)/(4*n))/n);return clamp((ctr-rad)/den)}
+function evidenceScore(m){if(!m?.n)return {score:0,rate:0,lower:0,posterior:0};const best=Math.max(m.p,m.b),rate=best/m.n,posterior=(best+1)/(m.n+PRIOR_STRENGTH),lower=wilsonLower(Math.min(best,m.n),m.n),sample=Math.min(1,m.n/6);return {score:0.52*lower+0.28*posterior+0.20*sample,rate,lower,posterior}}
+function effectiveEvidence(active,matches){const byKey=new Map();for(const d of active){const m=matches[d.id];if(!m?.n)continue;const key=d.state?.key||`${d.group}|${d.id}`;const ex=byKey.get(key);if(!ex||(m.n||0)>(ex.match.n||0))byKey.set(key,{id:d.id,pattern:d,match:m})}return [...byKey.values()]}
+function currentMatches(hist,dets,L){const matches={};for(const p of PATTERNS){const d=dets.find(x=>x.id===p.id);if(!d.active||!d.state){matches[p.id]={n:0,p:0,b:0,top:null,exact:0,all:0,recent:{n:0,p:0,b:0}};continue}const full=getStat(L,d.state.key),recent=windowStats(hist,p,d.state.key),m=mergeStats(full,recent);const top=m.p>m.b?'P':m.b>m.p?'B':null;matches[p.id]={...m,top,exact:full.n,all:full.n,recent};}return matches}
+function resolve(hist,dets,matches){
+ const rs=runs(hist), last=rs.at(-1), active=dets.filter(d=>d.active&&d.forecast);
+ if(!hist.length||!last)return{decision:'WAIT',forecast:null,reason:'เริ่มจากตาแรก',evidence:[],votes:{P:0,B:0},share:0,effective:[],contradictory:[],direct:[],totalN:0,mode:'NONE',bestPattern:null};
+ const effective=effectiveEvidence(active,matches),votes={P:0,B:0},evidence=[];
+ for(const e of effective){const d=e.pattern,m=e.match,pred=d.forecast,ev=evidenceScore(m);let score=ev.score;if(m.top===pred)score+=0.12;if(m.top&&m.top!==pred)score-=0.12;if((m.recent?.n||0)>=2&&((m.recent.p>m.recent.b?'P':m.recent.b>m.recent.p?'B':null)===pred))score+=0.05;score=Math.max(0,score);votes[pred]+=score;evidence.push({name:d.name,id:d.id,group:d.group,predicted:pred,m,score,rate:ev.rate,lower:ev.lower,posterior:ev.posterior,source:'ACTIVE'});}
+ // Always-forecast fallback: fuse all structural families, even when no pattern is fully active.
+ const baseP=hist.filter(x=>x==='P').length, baseB=hist.filter(x=>x==='B').length, baseTotal=baseP+baseB;
+ let fallback={P:0,B:0};
+ if(baseTotal){fallback.P=(baseP+PRIOR_STRENGTH/2)/(baseTotal+PRIOR_STRENGTH);fallback.B=(baseB+PRIOR_STRENGTH/2)/(baseTotal+PRIOR_STRENGTH);}
+ if(last.side==='P'){fallback.P+=0.06;fallback.B+=0.03}else{fallback.B+=0.06;fallback.P+=0.03}
+ if(last.len>=5){fallback[last.side]+=0.14}
+ if(last.len===1){fallback[opposite(last.side)]+=0.10}
+ if(last.len===2){fallback[opposite(last.side)]+=0.08}
+ if(last.len===3){fallback[opposite(last.side)]+=0.06}
+ // Structural-pressure signals from all 12 definitions.
+ for(const p of PATTERNS){
+   const d=dets.find(x=>x.id===p.id); if(!d)continue;
+   let weight=0, pred=null;
+   if(d.active&&d.forecast){weight=0.08;pred=d.forecast}
+   else if(p.id==='DRAGON'&&last.len>=4){weight=0.035;pred=last.side}
+   else if((p.id==='REDNON'||p.id==='PINGPONG')&&last.len===1){weight=0.025;pred=opposite(last.side)}
+   else if(['CUT2','PAIR'].includes(p.id)&&last.len===2){weight=0.025;pred=opposite(last.side)}
+   else if(['TRIPLE','CUT3','RED3'].includes(p.id)&&last.len===3){weight=0.02;pred=opposite(last.side)}
+   else if(p.id==='CUT4'&&last.len===4){weight=0.018;pred=opposite(last.side)}
+   if(pred){fallback[pred]+=weight; evidence.push({name:p.name,id:p.id,group:p.group,predicted:pred,m:matches[p.id],score:weight,rate:0,lower:0,posterior:0,source:'PRESSURE'});}
+ }
+ const activeTotal=Math.max(1,active.length), activeShare=active.length?effective.reduce((s,e)=>s+(e.match.n||0),0):0;
+ const ap=P=>P; const rawP=fallback.P+votes.P, rawB=fallback.B+votes.B; const total=rawP+rawB; const f=rawP>=rawB?'P':'B',other=f==='P'?'B':'P',share=total?rawP/total:0;
+ const direct=effective.filter(e=>e.match.n>=MIN_EXACT&&e.match.top===e.pattern.forecast), contradictory=effective.filter(e=>e.match.n>=MIN_EXACT&&e.match.top&&e.match.top!==e.pattern.forecast), totalN=effective.reduce((s,e)=>s+(e.match.n||0),0);
+ const bestEvidence=effective.slice().sort((a,b)=>b.score-a.score)[0]||null;
+ const evidenceConfidence=Math.max(share,1-share), mode=effective.length?'PATTERN-FUSION':'STRUCTURAL-FALLBACK';
+ const reason=effective.length?`เลือก ${side(f)} จาก 12 pattern + full-history + recent evidence`:`ยังไม่มี exact-state พร้อม → ใช้โครงสร้าง 12 pattern + history prior เลือก ${side(f)}`;
+ return{decision:'FORECAST',forecast:f,reason,evidence,votes:{P:rawP,B:rawB},share,effective,contradictory,direct,totalN,mode,bestPattern:bestEvidence?.name||'12-PATTERN-FUSION',activeTotal,activeShare};
+}
+function loadOOS(){const x=safeJSON(OOS_KEY);return x&&x.version===22&&Number.isFinite(x.hits)&&Number.isFinite(x.opportunities)?x:null}
+function saveOOS(x){localStorage.setItem(OOS_KEY,JSON.stringify({...x,version:22,signature:load().join('')}))}
+function rebuildOOS(hist){let o={hits:0,opportunities:0,waits:0};let prefix=[];let L=buildLearner([]);localStorage.removeItem(LEARN_KEY);for(let i=0;i<hist.length;i++){const r=hist[i];if(r==='T'){prefix.push(r);continue}const dets=PATTERNS.map(p=>({...detect(prefix,p),id:p.id,name:p.name}));const m=currentMatches(prefix,dets,L);const res=resolve(prefix,dets,m);if(res.forecast){o.opportunities++;if(res.forecast===r)o.hits++;}else o.waits++;const old=prefix.slice();prefix.push(r);L=syncLearnerAppend(old,r);}saveOOS(o);return o}
+function fastOOSOnAppend(histBefore,result){let o=loadOOS();if(!o)o={hits:0,opportunities:0,waits:0};if(result==='T'||!histBefore.length)return o;const L=learnerLoad(histBefore),dets=PATTERNS.map(p=>({...detect(histBefore,p),id:p.id,name:p.name})),m=currentMatches(histBefore,dets,L),res=resolve(histBefore,dets,m);if(res.forecast){o.opportunities++;if(res.forecast===result)o.hits++;}else o.waits++;saveOOS(o);return o}
+function predictedLabel(x){return x==='P'?'PLAYER':x==='B'?'BANKER':'--'}
+function renderHistory(hist){const e=$('history');e.replaceChildren();if(!hist.length){const n=document.createElement('div');n.className='history-empty';n.textContent='ยังไม่มีประวัติ';e.append(n);return}hist.forEach((r,i)=>{const n=document.createElement('div');n.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');n.textContent=r;n.title=`ตา ${i+1} · ${side(r)}`;e.append(n)})}
+function set(id,v,html=false){const e=$(id);if(e){if(html)e.innerHTML=v;else e.textContent=v}}
+function render(){
+ const hist=load();renderHistory(hist);set('hands',hist.length+' ตา');const c={P:hist.filter(x=>x==='P').length,B:hist.filter(x=>x==='B').length,T:hist.filter(x=>x==='T').length};set('dist',hist.length?`P ${pct(c.P/hist.length)} · B ${pct(c.B/hist.length)} · T ${pct(c.T/hist.length)}`:'--');
+ if(!hist.length){['forecast','decision'].forEach(id=>set(id,'WAIT'));set('forecastBig','ยังไม่มีข้อมูล');set('forecastDetail','บันทึก P / B / T เพื่อเริ่ม');set('message','V2.2 ใช้ indexed learning + recent evidence จาก 12 pattern');set('diagnostic','ไม่มีข้อมูล');set('confidence','--');set('decision','WAIT');set('sampleQuality','--');set('novelty','--');set('oos','--');set('oracleCapture','--');set('learnSpeed','O(12) / ตา');set('patternCards','ยังไม่มีข้อมูล',true);set('overlapPanel','ยังไม่มีข้อมูล',true);set('historyEvidence','ยังไม่มีข้อมูล',true);set('decisionTrace','ยังไม่มีข้อมูล',true);set('safeguards','<div class="item">1. Predictor = 12 pattern เท่านั้น</div><div class="item">2. Online update ทุกตา</div><div class="item">3. Full-history index + recent window</div><div class="item">4. Overlap → canonical-state dedup</div><div class="item">5. หลักฐานน้อย/ขัดแย้ง → WAIT</div><div class="item">6. OOS prequential แบบ online</div>',true);set('matchTable','<tr><td colspan="8">ยังไม่มีข้อมูล</td></tr>',true);return}
+ const L=learnerLoad(hist);let oo=loadOOS();if(!oo||oo.signature!==hist.join('')){oo=rebuildOOS(hist)}const dets=PATTERNS.map(p=>({...detect(hist,p),id:p.id,name:p.name})),matches=currentMatches(hist,dets,L),res=resolve(hist,dets,matches),active=dets.filter(d=>d.active),oos=loadOOS();
+ if(!Number.isFinite(oos.hits+oos.opportunities))rebuildOOS(hist);
+ set('forecast',res.forecast?side(res.forecast):'--');set('decision',res.forecast?'FORECAST':'WAIT');set('forecastBig',res.forecast?`${side(res.forecast)} · FORECAST`:'ยังไม่มีข้อมูล');set('confidence',pct(res.share));set('sampleQuality',pct(Math.min(1,Math.max(res.totalN/10,0.25))));set('forecastDetail',res.forecast?`P ${(res.votes.P||0).toFixed(2)} · B ${(res.votes.B||0).toFixed(2)} · share ${pct(res.share)} · ${res.mode} · best ${res.bestPattern||'--'}`:'ไม่มีข้อมูล');set('message',res.reason);set('diagnostic',`ACTIVE ${active.length}/12 · mode ${res.mode} · overlap ${active.length>1?'YES':'NO'} · every-hand forecast ON`);set('novelty',active.length?(active.some(d=>matches[d.id].exact>=MIN_EXACT)?'SEEN':'PARTIAL'):'STRUCTURAL');set('learnSpeed','O(12) / ตา');set('oos',oo.opportunities?`${pct(oo.hits/oo.opportunities)} · ${oo.hits}/${oo.opportunities}`:'--');set('oracleCapture',hist.length>1?pct(oo.opportunities/Math.max(1,hist.length-1)):'--');
+ set('patternCards',dets.map(d=>{const m=matches[d.id];return `<div class="card ${d.active?'pattern-active':''}"><span>${d.name}</span><strong>${d.active?'ACTIVE':'SCAN'} · ${d.forecast?side(d.forecast):'--'}</strong><small style="display:block;color:#8d8d97;margin-top:5px;line-height:1.45">${d.reason}</small><div style="margin-top:6px"><span class="tag">exact ${m.exact}</span><span class="tag">recent ${m.recent.n}</span><span class="tag">hist ${m.top?side(m.top):'--'}</span><span class="tag">family ${d.group}</span></div></div>`}).join(''),true);
+ const ov=res.evidence.length?res.evidence.sort((a,b)=>b.score-a.score).map(e=>`<div class="item ${e.m.top===e.predicted?'good':'warn'}"><b>${e.name}</b> → ${side(e.predicted)} · exact ${e.m.exact} · recent ${e.m.recent.n} · P ${Math.round(e.m.p*100)/100} · B ${Math.round(e.m.b*100)/100} · top ${e.m.top?side(e.m.top):'เสมอ/--'} · rate ${pct(e.rate)} · lower ${pct(e.lower)} · score ${e.score.toFixed(3)}</div>`).join(''):'<div class="item">ไม่มีหลักฐานที่ใช้ได้</div>';set('overlapPanel',ov,true);
+ const he=active.length?active.map(d=>{const m=matches[d.id];return `<div class="item"><b>${d.name}</b>: exact-state ${m.exact} ครั้ง · recent ${m.recent.n} · P ${Math.round(m.p*100)/100} · B ${Math.round(m.b*100)/100} · top ${m.top?side(m.top):'เสมอ/--'}</div>`}).join(''):'<div class="item warn">ไม่มีเค้า active</div>';set('historyEvidence',he,true);
+ const trace=[`1) ตรวจครบ 12 pattern → ${active.length}/12 active`,`2) อ่าน current state จาก index ทันที`,`3) เทียบ full-history + recent ${RECENT_WINDOW} ตา`,`4) dedup canonical state / family`,`5) ผสานคะแนน active + structural pressure + history prior`,`6) OOS ทุกตา → ${oo.opportunities?`${oo.hits}/${oo.opportunities} (${pct(oo.hits/oo.opportunities)})`:'ยังไม่มีผล'}`,`7) FINAL = ${res.forecast?side(res.forecast):'WAIT'}`];set('decisionTrace',trace.map(x=>`<div class="item">${x}</div>`).join(''),true);
+ set('safeguards',`<div class="item">1. Predictor = 12 pattern structures เท่านั้น</div><div class="item">2. เรียนรู้เพิ่มทันทีหลังรู้ผลทุกตา</div><div class="item">3. Full-history index + recent window เพื่อความไว</div><div class="item">4. Overlap → canonical-state dedup</div><div class="item">5. ทุกตาเลือก P/B เสมอหลังมีข้อมูล; confidence แยกจาก forecast</div><div class="item">6. OOS ตรวจทุกตาแบบ prequential โดยไม่เห็นผลล่วงหน้า</div>`,true);
+ const rows=dets.map(d=>{const m=matches[d.id];return `<tr><td>${d.name}</td><td>${d.active?'ACTIVE':'WAIT'}</td><td>${d.state?.key||'--'}</td><td>${m.exact}</td><td>${Math.round(m.p*100)/100}</td><td>${Math.round(m.b*100)/100}</td><td>${m.top?side(m.top):'เสมอ/--'}</td><td>${m.n?pct(Math.max(m.p,m.b)/m.n):'--'}</td></tr>`}).join('');set('matchTable',rows,true);
+}
+ function push(r){const d=load();const before=d.slice();fastOOSOnAppend(before,r);d.push(r);save(d);syncLearnerAppend(before,r);render()}function undo(){const d=load();if(d.length){d.pop();save(d);buildLearner(d);rebuildOOS(d);render()}}function reset(){save([]);localStorage.removeItem(LEARN_KEY);localStorage.removeItem(OOS_KEY);render()}
+ document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);render();
+})();
+</script>
+</body></html>

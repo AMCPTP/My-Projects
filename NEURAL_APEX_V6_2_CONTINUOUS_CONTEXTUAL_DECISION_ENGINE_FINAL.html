@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>NEURAL APEX V6.2 · CONTINUOUS CONTEXTUAL DECISION ENGINE</title>
+<style>
+:root{--player:#1683ff;--banker:#ff4b43;--tie:#6f707b;--aqua:#62e5cf;--gold:#ffd24a;--bg:#050507;--surface:#0c0c10;--raised:#111117;--line:#292931;--text:#f7f7f9;--muted:#90909b;--warn:#ffb5c5;--good:#9feee7}
+*{box-sizing:border-box}body{min-width:320px;margin:0;background:radial-gradient(circle at top,#112426 0,var(--bg) 43rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit}.shell{width:min(100%,980px);margin:0 auto;padding:14px 10px 30px}.app-card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(12,12,16,.97);box-shadow:0 24px 80px rgba(0,0,0,.28)}header{padding:24px 18px 15px;text-align:center}.eyebrow{color:var(--aqua);font-size:10px;font-weight:900;letter-spacing:.18em}h1{margin:8px 0 6px;font-size:25px;letter-spacing:-.05em}.badge{font-size:.42em;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--aqua);border-radius:999px;color:var(--aqua);vertical-align:middle}.subtitle{max-width:860px;margin:0 auto;color:var(--muted);font-size:11px;line-height:1.6}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.metric-label,.card span{display:block;color:#82828c;font-size:8px;font-weight:900;letter-spacing:.07em}.metric output,.card strong{display:block;margin-top:6px;color:#e3e3e8;font-size:11px;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:18px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}#forecastBig{font-size:32px;font-weight:950;letter-spacing:-.045em}#forecastDetail{margin-top:7px;color:#d6d6dc;font-size:12px;font-weight:800}#message{min-height:28px;max-width:900px;margin:8px auto 0;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.result-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.result-button{min-height:74px;border:0;border-bottom:6px solid rgba(0,0,0,.35);border-radius:18px;color:#fff;font-size:32px;font-weight:950;cursor:pointer}.result-button.player{background:var(--player)}.result-button.banker{background:var(--banker)}.result-button.tie{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.section-title{margin:0 0 5px;color:var(--aqua);font-size:10px;font-weight:950;letter-spacing:.08em}.section-description{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.5}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow-x:auto}.history-empty{grid-column:1/-1;grid-row:1/-1;display:grid;min-height:40px;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:700}.history-node{display:grid;min-width:0;min-height:38px;place-items:center;border-radius:10px;color:#fff;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.history-node.player{background:var(--player)}.history-node.banker{background:var(--banker)}.history-node.tie{background:var(--tie);font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small-button{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--raised);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small-button.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.panel{border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:10px;background:rgba(255,255,255,.02);font-size:10px;line-height:1.55}.panel>b{font-size:9px;color:#bcb59f;letter-spacing:.06em}.list{display:grid;gap:5px;margin-top:7px}.item{padding:7px 8px;border-left:3px solid rgba(255,210,74,.35);background:rgba(255,210,74,.045);border-radius:5px}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:6px 5px;border-bottom:1px solid #202027;text-align:left}.table th{color:#9999a5;font-size:8px;letter-spacing:.05em}.bar{display:grid;grid-template-columns:105px 1fr 55px;gap:6px;align-items:center;margin-top:6px}.bar label{color:#9b9aa4;font-size:8px}.track{height:5px;border-radius:9px;background:#202027;overflow:hidden}.track span{display:block;height:100%;background:var(--gold);border-radius:9px}.value{text-align:right;font-size:8px}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.5;text-align:center}.notice strong{color:#d3d3da}.tag{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border:1px solid #333842;border-radius:999px;font-size:8px;font-weight:900}.good{color:var(--good)}.warn{color:var(--warn)}
+@media(max-width:850px){.metrics,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.columns{grid-template-columns:1fr}}@media(max-width:520px){h1{font-size:22px}.grid,.metrics{grid-template-columns:1fr}.history{grid-template-rows:repeat(6,36px);min-height:246px}.history-node{min-height:36px}.bar{grid-template-columns:88px 1fr 48px}}
+</style></head><body><main class="shell"><section class="app-card">
+<header><div class="eyebrow">V6.2 · CONTINUOUS CONTEXTUAL DECISION ENGINE</div><h1>NEURAL APEX <span class="badge">V6.2 · CONTINUOUS EVIDENCE COMPETITION + STATE MEMORY · HARDENED</span></h1><p class="subtitle">V6.2 วิเคราะห์ 12 pattern ทุกตา แล้วเพิ่ม Historical Analog Memory + Adaptive Pattern Memory + Contextual Meta-Selector: ย้อนประวัติแบบ prequential, เปรียบเทียบความแม่นของแต่ละ pattern ใน state เดียวกัน/ใกล้เคียง, เลือกวิธีที่เหมาะกับสถานการณ์, ลดน้ำหนักวิธีที่ไม่เสถียร และ WAIT เมื่อหลักฐานไม่พอ; ยังรักษา OOS, temporal holdout, calibration, confidence interval, McNemar, block-bootstrap, walk-forward, drift และ stability</p></header><div class="metrics"><div class="metric"><span class="metric-label">ตาที่บันทึก</span><output id="hands">0</output></div><div class="metric"><span class="metric-label">P / B / T</span><output id="dist">--</output></div><div class="metric"><span class="metric-label">FORECAST</span><output id="forecast">--</output></div><div class="metric"><span class="metric-label">CONFIDENCE</span><output id="confidence">--</output></div><div class="metric"><span class="metric-label">STATE</span><output id="regime">--</output></div><div class="metric"><span class="metric-label">POLICY</span><output id="policy">--</output></div><div class="metric"><span class="metric-label">OOS HIT</span><output id="oos">--</output></div><div class="metric"><span class="metric-label">DECISION</span><output id="decision">--</output></div><div class="metric"><span class="metric-label">CONSENSUS</span><output id="consensus">--</output></div><div class="metric"><span class="metric-label">SAMPLE QUALITY</span><output id="sampleQuality">--</output></div><div class="metric"><span class="metric-label">NOVELTY / OOD</span><output id="novelty">--</output></div><div class="metric"><span class="metric-label">ACTION HIT RATE</span><output id="oracleCapture">--</output></div><div class="metric"><span class="metric-label">SIGNAL COVERAGE</span><output id="signalCoverage">--</output></div><div class="metric"><span class="metric-label">ABSTAIN RATE</span><output id="abstainRate">--</output></div><div class="metric"><span class="metric-label">MATCH DEPTH</span><output id="matchDepth">--</output></div><div class="metric"><span class="metric-label">AGREEMENT</span><output id="agreement">--</output></div><div class="metric"><span class="metric-label">LEARN SPEED</span><output id="learnSpeed">--</output></div><div class="metric"><span class="metric-label">CALIBRATION</span><output id="calibration">--</output></div><div class="metric"><span class="metric-label">BASELINE Δ</span><output id="baselineDelta">--</output></div><div class="metric"><span class="metric-label">MAJORITY</span><output id="majority">--</output></div><div class="metric"><span class="metric-label">LOCKED TEST</span><output id="lockedTest">--</output></div><div class="metric"><span class="metric-label">LOCKED Δ</span><output id="lockedDelta">--</output></div><div class="metric"><span class="metric-label">Brier RAW / CAL</span><output id="brier">--</output></div><div class="metric"><span class="metric-label">STABILITY</span><output id="stability">--</output></div><div class="metric"><span class="metric-label">DRIFT</span><output id="drift">--</output></div><div class="metric"><span class="metric-label">HOLDOUT</span><output id="holdout">--</output></div><div class="metric"><span class="metric-label">95% CI</span><output id="accuracyCI">--</output></div><div class="metric"><span class="metric-label">SIGNIFICANCE</span><output id="significance">--</output></div><div class="metric"><span class="metric-label">EDGE GRADE</span><output id="edgeGrade">--</output></div><div class="metric"><span class="metric-label">CAL. PROB</span><output id="calProb">--</output></div><div class="metric"><span class="metric-label">WALK-FORWARD</span><output id="walkForward">--</output></div><div class="metric"><span class="metric-label">BOOTSTRAP Δ</span><output id="bootDelta">--</output></div><div class="metric"><span class="metric-label">MULTI-TEST</span><output id="multiTest">--</output></div><div class="metric"><span class="metric-label">CONTINUITY</span><output id="continuity">--</output></div><div class="metric"><span class="metric-label">CHALLENGE</span><output id="challenge">--</output></div><div class="metric"><span class="metric-label">TRANSITION</span><output id="transition">--</output></div><div class="metric"><span class="metric-label">SELECTED METHOD</span><output id="selectedMethod">--</output></div><div class="metric"><span class="metric-label">METHOD FIT</span><output id="methodFit">--</output></div><div class="metric"><span class="metric-label">RUNNER-UP</span><output id="runnerUp">--</output></div><div class="metric"><span class="metric-label">LOCAL SAMPLE</span><output id="localSample">--</output></div><div class="metric"><span class="metric-label">ANALOG MATCHES</span><output id="analogMatches">--</output></div><div class="metric"><span class="metric-label">LEARNED MEMORY</span><output id="learnedMemory">--</output></div><div class="metric"><span class="metric-label">METHOD CONFIDENCE</span><output id="methodConfidence">--</output></div><div class="metric"><span class="metric-label">PREDICTION CONFIDENCE</span><output id="predictionConfidence">--</output></div><div class="metric"><span class="metric-label">EVIDENCE QUALITY</span><output id="evidenceQuality">--</output></div><div class="metric"><span class="metric-label">ANALOG QUALITY</span><output id="analogQuality">--</output></div></div><section class="forecast"><div id="forecastBig">ยังไม่มีข้อมูล</div><div id="forecastDetail">กด P / B / T เพื่อเริ่ม</div><div id="message">ระบบจะ replay ประวัติทั้งหมดแบบ prequential และเรียนรู้จากข้อผิดพลาดทีละตา</div><div id="diagnostic" class="notice" style="margin-top:7px">ต้องมีหลักฐานมากพอจึงค่อย FOLLOW · ไม่มี edge ให้ WAIT</div></section><div class="result-buttons"><button class="result-button player" data-result="P">P</button><button class="result-button banker" data-result="B">B</button><button class="result-button tie" data-result="T">T</button></div><section class="section"><h2 class="section-title">ประวัติผล</h2><p class="section-description">T ถูกเก็บเป็นผลจริง แต่ไม่ถูกใช้เป็นตัวทำนาย P/B และระบบจะไม่สร้างคำอธิบายเมื่อหลักฐานไม่พอ</p><div id="history" class="history"></div><div class="actions"><button class="small-button" id="undo">ย้อนกลับ 1 ตา</button><button class="small-button danger" id="reset">รีเซ็ตประวัติ</button><button class="small-button" id="export">ส่งออกข้อมูล</button><button class="small-button" id="import">นำเข้าข้อมูล</button><input id="importFile" type="file" accept="application/json" style="display:none"></div></section><section class="section"><h2 class="section-title">V6.2 · ALL-12 PATTERN SCAN</h2><p class="section-description">ตรวจ 12 โครงสร้าง: 6 เค้าเดิม + ปิงปอง + ลูกคู่ + 1-2 + 1-3 + 2-3 + มังกร</p><div class="grid" id="patternCards"></div></section><section class="section"><h2 class="section-title">V6.2 · VALIDATION &amp; SAFETY</h2><p class="section-description">ส่วนตรวจคุณภาพที่จำเป็นสำหรับการใช้งานจริง: OOS, holdout, calibration, significance, walk-forward, bootstrap, drift และ readiness</p><div class="columns"><div class="panel"><b>VALIDATION</b><div id="benchmarkPanel" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>QUALITY &amp; SAFEGUARDS</b><div id="qualityPanel" class="list">ยังไม่มีข้อมูล</div><div id="safeguards" class="list">ยังไม่มีข้อมูล</div></div></div></section><div class="notice"><strong>PRODUCTION STATUS:</strong> ระบบ V6.2 แยก development/OOS/temporal holdout/locked test, ใช้ online calibration และไม่อนุญาตให้ข้อมูลอนาคตเข้าฐานเรียนรู้ของ forecast ปัจจุบัน · คำว่า READY หมายถึงพร้อมทดสอบใช้งานจริงตาม protocol ไม่ใช่การรับประกันผลลัพธ์<br><strong>วิธีอ่าน OOS:</strong> OOS HIT = ความถูกต้องของ forecast เฉพาะตาที่ผ่าน signal gate; forecast ถูกคำนวณก่อนเห็นผลตาถัดไป และ T ไม่เป็นตัวทำนาย P/B<br>โครงสร้าง: ปิงปอง = สลับ 1-1, ลูกคู่ = 2-2, 1-2/1-3/2-3 = ลำดับความยาว run, มังกร = run ยาวต่อเนื่อง · ทุกตาระบบประเมิน state ของทั้ง 12 patterns และย้อนหา Historical Analog ที่คล้ายกัน<br><strong>V6.2 PRINCIPLE:</strong> Forecast ใช้ historical state evidence + contextual method selection; ถ้าหลักฐานหรือผู้ชนะไม่ชัดเจน ระบบจะ WAIT</div><section class="section"><h2 class="section-title">V6.2 · CONTEXTUAL EVIDENCE METHOD SELECTOR</h2><p class="section-description">อยู่ล่างสุดเพื่อใช้เป็นรายละเอียดเชิงวิเคราะห์: เปรียบเทียบวิธีทั้ง 12 แบบจาก exact → reduced → family, local reliability, global reliability, current support และความชัดเจนของผู้ชนะ โดยใช้เฉพาะข้อมูลก่อน forecast</p><div class="columns"><div class="panel"><b>วิธีที่ถูกเลือก</b><div id="selectorPanel" class="list">ยังไม่มีข้อมูล</div></div><div class="panel"><b>อันดับผู้สมัคร</b><div id="selectorTable" class="list">ยังไม่มีข้อมูล</div></div></div></section></section></main><script>
+(function(){'use strict';
+const KEY='neural-apex-v6-2-continuous-contextual-decision-engine';
+const OLD_KEYS=['neural-apex-v6-2-contextual-evidence-engine','neural-apex-v6-0-contextual-evidence-engine','neural-apex-v5-3-production-hardened','neural-apex-v5-2-adaptive-pattern-memory','neural-apex-v5-1-historical-analog-decision-engine','neural-apex-v4-0-contextual-selector','neural-apex-v3-0-all12-pattern','neural-apex-v2-9-all12-pattern','neural-apex-v2-8-all12-pattern','neural-apex-v2-7-all12-pattern','neural-apex-v2-6-all12-pattern','neural-apex-v2-pro-real','neural-apex-v2-extended-pattern-only','neural-apex-v1-six-only','neural-apex-history-audit-v67-signal-noise-gated-meta-learning'];
+const ALL=['P','B','T'],PB=['P','B'];
+const PATTERNS=[
+ {id:'CUT2',name:'สองตัวตัด',target:2,minRuns:3,type:'CUT',group:'RUN2',family:'RUN2-CUT'},
+ {id:'TRIPLE',name:'Triple',target:3,minRuns:3,type:'EXACT',group:'RUN3',family:'RUN3'},
+ {id:'CUT3',name:'สามตัวตัด',target:3,minRuns:3,type:'CUT',group:'RUN3',family:'RUN3'},
+ {id:'RED3',name:'แดงสามตัวตัด',target:3,minRuns:3,type:'CUT',group:'RUN3',family:'RUN3'},
+ {id:'CUT4',name:'สี่ตัวตัด',target:4,minRuns:3,type:'CUT',group:'RUN4',family:'RUN4'},
+ {id:'REDNON',name:'แดงไม่ติด',target:1,minRuns:4,type:'ALT',group:'ALT1',family:'ALT1'},
+ {id:'PINGPONG',name:'ปิงปอง',target:1,minRuns:6,type:'ALT',group:'ALT1',family:'ALT1'},
+ {id:'PAIR',name:'ลูกคู่',target:2,minRuns:4,type:'EXACT',group:'RUN2',family:'RUN2-PAIR'},
+ {id:'RUN12',name:'1-2',target:2,minRuns:4,type:'SEQ',group:'RUN12',family:'SEQ'},
+ {id:'RUN13',name:'1-3',target:3,minRuns:4,type:'SEQ',group:'RUN13',family:'SEQ'},
+ {id:'RUN23',name:'2-3',target:3,minRuns:4,type:'SEQ',group:'RUN23',family:'SEQ'},
+ {id:'DRAGON',name:'มังกร',target:5,minRuns:1,type:'DRAGON',group:'DRAGON',family:'DRAGON'}
+];
+const CFG={MIN_EXACT:3,MIN_STRONG:8,MIN_FUSION_EFF:8,RECENT_HALF:36,RECENT_FLOOR:.42,MIN_SIGNAL_MARGIN:.035,MIN_SIGNAL_EFF:8,MIN_FAMILIES:2,HOLDOUT_FRAC:.20,WF_FOLDS:4,MIN_WF_FOLD:8,BOOT_B:1600,MIN_PATTERN_OOS:20,MAX_HISTORY_FOR_MATCH:10000,MIN_OOS_OPPS:60,MIN_HOLDOUT_OPPS:30,MIN_CAL_SAMPLES:40,MIN_LOCKED_TEST:60,MAX_DRIFT_SCORE:.12,MAX_PATTERN_OOS_PREFIXES:240,MAX_RECONSTRUCT_PB:3000,MAX_META_PREFIXES:180,MIN_META_SAMPLES:18,MIN_LOCAL_MATCHES:5,SELECT_TOP_K:3,MIN_METHOD_MARGIN:.018};
+const $=id=>document.getElementById(id),opposite=x=>x==='P'?'B':x==='B'?'P':null,side=x=>x==='P'?'PLAYER':x==='B'?'BANKER':x==='T'?'TIE':'--',clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),pct=x=>Number.isFinite(+x)?Math.round(+x*100)+'%':'--';
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function sanitize(x){return (Array.isArray(x)?x:[]).map(v=>typeof v==='string'?v:(v&&v.result)).filter(v=>ALL.includes(v))}
+function load(){let x=safeJSON(KEY);if(Array.isArray(x))return sanitize(x);if(x&&Array.isArray(x.rounds))return sanitize(x.rounds);for(const k of OLD_KEYS){x=safeJSON(k);const a=Array.isArray(x)?x:(x&&Array.isArray(x.rounds)?x.rounds:[]);if(a.length)return sanitize(a)}return[]}
+function save(x){localStorage.setItem(KEY,JSON.stringify(sanitize(x)))}
+function pb(h){return h.filter(x=>x==='P'||x==='B')}
+function runs(h){const a=pb(h);if(!a.length)return[];const out=[];let s=a[0],n=1,start=0;for(let i=1;i<a.length;i++){if(a[i]===s)n++;else{out.push({side:s,len:n,start,end:i-1});s=a[i];n=1;start=i}}out.push({side:s,len:n,start,end:a.length-1});return out}
+function bucketRun(n){return n>=5?5:n}
+function lengthsFrom(rs){return rs.slice(-6).map(r=>bucketRun(r.len))}
+function stateKeys(h,p){const rs=runs(h);if(!rs.length)return{exact:null,reduced:null,family:null};const last=rs.at(-1),lens=lengthsFrom(rs);
+  let exact,reduced,family;
+  if(p.group==='ALT1'){
+    exact=`ALT1|last=${last.side}|runs=${lens.join('-')}`;
+    reduced=`ALT1|last=${last.side}|runs=${lens.slice(-4).join('-')}`;
+    family=`ALT1|last=${last.side}|run=${bucketRun(last.len)}`;
+  }else if(p.id==='DRAGON'){
+    exact=`DRAGON|side=${last.side}|run=${bucketRun(last.len)}`;
+    reduced=`DRAGON|side=${last.side}|run=${Math.min(4,bucketRun(last.len))}`;
+    family=`DRAGON|side=${last.side}`;
+  }else{
+    exact=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}|lens=${lens.slice(-4).join('-')}`;
+    reduced=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}|lens=${lens.slice(-2).join('-')}`;
+    family=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}`;
+  }
+  return{exact,reduced,family};
+}
+function stateKey(h,p){return stateKeys(h,p).exact}
+function isAltOne(rs,n){return rs.length>=n&&rs.slice(-n).every(r=>r.len===1)}
+function isExactRun(rs,n,target){return rs.length>=n&&rs.slice(-n).every(r=>r.len===target)}
+function isAltLengths(rs,pattern){if(rs.length<pattern.length)return false;const t=rs.slice(-pattern.length).map(r=>r.len),rev=pattern.slice().reverse();return t.every((v,i)=>v===pattern[i])||t.every((v,i)=>v===rev[i])}
+function detect(h,p){const rs=runs(h);if(!rs.length)return{active:false,forecast:null,reason:'ยังไม่มี P/B',state:null};const last=rs.at(-1);let active=false,forecast=null,reason='ไม่ตรง';
+ if(p.id==='REDNON'){active=isAltOne(rs,4);forecast=active?opposite(last.side):null;reason=active?'พบสลับ 1-1':'ยังไม่ครบ 1-1'}
+ else if(p.id==='PINGPONG'){active=isAltOne(rs,6);forecast=active?opposite(last.side):null;reason=active?'พบปิงปอง 6+':'ยังไม่ครบปิงปอง'}
+ else if(p.id==='PAIR'){active=isExactRun(rs,4,2);forecast=active?opposite(last.side):null;reason=active?'พบลูกคู่':'ยังไม่ครบลูกคู่'}
+ else if(p.id==='RUN12'){active=isAltLengths(rs,[1,2,1,2]);forecast=active?opposite(last.side):null;reason=active?'พบ 1-2':'ยังไม่ครบ 1-2'}
+ else if(p.id==='RUN13'){active=isAltLengths(rs,[1,3,1,3]);forecast=active?opposite(last.side):null;reason=active?'พบ 1-3':'ยังไม่ครบ 1-3'}
+ else if(p.id==='RUN23'){active=isAltLengths(rs,[2,3,2,3]);forecast=active?opposite(last.side):null;reason=active?'พบ 2-3':'ยังไม่ครบ 2-3'}
+ else if(p.id==='DRAGON'){active=last.len>=5;forecast=active?last.side:null;reason=active?'พบมังกร 5+':'ยังไม่ถึงมังกร 5+'}
+ else if(p.id==='TRIPLE'){active=isExactRun(rs,3,3);forecast=active?opposite(last.side):null;reason=active?'พบ Triple 3-3-3':'ยังไม่ครบ Triple'}
+ else if(p.id==='CUT2'){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=2)&&last.len===2;forecast=active?opposite(last.side):null;reason=active?'พบ 2-cut':'ยังไม่เข้า 2-cut'}
+ else if(['CUT3','RED3'].includes(p.id)){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=3)&&last.len===3;forecast=active?opposite(last.side):null;reason=active?'พบ 3-cut':'ยังไม่เข้า 3-cut'}
+ else if(p.id==='CUT4'){active=rs.length>=3&&rs.slice(-3).every(r=>r.len<=4)&&last.len===4;forecast=active?opposite(last.side):null;reason=active?'พบ 4-cut':'ยังไม่เข้า 4-cut'}
+ const ks=stateKeys(h,p);return{active,forecast,reason,state:active?{key:ks.exact}:null};
+}
+function weightedAge(age){return CFG.RECENT_FLOOR+(1-CFG.RECENT_FLOOR)*Math.exp(-age/CFG.RECENT_HALF)}
+function emptyStats(){return{n:0,p:0,b:0,w:0,ids:[]}}
+function addStat(s,outcome,weight,id){s.n++;s.w+=weight;if(outcome==='P')s.p+=weight;else s.b+=weight;if(s.ids.length<CFG.MAX_HISTORY_FOR_MATCH)s.ids.push(id)}
+function appendRun(rs,side){if(!side)return;if(!rs.length){rs.push({side,len:1,start:0,end:0});return}const last=rs.at(-1);if(last.side===side){last.len++;last.end++;}else rs.push({side,len:1,start:last.end+1,end:last.end+1})}
+function stateKeysFromRuns(rs,p){if(!rs.length)return{exact:null,reduced:null,family:null};const last=rs.at(-1),lens=rs.slice(-6).map(r=>bucketRun(r.len));let exact,reduced,family;if(p.group==='ALT1'){exact=`ALT1|last=${last.side}|runs=${lens.join('-')}`;reduced=`ALT1|last=${last.side}|runs=${lens.slice(-4).join('-')}`;family=`ALT1|last=${last.side}|run=${bucketRun(last.len)}`;}else if(p.id==='DRAGON'){exact=`DRAGON|side=${last.side}|run=${bucketRun(last.len)}`;reduced=`DRAGON|side=${last.side}|run=${Math.min(4,bucketRun(last.len))}`;family=`DRAGON|side=${last.side}`;}else{exact=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}|lens=${lens.slice(-4).join('-')}`;reduced=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}|lens=${lens.slice(-2).join('-')}`;family=`${p.group}|last=${last.side}|run=${bucketRun(last.len)}`;}return{exact,reduced,family}}
+function buildLearner(h){const a=pb(h),patterns={};for(const p of PATTERNS)patterns[p.id]={exact:{},reduced:{},family:{}};const rs=[];for(let i=0;i<a.length-1;i++){appendRun(rs,a[i]);const next=a[i+1],age=a.length-1-i,weight=weightedAge(age),id=i+1;for(const p of PATTERNS){const ks=stateKeysFromRuns(rs,p);for(const level of ['exact','reduced','family']){const k=ks[level];if(!k)continue;const m=patterns[p.id][level];if(!m[k])m[k]=emptyStats();addStat(m[k],next,weight,id)}}}const summary={};for(const p of PATTERNS)summary[p.id]=mapWeightedAccuracy(patterns[p.id].exact);return{version:62,signature:h.join(''),patterns,summary};}
+function learner(h){const key=KEY+'-learner',x=safeJSON(key);if(x&&x.version===62&&x.signature===h.join(''))return x;const n=buildLearner(h);try{localStorage.setItem(key,JSON.stringify(n))}catch(e){}return n}
+function getMapStat(L,p,level,k){return L?.patterns?.[p.id]?.[level]?.[k]||emptyStats()}
+function mergeStatsByIds(L,p,ks,h){const levels=['exact','reduced','family'];const used=new Set(),parts=[];for(const level of levels){const k=ks[level];if(!k)continue;const s=getMapStat(L,p,level,k);const unique={n:0,p:0,b:0,w:0,ids:[]};const ids=s.ids||[];for(let z=0;z<ids.length;z++){const id=ids[z];if(used.has(id))continue;used.add(id);const idx=id-1;const outcome=pb(h)[idx+1];if(!outcome)continue;const age=pb(h).length-1-id+1;const wt=weightedAge(Math.max(0,age));unique.n++;unique.w+=wt;if(outcome==='P')unique.p+=wt;else unique.b+=wt;if(unique.ids.length<CFG.MAX_HISTORY_FOR_MATCH)unique.ids.push(id)}
+  if(s.n>0&&unique.n===0){ /* serialized ids can be bounded; keep aggregate only when no id detail */ const scale=Math.max(0,1-(used.size/Math.max(1,s.n))); if(scale>0){unique.n=s.n*scale;unique.w=s.w*scale;unique.p=s.p*scale;unique.b=s.b*scale}}
+  parts.push({level,n:unique.n,p:unique.p,b:unique.b,w:unique.w,sourceN:s.n});
+  if(unique.n>0&&level==='exact'&&s.n<CFG.MIN_STRONG)continue;
+ }
+ return parts;
+}
+function empiricalProb(parts){let n=0,p=0,b=0;for(const x of parts){const add=x.level==='exact'?1:(x.level==='reduced'?.65:.38);p+=x.p*add;b+=x.b*add;n+=(x.p+x.b)*add}if(!n)return null;const neutral=1.0;return{pP:(p+neutral*.5)/(n+neutral),pB:(b+neutral*.5)/(n+neutral),eff:n,parts}}
+function wilsonCI(k,n,z=1.96){if(!n)return null;const ph=k/n,den=1+z*z/n,ctr=ph+z*z/(2*n),rad=z*Math.sqrt((ph*(1-ph)+z*z/(4*n))/n);return[clamp((ctr-rad)/den),clamp((ctr+rad)/den)]}
+function evidenceFor(h,p){const ks=stateKeys(h,p),parts=mergeStatsByIds(currentLearner,p,ks,h);if(!parts.length)return{pP:null,pB:null,eff:0,exact:0,reduced:0,family:0,matchDepth:0,quality:0,ci:null,known:0};const q=empiricalProb(parts);if(!q)return{pP:null,pB:null,eff:0,exact:0,reduced:0,family:0,matchDepth:0,quality:0,ci:null,known:0};
+ let exact=getMapStat(currentLearner,p,'exact',ks.exact).n,reduced=getMapStat(currentLearner,p,'reduced',ks.reduced).n,family=getMapStat(currentLearner,p,'family',ks.family).n;
+ const matchDepth=exact>=CFG.MIN_STRONG?3:exact>=CFG.MIN_EXACT?2:(reduced>0||family>0?1:0);
+ const k=q.pP*q.eff,n=q.eff,ci=wilsonCI(k,n);const width=ci?ci[1]-ci[0]:1,quality=clamp((q.eff/(q.eff+10))*(1-Math.min(.9,width)));
+ return{...q,exact,reduced,family,matchDepth,quality,ci,known:clamp(q.eff/12),state:ks};}
+let currentLearner=null;
+const CONT_STATE_KEY=()=>KEY+'-continuous-state';
+function loadContinuousState(){
+  if(!CONT_STATE_KEY())return null;
+  const x=safeJSON(CONT_STATE_KEY());
+  return (x&&x.version===62)?x:{version:62,previousWinnerId:null,previousDirection:null,previousMethodConfidence:.5,previousPredictionConfidence:.5,winnerAge:0,stateStability:0,lastRegime:null,transitionScore:0,lastActual:null,lastHit:null,missStreak:0,updates:0};
+}
+function saveContinuousState(x){try{localStorage.setItem(CONT_STATE_KEY(),JSON.stringify(x))}catch(e){}}
+function resetContinuousState(){try{localStorage.removeItem(CONT_STATE_KEY())}catch(e){}}
+function updateContinuousState(h,res,actual){
+  if(!h.length||!res)return;
+  const prev=loadContinuousState();
+  if(actual==='T'){saveContinuousState({...prev,version:62,signature:h.join('')+'T',lastActual:'T'});return;}
+  const winnerId=res.competition?.top?.d?.id||res.selector?.selected?.p?.id||null;
+  const hit=!!res.forecast&&res.forecast===actual;
+  const prevSame=prev.previousWinnerId&&winnerId===prev.previousWinnerId;
+  const priorReg=prev.lastRegime;
+  const newReg=classifyRegime(h.concat(actual)).label;
+  const changed=!!priorReg&&priorReg!==newReg;
+  const x={...prev,version:62,signature:h.join('')+actual,previousWinnerId:winnerId,previousDirection:res.forecast||null,previousMethodConfidence:res.methodConfidence||.5,previousPredictionConfidence:res.predictionConfidence||.5,winnerAge:prevSame?(prev.winnerAge||0)+1:(winnerId?1:0),stateStability:clamp((prevSame?(prev.stateStability||0)+.12:.20)+(!changed?.18:0)),lastRegime:newReg,transitionScore:changed?clamp((prev.transitionScore||0)*.68+.28):clamp((prev.transitionScore||0)*.72),lastActual:actual,lastHit:hit,missStreak:hit?0:(prev.missStreak||0)+1,updates:(prev.updates||0)+1};
+  saveContinuousState(x);
+}
+let contextSelectorCache=null;
+let patternOOSCache=null;
+let analogIndexCache=null;
+let methodMemoryCache=null;
+let auditTimer=null;
+function invalidate(){
+  contextSelectorCache=null;
+  patternOOSCache=null;
+  analogIndexCache=null;
+  methodMemoryCache=null;
+  if(auditTimer){clearTimeout(auditTimer);auditTimer=null;}
+}
+
+function mapWeightedAccuracy(map){
+  let good=0,total=0,states=0;
+  for(const k of Object.keys(map||{})){const st=map[k],n=(st.p||0)+(st.b||0);if(n>0){good+=Math.max(st.p||0,st.b||0);total+=n;states++}}
+  return total?{accuracy:good/total,total,states}:null;
+}
+function effectiveSample(p,b){return Math.max(0,(p||0)+(b||0));}
+function bayesRate(p,b,prior=.5,priorN=6){const n=effectiveSample(p,b);return n?((p+prior*priorN)/(n+priorN)):prior;}
+function dirOf(probP){return probP>=.5?'P':'B';}
+function sourceStrength(e){return clamp(.35*Math.min(1,(e?.localEff||0)/8)+.30*Math.min(1,(e?.analogEff||0)/5)+.20*Math.min(1,(e?.memoryN||0)/8)+.15*Math.min(1,(e?.evEff||e?.currentEff||0)/12));}
+function independentFamilyFactor(family,seen){const n=seen.get(family)||0;return n?0.35:1;}
+function stateQuality(L,p,level,key){
+  if(!key)return null;
+  const st=getMapStat(L,p,level,key),weighted=(st.p||0)+(st.b||0),raw=st.n||0;
+  if(!weighted)return null;
+  const acc=Math.max(st.p||0,st.b||0)/weighted;
+  return{acc,n:raw,eff:weighted,p:st.p||0,b:st.b||0};
+}
+function classifyRegime(h){
+  const rs=runs(h),a=pb(h),last=rs.at(-1);
+  if(!a.length||!last)return{label:'NO DATA',score:0};
+  const lens=rs.slice(-6).map(r=>bucketRun(r.len)),recent=a.slice(-12);
+  const alt=recent.length>3?recent.slice(1).filter((v,i)=>v!==recent[i]).length/Math.max(1,recent.length-1):0;
+  const long=last.len>=5||lens.filter(x=>x>=5).length>=2;
+  const pair=lens.length>=4&&lens.slice(-4).every(x=>x===2);
+  const mixed=new Set(lens.slice(-5)).size>=3&&!long;
+  if(long)return{label:'RUN / MOMENTUM',score:.85};
+  if(pair)return{label:'PAIR / 2-2',score:.8};
+  if(alt>=.78)return{label:'PONG / ALTERNATING',score:.8};
+  if(mixed)return{label:'MIXED / TRANSITION',score:.6};
+  return{label:'NEUTRAL / UNSTABLE',score:.4};
+}
+function summarizeCrossPattern(cand){
+  if(!cand.length)return{agreement:0,diversity:0,direction:null,conflict:1,weightedSupport:0};
+  const byDir={P:0,B:0},fam=new Set();
+  for(const c of cand){const d=c.ev.pP>=c.ev.pB?'P':'B';byDir[d]+=c.w*Math.max(.1,Math.abs(c.ev.pP-.5));fam.add(c.d.family)}
+  const total=byDir.P+byDir.B,direction=byDir.P>=byDir.B?'P':'B',agreement=total?Math.max(byDir.P,byDir.B)/total:0;
+  return{agreement,diversity:fam.size,direction,conflict:1-agreement,weightedSupport:total};
+}
+function noveltyScore(h,selector,cand){
+  const active=cand.filter(x=>x.d.active),local=cand.filter(x=>(x.meta?.localN||0)>=CFG.MIN_LOCAL_MATCHES),depth=cand.length?Math.max(...cand.map(x=>x.ev.matchDepth||0)):0;
+  const knownness=clamp(.45*Math.min(1,local.length/3)+.30*Math.min(1,depth/3)+.25*Math.min(1,(selector?.rows?.length||0)/3));
+  const transition=classifyRegime(h).label.includes('TRANSITION')?.18:0;
+  return clamp(1-knownness+transition-(active.length?.10:0));
+}
+function patternActiveFromRuns(rs,p){
+  if(!rs.length)return false;
+  const last=rs.at(-1);
+  if(p.id==='REDNON'||p.id==='PINGPONG')return isAltOne(rs,p.id==='PINGPONG'?6:4);
+  if(p.id==='PAIR')return isExactRun(rs,4,2);
+  if(p.id==='RUN12')return isAltLengths(rs,[1,2,1,2]);
+  if(p.id==='RUN13')return isAltLengths(rs,[1,3,1,3]);
+  if(p.id==='RUN23')return isAltLengths(rs,[2,3,2,3]);
+  if(p.id==='DRAGON')return last.len>=5;
+  if(p.id==='TRIPLE')return isExactRun(rs,3,3);
+  if(p.id==='CUT2')return rs.length>=3&&rs.slice(-3).every(r=>r.len<=2)&&last.len===2;
+  if(p.id==='CUT3'||p.id==='RED3')return rs.length>=3&&rs.slice(-3).every(r=>r.len<=3)&&last.len===3;
+  if(p.id==='CUT4')return rs.length>=3&&rs.slice(-3).every(r=>r.len<=4)&&last.len===4;
+  return false;
+}
+function analogFeatures(h,rsOverride){
+  const a=pb(h),rs=rsOverride||runs(h),last=rs.at(-1),lens=rs.slice(-6).map(r=>bucketRun(r.len));
+  const recent=a.slice(-12),alt=recent.length>3?recent.slice(1).filter((v,i)=>v!==recent[i]).length/Math.max(1,recent.length-1):0;
+  return{lastSide:last?.side||null,lastRun:last?.len||0,lens,lens4:lens.slice(-4),lens2:lens.slice(-2),alt,regime:classifyRegime(h).label,active:PATTERNS.filter(p=>patternActiveFromRuns(rs,p)).map(p=>p.id)};
+}
+function seqSimilarity(a,b){
+  const n=Math.max(a.length,b.length),m=Math.min(a.length,b.length); if(!n)return 0;
+  let same=0; for(let i=1;i<=m;i++){if(a[a.length-i]===b[b.length-i])same++;}
+  return same/n;
+}
+function numSimilarity(a,b,maxDist){return clamp(1-Math.abs(a-b)/Math.max(1,maxDist));}
+function analogSimilarity(cur,ref){
+  let score=0,w=0;
+  score+=.26*seqSimilarity(cur.lens4,ref.lens4); w+=.26;
+  score+=.16*seqSimilarity(cur.lens2,ref.lens2); w+=.16;
+  score+=.16*numSimilarity(cur.lastRun,ref.lastRun,4); w+=.16;
+  score+=.14*(cur.lastSide===ref.lastSide?1:0); w+=.14;
+  score+=.12*(cur.regime===ref.regime?1:.35); w+=.12;
+  score+=.10*numSimilarity(cur.alt,ref.alt,1); w+=.10;
+  const sa=new Set(cur.active),sb=new Set(ref.active); let inter=0; for(const x of sa)if(sb.has(x))inter++; const uni=new Set([...sa,...sb]).size;
+  score+=.06*(uni?inter/uni:0); w+=.06;
+  return score/w;
+}
+function analogHistory(h,recentLimit=null){
+  const a=pb(h); if(a.length<8)return{matches:[],byPattern:{},count:0,meanSim:0};
+  const sig=a.join('');
+  let index=analogIndexCache&&analogIndexCache.signature===sig?analogIndexCache.items:null;
+  if(!index){
+    index=[]; let rs=[];
+    for(let i=0;i<a.length;i++){
+      appendRun(rs,a[i]);
+      if(i+1<a.length) index.push({prefixLen:i+1,features:analogFeatures(a.slice(0,i+1),rs)});
+    }
+    analogIndexCache={signature:sig,items:index};
+  }
+  const current=analogFeatures(a), matches=[];
+  const minPrefix=8, desired=recentLimit||Math.max(80,CFG.MAX_META_PREFIXES*4), maxRecent=Math.min(a.length-1,desired),start=Math.max(minPrefix,a.length-maxRecent);
+  for(const item of index){
+    if(item.prefixLen<start||item.prefixLen>=a.length)continue;
+    const actual=a[item.prefixLen],sim=analogSimilarity(current,item.features);
+    if(sim<.42)continue;
+    const age=a.length-item.prefixLen,rec=weightedAge(age);
+    matches.push({i:item.prefixLen,actual,sim,rec,weight:sim*sim*rec,active:item.features.active,regime:item.features.regime,lastRun:item.features.lastRun,lens:item.features.lens.slice(-4)});
+  }
+  matches.sort((x,y)=>y.weight-x.weight);
+  const top=matches.slice(0,18),byPattern={};
+  for(const p of PATTERNS){let good=0,total=0,raw=0;for(const m of top){const prefix=a.slice(0,m.i),det=detect(prefix,p);if(!det.forecast)continue;const w=m.weight*(m.active.includes(p.id)?1.22:1);total+=w;raw++;if(det.forecast===m.actual)good+=w;}byPattern[p.id]={acc:total?good/total:null,eff:total,raw};}
+  return{matches:top,byPattern,count:top.length,meanSim:top.length?top.reduce((s,m)=>s+m.sim,0)/top.length:0};
+}
+
+
+const MEMORY_KEY=()=>KEY+'-method-memory';
+function loadMethodMemory(){
+  if(methodMemoryCache)return methodMemoryCache;
+  const x=safeJSON(MEMORY_KEY());
+  methodMemoryCache=(x&&x.version===62&&x.buckets)?x:{version:62,buckets:{},updates:0,lastUpdated:null};
+  return methodMemoryCache;
+}
+function memoryBucketKey(p,h){
+  const rs=runs(h),last=rs.at(-1),lens=rs.slice(-4).map(r=>bucketRun(r.len)).join('-');
+  return `${classifyRegime(h).label}|${p.id}|${last?.side||'--'}|${last?.len||0}|${lens}`;
+}
+function memoryStat(p,h){
+  const m=loadMethodMemory(),b=m.buckets[memoryBucketKey(p,h)];
+  if(!b)return{n:0,hits:0,acc:null,eff:0};
+  const rec=b.n||0,hit=b.hits||0,acc=rec?hit/rec:null;
+  return{n:rec,hits:hit,acc,eff:rec};
+}
+function memoryEvidence(p,h,opts={}){
+  if(opts.audit)return{n:0,hits:0,acc:null,eff:0};
+  return memoryStat(p,h);
+}
+function memoryShrinkage(mem){
+  const n=Number.isFinite(mem?.n)?mem.n:0;
+  const acc=Number.isFinite(mem?.acc)?mem.acc:.5;
+  return n>0?((acc*n)+.5*5)/(n+5):.5;
+}
+function clearMethodMemory(){
+  methodMemoryCache={version:62,buckets:{},updates:0,lastUpdated:null};
+  try{localStorage.removeItem(MEMORY_KEY())}catch(e){}
+}
+function rebuildMethodMemory(h){
+  clearMethodMemory();
+  const a=pb(h);
+  for(let i=0;i<a.length-1;i++){
+    const prefix=a.slice(0,i+1), actual=a[i+1];
+    if(actual==='T')continue;
+    const L=buildLearner(prefix),res=forecast(prefix,L,{audit:true,skipMemory:true});
+    recordMethodMemory(prefix,res,actual,true);
+  }
+  const m=loadMethodMemory();
+  try{localStorage.setItem(MEMORY_KEY(),JSON.stringify(m))}catch(e){}
+  methodMemoryCache=m;
+}
+function recordMethodMemory(h,res,actual,silent=false){
+  if(!res||!actual||actual==='T'||!res.evidence?.length)return;
+  const m=loadMethodMemory();
+  for(const e of res.evidence){
+    const p=PATTERNS.find(x=>x.name===e.name); if(!p||!e.predicted)continue;
+    const k=memoryBucketKey(p,h); const b=m.buckets[k]||{n:0,hits:0,p:0,b:0};
+    b.n++; if(e.predicted===actual)b.hits++; if(actual==='P')b.p++;else if(actual==='B')b.b++;
+    if(b.n>120){b.n*=.995;b.hits*=.995;b.p*=.995;b.b*=.995;}
+    m.buckets[k]=b;
+  }
+  m.updates=(m.updates||0)+1; m.lastUpdated=new Date().toISOString(); methodMemoryCache=m;
+  try{localStorage.setItem(MEMORY_KEY(),JSON.stringify(m))}catch(e){}
+}
+function savePendingDecision(h,res){
+  if(!h.length||!res)return;
+  const payload={version:62,signature:h.join(''),savedAt:new Date().toISOString(),res:{evidence:res.evidence,policy:res.policy,forecast:res.forecast,selectorId:res.selector?.selected?.p?.id||null,methodConfidence:res.methodConfidence,predictionConfidence:res.predictionConfidence,regime:res.regime?.label||null,competitionWinner:res.competition?.effectiveTop?.d?.id||null}};
+  try{localStorage.setItem(KEY+'-pending',JSON.stringify(payload))}catch(e){}
+}
+function learnPendingBeforeAppend(h,actual){
+  const x=safeJSON(KEY+'-pending');
+  if(!x||x.version!==61||x.signature!==h.join('')||!x.res)return;
+  const fake={evidence:x.res.evidence||[]};recordMethodMemory(h,fake,actual);try{localStorage.removeItem(KEY+'-pending')}catch(e){}
+}
+
+function contextualSelector(h,L,opts={}){
+  currentLearner=L;const sig=h.join('')+'|'+(opts.audit?'A':'F');
+  if(contextSelectorCache&&contextSelectorCache.signature===sig)return contextSelectorCache.value;
+  const a=pb(h),out=[];
+  if(a.length<8){const value={samples:0,rows:[],top:[],selected:null,runner:null,chosen:[],confidence:.5,reason:'ประวัติยังน้อยเกินไปสำหรับการเลือกวิธี',aN:a.length,regime:classifyRegime(h),analogs:analogHistory(h)};contextSelectorCache={signature:sig,value};return value;}
+  const regime=classifyRegime(h);
+  const activeNowIds=PATTERNS.filter(p=>detect(h,p).active).map(p=>p.id);
+  const needAnalog=a.length<120||activeNowIds.length>=2;
+  const analogs=needAnalog?analogHistory(h,opts.audit?12:null):{matches:[],byPattern:{},count:0,meanSim:0};
+  for(const p of PATTERNS){
+    const ks=stateKeys(h,p),exact=stateQuality(L,p,'exact',ks.exact),reduced=stateQuality(L,p,'reduced',ks.reduced),family=stateQuality(L,p,'family',ks.family);
+    const levels=[['EXACT',exact],['REDUCED',reduced],['FAMILY',family]];let local=null,localN=0,level='NONE';
+    for(const [lv,q] of levels){if(q&&q.n>=CFG.MIN_LOCAL_MATCHES){local=q;localN=q.n;level=lv;break}}
+    const an=analogs.byPattern?.[p.id]||{acc:null,eff:0,raw:0};
+    const mem=memoryEvidence(p,h,opts);
+    if(!local && !(an.acc!=null&&an.eff>=1.6) && mem.n<2)continue;
+    const all=L.summary?.[p.id]||mapWeightedAccuracy(L.patterns?.[p.id]?.exact||{}),globalAcc=all?.accuracy??.5,globalN=all?.total??0;
+    const localEff=local?.eff||0,baseEff=localEff||an.eff||1;
+    const localAcc=local?.acc??an.acc??.5;
+    const historicalAcc=an.acc??localAcc;
+    const shrinkLocal=((localAcc*baseEff)+.5*6)/(baseEff+6);
+    const shrinkGlobal=(globalN?((globalAcc*Math.min(globalN,40))+.5*6)/(Math.min(globalN,40)+6):.5);
+    const shrinkAnalog=((historicalAcc*(an.eff||0))+.5*5)/((an.eff||0)+5);
+    const memoryShrink=memoryShrinkage(mem);
+    const reliability=clamp(.52*shrinkLocal+.18*shrinkAnalog+.16*shrinkGlobal+.14*memoryShrink);
+    const currentSupport=(exact?.eff||0)+.55*(reduced?.eff||0)+.25*(family?.eff||0),activeNow=detect(h,p).active;
+    const consistency=clamp(1-Math.abs(shrinkLocal-shrinkGlobal)*1.6);
+    const activeFit=activeNow?1:0,regimeFit=(p.group==='ALT1'&&regime.label.includes('ALTERNATING'))||(p.id==='DRAGON'&&regime.label.includes('RUN'))?1:0;
+    const analogFit=an.eff>0?clamp(an.acc==null?.5:an.acc):.5;
+    const retrieval=an.eff?Math.min(.26,an.eff/(an.eff+8))*(analogs.meanSim||.5):0;
+    const learnedBoost=mem.eff?Math.min(.18,mem.eff/(mem.eff+10))*.85:0;
+    const fit=clamp(.20+Math.abs(reliability-.5)*1.75+Math.min(.34,currentSupport/(currentSupport+10))*.9+(level==='EXACT'?.14:level==='REDUCED'?.07:0)+.15*activeFit+.10*regimeFit+.18*Math.abs(analogFit-.5)+retrieval+learnedBoost+(consistency-.7)*.12);
+    out.push({p,level,local:local?.acc??null,localN,localEff,global:globalAcc,reliability,currentEff:currentSupport,fit,activeNow,regimeFit,analogAcc:an.acc,analogEff:an.eff,analogRaw:an.raw,analogFit,analogCount:analogs.count,memoryAcc:mem.acc,memoryN:mem.n,exactN:exact?.n||0,reducedN:reduced?.n||0,familyN:family?.n||0,consistency});
+  }
+  out.sort((a,b)=>b.fit-a.fit||b.reliability-a.reliability||b.analogEff-a.analogEff||b.currentEff-a.currentEff);
+  const top=out.slice(0,CFG.SELECT_TOP_K),runner=out[1]||null,margin=top[0]&&runner?top[0].fit-runner.fit:1;
+  const selected=top[0]&&top[0].reliability>=.52&&((top[0].localN>=CFG.MIN_LOCAL_MATCHES)||(top[0].analogEff>=1.6)||(top[0].memoryN>=3))&&(margin>=CFG.MIN_METHOD_MARGIN||top[0].currentEff>=14||top[0].analogEff>=3||top[0].memoryN>=6)?top[0]:null;
+  const value={samples:out.reduce((s,x)=>s+x.localN,0),rows:out,top,selected,runner,chosen:selected?[selected]:[],confidence:selected?clamp(.5+Math.abs(selected.reliability-.5)*1.7+Math.min(.2,(selected.currentEff+selected.analogEff)/(selected.currentEff+selected.analogEff+10))):.5,regime,analogs,learned:(loadMethodMemory().updates||0),reason:selected?`เลือก ${selected.p.name} เพราะ ${selected.level!=='NONE'?selected.level:'ANALOG'} reliability ${pct(selected.reliability)} · fit ${pct(selected.fit)} · analog ${selected.analogRaw} cases · learned ${selected.memoryN} · regime ${regime.label}`:'ไม่มีวิธีใดผ่าน local/analog context gate อย่างชัดเจน',aN:a.length};
+  contextSelectorCache={signature:sig,value};return value;
+}
+function safeAxis(x,def=.5){return Number.isFinite(x)?clamp(x):def}
+function evidenceCompetition(h,selector,cand){
+  const rows=cand.map(c=>{
+    const m=c.meta||{},e=c.ev||{},edge=clamp(Math.abs((e.pP??.5)-.5)*2),
+      similarity=m.analogEff?clamp((m.analogEff/(m.analogEff+5))*(selector?.analogs?.meanSim||.5)):.12,
+      localQuality=(m.localN||0)>0?clamp((m.localEff||0)/((m.localEff||0)+8)):.10,
+      analogQuality=(m.analogEff||0)>0?clamp((m.analogEff||0)/((m.analogEff||0)+6))*.5:.05,
+      sample=clamp((Math.min(1,(m.localEff||0)/18)*.55)+(.45*Math.min(1,(m.analogEff||0)/12))+.10*Math.min(1,(m.memoryN||0)/12)),
+      learning=safeAxis(memoryShrinkage({n:m.memoryN||0,acc:m.memoryAcc}),.5),
+      learningQuality=Math.abs(learning-.5)*2,
+      reliability=safeAxis(m.reliability,.5),
+      regime=safeAxis(m.regimeFit,.0),
+      active=c.d.active?1:0,
+      consistency=safeAxis(m.consistency,.5),
+      currentSupport=clamp((m.currentEff||0)/((m.currentEff||0)+12)),
+      stability=safeAxis(m.consistency,.5),
+      methodConfidence=clamp(.27*reliability+.17*similarity+.15*localQuality+.12*analogQuality+.10*sample+.07*learningQuality+.06*regime+.04*active+.02*stability),
+      predictionStrength=edge,
+      signalQuality=clamp(.52*methodConfidence+.22*predictionStrength+.12*currentSupport+.08*similarity+.06*regime),
+      direction=(e.pP??.5)>=(e.pB??.5)?'P':'B';
+    return {...c,axes:{reliability,similarity,localQuality,analogQuality,sample,learningQuality,regime,active,consistency,currentSupport,edge},methodConfidence,predictionStrength,signalQuality,direction};
+  });
+  // First keep only the strongest representative of each family. This prevents correlated patterns
+  // (for example CUT3/RED3) from behaving as independent votes.
+  const familyBest=new Map();
+  for(const r of rows){const f=r.d.family,b=familyBest.get(f);if(!b||r.methodConfidence>b.methodConfidence)familyBest.set(f,r)}
+  const reps=[...familyBest.values()].sort((a,b)=>b.methodConfidence-a.methodConfidence||b.signalQuality-a.signalQuality);
+  const runner=reps[1]||null;
+  const top=reps[0]||null;
+  const continuous0=loadContinuousState();
+  const continuous=(continuous0&&continuous0.signature===h.join(''))?continuous0:null;
+  const prevRep=continuous?.previousWinnerId?reps.find(r=>r.d.id===continuous.previousWinnerId):null;
+  const transition=clamp(continuous?.transitionScore||0);
+  const hysteresis=.035+.025*transition;
+  let effectiveTop=top;
+  let persistenceUsed=false;
+  let challengeRequired=false;
+  if(prevRep&&top&&prevRep.d.id!==top.d.id){
+    const challengeGap=top.methodConfidence-prevRep.methodConfidence;
+    const stalePenalty=(continuous?.missStreak||0)>=2?.035:0;
+    if(challengeGap<hysteresis-stalePenalty){effectiveTop=prevRep;persistenceUsed=true}
+    else challengeRequired=true;
+  }else if(prevRep&&!top){effectiveTop=prevRep;persistenceUsed=true}
+  const familySupport={P:0,B:0};
+  for(const r of reps){const support=r.signalQuality*Math.max(.15,r.axes.edge);familySupport[r.direction]+=support}
+  const totalFamily=familySupport.P+familySupport.B;
+  const familyDirection=familySupport.P>=familySupport.B?'P':'B';
+  const agreement=totalFamily?Math.max(familySupport.P,familySupport.B)/totalFamily:0;
+  const independentFamilies=reps.length;
+  const secondary=runner&&runner.direction===top?.direction?runner:null;
+  const corroboration=secondary?clamp(secondary.methodConfidence*.9):0;
+  // A winner needs enough method evidence; a tiny numerical score gap is not a real winner.
+  const margin=effectiveTop&&runner&&effectiveTop.d.id!==runner.d.id?effectiveTop.methodConfidence-runner.methodConfidence:(effectiveTop&&top?0:0);
+  const qualifiedTop=effectiveTop&&(
+    (effectiveTop.meta?.localN||0)>=CFG.MIN_LOCAL_MATCHES ||
+    (effectiveTop.meta?.analogEff||0)>=1.6 ||
+    (effectiveTop.meta?.memoryN||0)>=3
+  );
+  const clearWinner=!!qualifiedTop && (margin>=CFG.MIN_METHOD_MARGIN || (effectiveTop.methodConfidence>=.70 && corroboration>=.55) || persistenceUsed);
+  return {rows,reps,top,effectiveTop,runner,margin:(effectiveTop&&runner?effectiveTop.methodConfidence-runner.methodConfidence:margin),clearWinner, familySupport,familyDirection,agreement,independentFamilies,corroboration,continuous,persistenceUsed,challengeRequired,hysteresis};
+}
+function buildEvidenceMatrix(h,selector,cand){
+  const comp=evidenceCompetition(h,selector,cand);
+  const repIds=new Set(comp.reps.map(r=>r.d.id));
+  return comp.rows.map(r=>({...r,
+    familyRepresentative:repIds.has(r.d.id),
+    independence:repIds.has(r.d.id)?1:.35,
+    competitionScore:clamp(r.methodConfidence*(repIds.has(r.d.id)?1:.35)),
+    methodConfidence:r.methodConfidence,
+    predictionConfidence:clamp(.5+.5*r.predictionStrength),
+    evidenceAxes:r.axes
+  }));
+}
+function summarizeEvidence(rows){
+  const reps=rows.filter(r=>r.familyRepresentative!==false),by={P:0,B:0};
+  for(const r of reps){const w=Math.max(.1,r.competitionScore||0)*Math.max(.1,Math.abs((r.ev?.pP??.5)-.5)*2);by[r.direction]+=w}
+  const total=by.P+by.B,direction=by.P>=by.B?'P':'B';
+  return{direction,agreement:total?Math.max(by.P,by.B)/total:0,weightedSupport:total,independentFamilies:reps.length};
+}
+function forecast(h,L,opts={}){
+  if(!h.length)return{decision:'WAIT',forecast:null,pP:null,pB:null,quality:0,patterns:[],evidence:[],patternCoverage:0,signal:false,agreement:0,matchDepth:0,families:0,selector:null,regime:null,novelty:1,policy:'WAIT',competition:null};
+  currentLearner=L;
+  const selector=contextualSelector(h,L,opts),
+    dets=PATTERNS.map(p=>({...detect(h,p),id:p.id,name:p.name,family:p.family,stateKey:stateKey(h,p)})),
+    metaMap=new Map(selector.rows.map(x=>[x.p.id,x])),cand=[];
+  for(const d of dets){
+    const ptn=PATTERNS.find(x=>x.id===d.id),ev=evidenceFor(h,ptn),meta=metaMap.get(d.id);
+    if(ev.pP==null)continue;
+    const edge=Math.abs(ev.pP-.5)*2,
+      unc=ev.ci?clamp(1-(ev.ci[1]-ev.ci[0])):.1,
+      activeMult=d.active?1.28:1,
+      independence=d.family==='RUN3'?.78:1,
+      fit=meta?.fit??.35,reliability=meta?.reliability??.5,
+      w=Math.max(.01,(ev.eff/(ev.eff+10))*edge*Math.max(.15,unc)*activeMult*independence*(.55+.95*Math.max(0,fit-.35))*(.75+.5*Math.abs(reliability-.5)));
+    cand.push({d,ev,w,meta});
+  }
+  const matrix=buildEvidenceMatrix(h,selector,cand),
+    comp=evidenceCompetition(h,selector,cand),
+    qualified=matrix.filter(x=>(x.meta?.localN||0)>=CFG.MIN_LOCAL_MATCHES||(x.meta?.analogEff||0)>=1.6||(x.meta?.memoryN||0)>=3),
+    cross=summarizeEvidence(qualified.length?qualified:matrix),
+    winner=comp.effectiveTop||comp.top,
+    selectedCand=winner||null,
+    previousWinnerId=comp.continuous?.previousWinnerId||null,
+    pP=selectedCand?.ev?.pP??.5,pB=selectedCand?.ev?.pB??.5,
+    totalEff=selectedCand?.ev?.eff||0,
+    margin=Math.abs(pP-pB),
+    novelty=noveltyScore(h,selector,cand),
+    dynamicGate=Math.max(CFG.MIN_SIGNAL_MARGIN,Math.min(.14,.025+(1-comp.agreement)*.08+novelty*.05+(winner?Math.max(0,.5-winner.methodConfidence)*.08:0))),
+    selectorReady=!!winner&&comp.clearWinner,
+    selectedDirection=selectedCand?selectedCand.direction:null,
+    crossDirection=comp.familyDirection,
+    signal=!!(selectorReady&&selectedCand&&selectedDirection===crossDirection&&margin>=dynamicGate&&totalEff>=CFG.MIN_SIGNAL_EFF&&comp.agreement>=.56&&comp.independentFamilies>=1&&novelty<.72),
+    f=signal?(pP>pB?'P':'B'):null,
+    policy=novelty>=.80?'UNKNOWN':!signal?'WAIT':comp.agreement<.68||margin<dynamicGate*1.35||comp.margin<.035?'CAUTIOUS':'FOLLOW',
+    methodConfidence=winner?.methodConfidence??.5,
+    predictionConfidence=signal?clamp(.5+.5*Math.abs(pP-pB)*2):.5,
+    quality=clamp(.20+.25*methodConfidence+.22*comp.agreement+.18*predictionConfidence+.10*Math.min(1,totalEff/30)+.05*Math.min(1,(selector.analogs?.meanSim||0))-.10*novelty);
+  const evidence=matrix.slice().sort((a,b)=>b.competitionScore-a.competitionScore).map(e=>({name:e.d.name,predicted:e.direction,n:Math.round(e.ev.eff*100)/100,exact:e.ev.exact,recent:e.ev.reduced,familyN:e.ev.family,predProb:e.ev.pP,rate:e.ev.pP,score:e.w,active:e.d.active,reason:e.d.reason,matchDepth:e.ev.matchDepth,ci:e.ev.ci,fit:e.meta?.fit??0,local:e.meta?.local??null,localN:e.meta?.localN??0,level:e.meta?.level??'--',reliability:e.meta?.reliability??.5,methodConfidence:e.methodConfidence,predictionConfidence:e.predictionConfidence,familyRepresentative:e.familyRepresentative,axes:e.evidenceAxes}));
+  return{decision:signal?'FORECAST':'WAIT',forecast:f,pP,pB,quality,patterns:dets,evidence,active:dets.filter(d=>d.active).length,mode:'CONTINUOUS CONTEXTUAL EVIDENCE COMPETITION + 12 PATTERN STATES',patternCoverage:cand.length,signal,agreement:comp.agreement,matchDepth:cand.length?Math.round(cand.reduce((s,c)=>s+c.ev.matchDepth,0)/cand.length*10)/10:0,families:comp.independentFamilies,totalEff,dynamicGate,selector,regime:selector.regime,novelty,policy,cross,matrix,competition:comp,methodConfidence,predictionConfidence,continuous:comp.continuous||null,previousWinnerId:comp.continuous?.previousWinnerId||null,continuityUsed:!!comp.persistenceUsed,challengeRequired:!!comp.challengeRequired,transitionScore:comp.continuous?.transitionScore||0};
+}
+function exactMcNemar(a,b){let onlyA=0,onlyB=0;for(let i=0;i<Math.min(a.length,b.length);i++){if(a[i]===b[i])continue;if(a[i])onlyA++;else onlyB++}const d=onlyA+onlyB;if(d<10)return{p:null,discordant:d,onlyA,onlyB};const k=Math.min(onlyA,onlyB);let prob=0;for(let i=0;i<=k;i++){prob+=chooseProb(d,i)}return{p:Math.min(1,2*prob),discordant:d,onlyA,onlyB}}
+function chooseProb(n,k){if(k<0||k>n)return 0;let logp=logChoose(n,k)-n*Math.log(2);return Math.exp(logp)}
+function logChoose(n,k){return lgamma(n+1)-lgamma(k+1)-lgamma(n-k+1)}
+function lgamma(x){const cof=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.001208650973866179,-5.395239384953e-6];let y=x,tmp=x+5.5;tmp-=(x+0.5)*Math.log(tmp);let ser=1.000000000190015;for(let j=0;j<cof.length;j++){y+=1;ser+=cof[j]/y}return -tmp+Math.log(2.5066282746310005*ser/x)}
+function isotonicFit(samples){if(!Array.isArray(samples)||samples.length<24)return null;const a=samples.filter(x=>Number.isFinite(x.prob)&&Number.isFinite(x.y)).map(x=>({x:clamp(x.prob),y:x.y,w:1,lo:clamp(x.prob),hi:clamp(x.prob)})).sort((u,v)=>u.x-v.x||u.y-v.y);if(a.length<24)return null;const blocks=[];for(const row of a){blocks.push({sumY:row.y,w:1,lo:row.lo,hi:row.hi});while(blocks.length>=2){const q=blocks[blocks.length-2],r=blocks[blocks.length-1];if(q.sumY/q.w<=r.sumY/r.w+1e-12)break;blocks.splice(blocks.length-2,2,{sumY:q.sumY+r.sumY,w:q.w+r.w,lo:q.lo,hi:r.hi});}}return blocks.map(b=>({lo:b.lo,hi:b.hi,value:clamp(b.sumY/b.w)}))}
+function isotonicApply(model,x){if(!model||!model.length||!Number.isFinite(x))return null;const q=clamp(x);for(const b of model)if(q<=b.hi+1e-12)return b.value;return model.at(-1).value}
+function blockBootstrapDelta(preds,basePreds,seed=29){const n=Math.min(preds?.length||0,basePreds?.length||0);if(n<CFG.MIN_SIGNAL_EFF)return null;let z=(seed>>>0)||1;const rnd=()=>{z^=z<<13;z^=z>>>17;z^=z<<5;return(z>>>0)/4294967296};const block=Math.max(3,Math.floor(Math.sqrt(n)));const vals=[];for(let b=0;b<CFG.BOOT_B;b++){let a=0,c=0,got=0;while(got<n){const st=Math.floor(rnd()*Math.max(1,n-block+1));for(let j=0;j<block&&got<n;j++,got++){const idx=st+j;a+=preds[idx]?1:0;c+=basePreds[idx]?1:0}}vals.push(a/n-c/n)}vals.sort((a,b)=>a-b);return{lo:vals[Math.floor(.025*vals.length)],hi:vals[Math.floor(.975*vals.length)],median:vals[Math.floor(.5*vals.length)]}}
+function walkForward(h){
+  const a=pb(h),n=a.length;if(n<CFG.WF_FOLDS*CFG.MIN_WF_FOLD*2)return null;const folds=[],minTrain=Math.max(12,Math.floor(n/(CFG.WF_FOLDS+1)));
+  for(let k=1;k<=CFG.WF_FOLDS;k++){const st=Math.floor(n*k/(CFG.WF_FOLDS+1)),en=Math.floor(n*(k+1)/(CFG.WF_FOLDS+1));if(st<minTrain||en<=st)continue;const train=a.slice(0,st),test=a.slice(st,en);let hit=0,opp=0,baseHit=0,majHit=0;
+    const stride=auditStride(test.length);
+    for(let i=0;i<test.length;i++){if(stride>1&&i%stride!==0&&i!==test.length-1)continue;const prefix=train.concat(test.slice(0,i)),L=buildLearner(prefix),res=forecast(prefix,L,{audit:true});if(!res.signal)continue;opp++;if(res.forecast===test[i])hit++;const base=prefix.at(-1)||null;if(base===test[i])baseHit++;const maj=majorityBaseline(prefix);if(maj===test[i])majHit++}
+    if(opp>=CFG.MIN_WF_FOLD)folds.push({train:train.length,n:test.length,opportunities:opp,accuracy:hit/opp,baseline:baseHit/opp,majority:majHit/opp,delta:(hit-baseHit)/opp});}
+  if(!folds.length)return null;return{folds,mean:folds.reduce((s,x)=>s+x.accuracy,0)/folds.length,worst:Math.min(...folds.map(x=>x.accuracy)),meanDelta:folds.reduce((s,x)=>s+x.delta,0)/folds.length,worstDelta:Math.min(...folds.map(x=>x.delta)),coverage:folds.reduce((s,x)=>s+x.opportunities,0)/folds.reduce((s,x)=>s+x.n,0)};
+}
+
+function patternOOS(h){const sig=h.join('');if(patternOOSCache&&patternOOSCache.signature===sig)return patternOOSCache.value;const a=pb(h),stats={};if(a.length<2)return stats;for(const p of PATTERNS)stats[p.id]={n:0,hits:0};const total=a.length-1,cap=Math.min(total,CFG.MAX_PATTERN_OOS_PREFIXES),step=Math.max(1,Math.floor(total/cap));for(let i=1;i<a.length;i+=step){const prefix=a.slice(0,i),L=buildLearner(prefix);for(const p of PATTERNS){const ev=evidenceForWithLearner(prefix,L,p);if(ev.pP==null||ev.eff<CFG.MIN_EXACT)continue;const pred=ev.pP>=ev.pB?'P':'B';stats[p.id].n++;if(pred===a[i])stats[p.id].hits++}}patternOOSCache={signature:sig,value:stats};return stats;}
+function evidenceForWithLearner(h,L,p){const prev=currentLearner;currentLearner=L;const ks=stateKeys(h,p),parts=mergeStatsByIds(L,p,ks,h),q=empiricalProb(parts)||{pP:null,pB:null,eff:0};const out={...q,exact:getMapStat(L,p,'exact',ks.exact).n,reduced:getMapStat(L,p,'reduced',ks.reduced).n,family:getMapStat(L,p,'family',ks.family).n};currentLearner=prev;return out}
+function multipleTesting(stats){const entries=Object.entries(stats||{}).filter(([,s])=>s.n>=CFG.MIN_PATTERN_OOS);if(!entries.length)return null;const rows=entries.map(([id,s])=>{const p=s.hits/s.n,se=Math.sqrt(.25/s.n),z=(p-.5)/se;const tail=.5*(1-erf(Math.abs(z)/Math.sqrt(2)));return{id,n:s.n,acc:p,p:Math.min(1,2*tail)}}).sort((a,b)=>a.p-b.p);const m=rows.length;let prev=1;for(let i=m-1;i>=0;i--){prev=Math.min(prev,rows[i].p*m/(i+1));rows[i].q=Math.min(1,prev)}return{tested:m,significant:rows.filter(x=>x.q<.10&&x.acc>.5).length,best:rows[0]}}
+function erf(x){const sign=x<0?-1:1;x=Math.abs(x);const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911;const t=1/(1+p*x);const y=1-((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return sign*y}
+function priorBaseline(prefix){const a=pb(prefix);if(!a.length)return null;const p=a.filter(x=>x==='P').length/a.length;return p>=.5?'P':'B'}
+function majorityBaseline(prefix){const a=pb(prefix);if(!a.length)return null;const p=a.filter(x=>x==='P').length,b=a.length-p;return p>=b?'P':'B'}
+function bayesRandomBaseline(prefix){return priorBaseline(prefix)}
+function brierScore(samples,key='prob'){if(!samples?.length)return null;return samples.reduce((s,x)=>s+(x[key]-x.y)**2,0)/samples.length}
+function onlineCalibration(samples,lookback=120){
+  if(!Array.isArray(samples)||samples.length<CFG.MIN_CAL_SAMPLES)return null;
+  const out=[];
+  for(let i=0;i<samples.length;i++){
+    const hist=samples.slice(Math.max(0,i-lookback),i).filter(x=>Number.isFinite(x.prob)&&Number.isFinite(x.y));
+    const model=isotonicFit(hist);
+    out.push({...samples[i],calProb:model?isotonicApply(model,samples[i].prob):samples[i].prob});
+  }
+  return out;
+}
+function lockedTestSplit(a){
+  const k=KEY+'-locked-test',saved=safeJSON(k),n=a.length;
+  if(saved&&saved.version===62&&Number.isInteger(saved.cut)&&Number.isInteger(saved.n)&&saved.cut>0&&saved.n>=CFG.MIN_LOCKED_TEST&&saved.cut+saved.n<=n){
+    const test=a.slice(saved.cut,saved.cut+saved.n);return{dev:a.slice(0,saved.cut),test,cut:saved.cut,sealedAt:saved.sealedAt,signature:saved.signature};
+  }
+  if(n<Math.max(300,CFG.MIN_LOCKED_TEST*5))return null;
+  const hold=Math.max(CFG.MIN_LOCKED_TEST,Math.floor(n*CFG.HOLDOUT_FRAC)),cut=n-hold,test=a.slice(cut);
+  const lock={version:62,cut,sealedAt:new Date().toISOString(),signature:test.join(''),n:test.length};
+  try{localStorage.setItem(k,JSON.stringify(lock))}catch(e){}
+  return{dev:a.slice(0,cut),test,cut,sealedAt:lock.sealedAt,signature:lock.signature};
+}
+
+function stability(o){if(!o?.preds?.length)return null;const s=o.preds,w=Math.max(12,Math.floor(s.length/4));if(s.length<w*3)return null;const acc=x=>x.filter(Boolean).length/x.length;const vals=[acc(s.slice(-3*w,-2*w)),acc(s.slice(-2*w,-w)),acc(s.slice(-w))];const mean=vals.reduce((a,b)=>a+b,0)/vals.length;const sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/vals.length);return{score:clamp(1-sd*3),values:vals}}
+function drift(h){const a=pb(h);if(a.length<40)return null;const w=Math.floor(a.length/3),x=a.slice(-w),y=a.slice(-2*w,-w);const rate=z=>z.filter(v=>v==='P').length/z.length;const out=Math.abs(rate(x)-rate(y));const rx=runs(x).map(r=>r.len),ry=runs(y).map(r=>r.len);const mean=z=>z.reduce((s,v)=>s+v,0)/Math.max(1,z.length);return{outcome:out,run:Math.abs(mean(rx)-mean(ry))/Math.max(1,mean(ry)),score:clamp((out+Math.abs(mean(rx)-mean(ry))/Math.max(1,mean(ry)))/2)}}
+function calibration(o){
+  if(!o||!o.samples?.length)return null;
+  const samples=o.samples.filter(x=>Number.isFinite(x.prob)&&Number.isFinite(x.y));
+  if(samples.length<CFG.MIN_CAL_SAMPLES)return null;
+  const online=onlineCalibration(samples);
+  const bins=Array.from({length:10},()=>({n:0,p:0,y:0,cp:0}));
+  for(const s of online){const idx=Math.min(9,Math.floor(clamp(s.prob)*10));bins[idx].n++;bins[idx].p+=s.prob;bins[idx].y+=s.y;bins[idx].cp+=s.calProb}
+  let ece=0,calBrier=0,rawBrier=0;
+  for(const b of bins){if(!b.n)continue;ece+=(b.n/samples.length)*Math.abs(b.p/b.n-b.y/b.n)}
+  for(const s of online){rawBrier+=(s.prob-s.y)**2;calBrier+=(s.calProb-s.y)**2}
+  rawBrier/=samples.length;calBrier/=samples.length;
+  return{ece,bins,count:samples.length,online,rawBrier,calBrier,improvement:rawBrier-calBrier};
+}
+function auditStride(n){return Math.max(1,Math.ceil(n/CFG.MAX_RECONSTRUCT_PB));}
+function reconstruct(h){
+  const a=pb(h);let samples=[],preds=[],basePreds=[],majPreds=[],hits=0,opp=0,baseHits=0,majHits=0,signalCount=0;
+  const cut=Math.max(1,Math.floor(a.length*(1-CFG.HOLDOUT_FRAC))),holdout=[];let calHistory=[];
+  const stride=a.length>CFG.MAX_RECONSTRUCT_PB?auditStride(a.length):1;
+  for(let i=1;i<a.length;i++){
+    if(stride>1 && i%stride!==0 && i!==a.length-1)continue;
+    const prefix=a.slice(0,i),L=buildLearner(prefix),res=forecast(prefix,L,{audit:true}),inHoldout=i>=cut;
+    if(res.signal){
+      signalCount++;opp++;const y=a[i]==='P'?1:0,pred=res.forecast,prev=prefix.at(-1),base=prev||'B',maj=majorityBaseline(prefix)||'B',raw=res.pP??.5;
+      const priorModel=isotonicFit(calHistory);const calProb=priorModel?isotonicApply(priorModel,raw):raw;
+      if(pred===a[i])hits++;if(base===a[i])baseHits++;if(maj===a[i])majHits++;
+      preds.push(pred===a[i]);basePreds.push(base===a[i]);majPreds.push(maj===a[i]);
+      samples.push({prob:raw,y,calProb});calHistory.push({prob:raw,y});
+      if(inHoldout)holdout.push({correct:pred===a[i],base:base===a[i],majority:maj===a[i],prob:raw,calProb,y});
+    }
+  }
+  const acc=opp?hits/opp:null,base=opp?baseHits/opp:null,maj=opp?majHits/opp:null,ci=wilsonCI(hits,opp),sig=exactMcNemar(preds,basePreds),boot=blockBootstrapDelta(preds,basePreds,hashString(h.join('')));
+  const holdN=holdout.length,holdHits=holdout.filter(x=>x.correct).length,holdBase=holdout.filter(x=>x.base).length,holdMaj=holdout.filter(x=>x.majority).length;
+  const hold={n:holdN,accuracy:holdN?holdHits/holdN:null,baseline:holdN?holdBase/holdN:null,majority:holdN?holdMaj/holdN:null,ci:wilsonCI(holdHits,holdN)};
+  const locked=lockedTestSplit(a);let lockedTest=null;
+  if(locked){
+    const train=locked.dev,test=locked.test;let hit=0,bh=0,mh=0,op=0;
+    for(let i=0;i<test.length;i++){const prefix=train.concat(test.slice(0,i)),L=buildLearner(prefix),res=forecast(prefix,L,{audit:true});if(!res.signal)continue;op++;if(res.forecast===test[i])hit++;if((prefix.at(-1)||null)===test[i])bh++;if(majorityBaseline(prefix)===test[i])mh++;}
+    lockedTest={n:test.length,opportunities:op,accuracy:op?hit/op:null,baseline:op?bh/op:null,majority:op?mh/op:null,cut:locked.cut};
+  }
+  const o={version:62,signature:h.join(''),hits,opportunities:opp,accuracy:acc,baseline:base,majority:maj,samples,preds,basePreds,majPreds,ci,sig,signalCount,totalPB:a.length,coverage:a.length?signalCount/a.length:null,abstainRate:a.length?1-signalCount/a.length:null,bootstrap:boot,holdout:hold,lockedTest,walkForward:null};
+  o.walkForward=walkForward(h);
+  try{localStorage.setItem(KEY+'-oos',JSON.stringify(o))}catch(e){}
+  return o;
+}
+function hashString(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function getOOS(h){const k=KEY+'-oos',x=safeJSON(k);return x&&x.version===62&&x.signature===h.join('')?x:reconstruct(h)}
+function readiness(o,cal,stab,dr,wf){
+  if(!o||o.opportunities<CFG.MIN_OOS_OPPS)return'INSUFFICIENT';
+  let score=0;const delta=(o.accuracy??0)-(o.baseline??0);const hDelta=(o.holdout?.accuracy??0)-(o.holdout?.baseline??0);const lDelta=(o.lockedTest?.accuracy??0)-(o.lockedTest?.baseline??0);
+  if(delta>.02)score++; if(delta>.05)score++; if(o.sig?.p!=null&&o.sig.p<.05)score++; if(cal?.ece!=null&&cal.ece<.06)score++;
+  if(o.holdout?.n>=CFG.MIN_HOLDOUT_OPPS&&hDelta>.015)score++; if(o.lockedTest?.opportunities>=CFG.MIN_HOLDOUT_OPPS&&lDelta>.015)score++;
+  if(stab?.score!=null&&stab.score>.80)score++; if(!dr||dr.score<CFG.MAX_DRIFT_SCORE)score++; if(wf?.meanDelta>0.01&&wf.worstDelta>-0.05)score++;
+  if(cal?.improvement!=null&&cal.improvement>=0)score++; if((o.majority??0)<=1&&delta>0)score++;
+  return score>=10?'A':score>=8?'B':score>=6?'C':'D';
+}
+function set(id,v,html=false){const e=$(id);if(e){if(html)e.innerHTML=v;else e.textContent=v}}
+function renderHistory(h){const e=$('history');e.replaceChildren();if(!h.length){const n=document.createElement('div');n.className='history-empty';n.textContent='ยังไม่มีประวัติ';e.append(n);return}h.forEach((r,i)=>{const n=document.createElement('div');n.className='history-node '+(r==='P'?'player':r==='B'?'banker':'tie');n.textContent=r;n.title=`ตา ${i+1} · ${side(r)}`;e.append(n)})}
+function renderFast(h,res){
+ const sel=res.selector; const comp=res.competition; const win=comp?.top;
+ set('forecast',res.forecast?side(res.forecast):'NEUTRAL');set('decision',res.signal?'FORECAST':'WAIT');set('policy',res.policy||'WAIT');set('regime',res.regime?.label||'--');set('forecastBig',res.forecast?`${side(res.forecast)} · ${res.policy||'FORECAST'}`:'NEUTRAL · NO EDGE');
+ set('confidence',pct(res.forecast?Math.max(res.pP,res.pB):.5));
+ set('continuity',res.continuityUsed?`KEEP · ${res.continuous?.winnerAge||1}ตา`:'RESELECT');set('challenge',res.challengeRequired?'CHALLENGE':'STABLE');set('transition',pct(res.transitionScore||0));
+ set('selectedMethod',win?win.d.name:'WAIT / NO CLEAR WINNER');
+ set('methodFit',win?`${pct(win.methodConfidence)} · ${pct(win.meta?.reliability??.5)}`:'--');
+ set('runnerUp',comp?.runner?`${comp.runner.d.name} · ${pct(comp.runner.methodConfidence)}`:'--');
+ set('localSample',win?`${win.meta?.level||'--'} ${win.meta?.localN||0}`:'--');set('analogMatches',sel?.analogs?.count!=null?`${sel.analogs.count} · mean ${pct(sel.analogs.meanSim||0)}`:'--');set('learnedMemory',sel?.learned!=null?`${sel.learned} updates`:'--');set('methodConfidence',win?pct(win.methodConfidence):'--');set('predictionConfidence',res.predictionConfidence!=null?pct(res.predictionConfidence):'--');set('evidenceQuality',res.matrix?.length?`${pct(res.matrix.reduce((a,x)=>a+x.competitionScore,0)/res.matrix.length)}`:'--');set('analogQuality',sel?.analogs?.meanSim!=null?pct(sel.analogs.meanSim):'--');savePendingDecision(h,res);
+ set('forecastDetail',res.pP!=null?`P ${(res.pP*100).toFixed(1)}% · B ${(res.pB*100).toFixed(1)}% · gate ${pct(res.dynamicGate)} · ${sel?.selected?.level||'NO LOCAL MATCH'} · eff ${res.totalEff.toFixed(1)}`:'P 50.0% · B 50.0% · รอหลักฐาน');
+ set('message',res.signal?`เลือก ${win.d.name} จาก evidence competition · method ${pct(res.methodConfidence)} · prediction ${pct(res.predictionConfidence)}`:'ยังไม่พบผู้ชนะที่แข็งแรงพอจาก evidence competition → WAIT');
+ set('diagnostic',`FAST SCAN 12/12 · WIN ${win?.d?.name||'NONE'} · METHOD ${pct(res.methodConfidence)} · PRED ${pct(res.predictionConfidence)} · ANALOG ${sel?.analogs?.count||0} · FAMILIES ${res.families} · X-AGREE ${pct(res.agreement)} · OOD ${pct(res.novelty)}`);
+ set('learnSpeed','FAST · cached learner / contextual selector · prequential audit');
+ set('selectorTable',res.evidence?.length?res.evidence.slice(0,7).map((m,i)=>`<div class="item"><b>${i+1}. ${m.name}</b> · method ${pct(m.methodConfidence??0)} · pred ${pct(m.predictionConfidence??.5)} · ${m.familyRepresentative?'FAMILY LEADER':'correlated'} · ${m.active?'ACTIVE':'SCAN'}</div>`).join(''):'<div class="item">ยังไม่มีข้อมูลเปรียบเทียบ</div>',true);
+ set('patternCards',res.patterns.map(d=>{const e=res.evidence.find(x=>x.name===d.name);return `<div class="card"><span>${d.name}</span><strong>${d.active?'ACTIVE':'SCAN'} · ${e?side(e.predicted):'--'}</strong><small style="display:block;color:#8d8d97;margin-top:5px;line-height:1.45">${d.reason}</small><div style="margin-top:6px"><span class="tag">exact ${e?e.exact:0}</span><span class="tag">reduced ${e?e.recent:0}</span><span class="tag">family ${e?e.familyN:0}</span><span class="tag">eff ${e?e.n:'--'}</span><span class="tag">P ${e?pct(e.predProb):'--'}</span></div></div>`}).join(''),true);
+}
+function renderAudit(h,res){
+ const o=getOOS(h),cal=calibration(o),stab=stability(o),dr=drift(h),wf=o.walkForward,boot=o.bootstrap,mt=multipleTesting(patternOOS(h));
+ const iso=o.samples?isotonicFit(o.samples.map(x=>({prob:x.prob,y:x.y}))):null,calRaw=res.pP??.5,calP=iso?isotonicApply(iso,calRaw):null,conf=res.pP!=null?Math.max(calP??res.pP,1-(calP??res.pP)):.5,delta=o.accuracy!=null&&o.baseline!=null?o.accuracy-o.baseline:null,grade=readiness(o,cal,stab,dr,wf);
+ set('confidence',pct(conf));set('calProb',calP!=null?pct(calP):'--');set('walkForward',wf?`${pct(wf.mean)} / ${pct(wf.worst)} · Δ ${pct(wf.meanDelta)} · cover ${pct(wf.coverage||0)}`:'--');set('bootDelta',boot?`${pct(boot.lo)}…${pct(boot.hi)}`:'--');set('multiTest',mt?`${mt.significant}/${mt.tested}`:'--');set('sampleQuality',pct(Math.min(1,.35+(o.opportunities||0)/150)));set('oos',o.opportunities?`${pct(o.accuracy)} · ${o.hits}/${o.opportunities}`:'--');set('oracleCapture',o.opportunities?`${pct(o.accuracy)} action hit`:'--');set('signalCoverage',pct(o.coverage||0));set('abstainRate',pct(o.abstainRate||0));set('calibration',cal?`ECE ${pct(cal.ece)}`:'--');set('baselineDelta',delta!=null?`${delta>=0?'+':''}${pct(delta)}`:'--');set('majority',o.majority!=null?pct(o.majority):'--');const lDelta=o.lockedTest?.accuracy!=null&&o.lockedTest?.baseline!=null?o.lockedTest.accuracy-o.lockedTest.baseline:null;set('lockedTest',o.lockedTest?.opportunities?`${pct(o.lockedTest.accuracy)} vs ${pct(o.lockedTest.baseline)}`:'--');set('lockedDelta',lDelta!=null?`${lDelta>=0?'+':''}${pct(lDelta)}`:'--');set('brier',cal?`${cal.rawBrier.toFixed(3)} / ${cal.calBrier.toFixed(3)}`:'--');set('stability',stab?pct(stab.score):'--');set('drift',dr?`out ${pct(dr.outcome)} · run ${pct(dr.run)}`:'--');set('holdout',o.holdout?.n?`${pct(o.holdout.accuracy)} vs ${pct(o.holdout.baseline)}`:'--');set('accuracyCI',o.ci?`${pct(o.ci[0])}–${pct(o.ci[1])}`:'--');set('significance',o.sig?.p!=null?`p=${o.sig.p.toFixed(3)}`:'--');set('edgeGrade',grade);set('novelty',pct(res.novelty));set('regime',res.regime?.label||'--');set('policy',res.policy||'WAIT');set('matchDepth',res.matchDepth.toFixed(1));set('agreement',pct(res.agreement));
+ set('benchmarkPanel',`<div class="item">OOS accuracy: <b>${pct(o.accuracy)}</b></div><div class="item">Previous-result baseline: <b>${pct(o.baseline)}</b></div><div class="item">Majority baseline: <b>${pct(o.majority)}</b></div><div class="item">Delta vs previous: <b>${delta!=null?pct(delta):'--'}</b></div><div class="item">Holdout: <b>${o.holdout?.n?`${pct(o.holdout.accuracy)} vs ${pct(o.holdout.baseline)}`:'--'}</b></div><div class="item">Locked test: <b>${o.lockedTest?.opportunities?`${pct(o.lockedTest.accuracy)} vs ${pct(o.lockedTest.baseline)}`:'--'}</b></div><div class="item">Brier raw/cal: <b>${cal?`${cal.rawBrier.toFixed(3)} / ${cal.calBrier.toFixed(3)}`:'--'}</b></div><div class="item">Bootstrap Δ 95%: <b>${boot?`${pct(boot.lo)} to ${pct(boot.hi)}`:'--'}</b></div><div class="item">True walk-forward: <b>${wf?`${pct(wf.mean)} · worst ${pct(wf.worst)} · Δ ${pct(wf.meanDelta)}`:'--'}</b></div>`,true);
+ set('qualityPanel',cal?`<div class="item">ECE: <b>${pct(cal.ece)}</b></div><div class="item">Calibration sample: <b>${cal.count}</b></div><div class="item">Brier raw → calibrated: <b>${cal.rawBrier.toFixed(3)} → ${cal.calBrier.toFixed(3)}</b></div><div class="item">Online calibration improvement: <b>${pct(cal.improvement)}</b></div><div class="item">Current calibrated confidence: <b>${calP!=null?pct(conf):'--'}</b></div><div class="item">Stability: <b>${stab?pct(stab.score):'--'}</b></div><div class="item">Drift: <b>${dr?`${pct(dr.outcome)} outcome / ${pct(dr.run)} run`: '--'}</b></div><div class="item">Readiness: <b>${grade}</b></div>`:'<div class="item">ข้อมูลยังไม่พอสำหรับ calibration</div>',true);
+ set('safeguards','<div class="item">FAST PATH: forecast ใช้ learner + contextual selector ที่ cache ตาม history signature</div><div class="item">LOCAL GATE: selector ต้องมี local match ขั้นต่ำก่อนจึงมีสิทธิ์เลือก</div><div class="item">ONE WINNER + CONTINUITY: รักษาผู้ชนะเดิมเมื่อ challenger ยังไม่เหนือกว่าชัดเจน</div><div class="item">NO FUTURE LEAK: historical evidence ต้องเกิดก่อน outcome</div><div class="item">NO CLEAR WINNER / margin ไม่พอ → WAIT</div><div class="item">Heavy OOS / audit ทำหลัง fast forecast และเมื่อประวัติยาวจะ audit เป็นรอบเพื่อไม่บล็อกการกดตาถัดไป</div>',true);
+}
+function render(){const h=load();renderHistory(h);const c={P:h.filter(x=>x==='P').length,B:h.filter(x=>x==='B').length,T:h.filter(x=>x==='T').length};set('hands',h.length+' ตา');set('dist',h.length?`P ${pct(c.P/h.length)} · B ${pct(c.B/h.length)} · T ${pct(c.T/h.length)}`:'--');
+ const L=learner(h);const res=forecast(h,L);renderFast(h,res);auditTimer=setTimeout(()=>renderAudit(h,res),0);
+}
+function push(r){const h=load();const pending=safeJSON(KEY+'-pending');const priorRes=pending&&pending.res?{forecast:pending.res.forecast,methodConfidence:pending.res.methodConfidence,predictionConfidence:pending.res.predictionConfidence,regime:{label:pending.res.regime||'--'},competition:{top:{d:{id:pending.res.competitionWinner||pending.res.selectorId},methodConfidence:pending.res.methodConfidence}}}:null;learnPendingBeforeAppend(h,r);if(priorRes)updateContinuousState(h,priorRes,r);h.push(r);save(h);localStorage.removeItem(KEY+'-learner');localStorage.removeItem(KEY+'-oos');invalidate();render()}
+function undo(){const h=load();if(h.length){h.pop();localStorage.removeItem(KEY+'-pending');resetContinuousState();save(h);localStorage.removeItem(KEY+'-learner');localStorage.removeItem(KEY+'-oos');rebuildMethodMemory(h);invalidate();render()}}
+function reset(){save([]);localStorage.removeItem(KEY+'-learner');localStorage.removeItem(KEY+'-oos');localStorage.removeItem(KEY+'-locked-test');localStorage.removeItem(KEY+'-pending');resetContinuousState();clearMethodMemory();invalidate();render()}
+function exportData(){const payload={version:62,createdAt:new Date().toISOString(),results:load(),methodMemory:loadMethodMemory()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='neural-apex-v6-2-history.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function importData(file){const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);const a=Array.isArray(x)?sanitize(x):sanitize(x.results||x.rounds);if(!a.length)throw Error('empty');save(a);localStorage.removeItem(KEY+'-learner');localStorage.removeItem(KEY+'-oos');localStorage.removeItem(KEY+'-locked-test');localStorage.removeItem(KEY+'-pending');resetContinuousState();if(x&&x.methodMemory&&x.methodMemory.version===62&&x.methodMemory.buckets){methodMemoryCache=x.methodMemory;try{localStorage.setItem(MEMORY_KEY(),JSON.stringify(x.methodMemory))}catch(e){}}else rebuildMethodMemory(a);invalidate();render()}catch(e){alert('ไฟล์ไม่ถูกต้องหรือไม่มีประวัติที่ใช้งานได้')}};r.readAsText(file)}
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('export').addEventListener('click',exportData);$('import').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',e=>{if(e.target.files[0])importData(e.target.files[0])});render();
+})();
+</script>
+</body></html>

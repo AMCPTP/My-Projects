@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">
+<title>NEURAL APEX V1 · HISTORY MATCH FORECAST ENGINE</title>
+<style>
+:root{--p:#1683ff;--b:#ff4b43;--t:#6f707b;--a:#62e5cf;--g:#ffd24a;--bg:#050507;--s:#0c0c10;--r:#111117;--line:#292931;--tx:#f7f7f9;--mut:#92929d;--good:#9feee7;--warn:#ffb5c5}
+*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(circle at top,#102527 0,var(--bg) 42rem);color:var(--tx);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(100%,1040px);margin:auto;padding:14px 10px 34px}.app{overflow:hidden;background:rgba(12,12,16,.97);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.28)}header{text-align:center;padding:24px 18px 16px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--a)}h1{margin:8px 0 6px;font-size:28px;letter-spacing:-.05em}.badge{display:inline-block;font-size:.38em;vertical-align:middle;padding:5px 8px;border:1px solid var(--a);border-radius:999px;color:var(--a);letter-spacing:.08em}.sub{max-width:900px;margin:auto;color:var(--mut);font-size:11px;line-height:1.65}.rule{margin:0 14px 12px;padding:12px;border:1px solid rgba(98,229,207,.16);border-radius:13px;background:rgba(98,229,207,.035);font-size:10px;line-height:1.55}.rule b{color:var(--a)}.metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.label{display:block;color:#83838e;font-size:8px;font-weight:900;letter-spacing:.07em}.value{display:block;margin-top:6px;color:#e7e7eb;font-size:11px;font-weight:900;line-height:1.4;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:20px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}.big{font-size:32px;font-weight:950;letter-spacing:-.05em}.detail{margin-top:8px;color:#dadadf;font-size:12px;font-weight:850;line-height:1.55}.msg{max-width:920px;margin:8px auto 0;color:var(--mut);font-size:10px;font-weight:750;line-height:1.55}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.btn{min-height:74px;border:0;border-bottom:6px solid rgba(0,0,0,.28);border-radius:18px;color:white;font-size:32px;font-weight:950;cursor:pointer}.p{background:var(--p)}.b{background:var(--b)}.t{background:#555560;font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.title{margin:0 0 5px;color:var(--a);font-size:10px;font-weight:950;letter-spacing:.08em}.desc{margin:0 0 10px;color:var(--mut);font-size:10px;font-weight:700;line-height:1.55}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow:auto}.node{display:grid;place-items:center;min-height:38px;border-radius:10px;color:white;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.node.p{background:var(--p)}.node.b{background:var(--b)}.node.t{background:var(--t);font-size:13px}.empty{grid-column:1/-1;grid-row:1/-1;display:grid;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:750}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--r);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small:focus-visible,.btn:focus-visible{outline:2px solid var(--a);outline-offset:2px}.small:active,.btn:active{transform:translateY(1px)}.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card strong{display:block;margin-top:6px;color:#e7e7eb;font-size:12px}.mini{margin-top:5px;color:#92929d;font-size:9px;line-height:1.5}.chips{margin-top:6px}.chip{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border:1px solid #333842;border-radius:999px;font-size:8px;font-weight:900}.ok{color:var(--good)}.warn{color:var(--warn)}.match{padding:9px;border:1px solid #25252d;border-radius:10px;background:rgba(255,255,255,.015)}.match+.match{margin-top:7px}.match-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:900}.seq{margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.04em;word-break:break-all}.next{margin-top:5px;font-size:10px;font-weight:850}.explain{margin-top:5px;color:#9898a2;font-size:9px;line-height:1.5}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:6px 5px;border-bottom:1px solid #202027;text-align:left}.table th{color:#9898a2;font-size:8px;letter-spacing:.05em}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.55;text-align:center}.foot{color:#bfbfc7;font-weight:850}
+@media(max-width:900px){.metrics{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){h1{font-size:22px}.history{grid-template-rows:repeat(6,36px);min-height:246px}.node{min-height:36px}}
+</style>
+</head>
+<body>
+<main class="shell"><section class="app">
+<header><div class="eyebrow">V1 · HISTORY MATCH ONLY</div><h1>NEURAL APEX <span class="badge">V1 · HISTORICAL MATCH ENGINE</span></h1><p class="sub">ระบบใหม่ทั้งหมด: วิเคราะห์และคาดการณ์จากประวัติที่เคยเกิดขึ้นเท่านั้น โดยย้อนค้นลำดับปัจจุบันในประวัติเดิม หาเหตุการณ์ที่ตรงกัน ดูผลที่เกิดขึ้นถัดจากเหตุการณ์นั้น แล้วเปรียบเทียบก่อนตัดสินใจ</p></header>
+<div class="rule"><b>กฎหลัก V1:</b> ① เอาลำดับล่าสุดจากประวัติจริง ② ย้อนค้นลำดับเดียวกันในอดีตเท่านั้น ③ ทุกจุดที่พบต้องมี “ผลถัดไป” ให้ตรวจได้ ④ เปรียบเทียบผลถัดไปของจุดที่พบ ⑤ ถ้ามีหลักฐานจากอดีตเพียงพอจึงคาดการณ์ ⑥ ถ้าไม่พบหรือหลักฐานขัดแย้งจนตัดสินไม่ได้ = <b>ไม่เดา / NO FORECAST</b></div>
+<div class="metrics">
+<div class="metric"><span class="label">ตาที่บันทึก</span><span class="value" id="hands">0</span></div>
+<div class="metric"><span class="label">ประวัติ P / B / T</span><span class="value" id="dist">--</span></div>
+<div class="metric"><span class="label">FORECAST</span><span class="value" id="forecast">--</span></div>
+<div class="metric"><span class="label">MATCHES</span><span class="value" id="matches">0</span></div>
+<div class="metric"><span class="label">LONGEST MATCH</span><span class="value" id="longest">--</span></div>
+<div class="metric"><span class="label">AGREEMENT</span><span class="value" id="agreement">--</span></div>
+<div class="metric"><span class="label">HISTORICAL P</span><span class="value" id="histP">--</span></div>
+<div class="metric"><span class="label">HISTORICAL B</span><span class="value" id="histB">--</span></div>
+<div class="metric"><span class="label">EVIDENCE</span><span class="value" id="evidence">--</span></div>
+<div class="metric"><span class="label">DECISION</span><span class="value" id="decision">WAIT</span></div>
+<div class="metric"><span class="label">METHOD</span><span class="value">HISTORY MATCH</span></div>
+<div class="metric"><span class="label">SELF-CHECK</span><span class="value" id="selfcheck">OK</span></div>
+</div>
+<section class="forecast"><div class="big" id="big">ยังไม่มีข้อมูล</div><div class="detail" id="detail">กด P / B / T เพื่อเริ่มบันทึกประวัติ</div><div class="msg" id="message">V1 จะไม่ใช้ pattern, baseline, memory, trend หรือการเดาสุ่มเป็นตัวตัดสิน ทุก forecast ต้องอ้างอิงเหตุการณ์จริงในประวัติย้อนหลัง</div></section>
+<div class="buttons"><button type="button" class="btn p" data-result="P">P</button><button type="button" class="btn b" data-result="B">B</button><button type="button" class="btn t" data-result="T">T</button></div>
+<section class="section"><h2 class="title">ประวัติผล</h2><p class="desc">ประวัติทั้งหมดที่บันทึกไว้คือฐานข้อมูลเดียวของ V1</p><div id="history" class="history"></div><div class="actions"><button type="button" class="small" id="undo">ย้อนกลับ 1 ตา</button><button type="button" class="small danger" id="reset">รีเซ็ต</button><button type="button" class="small" id="export">ส่งออก</button><button type="button" class="small" id="import">นำเข้า</button><input id="file" type="file" accept="application/json" hidden></div></section>
+<section class="section"><h2 class="title">CURRENT HISTORY USED FOR SEARCH</h2><p class="desc">ลำดับล่าสุดที่ระบบนำไปค้นหาในอดีต โดยจะลองจากลำดับยาวที่สุดก่อน</p><div id="currentSequence" class="seq">--</div></section>
+<section class="section"><h2 class="title">HISTORICAL MATCHES · หลักฐานที่ใช้จริง</h2><p class="desc">ทุกแถวคือจุดในอดีตที่ลำดับตรงกับปัจจุบัน และแสดงผลถัดไปที่เคยเกิดขึ้นจริง</p><div id="matchList"><div class="match">ยังไม่มีข้อมูลการค้นหา</div></div></section>
+<section class="section"><h2 class="title">COMPARISON · เปรียบเทียบผลถัดไป</h2><div class="grid"><div class="card"><span class="label">ผลถัดไปที่พบจาก P/B</span><strong id="compareMain">--</strong><div class="mini" id="compareDetail">ยังไม่มี match</div></div><div class="card"><span class="label">เหตุผลการตัดสิน</span><strong id="decisionReason">ยังไม่ตัดสิน</strong><div class="mini" id="auditTrail">ทุกข้อความต้องสอดคล้องกับ match จริง</div></div></div></section>
+<div class="notice"><span class="foot">V1 PRINCIPLE:</span> ไม่มี historical match = ไม่มี forecast · มี match แต่ผลถัดไปแตกกันจนไม่มีฝ่ายชนะชัดเจน = ไม่มี forecast · การคาดการณ์จะเกิดขึ้นเฉพาะเมื่อทิศทางจากอดีตชัดเจนเท่านั้น</div>
+</section></main>
+<script>
+(function(){'use strict';
+const KEY='neural-apex-v1-history-match-only';
+const LEGACY_KEYS=['neural-apex-v7-0-analytic-decision-engine','neural-apex-v7-0-analytic-decision-engine-learner'];
+const MAX_LOOKBACK=24;
+const MIN_LOOKBACK=2;
+const MATCH_LIMIT=80;
+const $=id=>document.getElementById(id);
+const ALL=['P','B','T'];
+const side=x=>x==='P'?'PLAYER':x==='B'?'BANKER':'TIE';
+const pct=x=>Number.isFinite(x)?Math.round(x*100)+'%':'--';
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function readStoredOwn(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw===null)return {exists:false,data:[]};
+    const parsed=JSON.parse(raw);
+    const data=sanitize(parsed&&Object.prototype.hasOwnProperty.call(parsed,'results')?parsed.results:parsed);
+    return {exists:true,data};
+  }catch(e){return {exists:true,data:[]};}
+}
+function readLegacy(){
+  for(const k of LEGACY_KEYS){
+    const x=safeJSON(k);
+    const a=sanitize(x&&Object.prototype.hasOwnProperty.call(x,'results')?x.results:(x&&x.rounds?x.rounds:x));
+    if(a.length)return a;
+  }
+  return [];
+}
+function safeRead(){
+  const own=readStoredOwn();
+  return own.exists?own.data:readLegacy();
+}
+function sanitize(x){return (Array.isArray(x)?x:[]).map(v=>typeof v==='string'?v:(v&&v.result)).filter(v=>ALL.includes(v))}
+function save(h){
+  const data=sanitize(h);
+  try{
+    localStorage.setItem(KEY,JSON.stringify({version:'V1',principle:'HISTORY_MATCH_ONLY',results:data}));
+    return true;
+  }catch(e){
+    alert('ไม่สามารถบันทึกประวัติได้ อาจเกิดจากพื้นที่จัดเก็บของเบราว์เซอร์ไม่เพียงพอ');
+    return false;
+  }
+}
+function tokenize(h){return sanitize(h)}
+function sequenceKey(a){return a.join('')}
+function recentSequence(h,len){const a=tokenize(h);return a.slice(-len)}
+function findExactMatches(history,current,limit){
+  const a=tokenize(history),cur=tokenize(current);const out=[];
+  if(cur.length<MIN_LOOKBACK||a.length<=cur.length)return out;
+  const key=sequenceKey(cur);
+  for(let i=0;i+cur.length<a.length;i++){
+    if(sequenceKey(a.slice(i,i+cur.length))!==key)continue;
+    const next=a[i+cur.length];
+    out.push({index:i,length:cur.length,sequence:key,next,position:i+1,nextPosition:i+cur.length+1});
+    if(out.length>=limit)break;
+  }
+  return out;
+}
+function longestHistoryEvidence(h){
+  const a=tokenize(h);if(a.length<MIN_LOOKBACK+1)return{mode:'NONE',current:[],matches:[],all:[]};
+  const max=Math.min(MAX_LOOKBACK,a.length-1);const unique=new Map();let longest=0;
+  for(let len=max;len>=MIN_LOOKBACK;len--){
+    const cur=recentSequence(a,len),matches=findExactMatches(a,cur,MATCH_LIMIT);
+    if(matches.length)longest=Math.max(longest,len);
+    for(const m of matches){
+      const id=m.index+'|'+m.next;
+      if(!unique.has(id))unique.set(id,{...m,usedLength:len});
+    }
+  }
+  const all=[...unique.values()].sort((x,y)=>y.usedLength-x.usedLength||x.index-y.index);
+  return{mode:all.length?'MATCH':'NONE',current:recentSequence(a,Math.min(max,longest||Math.min(max,MIN_LOOKBACK))),longest,matches:all.slice(0,MATCH_LIMIT),all};
+}
+function compareMatches(ev){
+  const usable=ev.matches.filter(m=>m.next==='P'||m.next==='B');
+  if(!usable.length)return{forecast:null,reason:'ไม่มีผลถัดไป P/B ที่ใช้ตัดสิน',agreement:null,p:0,b:0,total:0,evidence:'NO USABLE EVIDENCE'};
+  let p=0,b=0;
+  const maxLen=Math.max(MIN_LOOKBACK,ev.longest||MIN_LOOKBACK);
+  for(const m of usable){
+    const len=m.usedLength||m.length;
+    const weight=Math.max(1,len-MIN_LOOKBACK+1);
+    if(m.next==='P')p+=weight;else b+=weight;
+  }
+  const total=p+b,dir=p>=b?'P':'B',major=Math.max(p,b),agreement=total?major/total:0;
+  const same=usable.filter(m=>m.next===dir).length,other=usable.length-same;
+  const hasLong=ev.matches.some(m=>(m.usedLength||m.length)===maxLen);
+  const longestMatches=ev.matches.filter(m=>(m.usedLength||m.length)===maxLen&&['P','B'].includes(m.next));
+  const longestP=longestMatches.filter(m=>m.next==='P').length,longestB=longestMatches.filter(m=>m.next==='B').length;
+  let forecast=null,reason='';
+  if(longestMatches.length&&longestP!==longestB){
+    const ld=longestP>longestB?'P':'B';
+    const lc=Math.max(longestP,longestB)/longestMatches.length;
+    if(longestMatches.length>=2&&lc>=0.5){forecast=ld;reason=`ลำดับยาวที่สุด ${maxLen} ตรง ${longestMatches.length} ครั้ง และผลถัดไปเทไปทาง ${side(ld)}`;}
+  }
+  if(!forecast&&agreement>=0.67){forecast=dir;reason=`รวม historical matches ที่ไม่ซ้ำกันแล้ว ${usable.length} จุด ผลถัดไป ${side(dir)} มีน้ำหนักมากกว่าอย่างชัดเจน`;}
+  if(!forecast&&usable.length===1){forecast=usable[0].next;reason=`พบ historical match ที่ใช้ได้ 1 จุด และผลถัดไปจริงคือ ${side(forecast)}`;}
+  if(!forecast)reason=`historical matches มีผลถัดไป P/B ขัดกัน จึงไม่เดา (agreement ${pct(agreement)})`;
+  return{forecast,reason,agreement,p,b,total,evidence:forecast?'HISTORICAL MATCH EVIDENCE':'INSUFFICIENT / CONFLICTING HISTORY',same,other,hasLong};
+}
+function analyze(h){
+  const ev=longestHistoryEvidence(h),cmp=compareMatches(ev);
+  return {...ev,...cmp};
+}
+function renderHistory(h){const e=$('history');e.replaceChildren();if(!h.length){const n=document.createElement('div');n.className='empty';n.textContent='ยังไม่มีประวัติ';e.append(n);return}h.forEach((r,i)=>{const n=document.createElement('div');n.className='node '+(r==='P'?'p':r==='B'?'b':'t');n.textContent=r;n.title=`ตา ${i+1} · ${side(r)}`;e.append(n)})}
+function render(h){
+  const c={P:h.filter(x=>x==='P').length,B:h.filter(x=>x==='B').length,T:h.filter(x=>x==='T').length};
+  const r=analyze(h);renderHistory(h);
+  $('hands').textContent=h.length+' ตา';$('dist').textContent=h.length?`P ${pct(c.P/h.length)} · B ${pct(c.B/h.length)} · T ${pct(c.T/h.length)}`:'--';
+  $('forecast').textContent=r.forecast?side(r.forecast):'NO FORECAST';$('matches').textContent=r.matches.length;r.longest?$('longest').textContent=r.longest+' ผล':'--';$('agreement').textContent=r.agreement!=null?pct(r.agreement):'--';
+  $('histP').textContent=r.total?Math.round(r.p/r.total*100)+'%':'--';$('histB').textContent=r.total?Math.round(r.b/r.total*100)+'%':'--';$('evidence').textContent=r.evidence;$('decision').textContent=r.forecast?'FORECAST':'WAIT';
+  $('big').textContent=r.forecast?`${side(r.forecast)} · HISTORY MATCH`:(h.length<MIN_LOOKBACK?'ยังไม่มีข้อมูลเพียงพอ':'NO FORECAST · HISTORY NOT DECISIVE');
+  $('detail').textContent=r.total?`historical evidence ${r.total} จุด · P ${r.p.toFixed(1)} · B ${r.b.toFixed(1)} · agreement ${pct(r.agreement)}`:'ต้องมี historical match ที่มีผลถัดไปจริง';
+  $('message').textContent=r.forecast?`คาดการณ์จากอดีตเท่านั้น: ${r.reason}`:'ระบบปฏิเสธการเดา: ไม่มี historical match ที่ตัดสินได้';
+  const seq=r.current.length?r.current.join(' · '):'--';$('currentSequence').textContent=seq;
+  const list=$('matchList');list.innerHTML='';if(!r.matches.length){list.innerHTML='<div class="match">ไม่พบลำดับปัจจุบันที่ตรงกับเหตุการณ์ในอดีต · V1 จึงไม่ forecast</div>'}else r.matches.slice(0,30).forEach(m=>{const d=document.createElement('div');d.className='match';d.innerHTML=`<div class="match-head"><span>อดีตตา ${m.position} → ผลถัดไปตา ${m.nextPosition}</span><span>${m.usedLength||m.length} ตัว</span></div><div class="seq">${m.sequence.split('').join(' · ')}</div><div class="next">ผลถัดไปจริง: <b>${side(m.next)}</b> (${m.next})</div><div class="explain">match นี้มาจากประวัติจริง ไม่ใช่ pattern ที่สร้างขึ้นใหม่</div>`;list.append(d)});
+  $('compareMain').textContent=r.total?`P ${r.p.toFixed(1)} vs B ${r.b.toFixed(1)}`:'--';$('compareDetail').textContent=r.total?`รวมเฉพาะผลถัดไปที่เป็น P/B จาก historical matches`: 'ยังไม่มีหลักฐาน';$('decisionReason').textContent=r.reason;$('auditTrail').textContent=`SEARCH → MATCH → NEXT RESULT → COMPARE → ${r.forecast?'FORECAST':'NO FORECAST'}`;
+  const checks=[Array.isArray(h),'NO PATTERN ENGINE',r.forecast?!!r.current.length:true,r.forecast?!!r.matches.length:true,r.forecast?['P','B'].includes(r.forecast):true,(r.p>=0&&r.b>=0),Array.isArray(historyState)];$('selfcheck').textContent=checks.every(Boolean)?'OK':'CHECK';
+}
+let historyState=safeRead();
+
+// One-time migration. Once the V1 store exists, including an intentional empty state,
+// legacy data is never read again, so Reset/Undo cannot resurrect old history.
+if(!readStoredOwn().exists){
+  try{
+    localStorage.setItem(KEY,JSON.stringify({version:'V1',principle:'HISTORY_MATCH_ONLY',results:historyState}));
+  }catch(e){}
+}
+
+function commit(next){
+  const data=sanitize(next);
+  if(!save(data))return false;
+  historyState=data;
+  render(historyState);
+  return true;
+}
+function push(r){
+  commit(historyState.concat(r));
+}
+function undo(){
+  if(!historyState.length){
+    setStatus('ไม่มีประวัติให้ย้อนกลับ','info');
+    return;
+  }
+  commit(historyState.slice(0,-1));
+}
+function reset(){
+  if(!historyState.length){
+    render([]);
+    setStatus('ประวัติว่างอยู่แล้ว · พร้อมเริ่มใหม่','info');
+    return;
+  }
+  const emptyState={version:'V1',principle:'HISTORY_MATCH_ONLY',results:[]};
+  try{
+    localStorage.setItem(KEY,JSON.stringify(emptyState));
+    // Remove only this app's obsolete legacy stores after the new empty state is safely written.
+    LEGACY_KEYS.forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+    historyState=[];
+    render(historyState);
+    setStatus('รีเซ็ตสำเร็จ · ล้างประวัติทั้งหมดแล้ว','ok');
+  }catch(e){
+    setStatus('รีเซ็ตไม่สำเร็จ · เบราว์เซอร์ไม่อนุญาตให้บันทึกข้อมูล','error');
+  }
+}
+function setStatus(text,type='info'){
+  const el=$('message');
+  el.textContent=text;
+  el.dataset.state=type;
+}
+function exportData(){
+  const payload={
+    version:'V1',
+    principle:'HISTORY_MATCH_ONLY',
+    createdAt:new Date().toISOString(),
+    results:historyState.slice()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='neural-apex-v1-history.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function importData(file){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const x=JSON.parse(rd.result);
+      const raw=Array.isArray(x)
+        ?x
+        :(x&&Object.prototype.hasOwnProperty.call(x,'results')
+          ?x.results
+          :(x&&x.rounds?x.rounds:null));
+      if(!Array.isArray(raw))throw Error('invalid-format');
+      const a=sanitize(raw);
+      if(!a.length && raw.length)throw Error('invalid-results');
+      if(commit(a)){
+        $('file').value='';
+        setStatus(a.length?`นำเข้าสำเร็จ ${a.length} ตา`:'นำเข้าประวัติว่างสำเร็จ · พร้อมเริ่มใหม่','ok');
+      }
+    }catch(e){
+      $('file').value='';
+      alert('ไฟล์ไม่ถูกต้อง ต้องเป็น JSON ที่มีผลลัพธ์ P / B / T หรือเป็นประวัติว่าง');
+    }
+  };
+  rd.onerror=()=>alert('ไม่สามารถอ่านไฟล์ได้');
+  rd.readAsText(file);
+}
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('export').addEventListener('click',exportData);$('import').addEventListener('click',()=>$('file').click());$('file').addEventListener('change',e=>{if(e.target.files[0])importData(e.target.files[0])});window.addEventListener('storage',e=>{if(e.key===KEY){historyState=readStoredOwn().data;render(historyState)}});render(historyState);
+})();
+</script>
+</body></html>

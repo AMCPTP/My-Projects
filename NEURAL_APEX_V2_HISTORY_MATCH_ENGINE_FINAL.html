@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>NEURAL APEX V2 · HISTORY EVIDENCE ENGINE</title>
+<style>
+:root{--p:#1683ff;--b:#ff4b43;--t:#555560;--a:#62e5cf;--g:#ffd24a;--bg:#050507;--s:#0c0c10;--r:#111117;--line:#292931;--tx:#f7f7f9;--mut:#92929d;--good:#9feee7;--warn:#ffb5c5}
+*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(circle at top,#102527 0,var(--bg) 42rem);color:var(--tx);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(100%,1100px);margin:auto;padding:14px 10px 34px}.app{overflow:hidden;background:rgba(12,12,16,.97);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.28)}header{text-align:center;padding:24px 18px 16px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--a)}h1{margin:8px 0 6px;font-size:28px;letter-spacing:-.05em}.badge{display:inline-block;font-size:.38em;vertical-align:middle;padding:5px 8px;border:1px solid var(--a);border-radius:999px;color:var(--a);letter-spacing:.08em}.sub{max-width:960px;margin:auto;color:var(--mut);font-size:11px;line-height:1.65}.rule{margin:0 14px 12px;padding:12px;border:1px solid rgba(98,229,207,.16);border-radius:13px;background:rgba(98,229,207,.035);font-size:10px;line-height:1.6}.rule b{color:var(--a)}.metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#08080b}.label{display:block;color:#83838e;font-size:8px;font-weight:900;letter-spacing:.07em}.value{display:block;margin-top:6px;color:#e7e7eb;font-size:11px;font-weight:900;line-height:1.4;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:20px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}.big{font-size:32px;font-weight:950;letter-spacing:-.05em}.detail{margin-top:8px;color:#dadadf;font-size:12px;font-weight:850;line-height:1.55}.msg{max-width:920px;margin:8px auto 0;color:var(--mut);font-size:10px;font-weight:750;line-height:1.55}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.btn{min-height:74px;border:0;border-bottom:6px solid rgba(0,0,0,.28);border-radius:18px;color:white;font-size:32px;font-weight:950;cursor:pointer}.p{background:var(--p)}.b{background:var(--b)}.t{background:var(--t);font-size:24px}.section{margin:12px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#08080b}.title{margin:0 0 5px;color:var(--a);font-size:10px;font-weight:950;letter-spacing:.08em}.desc{margin:0 0 10px;color:var(--mut);font-size:10px;font-weight:700;line-height:1.55}.history{display:grid;grid-template-rows:repeat(6,38px);grid-auto-flow:column;grid-auto-columns:minmax(38px,1fr);gap:6px;min-height:258px;overflow:auto}.node{display:grid;place-items:center;min-height:38px;border-radius:10px;color:white;font-size:15px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.node.p{background:var(--p)}.node.b{background:var(--b)}.node.t{background:var(--t);font-size:13px}.empty{grid-column:1/-1;grid-row:1/-1;display:grid;place-items:center;border:1px dashed #30303a;border-radius:10px;color:#7f7f8b;font-size:10px;font-weight:750}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small{min-height:34px;border:1px solid #373742;border-radius:9px;padding:7px 11px;background:var(--r);color:#e1e1e7;font-size:10px;font-weight:900;cursor:pointer}.small:focus-visible,.btn:focus-visible{outline:2px solid var(--a);outline-offset:2px}.small:active,.btn:active{transform:translateY(1px)}.danger{border-color:#733447;color:#ffb0c0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.card strong{display:block;margin-top:6px;color:#e7e7eb;font-size:12px}.mini{margin-top:5px;color:#92929d;font-size:9px;line-height:1.5}.chips{margin-top:6px}.chip{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border:1px solid #333842;border-radius:999px;font-size:8px;font-weight:900}.ok{color:var(--good)}.warn{color:var(--warn)}.match{padding:9px;border:1px solid #25252d;border-radius:10px;background:rgba(255,255,255,.015)}.match+.match{margin-top:7px}.match-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:900}.seq{margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.04em;word-break:break-all}.next{margin-top:5px;font-size:10px;font-weight:850}.explain{margin-top:5px;color:#9898a2;font-size:9px;line-height:1.5}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:6px 5px;border-bottom:1px solid #202027;text-align:left}.table th{color:#9898a2;font-size:8px;letter-spacing:.05em}.notice{margin:13px 16px 16px;color:#85858f;font-size:9px;line-height:1.55;text-align:center}.foot{color:#bfbfc7;font-weight:850}.status-good{color:var(--good)}.status-warn{color:var(--warn)}.status-neutral{color:#d4d4db}.progress{height:8px;border-radius:999px;background:#16161d;overflow:hidden;margin-top:7px}.progress>i{display:block;height:100%;width:0%;background:var(--a);transition:width .15s ease}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.tiny{font-size:8px;color:#7d7d88;line-height:1.45}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:720px){.metrics{grid-template-columns:repeat(2,1fr)}.grid,.grid3{grid-template-columns:1fr}}
+@media(max-width:520px){h1{font-size:22px}.history{grid-template-rows:repeat(6,36px);min-height:246px}.node{min-height:36px}}
+</style>
+</head>
+<body>
+<main class="shell"><section class="app">
+<header><div class="eyebrow">V2 · EVIDENCE + STABILITY + BACKTEST</div><h1>NEURAL APEX <span class="badge">V2 · HISTORY EVIDENCE ENGINE</span></h1><p class="sub">ระบบวิเคราะห์จากประวัติจริงเท่านั้น ค้นหาเหตุการณ์ย้อนหลังแบบ indexed, ประเมินคุณภาพหลักฐาน, ความเป็นอิสระ, ความขัดแย้ง, ความเสถียร และความทนทาน ก่อนตัดสินใจ forecast หรือ abstain</p></header>
+<div class="rule"><b>กฎหลัก V2:</b> ① ใช้ประวัติที่บันทึกจริง ② ค้นหา exact historical matches หลายระดับความยาว ③ แยก match ที่ซ้อนกัน ④ ให้น้ำหนักตามความจำเพาะและคุณภาพของหลักฐาน ⑤ ตรวจ conflict / stability / robustness ⑥ มีขั้นต่ำของหลักฐาน ⑦ หลักฐานไม่พอหรือไม่เสถียร = <b>ABSTAIN / NO FORECAST</b> ⑧ Backtest ใช้ตรวจระบบย้อนหลัง ไม่ถูกนำมาเป็นข้อมูลอนาคต</div>
+<div class="metrics">
+<div class="metric"><span class="label">ตาที่บันทึก</span><span class="value" id="hands">0</span></div>
+<div class="metric"><span class="label">ประวัติ P / B / T</span><span class="value" id="dist">--</span></div>
+<div class="metric"><span class="label">FORECAST</span><span class="value" id="forecast">--</span></div>
+<div class="metric"><span class="label">CONFIDENCE</span><span class="value" id="confidence">--</span></div>
+<div class="metric"><span class="label">MATCHES</span><span class="value" id="matches">0</span></div>
+<div class="metric"><span class="label">LONGEST MATCH</span><span class="value" id="longest">--</span></div>
+<div class="metric"><span class="label">EVIDENCE QUALITY</span><span class="value" id="evidenceQuality">--</span></div>
+<div class="metric"><span class="label">INDEPENDENCE</span><span class="value" id="independence">--</span></div>
+<div class="metric"><span class="label">STABILITY</span><span class="value" id="stability">--</span></div>
+<div class="metric"><span class="label">ROBUSTNESS</span><span class="value" id="robustness">--</span></div>
+<div class="metric"><span class="label">CONFLICT</span><span class="value" id="conflict">--</span></div>
+<div class="metric"><span class="label">DECISION</span><span class="value" id="decision">WAIT</span></div>
+</div>
+<section class="forecast"><div class="big" id="big">ยังไม่มีข้อมูล</div><div class="detail" id="detail">กด P / B / T เพื่อเริ่มบันทึกประวัติ</div><div class="progress"><i id="confBar"></i></div><div class="msg" id="message">V2 ไม่อ้าง pattern ที่สร้างขึ้นใหม่ ระบบจะคาดการณ์เฉพาะเมื่อ historical evidence ผ่านเกณฑ์และมีความเสถียรเพียงพอ</div></section>
+<div class="buttons"><button type="button" class="btn p" data-result="P">P</button><button type="button" class="btn b" data-result="B">B</button><button type="button" class="btn t" data-result="T">T</button></div>
+<section class="section"><h2 class="title">ประวัติผล</h2><p class="desc">ประวัติทั้งหมดคือฐานข้อมูลหลักของ V2</p><div id="history" class="history"></div><div class="actions"><button type="button" class="small" id="undo">ย้อนกลับ 1 ตา</button><button type="button" class="small danger" id="reset">รีเซ็ต</button><button type="button" class="small" id="export">ส่งออก</button><button type="button" class="small" id="import">นำเข้า</button><button type="button" class="small" id="backtest">RUN BACKTEST</button><input id="file" type="file" accept="application/json" hidden></div></section>
+<section class="section"><h2 class="title">CURRENT HISTORY USED FOR SEARCH</h2><p class="desc">ลองวิเคราะห์หลาย context length ตั้งแต่ 2 ถึง 24 ผลลัพธ์สุดท้ายใช้ evidence ที่ดีที่สุดร่วมกับ stability และ robustness</p><div id="currentSequence" class="seq">--</div><div class="tiny" id="searchMeta">INDEX: --</div></section>
+<section class="section"><h2 class="title">EVIDENCE PROFILE · หลักฐานหลายระดับ</h2><div id="evidenceTable"><div class="match">ยังไม่มีข้อมูล</div></div></section>
+<section class="section"><h2 class="title">HISTORICAL MATCHES · หลักฐานที่ใช้จริง</h2><p class="desc">แสดง match ที่เด่นที่สุด โดยไม่รวมจุดซ้ำซ้อนเป็นหลักฐานอิสระทั้งหมด</p><div id="matchList"><div class="match">ยังไม่มีข้อมูลการค้นหา</div></div></section>
+<section class="section"><h2 class="title">DECISION AUDIT</h2><div class="grid3"><div class="card"><span class="label">SAMPLE</span><strong id="sampleCard">--</strong><div class="mini" id="sampleDetail">--</div></div><div class="card"><span class="label">INDEPENDENT</span><strong id="indCard">--</strong><div class="mini" id="indDetail">--</div></div><div class="card"><span class="label">REASON</span><strong id="reasonCard">ยังไม่ตัดสิน</strong><div class="mini" id="reasonDetail">--</div></div></div></section>
+<section class="section"><h2 class="title">BACKTEST · ตรวจย้อนหลังแบบไม่รั่วข้อมูล</h2><p class="desc">ทุกจุดทดสอบใช้เฉพาะข้อมูลที่เกิดก่อนจุดนั้น แล้วเปรียบเทียบกับผลจริง</p><div class="grid3"><div class="card"><span class="label">EVALUATED</span><strong id="btEvaluated">--</strong></div><div class="card"><span class="label">FORECASTED</span><strong id="btForecasted">--</strong></div><div class="card"><span class="label">HIT RATE</span><strong id="btHitRate">--</strong></div></div><div class="grid3" style="margin-top:8px"><div class="card"><span class="label">ABSTAIN RATE</span><strong id="btAbstain">--</strong></div><div class="card"><span class="label">HIGH-CONFIDENCE HIT</span><strong id="btHigh">--</strong></div><div class="card"><span class="label">LAST RUN</span><strong id="btTime">--</strong></div></div><div class="tiny" id="btNote" style="margin-top:8px">ยังไม่ได้รัน backtest</div></section>
+<div class="notice"><span class="foot">V2 PRINCIPLE:</span> Forecast ไม่ใช่การรับประกันผลอนาคต ระบบมีสิทธิ์ ABSTAIN เมื่อ evidence ไม่พอ ขัดแย้ง หรือไม่เสถียร และทุกการตัดสินใจต้องอธิบายย้อนกลับได้</div>
+</section></main>
+<script>
+(function(){'use strict';
+const KEY='neural-apex-v2-history-evidence';
+const LEGACY_KEYS=['neural-apex-v1-history-match-only','neural-apex-v7-0-analytic-decision-engine','neural-apex-v7-0-analytic-decision-engine-learner'];
+const ALL=['P','B','T'];
+const PB=['P','B'];
+const MAX_LOOKBACK=24;
+const MIN_LOOKBACK=2;
+const MAX_MATCHES_PER_LENGTH=250;
+const MAX_RENDER_MATCHES=40;
+const MIN_INDEPENDENT=2;
+const MIN_SUPPORT_FOR_FORECAST=3;
+const $=id=>document.getElementById(id);
+const side=x=>x==='P'?'PLAYER':x==='B'?'BANKER':'TIE';
+const pct=x=>Number.isFinite(x)?Math.round(x*100)+'%':'--';
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function sanitize(x){return (Array.isArray(x)?x:[]).map(v=>typeof v==='string'?v:(v&&v.result)).filter(v=>ALL.includes(v));}
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function readStoredOwn(){try{const raw=localStorage.getItem(KEY);if(raw===null)return{exists:false,data:[]};const p=JSON.parse(raw);return{exists:true,data:sanitize(p&&Object.prototype.hasOwnProperty.call(p,'results')?p.results:p)}}catch(e){return{exists:true,data:[]}}}
+function readLegacy(){for(const k of LEGACY_KEYS){const x=safeJSON(k);const a=sanitize(x&&Object.prototype.hasOwnProperty.call(x,'results')?x.results:(x&&x.rounds?x.rounds:x));if(a.length)return a;}return[]}
+function loadHistory(){const own=readStoredOwn();return own.exists?own.data:readLegacy()}
+function save(h){const data=sanitize(h);try{localStorage.setItem(KEY,JSON.stringify({version:'V2',principle:'HISTORY_EVIDENCE_ENGINE',results:data,updatedAt:new Date().toISOString()}));return true}catch(e){setStatus('บันทึกไม่สำเร็จ · พื้นที่เก็บข้อมูลไม่เพียงพอ','error');return false}}
+function setStatus(text,type){$('message').textContent=text;$('message').className='msg '+(type==='error'?'status-warn':type==='ok'?'status-good':'status-neutral')}
+
+let historyState=loadHistory();
+
+// Indexed historical search. Each appended result finalizes the "next result" for sequences ending immediately before it.
+class HistoryIndex{
+  constructor(maxLen){this.maxLen=maxLen;this.map=new Map();this.totalEntries=0;}
+  clear(){this.map.clear();this.totalEntries=0}
+  addOccurrence(seq,start,next){let bucket=this.map.get(seq);if(!bucket){bucket=[];this.map.set(seq,bucket)} if(bucket.length<MAX_MATCHES_PER_LENGTH){bucket.push({index:start,length:seq.length,next})} this.totalEntries++}
+  build(history){this.clear();const a=sanitize(history);for(let end=0;end<a.length;end++){const next=a[end];const max=Math.min(this.maxLen,end);for(let len=MIN_LOOKBACK;len<=max;len++){const start=end-len;const seq=a.slice(start,end).join('');this.addOccurrence(seq,start,next)}}}
+  addLatest(history){const a=sanitize(history);const end=a.length-1;if(end<1)return;const next=a[end];const max=Math.min(this.maxLen,end);for(let len=MIN_LOOKBACK;len<=max;len++){const start=end-len;const seq=a.slice(start,end).join('');this.addOccurrence(seq,start,next)}}
+  find(history,len){const a=sanitize(history);if(a.length<=len||len<MIN_LOOKBACK)return[];const current=a.slice(-len).join('');const startCurrent=a.length-len;const bucket=this.map.get(current)||[];return bucket.filter(m=>m.index!==startCurrent && m.index+len<a.length).map(m=>({...m,sequence:current,position:m.index+1,nextPosition:m.index+len+1,usedLength:len}))}
+}
+const index=new HistoryIndex(MAX_LOOKBACK);index.build(historyState);
+let analysisCache=new Map();
+function rebuildIndex(){index.build(historyState);analysisCache.clear()}
+function sequenceFor(h,len){return sanitize(h).slice(-len)}
+function cacheKey(h){return h.join('')+'|'+h.length}
+
+function collectMatches(h){
+  const a=sanitize(h);if(a.length<MIN_LOOKBACK+1)return{levels:[],all:[],longest:0};
+  const max=Math.min(MAX_LOOKBACK,a.length-1);const levels=[];const all=[];
+  for(let len=max;len>=MIN_LOOKBACK;len--){
+    const matches=index.find(a,len);
+    const pb=matches.filter(m=>PB.includes(m.next));
+    const p=pb.filter(m=>m.next==='P').length,b=pb.filter(m=>m.next==='B').length;
+    if(pb.length){levels.push({len,p,b,total:pb.length,matches});for(const m of pb)all.push(m)}
+  }
+  return{levels,all,longest:levels.length?levels[0].len:0};
+}
+
+function groupIndependent(matches){
+  if(!matches.length)return{clusters:[],effective:0,ratio:0};
+  const sorted=[...matches].sort((a,b)=>a.index-b.index||b.length-a.length);
+  const clusters=[];
+  for(const m of sorted){
+    const left=m.index,right=m.index+m.length;
+    let target=null;
+    for(const c of clusters){if(left<=c.right && right>=c.left){target=c;break}}
+    if(target){target.left=Math.min(target.left,left);target.right=Math.max(target.right,right);target.members.push(m)}
+    else clusters.push({left,right,members:[m]});
+  }
+  const effective=clusters.length;const ratio=matches.length?effective/matches.length:0;
+  return{clusters,effective,ratio};
+}
+
+function outcomeStats(levels){
+  const out={};
+  for(const lv of levels){const total=lv.total;const pRate=total?lv.p/total:0;const bRate=total?lv.b/total:0;const dominance=Math.max(pRate,bRate);out[lv.len]={...lv,pRate,bRate,dominance,margin:Math.abs(pRate-bRate)}}
+  return out;
+}
+function lengthConsistency(stats){const lens=Object.keys(stats).map(Number).sort((a,b)=>b-a);if(!lens.length)return{score:0,label:'NONE',detail:'ไม่มีหลายระดับให้เปรียบเทียบ'};const dirs=lens.map(l=>stats[l].pRate>=stats[l].bRate?'P':'B');let agree=1;for(let i=1;i<dirs.length;i++)if(dirs[i]!==dirs[0])agree-=1/lens.length;return{score:clamp(agree,0,1),label:agree>=.8?'HIGH':agree>=.6?'MEDIUM':'LOW',detail:`หลายความยาวสอดคล้อง ${pct(agree)}`}}
+function stabilityFor(h){
+  const a=sanitize(h);if(a.length<MIN_LOOKBACK+1)return{label:'NONE',score:0,directions:[],detail:'ข้อมูลยังไม่พอ'};
+  const maxShift=Math.min(3,a.length-MIN_LOOKBACK-1);const dirs=[];
+  for(let s=0;s<=maxShift;s++){const sub=a.slice(0,a.length-s);const r=analyzeCore(sub,false);dirs.push(r.forecast||null)}
+  const usable=dirs.filter(Boolean);if(!usable.length)return{label:'LOW',score:0,directions:dirs,detail:'การตัดข้อมูลท้ายทำให้ไม่เกิด forecast อย่างสม่ำเสมอ'};
+  const main=usable[0];const same=usable.filter(x=>x===main).length;const score=same/dirs.length;
+  return{label:score>=.75?'HIGH':score>=.5?'MEDIUM':'LOW',score,directions:dirs,detail:`remove-last sensitivity: ${dirs.map(x=>x||'--').join(' / ')}`}
+}
+function robustnessFor(h){
+  const a=sanitize(h);if(a.length<MIN_LOOKBACK+2)return{label:'NONE',score:0,detail:'ข้อมูลยังไม่พอ'};
+  const base=analyzeCore(a,false);if(!base.forecast)return{label:'LOW',score:0,detail:'ฐานหลักยังไม่มี forecast'};
+  const probes=[];
+  const maxExtra=Math.min(4,a.length-MIN_LOOKBACK-1);
+  for(let s=1;s<=maxExtra;s++){const sub=a.slice(0,a.length-s);const r=analyzeCore(sub,false);probes.push(r.forecast||null)}
+  const same=probes.filter(x=>x===base.forecast).length;const score=probes.length?same/probes.length:0;
+  return{label:score>=.75?'HIGH':score>=.5?'MEDIUM':'LOW',score,detail:`earlier-cut sensitivity: ${probes.map(x=>x||'--').join(' / ')}`}
+}
+function scoreEvidence(h, collected){
+  const stats=outcomeStats(collected.levels);const all=collected.all;const indep=groupIndependent(all);const consistency=lengthConsistency(stats);
+  const weighted={P:0,B:0};let rawSupport=0;
+  const maxLen=collected.longest||0;
+  for(const lv of collected.levels){
+    const spec=maxLen?0.65+0.35*(lv.len/maxLen):1;
+    const sample=Math.min(1,lv.total/8);
+    const margin=Math.abs(lv.p-lv.b)/Math.max(1,lv.total);
+    const levelQuality=spec*(0.55*sample+0.45*margin);
+    weighted.P+=lv.p*levelQuality;weighted.B+=lv.b*levelQuality;rawSupport+=lv.total;
+  }
+  const total=weighted.P+weighted.B;const dir=weighted.P>=weighted.B?'P':'B';const agreement=total?Math.max(weighted.P,weighted.B)/total:0;
+  const sampleScore=clamp(rawSupport/10,0,1);const independenceScore=indep.effective?clamp(indep.effective/5,0,1):0;
+  const evidenceScore=clamp(100*(0.30*agreement+0.20*sampleScore+0.20*independenceScore+0.15*consistency.score+0.15*(maxLen?Math.min(1,maxLen/6):0)),0,100);
+  let quality=evidenceScore>=80?'HIGH':evidenceScore>=65?'MEDIUM':evidenceScore>=50?'LOW':'WEAK';
+  const conflict=agreement<.58?'HIGH':agreement<.67?'MEDIUM':'LOW';
+  return{stats,indep,consistency,weighted,total,dir,agreement,rawSupport,evidenceScore,quality,conflict};
+}
+
+function analyzeCore(h,withSecondary){
+  const a=sanitize(h);if(a.length<MIN_LOOKBACK+1)return{forecast:null,confidence:0,reason:'ต้องมีประวัติอย่างน้อย 3 ตาเพื่อเริ่มค้นหา',evidenceScore:0,evidenceQuality:'NONE',independence:0,stability:{label:'NONE',score:0},robustness:{label:'NONE',score:0},conflict:'NONE',levels:[],matches:[],longest:0};
+  const collected=collectMatches(a);if(!collected.all.length)return{forecast:null,confidence:0,reason:'ไม่พบ historical match ที่มีผลถัดไป P/B',evidenceScore:0,evidenceQuality:'WEAK',independence:0,stability:withSecondary?stabilityFor(a):{label:'NONE',score:0},robustness:withSecondary?robustnessFor(a):{label:'NONE',score:0},conflict:'HIGH',levels:[],matches:[],longest:0};
+  const ev=scoreEvidence(a,collected);
+  const stable=withSecondary?stabilityFor(a):{label:'NONE',score:0};
+  const robust=withSecondary?robustnessFor(a):{label:'NONE',score:0};
+  const decisiveLongest=collected.levels.length?collected.levels[0]:null;
+  const longDir=decisiveLongest?(decisiveLongest.p>=decisiveLongest.b?'P':'B'):null;
+  const longCount=decisiveLongest?Math.max(decisiveLongest.p,decisiveLongest.b):0;
+  const longTotal=decisiveLongest?decisiveLongest.total:0;
+  const longAgreement=longTotal?longCount/longTotal:0;
+  const majority=ev.dir;
+  const independentEnough=ev.indep.effective>=MIN_INDEPENDENT;
+  const sampleEnough=ev.rawSupport>=MIN_SUPPORT_FOR_FORECAST;
+  const agreementEnough=ev.agreement>=0.62;
+  const longEnough=longTotal>=2&&longAgreement>=0.5;
+  let forecast=null;let reason='';
+  if(independentEnough&&sampleEnough&&agreementEnough){
+    if(longEnough&&longDir&&longDir===majority){forecast=majority;reason=`longest context ${collected.longest} และ historical evidence หลายระดับชี้ ${side(forecast)} ในทิศทางเดียวกัน`}
+    else if(ev.evidenceScore>=65&&ev.conflict!=='HIGH'){forecast=majority;reason=`historical evidence ผ่านเกณฑ์คุณภาพและ agreement ${pct(ev.agreement)}`}
+  }
+  let confidence=0;
+  if(forecast){confidence=100*(0.30*ev.evidenceScore/100+0.25*clamp(ev.agreement,0,1)+0.15*clamp(ev.indep.effective/5,0,1)+0.15*clamp(stable.score||0,0,1)+0.15*clamp(robust.score||0,0,1));
+    if(stable.label==='LOW'||robust.label==='LOW')confidence-=12;
+    if(ev.conflict==='MEDIUM')confidence-=6;
+    confidence=clamp(confidence,0,100);
+    if(confidence<55){forecast=null;reason='evidence มีทิศทางแต่ความมั่นคง/ความทนทานต่ำ จึง ABSTAIN'}
+  }
+  if(!forecast&&!reason)reason=`ABSTAIN: หลักฐานยังไม่พอหรือมีความขัดแย้ง · sample ${ev.rawSupport} · independent ${ev.indep.effective} · agreement ${pct(ev.agreement)}`;
+  return{forecast,confidence,reason,evidenceScore:ev.evidenceScore,evidenceQuality:ev.quality,independence:ev.indep.effective,independenceRatio:ev.indep.ratio,stability:stable,robustness:robust,conflict:ev.conflict,levels:collected.levels,matches:collected.all,longest:collected.longest,stats:ev.stats,weighted:ev.weighted,total:ev.total,agreement:ev.agreement,rawSupport:ev.rawSupport,consistency:ev.consistency};
+}
+function analyze(h,useCache=true){const a=sanitize(h);const key=cacheKey(a);if(useCache&&analysisCache.has(key))return analysisCache.get(key);const r=analyzeCore(a,true);if(useCache)analysisCache.set(key,r);return r}
+
+function renderHistory(h){const el=$('history');el.replaceChildren();if(!h.length){const n=document.createElement('div');n.className='empty';n.textContent='ยังไม่มีประวัติ';el.append(n);return}h.forEach((r,i)=>{const n=document.createElement('div');n.className='node '+(r==='P'?'p':r==='B'?'b':'t');n.textContent=r;n.title=`ตา ${i+1} · ${side(r)}`;el.append(n)})}
+function qClass(label){return label==='HIGH'?'status-good':label==='LOW'||label==='WEAK'?'status-warn':'status-neutral'}
+function renderEvidenceTable(r){const el=$('evidenceTable');el.innerHTML='';if(!r.levels.length){el.innerHTML='<div class="match">ไม่มี evidence profile</div>';return}const table=document.createElement('table');table.className='table';table.innerHTML='<thead><tr><th>LEN</th><th>P</th><th>B</th><th>TOTAL</th><th>MAJORITY</th><th>AGREEMENT</th><th>QUALITY</th></tr></thead>';const tb=document.createElement('tbody');for(const lv of r.levels){const tr=document.createElement('tr');const dir=lv.p>=lv.b?'P':'B';const ag=Math.max(lv.p,lv.b)/lv.total;const quality=ag>=.75&&lv.total>=3?'HIGH':ag>=.62?'MEDIUM':'LOW';tr.innerHTML=`<td>${lv.len}</td><td>${lv.p}</td><td>${lv.b}</td><td>${lv.total}</td><td><b>${side(dir)}</b></td><td>${pct(ag)}</td><td class="${qClass(quality)}">${quality}</td>`;tb.append(tr)}table.append(tb);el.append(table)}
+function renderMatches(r){const list=$('matchList');list.innerHTML='';if(!r.matches.length){list.innerHTML='<div class="match">ไม่พบ historical match · ABSTAIN</div>';return}const shown=[...r.matches].sort((a,b)=>(b.usedLength||0)-(a.usedLength||0)||a.index-b.index).slice(0,MAX_RENDER_MATCHES);for(const m of shown){const d=document.createElement('div');d.className='match';d.innerHTML=`<div class="match-head"><span>อดีตตา ${m.position} → ผลถัดไปตา ${m.nextPosition}</span><span>${m.usedLength} ตัว</span></div><div class="seq">${m.sequence.split('').join(' · ')}</div><div class="next">ผลถัดไปจริง: <b>${side(m.next)}</b> (${m.next})</div><div class="explain">match เป็น historical evidence จริง · candidate นี้อาจอยู่ในกลุ่มที่ overlap กับ match อื่น</div>`;list.append(d)}}
+function render(h){
+  const c={P:h.filter(x=>x==='P').length,B:h.filter(x=>x==='B').length,T:h.filter(x=>x==='T').length};const r=analyze(h);
+  renderHistory(h);
+  $('hands').textContent=h.length+' ตา';$('dist').textContent=h.length?`P ${pct(c.P/h.length)} · B ${pct(c.B/h.length)} · T ${pct(c.T/h.length)}`:'--';
+  $('forecast').textContent=r.forecast?side(r.forecast):'ABSTAIN';$('confidence').textContent=r.forecast?Math.round(r.confidence)+'%':'--';$('matches').textContent=r.matches.length;$('longest').textContent=r.longest?r.longest+' ตัว':'--';
+  $('evidenceQuality').textContent=r.evidenceQuality+(Number.isFinite(r.evidenceScore)?' · '+Math.round(r.evidenceScore):'');$('independence').textContent=r.independence?`${r.independence} clusters`:'--';$('stability').textContent=r.stability.label;$('robustness').textContent=r.robustness.label;$('conflict').textContent=r.conflict;$('decision').textContent=r.forecast?'FORECAST':'ABSTAIN';
+  $('big').textContent=r.forecast?`${side(r.forecast)} · HISTORY EVIDENCE`:(h.length<MIN_LOOKBACK+1?'ยังไม่มีข้อมูลเพียงพอ':'ABSTAIN · NOT DECISIVE');$('detail').textContent=r.rawSupport?`samples ${r.rawSupport} · independent ${r.independence} · agreement ${pct(r.agreement)} · evidence ${Math.round(r.evidenceScore)}/100`:'ต้องมี historical match ที่มีผลถัดไปจริง';$('confBar').style.width=(r.forecast?r.confidence:0)+'%';
+  $('message').textContent=r.reason;$('message').className='msg '+(r.forecast?'status-good':'status-warn');$('currentSequence').textContent=r.longest?sequenceFor(h,r.longest).join(' · '):'--';$('searchMeta').textContent=`INDEX: ${index.map.size.toLocaleString()} unique sequences · ${index.totalEntries.toLocaleString()} indexed occurrences · MAX LEN ${MAX_LOOKBACK}`;
+  renderEvidenceTable(r);renderMatches(r);
+  $('sampleCard').textContent=r.rawSupport?String(r.rawSupport):'--';$('sampleDetail').textContent=r.rawSupport?`P ${r.weighted?.P?.toFixed(2)||'--'} · B ${r.weighted?.B?.toFixed(2)||'--'}`:'ยังไม่มี';$('indCard').textContent=r.independence?r.independence+' clusters':'--';$('indDetail').textContent=r.independence?`independence ratio ${pct(r.independenceRatio)}`:'ยังไม่มี';$('reasonCard').textContent=r.forecast?side(r.forecast):'ABSTAIN';$('reasonDetail').textContent=r.reason;
+}
+
+function commit(next,rebuild=true){const data=sanitize(next);if(!save(data))return false;historyState=data;if(rebuild)rebuildIndex();render(historyState);return true}
+function push(r){const next=historyState.concat(r);if(save(next)){historyState=next;index.addLatest(historyState);analysisCache.clear();render(historyState)}}
+function undo(){if(!historyState.length){setStatus('ไม่มีประวัติให้ย้อนกลับ','info');return}commit(historyState.slice(0,-1),true)}
+function reset(){const empty=[];if(save(empty)){historyState=[];rebuildIndex();LEGACY_KEYS.forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});render(historyState);setStatus('รีเซ็ตสำเร็จ · ล้างประวัติทั้งหมดแล้ว','ok')}}
+function exportData(){const payload={version:'V2',principle:'HISTORY_EVIDENCE_ENGINE',createdAt:new Date().toISOString(),results:historyState.slice()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='neural-apex-v2-history.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function importData(file){const rd=new FileReader();rd.onload=()=>{try{const x=JSON.parse(rd.result);const raw=Array.isArray(x)?x:(x&&Object.prototype.hasOwnProperty.call(x,'results')?x.results:(x&&x.rounds?x.rounds:null));if(!Array.isArray(raw))throw Error('invalid-format');if(raw.length&&!raw.every(v=>typeof(v==='string'?v:(v&&v.result))&&ALL.includes(typeof v==='string'?v:v.result)))throw Error('invalid-results');if(commit(sanitize(raw),true))setStatus(historyState.length?`นำเข้าสำเร็จ ${historyState.length} ตา`:'นำเข้าประวัติว่างสำเร็จ · พร้อมเริ่มใหม่','ok')}catch(e){alert('ไฟล์ไม่ถูกต้อง ต้องเป็น JSON ที่มีผลลัพธ์ P / B / T หรือประวัติว่าง')}};rd.onerror=()=>alert('ไม่สามารถอ่านไฟล์ได้');rd.readAsText(file)}
+
+function runBacktest(){
+  const a=sanitize(historyState);const warmup=Math.max(12,MIN_LOOKBACK+3);if(a.length<=warmup){$('btEvaluated').textContent='0';$('btForecasted').textContent='0';$('btHitRate').textContent='--';$('btAbstain').textContent='--';$('btHigh').textContent='--';$('btTime').textContent='ไม่พอสำหรับทดสอบ';$('btNote').textContent=`ต้องมีประวัติมากกว่า ${warmup} ตา`;return}
+  const original=a.slice();let evalN=0,forecastN=0,hits=0,abstain=0,highN=0,highHits=0;
+  // Build a temporary independent index for each cutoff to prevent look-ahead leakage.
+  for(let i=warmup;i<original.length;i++){
+    const train=original.slice(0,i);const truth=original[i];
+    // The indexed matcher filters out occurrences whose next result lies at/after the cutoff.
+    // This prevents look-ahead leakage without rebuilding the full index for every test point.
+    const r=analyzeCore(train,true);
+    evalN++;if(!r.forecast){abstain++}else{forecastN++;if(r.forecast===truth)hits++;if(r.confidence>=75){highN++;if(r.forecast===truth)highHits++}}
+  }
+  index.build(original);analysisCache.clear();render(historyState);
+  $('btEvaluated').textContent=String(evalN);$('btForecasted').textContent=String(forecastN);$('btHitRate').textContent=forecastN?pct(hits/forecastN):'--';$('btAbstain').textContent=pct(abstain/evalN);$('btHigh').textContent=highN?`${pct(highHits/highN)} (${highN})`:'--';$('btTime').textContent=new Date().toLocaleString('th-TH');$('btNote').textContent=`Backtest แบบ expanding window · warmup ${warmup} · forecast ใช้ข้อมูลก่อนจุดทดสอบเท่านั้น · ยังไม่ใช่การรับประกันอนาคต`;
+}
+
+document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>push(b.dataset.result)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('export').addEventListener('click',exportData);$('import').addEventListener('click',()=>$('file').click());$('file').addEventListener('change',e=>{if(e.target.files[0])importData(e.target.files[0])});$('backtest').addEventListener('click',runBacktest);window.addEventListener('storage',e=>{if(e.key===KEY){historyState=readStoredOwn().data;rebuildIndex();render(historyState)}});
+render(historyState);
+})();
+</script>
+</body></html>

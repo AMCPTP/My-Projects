@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>ADAPTIVE SEQUENCE REINFORCEMENT ENGINE V4 · SELF-IMPROVING</title>
+<style>
+:root{--bg:#05070a;--panel:#0d1117;--panel2:#111821;--line:#26313d;--text:#edf3f8;--muted:#8d9aa7;--a:#54d6c6;--p:#247cff;--b:#e34d58;--t:#707b87;--good:#75e2a8;--warn:#f4bf6b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#112329 0,#05070a 42rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(100%,1180px);margin:auto;padding:14px 10px 34px}.app{overflow:hidden;border:1px solid var(--line);border-radius:24px;background:rgba(13,17,23,.97);box-shadow:0 30px 90px rgba(0,0,0,.35)}header{text-align:center;padding:26px 18px 18px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--a)}h1{margin:8px 0 5px;font-size:30px;letter-spacing:-.05em}.sub{max-width:900px;margin:auto;color:var(--muted);font-size:11px;line-height:1.65}.pill{display:inline-block;margin-top:8px;padding:4px 8px;border:1px solid rgba(84,214,198,.35);border-radius:999px;color:var(--a);font-size:8px;font-weight:900;letter-spacing:.09em}.rule{margin:0 14px 12px;padding:12px;border:1px solid rgba(84,214,198,.16);border-radius:14px;background:rgba(84,214,198,.035);font-size:10px;line-height:1.6}.rule b{color:var(--a)}.metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:0 12px 12px}.metric,.card{min-height:72px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#090d12}.label{display:block;color:#7e8a97;font-size:8px;font-weight:900;letter-spacing:.07em}.value{display:block;margin-top:6px;color:#e7edf2;font-size:12px;font-weight:950;line-height:1.35;overflow-wrap:anywhere}.forecast{margin:0 12px;padding:22px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}.big{font-size:34px;font-weight:950;letter-spacing:-.05em}.detail{margin-top:8px;color:#d7e0e7;font-size:12px;font-weight:850;line-height:1.55}.status{margin-top:8px;font-size:10px;color:var(--muted);font-weight:800}.progress{height:9px;border-radius:999px;background:#161d24;overflow:hidden;margin:10px auto 0;max-width:480px}.progress>i{display:block;height:100%;width:0;background:var(--a);transition:width .15s ease}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px}.btn{min-height:76px;border:0;border-bottom:6px solid rgba(0,0,0,.25);border-radius:18px;color:white;font-size:32px;font-weight:950;cursor:pointer}.p{background:var(--p)}.b{background:var(--b)}.t{background:var(--t);font-size:24px}.section{margin:12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:#090d12}.title{margin:0 0 5px;color:var(--a);font-size:10px;font-weight:950;letter-spacing:.08em}.desc{margin:0 0 10px;color:var(--muted);font-size:10px;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.small{min-height:34px;border:1px solid #3a4652;border-radius:9px;padding:7px 11px;background:#10161d;color:#e1e8ed;font-size:10px;font-weight:900;cursor:pointer}.small:focus-visible,.btn:focus-visible{outline:2px solid var(--a);outline-offset:2px}.small:active,.btn:active{transform:translateY(1px)}.danger{border-color:#76333f;color:#ffb2bf}.history{display:grid;grid-template-rows:repeat(8,35px);grid-auto-flow:column;grid-auto-columns:minmax(36px,1fr);gap:6px;min-height:280px;overflow:auto}.node{display:grid;place-items:center;min-height:35px;border-radius:10px;color:white;font-size:14px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.16)}.node.P{background:var(--p)}.node.B{background:var(--b)}.node.T{background:var(--t);font-size:12px}.empty{grid-column:1/-1;grid-row:1/-1;display:grid;place-items:center;border:1px dashed #303944;border-radius:10px;color:#798592;font-size:10px;font-weight:750}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.tiny{font-size:9px;color:#788590;line-height:1.5}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:7px 5px;border-bottom:1px solid #202a34;text-align:left}.table th{color:#8d99a5;font-size:8px;letter-spacing:.05em}.ok{color:var(--good)}.warn{color:var(--warn)}.muted{color:var(--muted)}.tag{display:inline-block;padding:3px 6px;border-radius:999px;border:1px solid #394550;font-size:8px;font-weight:900}.codebox{padding:9px;border:1px solid #222d38;border-radius:10px;background:#070a0e;font-size:10px;line-height:1.65;overflow:auto;white-space:pre-wrap}.footer{padding:14px 16px 18px;color:#8c99a5;font-size:9px;line-height:1.55;text-align:center}@media(max-width:1000px){.metrics{grid-template-columns:repeat(4,1fr)}}@media(max-width:720px){.metrics{grid-template-columns:repeat(2,1fr)}.grid,.grid2{grid-template-columns:1fr}}@media(max-width:520px){h1{font-size:22px}.history{grid-template-rows:repeat(8,32px)}.node{min-height:32px}}
+</style>
+</head>
+<body>
+<main class="shell"><section class="app">
+<header>
+  <div class="eyebrow">UPGRADE · V4</div>
+  <h1>ADAPTIVE SEQUENCE REINFORCEMENT ENGINE <span class="pill">ASRE · V4</span></h1>
+  <p class="sub">ระบบวิเคราะห์แบบวงจรต่อเนื่องที่เรียนรู้จากผลจริงและความผิดพลาด: เลือกวิธีตามสถานการณ์, จำกรณีที่พลาดและสาเหตุ, จดวิธีแก้ที่เคยได้ผล, แล้วปรับเมื่อพบเคสที่คล้ายกัน</p>
+</header>
+<div class="rule"><b>V2 PRINCIPLE LOCK:</b> ใช้ข้อมูลตามลำดับเวลา, เรียนรู้เพิ่มทุกตาหลังรู้ผลจริง, เลือกวิธีตามสถานการณ์, บันทึกทุก forecast/reveal เป็น learning case, จำความผิดพลาดพร้อมจุดที่ผิดและวิธีแก้, แล้วนำบทเรียนจากเคสที่ตรง/ใกล้เคียงมาปรับก่อนตัดสินใจครั้งถัดไป</div>
+<div class="rule"><b>NO-GUESS RULE:</b> ถ้าประวัติไม่พอ, support ต่ำเกินไป, หลักฐานขัดแย้งสูง, หรือยังไม่มี precedent ที่ใกล้เคียงพอ ระบบต้อง WAIT แทนการฝืนคาดการณ์</div>
+
+<section class="metrics">
+  <div class="metric"><span class="label">HANDS</span><span class="value" id="hands">0</span></div>
+  <div class="metric"><span class="label">FORECAST</span><span class="value" id="forecast">WAIT</span></div>
+  <div class="metric"><span class="label">P / B / T</span><span class="value" id="prob">-- / -- / --</span></div>
+  <div class="metric"><span class="label">CONFIDENCE</span><span class="value" id="confidence">--</span></div>
+  <div class="metric"><span class="label">SEQ ORDER</span><span class="value" id="seqOrder">--</span></div>
+  <div class="metric"><span class="label">RL ACTION</span><span class="value" id="rlAction">WAIT</span></div>
+  <div class="metric"><span class="label">ONLINE SCORE</span><span class="value" id="onlineScore">--</span></div>
+  <div class="metric"><span class="label">LEARNED EVENTS</span><span class="value" id="learned">0</span></div>
+  <div class="metric"><span class="label">BACKTEST HIT</span><span class="value" id="btHit">--</span></div>
+  <div class="metric"><span class="label">BACKTEST COVERAGE</span><span class="value" id="btCoverage">--</span></div>
+  <div class="metric"><span class="label">Brier</span><span class="value" id="btBrier">--</span></div>
+  <div class="metric"><span class="label">LOG LOSS</span><span class="value" id="btLogLoss">--</span></div>
+  <div class="metric"><span class="label">LEARNED MISTAKES</span><span class="value" id="mistakes">0</span></div>
+  <div class="metric"><span class="label">SIMILAR CASES</span><span class="value" id="similarCases">0</span></div>
+  <div class="metric"><span class="label">ADAPTIVE GUARD</span><span class="value" id="adaptiveGuard">WAIT</span></div>
+</section>
+
+<section class="forecast">
+  <div class="big" id="big">WAIT · NEED SEQUENCE HISTORY</div>
+  <div class="detail" id="detail">บันทึกผลจริงเพื่อสร้าง sequence state และเริ่ม online learning</div>
+  <div class="progress"><i id="confBar"></i></div>
+  <div class="status" id="status">V4 พร้อมรับผลจริง</div>
+</section>
+
+<div class="buttons"><button type="button" class="btn p" data-result="P">P</button><button type="button" class="btn b" data-result="B">B</button><button type="button" class="btn t" data-result="T">T</button></div>
+
+<section class="section"><h2 class="title">HISTORY</h2><p class="desc">ข้อมูลจริงเรียงตามเวลา ใช้เป็นฐานเดียวของ sequence state และ walk-forward replay</p><div id="history" class="history"><div class="empty">ยังไม่มีประวัติ</div></div><div class="actions"><button type="button" class="small" id="undo">ย้อนกลับ 1 ตา</button><button type="button" class="small danger" id="reset">รีเซ็ต V4</button><button type="button" class="small" id="export">ส่งออก</button><button type="button" class="small" id="import">นำเข้า</button><button type="button" class="small" id="backtest">RUN WALK-FORWARD BACKTEST</button><input id="file" type="file" accept="application/json" hidden></div></section>
+
+<section class="section"><h2 class="title">1 · SEQUENCE MODELING</h2><p class="desc">อ่านลำดับล่าสุดหลายความยาว แล้วสร้างสัญญาณจากประวัติที่มี suffix เดียวกัน โดยไม่ใช้ pattern family อื่น</p><div class="grid"><div class="card"><span class="label">CURRENT SEQUENCE</span><strong class="mono" id="currentSeq">--</strong><div class="tiny" id="seqMeta">--</div></div><div class="card"><span class="label">SELECTED ORDER</span><strong id="selectedOrder">--</strong><div class="tiny" id="orderDetail">--</div></div><div class="card"><span class="label">SEQUENCE SUPPORT</span><strong id="seqSupport">--</strong><div class="tiny" id="supportDetail">--</div></div></div><div style="margin-top:8px" id="sequenceTable"></div></section>
+
+<section class="section"><h2 class="title">2 · ADAPTIVE ONLINE LEARNING</h2><p class="desc">ทุกผลจริงจะอัปเดตความน่าเชื่อถือของ sequence orders และ policy state โดยใช้ข้อมูลที่เกิดขึ้นแล้วเท่านั้น</p><div class="grid"><div class="card"><span class="label">ORDER WEIGHTS</span><strong id="orderWeights">--</strong><div class="tiny" id="orderWeightsDetail">--</div></div><div class="card"><span class="label">LAST UPDATE</span><strong id="lastUpdate">--</strong><div class="tiny" id="lastUpdateDetail">--</div></div><div class="card"><span class="label">ONLINE REWARD</span><strong id="lastReward">--</strong><div class="tiny" id="lastRewardDetail">--</div></div></div></section>
+
+<section class="section"><h2 class="title">3 · REINFORCEMENT LEARNING</h2><p class="desc">Q-learning แบบ contextual state/action: state มาจาก sequence ล่าสุด, action = P / B / WAIT, และ reward เกิดหลังผลจริงถูกเปิดเผย</p><div class="grid"><div class="card"><span class="label">CURRENT STATE</span><strong class="mono" id="rlState">--</strong><div class="tiny" id="rlStateDetail">--</div></div><div class="card"><span class="label">Q(P / B / WAIT)</span><strong id="qValues">--</strong><div class="tiny" id="qDetail">--</div></div><div class="card"><span class="label">POLICY</span><strong id="policy">WAIT</strong><div class="tiny" id="policyDetail">--</div></div></div></section>
+
+<section class="section"><h2 class="title">4 · WALK-FORWARD BACKTESTING</h2><p class="desc">แต่ละ test point ใช้เฉพาะอดีตก่อนหน้าในการฝึก จากนั้น forecast จุดถัดไป แล้วค่อย reveal actual และ update learner ก่อนเดินต่อ</p><div class="grid"><div class="card"><span class="label">EVALUATED</span><strong id="btEval">--</strong><div class="tiny">P/B outcomes ที่ใช้วัด</div></div><div class="card"><span class="label">FORECASTED</span><strong id="btForecasted">--</strong><div class="tiny">จุดที่ policy ไม่ WAIT</div></div><div class="card"><span class="label">INTERVAL</span><strong id="btInterval">--</strong><div class="tiny">Wilson interval ของ hit rate</div></div></div><div style="margin-top:8px" class="grid2"><div class="card"><span class="label">PER-ORDER WALK-FORWARD SKILL</span><div id="btOrderTable" class="tiny">ยังไม่ได้รัน</div></div><div class="card"><span class="label">BACKTEST TRACE</span><div id="btTrace" class="codebox">ยังไม่ได้รัน</div></div></div></section>
+
+<section class="section"><h2 class="title">5 · ERROR MEMORY & CASE-BASED ADAPTATION</h2>
+<p class="desc">ระบบไม่เพียงจำว่า “ทายถูก/ผิด” แต่จำว่าเกิดในสถานการณ์ใด, วิธีไหนถูกใช้, จุดใดเป็นต้นเหตุ, เคยแก้ด้วยอะไร, และผลของการแก้นั้น เพื่อใช้เป็น precedent เมื่อเจอเคสคล้ายกัน</p>
+<div class="grid">
+  <div class="card"><span class="label">CURRENT SITUATION</span><strong id="currentSituation">--</strong><div class="tiny" id="situationDetail">--</div></div>
+  <div class="card"><span class="label">SIMILAR HISTORY</span><strong id="similarDetail">--</strong><div class="tiny" id="similarReason">--</div></div>
+  <div class="card"><span class="label">METHOD DECISION</span><strong id="methodDecision">WAIT</strong><div class="tiny" id="methodReason">--</div></div>
+</div>
+<div style="margin-top:8px" class="grid2">
+  <div class="card"><span class="label">RULE MEMORY · USE / AVOID</span><div id="methodMemory" class="tiny">ยังไม่มีบทเรียน</div></div>
+  <div class="card"><span class="label">RECENT ERROR CASES</span><div id="errorCases" class="tiny">ยังไม่มี error case</div></div>
+</div>
+</section>
+<section class="section"><h2 class="title">6 · DECISION AUDIT & DETERMINISTIC REPLAY</h2><p class="desc">เก็บ snapshot ของเหตุผลก่อน reveal เพื่อย้อนดู sequence, confidence, Q-value, precedent, drift และ correction ของแต่ละจุด โดย rebuild ใช้ replay mode ที่ deterministic</p><div class="grid2"><div class="card"><span class="label">RECENT DECISION SNAPSHOTS</span><div id="decisionAudit" class="tiny">ยังไม่มี decision snapshot</div></div><div class="card"><span class="label">REPLAY GUARANTEE</span><strong id="replayStatus">DETERMINISTIC</strong><div class="tiny">ไม่มี random exploration ระหว่าง rebuild</div></div></div></section>
+<section class="section"><h2 class="title">7 · METHOD BENCHMARK & CALIBRATION</h2><p class="desc">เปรียบเทียบ ASRE กับ baseline บน walk-forward จุดเดียวกัน พร้อม Hit, Brier, Log Loss และ ECE เพื่อแยก “ถูก” ออกจาก “มั่นใจถูกในระดับที่เหมาะสม”</p><div class="grid"><div class="card"><span class="label">BENCHMARK VERSION</span><strong>benchmark-v1</strong><div class="tiny">fixed evaluation definition</div></div><div class="card"><span class="label">CALIBRATION ECE</span><strong id="calibrationMetric">--</strong><div class="tiny">expected calibration error</div></div><div class="card"><span class="label">DRIFT GUARD</span><strong id="driftMetric">--</strong><div class="tiny">recent vs prior distribution</div></div></div><div style="margin-top:8px" class="card"><div id="benchmarkPanel" class="tiny">ยังไม่ได้รัน benchmark</div></div></section>
+<section class="section"><h2 class="title">8 · SELF-IMPROVEMENT LAB</h2><p class="desc">แยก train/holdout แบบ walk-forward เพื่อทดลองทางแก้หลายแบบโดยไม่ใช้ข้อมูลอนาคตตัดสินผล แล้วอนุมัติเฉพาะ correction ที่ผ่านการตรวจสอบ</p><div class="actions"><button type="button" class="small" id="selfLab">RUN SELF-IMPROVEMENT LAB</button><button type="button" class="small" id="rollbackCheck">CHECK ROLLBACK</button></div><div style="margin-top:8px" class="grid"><div class="card"><span class="label">VALIDATION</span><strong id="validationStatus">NOT RUN</strong><div class="tiny" id="validationDetail">--</div></div><div class="card"><span class="label">APPROVED FIXES</span><strong id="approvedFixes">0</strong><div class="tiny" id="approvedFixDetail">--</div></div><div class="card"><span class="label">ROLLBACK GUARD</span><strong id="rollbackStatus">ARMED</strong><div class="tiny" id="rollbackDetail">ตรวจ performance หลัง activate fix</div></div></div><div style="margin-top:8px" class="card"><div id="fixLabPanel" class="tiny">ยังไม่ได้รัน self-improvement lab</div></div></section>
+<section class="section"><h2 class="title">9 · KNOWLEDGE CONSOLIDATION & META-LEARNING</h2><p class="desc">รวม case หลายเหตุการณ์ให้กลายเป็น rule ที่มีหลักฐาน, เรียนรู้ว่าสถานการณ์แบบไหนควรใช้ strategy ใด และลดน้ำหนัก memory ที่เก่าเกินบริบท</p><div class="grid"><div class="card"><span class="label">KNOWLEDGE RULES</span><strong id="knowledgeRules">0</strong><div class="tiny" id="knowledgeDetail">ยังไม่มี consolidated rule</div></div><div class="card"><span class="label">META STRATEGY</span><strong id="metaStrategy">--</strong><div class="tiny" id="metaStrategyDetail">--</div></div><div class="card"><span class="label">MEMORY DECAY</span><strong id="memoryDecay">ACTIVE</strong><div class="tiny" id="memoryDecayDetail">recency-weighted similarity</div></div></div><div style="margin-top:8px" class="grid2"><div class="card"><span class="label">TOP KNOWLEDGE RULES</span><div id="knowledgePanel" class="tiny">--</div></div><div class="card"><span class="label">STRATEGY EVIDENCE</span><div id="strategyPanel" class="tiny">--</div></div></div></section>
+<section class="section"><h2 class="title">10 · COUNTERFACTUAL & ABLATION REPLAY</h2><p class="desc">ย้อน decision snapshot ที่มี actual แล้ว และทดลองว่า P / B / WAIT หรือถอด component บางส่วนจะให้ผลอย่างไร โดยแยก “ผลย้อนหลัง” ออกจากการคาดการณ์ปัจจุบัน</p><div class="actions"><button type="button" class="small" id="counterfactual">RUN COUNTERFACTUAL REPLAY</button><button type="button" class="small" id="ablation">RUN ABLATION REPLAY</button></div><div style="margin-top:8px" class="grid2"><div class="card"><span class="label">COUNTERFACTUAL SUMMARY</span><div id="counterfactualPanel" class="tiny">ยังไม่ได้รัน</div></div><div class="card"><span class="label">ABLATION SUMMARY</span><div id="ablationPanel" class="tiny">ยังไม่ได้รัน</div></div></div></section>
+<section class="section"><h2 class="title">V4 DECISION LOOP</h2><div class="codebox">OBSERVE → REPLAY PAST → COMPARE METHODS → LEARN → CONSOLIDATE MEMORY → GENERATE FIXES → HOLDOUT VALIDATE → ROLLBACK IF REGRESSION → CLASSIFY CURRENT REGIME → SELF-CHECK → FORECAST / WAIT → REVEAL → DIAGNOSE → STORE → UPDATE</div></section>
+
+<div class="footer">ASRE V4 · self-improving error-adaptive independent project storage · มี migration เฉพาะ history/learner ของ ASRE V2 และไม่อ่าน learning state ของระบบอื่น</div>
+</section></main>
+<script>
+(function(){'use strict';
+const VERSION='ASRE-V4';
+const KEY='asre-v4-history';
+  const LEGACY_KEY='asre-v2-history';
+const LEARN_KEY='asre-v4-online-learning';
+  const LEGACY_LEARN_KEY='asre-v2-online-learning';
+const AUDIT_KEY='asre-v4-audit';
+const OUTCOMES=['P','B','T'];
+const ACTIONS=['P','B','WAIT'];
+const ORDERS=[1,2,3,4,5,6];
+const MIN_SEQUENCE=6;
+const MAX_HISTORY=50000;
+const MAX_AUDIT=10000;
+  const VALIDATION_WINDOW=100;
+const ALPHA=0.08;          // online learning step
+const GAMMA=0.85;          // RL discount
+const EPSILON=0.05;        // RL exploration probability
+const MIN_ACTION_CONF=.55;
+const MIN_SIMILAR_CASES=2;
+const MAX_CASES=5000;
+const RECENCY_HALF_LIFE=80;
+const DRIFT_WINDOW=30;
+const DRIFT_THRESHOLD=.12;
+const CALIBRATION_BINS=10;
+const BENCHMARK_VERSION='benchmark-v2';
+const LAB_VERSION='self-improvement-v2';
+const MAX_KNOWLEDGE_RULES=3000;
+const MAX_FIX_LIBRARY=40;
+const VALIDATION_TRAIN_RATIO=.60;
+const MIN_FIX_TRIALS=8;
+const MIN_FIX_IMPROVEMENT=.02;
+const MAX_COVERAGE_DROP=.15;
+const ROLLBACK_DROP=.08;
+const RECENCY_CASE_HALF_LIFE=240;
+const LAB_MAX_ROWS=4000;
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const pct=x=>Number.isFinite(x)?Math.round(x*100)+'%':'--';
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:0;
+const sum=a=>a.reduce((s,v)=>s+v,0);
+function seededUnit(key){let h=2166136261;for(let i=0;i<key.length;i++){h^=key.charCodeAt(i);h=Math.imul(h,16777619)}return((h>>>0)%1000000)/1000000}
+function clampProb(p){return clamp(Number(p)||0,.000001,.999999)}
+function distribution(h){const x=sanitize(h),n=Math.max(1,x.length),c={P:0,B:0,T:0};for(const v of x)c[v]++;return{P:c.P/n,B:c.B/n,T:c.T/n}}
+function jsDivergence(a,b){const eps=1e-9,m={P:(a.P+b.P)/2,B:(a.B+b.B)/2,T:(a.T+b.T)/2};const kl=(p,q)=>sum(['P','B','T'].map(k=>(p[k]+eps)*Math.log((p[k]+eps)/(q[k]+eps))));return .5*kl(a,m)+.5*kl(b,m)}
+function detectDrift(h){const x=sanitize(h);if(x.length<DRIFT_WINDOW*2)return{active:false,score:0,reason:'not_enough_window'};const recent=x.slice(-DRIFT_WINDOW),prior=x.slice(-DRIFT_WINDOW*2,-DRIFT_WINDOW),score=jsDivergence(distribution(prior),distribution(recent));return{active:score>=DRIFT_THRESHOLD,score,prior:distribution(prior),recent:distribution(recent),reason:score>=DRIFT_THRESHOLD?'recent_regime_shift':'stable_regime'}}
+function calibrationStats(rows){if(!rows.length)return{ece:null,bins:[],brier:0};const bins=Array.from({length:CALIBRATION_BINS},()=>({n:0,conf:0,hit:0}));let brier=0;for(const r of rows){const conf=clamp(r.confidence||0,0,1),hit=r.hit?1:0,idx=Math.min(CALIBRATION_BINS-1,Math.floor(conf*CALIBRATION_BINS));bins[idx].n++;bins[idx].conf+=conf;bins[idx].hit+=hit;brier+=(conf-hit)*(conf-hit)}const n=rows.length,ece=sum(bins.map(b=>b.n?Math.abs(b.conf/b.n-b.hit/b.n)*b.n/n:0));return{ece,bins,brier:brier/n}}
+function benchmarkMetrics(items){const rows=items.filter(r=>r.action==='P'||r.action==='B'),n=rows.length;if(!n)return{n:0,hit:0,brier:null,logLoss:null,coverage:0,ece:null};let hit=0,brier=0,logLoss=0;for(const r of rows){const y=r.actual==='P'?1:0,p=clampProb(r.prob);if(r.action===r.actual)hit++;brier+=(p-y)*(p-y);logLoss-=Math.log(y?p:1-p)}const cal=calibrationStats(rows.map(r=>({confidence:r.confidence,hit:r.action===r.actual})));return{n,hit:hit/n,brier:brier/n,logLoss:logLoss/n,coverage:n/(items.length||1),ece:cal.ece}}
+function sanitize(v){const a=(Array.isArray(v)?v:[]).map(x=>typeof x==='string'?x:x&&x.result).filter(x=>OUTCOMES.includes(x));return a.slice(-MAX_HISTORY)}
+function safeJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function defaultLearner(){return{version:VERSION,orderWeights:Object.fromEntries(ORDERS.map(k=>[k,1])),orderSkill:Object.fromEntries(ORDERS.map(k=>[k,{n:0,reward:0}])),q:{},steps:0,last:null,memory:{cases:[],methodStats:{},causeStats:{},fixStats:{}},knowledge:{rules:{},strategyStats:{},fixLibrary:{approved:[],history:[]},validation:{status:'NOT RUN',lastRun:null,trainN:0,testN:0,utilityDelta:null,detail:'--'},lastLab:null}}}
+function loadHistory(){const current=safeJSON(KEY);if(current&&Array.isArray(current.results))return sanitize(current.results);const legacy=safeJSON(LEGACY_KEY);return sanitize(legacy&&legacy.results)}
+function loadLearnerFromObject(x){const base=defaultLearner();if(!x||typeof x!=='object')return base;return{...base,version:VERSION,orderWeights:{...base.orderWeights,...(x.orderWeights||{})},orderSkill:{...base.orderSkill,...(x.orderSkill||{})},q:x.q&&typeof x.q==='object'?x.q:{},steps:Number(x.steps)||0,last:x.last||null,memory:{cases:Array.isArray(x.memory?.cases)?x.memory.cases.slice(-MAX_CASES):[],methodStats:x.memory?.methodStats&&typeof x.memory.methodStats==='object'?x.memory.methodStats:{},causeStats:x.memory?.causeStats&&typeof x.memory.causeStats==='object'?x.memory.causeStats:{},fixStats:x.memory?.fixStats&&typeof x.memory.fixStats==='object'?x.memory.fixStats:{}},knowledge:{rules:x.knowledge?.rules&&typeof x.knowledge.rules==='object'?x.knowledge.rules:{},strategyStats:x.knowledge?.strategyStats&&typeof x.knowledge.strategyStats==='object'?x.knowledge.strategyStats:{},fixLibrary:{approved:Array.isArray(x.knowledge?.fixLibrary?.approved)?x.knowledge.fixLibrary.approved.slice(-MAX_FIX_LIBRARY):[],history:Array.isArray(x.knowledge?.fixLibrary?.history)?x.knowledge.fixLibrary.history.slice(-MAX_FIX_LIBRARY):[]},validation:x.knowledge?.validation||base.knowledge.validation},lastLab:x.lastLab||null}}
+function loadLearner(){
+  const current=safeJSON(LEARN_KEY), x=(current&&typeof current==='object')?current:safeJSON(LEGACY_LEARN_KEY);
+  if(!x || !['ASRE-V2','ASRE-V3','ASRE-V4'].includes(x.version))return defaultLearner();
+  return loadLearnerFromObject(x);
+}
+function loadAudit(){const x=safeJSON(AUDIT_KEY);return Array.isArray(x)?x.slice(-MAX_AUDIT):[]}
+let history=loadHistory(), learner=loadLearner(), audit=loadAudit(), pending=null;
+function saveAll(){try{localStorage.setItem(KEY,JSON.stringify({version:VERSION,results:history,updatedAt:new Date().toISOString()}));localStorage.setItem(LEARN_KEY,JSON.stringify(learner));localStorage.setItem(AUDIT_KEY,JSON.stringify(audit.slice(-MAX_AUDIT)));return true}catch(e){setStatus('STORAGE ERROR · พื้นที่ localStorage ไม่พอหรือถูกบล็อก');return false}}
+function seedQ(state){if(!learner.q[state])learner.q[state]={P:0,B:0,WAIT:0};return learner.q[state]}
+function stateKey(h){return sanitize(h).slice(-4).join('')||'EMPTY'}
+function contextSuffix(h,k){return sanitize(h).slice(-k).join('')}
+function maxProb(p){return Math.max(p?.P||0,p?.B||0,p?.T||0)}
+function classifySituation(h,sf){
+  const x=sanitize(h), rows=sf.rows||[], probs=sf.prob||{P:1/3,B:1/3,T:1/3};
+  const support=sf.support||0, conf=Math.max(probs.P,probs.B), spread=Math.abs((probs.P||0)-(probs.B||0));
+  const highT=(probs.T||0)>=.25;
+  const orderConsensus=rows.length>=2 && rows.slice(0,Math.min(3,rows.length)).every(r=>r.prob && Math.sign((r.prob.P||0)-(r.prob.B||0))===Math.sign((rows[0].prob.P||0)-(rows[0].prob.B||0)));
+  const drift=detectDrift(x);
+  if(x.length<MIN_SEQUENCE) return 'insufficient_history';
+  if(!rows.length) return 'no_matching_sequence';
+  if(support<2) return 'sparse_support';
+  if(drift.active && conf<.70) return 'regime_shift';
+  if(conf<.55) return 'weak_confidence';
+  if(!orderConsensus && rows.length>=2) return 'conflicting_orders';
+  if(highT) return 'high_t_risk';
+  if(conf>=.70 && spread>=.20) return 'strong_consensus';
+  return 'normal_sequence';
+}
+function situationFeatures(h,sf){
+  const x=sanitize(h), probs=sf.prob||{P:1/3,B:1/3,T:1/3}, rows=sf.rows||[];
+  const drift=detectDrift(x);
+  return {len:x.length, state:stateKey(x), last4:contextSuffix(x,4), last6:contextSuffix(x,6),
+    order:sf.order||null, support:sf.support||0, confidence:Math.max(probs.P,probs.B), t:probs.T||0,
+    candidate:(probs.P>=probs.B?'P':'B'), situation:classifySituation(x,sf), rowCount:rows.length,
+    drift:drift.active, driftScore:drift.score};
+}
+function caseSimilarity(a,b){
+  let score=0;
+  if(a.situation===b.situation)score+=3;
+  if(a.last4&&b.last4&&a.last4===b.last4)score+=5;
+  if(a.last6&&b.last6&&a.last6===b.last6)score+=7;
+  if(a.order&&b.order&&a.order===b.order)score+=2;
+  if(Math.abs((a.support||0)-(b.support||0))<=1)score+=1;
+  if(Math.abs((a.confidence||0)-(b.confidence||0))<=.08)score+=1;
+  if(a.candidate===b.candidate)score+=1;
+  if(Boolean(a.drift)===Boolean(b.drift))score+=2;
+  return score;
+}
+function findSimilarCases(features){
+  const all=learner.memory?.cases||[],nowLen=features.len||0;
+  return all.map(c=>{
+    const base=caseSimilarity(features,c),age=Math.max(0,nowLen-Number(c.at||nowLen));
+    const recency=Math.pow(.5,age/RECENCY_CASE_HALF_LIFE);
+    return {...c,similarity:base,recency,effectiveSimilarity:base*(0.5+0.5*recency)};
+  }).filter(c=>c.similarity>=MIN_SIMILAR_CASES).sort((a,b)=>b.effectiveSimilarity-a.effectiveSimilarity).slice(0,12);
+}
+function diagnoseError(prev,actual){
+  const pred=prev.action, sf=prev.sf||{}, f=prev.features||{}, prob=sf.prob||{};
+  if(pred==='WAIT') return {cause:'correct_skip_or_insufficient_evidence',detail:'ระบบเลือก WAIT หรือหลักฐานไม่ถึงเกณฑ์ จึงไม่ถือเป็น prediction error',fix:'retain_wait_guard'};
+  const predictedProb=prob[pred]||0, actualProb=prob[actual]||0;
+  if((f.support||0)<2) return {cause:'insufficient_support',detail:'sequence ที่ใช้มีข้อมูลอ้างอิงน้อย',fix:'raise_support_requirement'};
+  if((f.situation||'')==='conflicting_orders') return {cause:'conflicting_evidence',detail:'หลาย order ให้ทิศทางไม่สอดคล้องกัน',fix:'prefer_wait_or_consensus'};
+  if((f.confidence||0)>=.70 && actualProb<.30) return {cause:'overconfidence',detail:'ความมั่นใจสูงแต่ผลจริงสวนทางอย่างชัดเจน',fix:'discount_confidence_and_wait'};
+  if((prob.T||0)>=.25 && actual!=='T') return {cause:'tie_risk_misread',detail:'มีความเสี่ยง T สูงแต่ decision ไม่ได้ลดความเสี่ยงพอ',fix:'increase_t_risk_guard'};
+  return {cause:'sequence_generalization_failure',detail:'suffix ใกล้เคียงในอดีต แต่ผลจริงไม่เป็นไปตาม distribution ที่เรียนรู้',fix:'downweight_this_situation'};
+}
+function recordCase(prev,actual){
+  if(!prev||!prev.features||prev.features.len<MIN_SEQUENCE)return;
+  const correct=prev.action!=='WAIT' && prev.action===actual;
+  const diag=prev.action==='WAIT'?{cause:'wait_skip',detail:'ระบบเลือก WAIT จึงไม่นับเป็น prediction error',fix:'retain_wait_guard'}:(correct?{cause:'success',detail:'วิธีที่ใช้ทำงานในสถานการณ์นี้',fix:prev.appliedFix||'reinforce_method'}:diagnoseError(prev,actual));
+  const ms=learner.memory.methodStats[prev.method||'sequence+rl']||(learner.memory.methodStats[prev.method||'sequence+rl']={uses:0,hits:0,misses:0});
+  ms.uses++; if(prev.action==='WAIT')ms.skips=(ms.skips||0)+1; else if(correct)ms.hits++; else ms.misses++;
+  const cs=learner.memory.causeStats[diag.cause]||(learner.memory.causeStats[diag.cause]={n:0});
+  cs.n++;
+  const appliedFix=prev.appliedFix||diag.fix;
+  const fs=learner.memory.fixStats[appliedFix]||(learner.memory.fixStats[appliedFix]={uses:0,hits:0,misses:0});
+  fs.uses++; if(prev.action==='WAIT')fs.skips=(fs.skips||0)+1; else if(correct)fs.hits++; else fs.misses++;
+  const outcome=prev.action==='WAIT'?'skip':(correct?'hit':'miss');
+  const c={id:`${VERSION}-${prev.features.len}-${prev.state}-${Date.now()}`,at:prev.features.len,stamp:Date.now(),features:prev.features,method:prev.method||'sequence+rl',action:prev.action,actual,
+    outcome,cause:diag.cause,detail:diag.detail,fix:appliedFix,driftScore:prev.features.driftScore||0};
+  learner.memory.cases.push(c); learner.memory.cases=learner.memory.cases.slice(-MAX_CASES);
+}
+function applyMemoryAdjustment(base,features,similar){
+  let action=base, reason=[], appliedFix=null;
+  const misses=similar.filter(c=>c.outcome==='miss'), hits=similar.filter(c=>c.outcome==='hit');
+  const fixCandidates={};
+  for(const c of hits){const fs=learner.memory.fixStats?.[c.fix]||{uses:0,hits:0,misses:0};const rate=fs.uses>=2?(fs.hits/(fs.uses||1)):0;fixCandidates[c.fix]=(fixCandidates[c.fix]||0)+1+rate;}
+  const bestFix=Object.entries(fixCandidates).sort((a,b)=>b[1]-a[1])[0]?.[0]||null;
+  if(misses.length>=2){
+    const causeCounts=misses.reduce((m,c)=>(m[c.cause]=(m[c.cause]||0)+1,m),{});
+    const topCause=Object.entries(causeCounts).sort((a,b)=>b[1]-a[1])[0]?.[0];
+    if(topCause==='insufficient_support'||topCause==='conflicting_evidence'||topCause==='overconfidence'){action='WAIT';appliedFix=topCause==='insufficient_support'?'raise_support_requirement':'prefer_wait_or_consensus';reason.push('พบความผิดพลาดลักษณะเดิมซ้ำในเคสใกล้เคียง');}
+    else if(topCause==='sequence_generalization_failure'){action='WAIT';appliedFix='downweight_this_situation';reason.push('วิธีเดิมเคยพลาดซ้ำในสถานการณ์คล้ายกัน');}
+  }
+  if(features.situation==='regime_shift' && action!=='WAIT' && features.confidence<.78){action='WAIT';appliedFix='regime_shift_guard';reason.push(`ตรวจพบ distribution shift ${features.driftScore.toFixed(3)}`);}
+  if(action!=='WAIT' && misses.length===0 && hits.length>=2){appliedFix=bestFix||'reinforce_method';reason.push(`มีเคสคล้ายกันสำเร็จ ${hits.length} เคส · เลือก fix ที่มีหลักฐานดีที่สุด`);}
+  if(action==='WAIT' && !appliedFix)appliedFix='retain_wait_guard';
+  const kr=learner.knowledge?.rules?.[knowledgeKey(features)];if(action!=='WAIT'&&kr&&kr.n>=5&&knowledgeTrust(kr)<.45){action='WAIT';appliedFix='knowledge_low_trust';reason.push(`knowledge rule trust ต่ำ ${knowledgeTrust(kr).toFixed(2)}`);}
+  if(!reason.length)reason.push('ยังไม่มีบทเรียนที่หนักแน่นพอให้ override');
+  return{action,reason:reason.join(' · '),similarCount:similar.length,misses:misses.length,hits:hits.length,appliedFix};
+}
+function methodGuidance(features,similar){
+  const bad=similar.filter(c=>c.outcome==='miss'), good=similar.filter(c=>c.outcome==='hit');
+  const total=bad.length+good.length;
+  if(total<2)return{use:['sequence history'],avoid:['none'],text:'ยังมี precedent ไม่พอ จึงใช้แกน sequence ปกติและไม่เพิ่ม rule ใหม่'};
+  const fixes=[...new Set(good.map(c=>c.fix).filter(Boolean))].map(f=>{const st=learner.memory.fixStats?.[f]||{uses:0,hits:0,misses:0};return `${f} (${st.hits}/${st.uses||0})`;});
+  return{use:fixes.slice(0,3),avoid:[...new Set(bad.map(c=>c.fix).filter(Boolean))].slice(0,3),text:`คล้ายกัน ${total} เคส · สำเร็จ ${good.length} · พลาด ${bad.length}`};
+}
+function knowledgeKey(f){return `${f.situation}|${f.order||0}|${f.candidate||'-'}|${f.drift?'D':'S'}`}
+function knowledgeTrust(rule){const n=Number(rule?.n||0);return n?((Number(rule.hits||0)+1)/(n+2)):0.5}
+function strategyKey(f){return f.situation||'unknown'}
+function consolidateKnowledge(prev,actual,correct){
+  const f=prev?.features;if(!f)return;
+  learner.knowledge=learner.knowledge||defaultLearner().knowledge;
+  const key=knowledgeKey(f),rules=learner.knowledge.rules;
+  const r=rules[key]||(rules[key]={key,n:0,hits:0,misses:0,lastAt:0,fixes:{},avgReward:0});
+  const reward=rewardFor(prev.action,actual);r.n++;correct?r.hits++:r.misses++;r.lastAt=Date.now();r.avgReward+=((reward-(r.avgReward||0))/r.n);
+  const fx=prev.appliedFix||'none';r.fixes[fx]=(r.fixes[fx]||0)+1;
+  const sk=strategyKey(f),ss=learner.knowledge.strategyStats[sk]||(learner.knowledge.strategyStats[sk]={});const method=prev.policyPath||'sequence';ss[method]=ss[method]||{n:0,reward:0,hits:0};ss[method].n++;ss[method].reward+=reward;if(correct)ss[method].hits++;
+  const entries=Object.values(rules).sort((a,b)=>(b.lastAt||0)-(a.lastAt||0));if(entries.length>MAX_KNOWLEDGE_RULES){for(const stale of entries.slice(MAX_KNOWLEDGE_RULES))delete rules[stale.key]}
+}
+function bestMetaStrategy(features){const ss=learner.knowledge?.strategyStats?.[strategyKey(features)]||{};let best=null,bestScore=-Infinity;for(const [name,v] of Object.entries(ss)){const n=Number(v.n||0);if(n<3)continue;const avg=Number(v.reward||0)/n,trust=(Number(v.hits||0)+1)/(n+2),score=avg*0.7+trust*0.3;if(score>bestScore){bestScore=score;best=name}}return best}
+function candidateFixAction(fix,snap){
+  const prob=snap.prob||{P:1/3,B:1/3,T:1/3},current=snap.memoryAction||snap.baseAction||snap.action||'WAIT',conf=Math.max(prob.P||0,prob.B||0),t=prob.T||0;
+  if(fix==='raise_support_requirement')return (snap.support||0)<3?'WAIT':current;
+  if(fix==='prefer_wait_or_consensus')return (snap.situation==='conflicting_orders'||snap.similarMisses>=2)?'WAIT':current;
+  if(fix==='discount_confidence_and_wait'){const chosenProb=(current==='P'||current==='B')?(prob[current]||0):0;return conf>=.70&&chosenProb<.35?'WAIT':current;}
+  if(fix==='increase_t_risk_guard')return t>=.25?'WAIT':current;
+  if(fix==='downweight_this_situation')return snap.similarMisses>=2?'WAIT':current;
+  if(fix==='regime_shift_guard')return snap.drift&&conf<.78?'WAIT':current;
+  if(fix==='retain_wait_guard')return conf<MIN_ACTION_CONF?'WAIT':current;
+  return current;
+}
+function replayUtility(rows,actionFn){let reward=0,n=0,forecasted=0,hits=0;for(const s of rows){const a=actionFn(s);const actual=s.actual;if(!['P','B','T'].includes(actual))continue;n++;reward+=rewardFor(a,actual);if(a!=='WAIT'){forecasted++;if(a===actual)hits++}}return{n,rewardAvg:n?reward/n:0,forecasted,hits,hitRate:forecasted?hits/forecasted:null,coverage:n?forecasted/n:0}}
+function buildDecisionSnapshots(){return audit.filter(x=>x&&x.type==='decision'&&x.actual&&x.prob).slice(-LAB_MAX_ROWS)}
+function enrichSnapshotForReplay(s){const sim=s.similar||[];return {...s,similarMisses:sim.filter(c=>c.outcome==='miss').length,similarHits:sim.filter(c=>c.outcome==='hit').length}}
+function runSelfImprovementLab(){
+  const rows=buildDecisionSnapshots().map(enrichSnapshotForReplay);if(rows.length<MIN_FIX_TRIALS*2){setStatus(`SELF-LAB: ต้องมี decision ที่ reveal แล้วอย่างน้อย ${MIN_FIX_TRIALS*2} จุด`);return}
+  const split=Math.max(MIN_FIX_TRIALS,Math.floor(rows.length*VALIDATION_TRAIN_RATIO)),train=rows.slice(0,split),test=rows.slice(split);
+  const fixes=['raise_support_requirement','prefer_wait_or_consensus','discount_confidence_and_wait','increase_t_risk_guard','downweight_this_situation','regime_shift_guard','retain_wait_guard'];
+  const results=[];const baseTrain=replayUtility(train,s=>s.action),baseTest=replayUtility(test,s=>s.action);
+  for(const fix of fixes){const tr=replayUtility(train,s=>candidateFixAction(fix,s)),te=replayUtility(test,s=>candidateFixAction(fix,s));const impTrain=tr.rewardAvg-baseTrain.rewardAvg,impTest=te.rewardAvg-baseTest.rewardAvg,coverageDrop=baseTest.coverage-te.coverage;const approved=tr.n>=MIN_FIX_TRIALS&&te.n>=MIN_FIX_TRIALS&&impTrain>=MIN_FIX_IMPROVEMENT&&impTest>=0&&coverageDrop<=MAX_COVERAGE_DROP;results.push({fix,train:tr,test:te,improvementTrain:impTrain,improvementTest:impTest,coverageDrop,approved})}
+  learner.knowledge=learner.knowledge||defaultLearner().knowledge;const approved=results.filter(r=>r.approved).sort((a,b)=>b.improvementTest-a.improvementTest).slice(0,MAX_FIX_LIBRARY).map(r=>({...r,approvedAt:Date.now(),active:true,labVersion:LAB_VERSION}));
+  const prev=learner.knowledge.fixLibrary?.approved||[];learner.knowledge.fixLibrary={approved,history:[...(learner.knowledge.fixLibrary?.history||[]),...approved].slice(-MAX_FIX_LIBRARY)};
+  const fullTest=baseTest,approvedTest=approved.length?replayUtility(test,s=>{let a=s.action;for(const f of approved){const cand=candidateFixAction(f.fix,s);if(cand!==a){a=cand;break}}return a}):baseTest;
+  const status=approved.length?'PASS':'HOLD';learner.knowledge.validation={status,lastRun:Date.now(),trainN:train.length,testN:test.length,utilityDelta:approvedTest.rewardAvg-baseTest.rewardAvg,detail:`${approved.length} fixes approved · holdout utility ${(approvedTest.rewardAvg-baseTest.rewardAvg).toFixed(3)}`};learner.lastLab={type:'selfLab',version:LAB_VERSION,at:Date.now(),trainN:train.length,testN:test.length,baseTrain,baseTest,results,approved:approved.map(x=>x.fix)};
+  audit=audit.filter(x=>x?.type!=='selfLab');audit.push({type:'selfLab',at:Date.now(),version:LAB_VERSION,trainN:train.length,testN:test.length,baseTrain,baseTest,results,approved:approved.map(x=>x.fix)});saveAll();render();setStatus(`SELF-LAB COMPLETE · ${approved.length} approved · holdout Δutility ${(approvedTest.rewardAvg-baseTest.rewardAvg).toFixed(3)}`);
+}
+function applyValidatedFixes(action,features,sf,similar){
+  const approved=learner.knowledge?.fixLibrary?.approved||[];if(!approved.length)return{action,fix:null,reason:'no validated fix'};
+  const snap={action,prob:sf.prob,situation:features.situation,support:features.support,drift:features.drift,similarMisses:similar.filter(c=>c.outcome==='miss').length};
+  for(const rec of approved.filter(x=>x.active!==false)){const cand=candidateFixAction(rec.fix,snap);if(cand!==action)return{action:cand,fix:rec.fix,reason:`validated fix ${rec.fix} · holdout Δ ${Number(rec.improvementTest||0).toFixed(3)}`};}
+  return{action,fix:null,reason:'validated fixes do not override'};
+}
+function rollbackActiveFixes(){
+  const approved=learner.knowledge?.fixLibrary?.approved||[];const rows=buildDecisionSnapshots().map(enrichSnapshotForReplay);let rolled=[];
+  for(const rec of approved){const used=rows.filter(s=>s.appliedFix===rec.fix).slice(-VALIDATION_WINDOW);if(used.length<MIN_FIX_TRIALS)continue;const base=replayUtility(used,s=>s.memoryAction||s.baseAction||s.action),active=replayUtility(used,s=>s.action),delta=active.rewardAvg-base.rewardAvg;if(delta<-ROLLBACK_DROP){rec.active=false;rec.rollbackAt=Date.now();rec.rollbackDelta=delta;rolled.push(`${rec.fix} ${delta.toFixed(3)}`)}}
+  if(rolled.length){learner.knowledge.fixLibrary.approved=approved;saveAll();render()}return rolled;
+}
+function runCounterfactual(){const rows=buildDecisionSnapshots().map(enrichSnapshotForReplay);if(!rows.length){setStatus('COUNTERFACTUAL: ยังไม่มี decision ที่ reveal แล้ว');return}const recent=rows.slice(-Math.min(250,rows.length));const methods={chosen:recent.map(s=>({...s,action:s.action})),P:recent.map(s=>({...s,action:'P'})),B:recent.map(s=>({...s,action:'B'})),WAIT:recent.map(s=>({...s,action:'WAIT'}))};const m={};for(const [k,v] of Object.entries(methods))m[k]=replayUtility(v,s=>s.action);const regret=mean(recent.map(s=>Math.max(...ACTIONS.map(a=>rewardFor(a,s.actual)))-rewardFor(s.action,s.actual)));audit=audit.filter(x=>x?.type!=='counterfactual');audit.push({type:'counterfactual',at:Date.now(),n:recent.length,metrics:m,regret});saveAll();renderCounterfactual();setStatus(`COUNTERFACTUAL COMPLETE · n=${recent.length}`)}
+function runAblation(){const rows=buildDecisionSnapshots().map(enrichSnapshotForReplay);if(!rows.length){setStatus('ABLATION: ยังไม่มี decision ที่ reveal แล้ว');return}const recent=rows.slice(-Math.min(300,rows.length));const variants={full:s=>s.action,base_policy:s=>s.baseAction||s.action,no_validated_fix:s=>s.memoryAction||s.baseAction||s.action,no_drift_guard:s=>s.situation==='regime_shift'?(s.memoryAction||s.baseAction||s.action):s.action,always_wait:s=>'WAIT'};const results={};for(const [name,fn] of Object.entries(variants))results[name]=replayUtility(recent,fn);audit=audit.filter(x=>x?.type!=='ablation');audit.push({type:'ablation',at:Date.now(),n:recent.length,results});saveAll();renderAblation();setStatus(`ABLATION COMPLETE · n=${recent.length}`)}
+function sequenceStats(h,k){
+  const x=sanitize(h),suffix=contextSuffix(x,k);if(x.length<=k||!suffix)return null;
+  const counts={P:0,B:0,T:0},rawCounts={P:0,B:0,T:0};let hits=0,weightTotal=0;
+  for(let i=k;i<x.length;i++){if(x.slice(i-k,i).join('')===suffix){const age=x.length-i,w=Math.pow(.5,age/RECENCY_HALF_LIFE);counts[x[i]]+=w;rawCounts[x[i]]++;hits++;weightTotal+=w;}}
+  return{order:k,suffix,counts,rawCounts,total:hits,weightTotal};
+}
+function seqProb(stats){if(!stats||stats.total<=0)return null;const den=stats.weightTotal||sum(Object.values(stats.counts));return{P:stats.counts.P/den,B:stats.counts.B/den,T:stats.counts.T/den}}
+function scoreOrder(prob){if(!prob)return 0;return Math.max(prob.P,prob.B,prob.T)}
+function adaptiveOrders(h){const rows=[];for(const k of ORDERS){const s=sequenceStats(h,k);const p=seqProb(s);const w=Number(learner.orderWeights[k]||1);rows.push({k,stats:s,prob:p,weight:w,score:p?scoreOrder(p):0})}return rows.filter(r=>r.prob).sort((a,b)=>(b.k-a.k));}
+function sequenceForecast(h){const rows=adaptiveOrders(h);if(!rows.length)return{prob:{P:1/3,B:1/3,T:1/3},order:null,support:0,rows};let agg={P:0,B:0,T:0},sumW=0;for(const r of rows){const w=clamp(r.weight,.1,3);agg.P+=w*r.prob.P;agg.B+=w*r.prob.B;agg.T+=w*r.prob.T;sumW+=w}const prob={P:agg.P/sumW,B:agg.B/sumW,T:agg.T/sumW};const selected=rows[0];return{prob,order:selected.k,support:selected.stats.total,rows};}
+function rewardFor(action,actual){if(action==='WAIT')return actual==='T'?0.15:0;return action===actual?1:-1}
+function rlAction(h,prob,deterministic=false){
+  const s=stateKey(h),q=seedQ(s);let action=ACTIONS.reduce((a,b)=>q[b]>q[a]?b:a,'WAIT');
+  const roll=seededUnit(`${s}|${learner.steps||0}`);if(!deterministic&&roll<EPSILON)action=ACTIONS[Math.floor(seededUnit(`${s}|explore`)*ACTIONS.length)];
+  const best=ACTIONS.reduce((a,b)=>q[b]>q[a]?b:a,'WAIT'),conf=Math.max(prob.P,prob.B);
+  if(best==='WAIT'&&conf<.62)return{state:s,action:'WAIT',q,best};
+  if(best!=='WAIT'&&Math.max(prob[best],0)<MIN_ACTION_CONF)return{state:s,action:'WAIT',q,best};
+  return{state:s,action,best,q};
+}
+function deterministicPolicy(h,prob){const s=stateKey(h),q=seedQ(s),best=ACTIONS.reduce((a,b)=>q[b]>q[a]?b:a,'WAIT');const byProb=prob.P>=prob.B?'P':'B';const conf=Math.max(prob.P,prob.B);if(conf<MIN_ACTION_CONF)return'WAIT';if(best==='WAIT')return conf>=.60?byProb:'WAIT';if(best==='P'||best==='B'){const qGap=Math.abs((q.P||0)-(q.B||0));return qGap>=.05?best:byProb}return byProb;}
+function updateOnline(prior,actual,prev){
+  if(!prev||!prev.seqRows)return;
+  let totalReward=0;
+  for(const row of prev.seqRows){
+    const p=row.prob?.[actual]||0;
+    const reward=2*p-1;
+    const old=Number(learner.orderWeights[row.k]||1);
+    const next=clamp(old+ALPHA*reward,.15,3);
+    learner.orderWeights[row.k]=next;
+    const sk=learner.orderSkill[row.k]||(learner.orderSkill[row.k]={n:0,reward:0});
+    sk.n=(sk.n||0)+1;sk.reward=(sk.reward||0)+reward;totalReward+=reward;
+  }
+  const state=prev.state||stateKey(prior),q=seedQ(state),action=prev.action||'WAIT',r=rewardFor(action,actual),nextState=stateKey([...prior,actual]),nextQ=seedQ(nextState),maxNext=Math.max(nextQ.P,nextQ.B,nextQ.WAIT);q[action]=q[action]+.10*(r+GAMMA*maxNext-q[action]);
+  learner.steps+=1;learner.last={at:prior.length,actual,action,reward:r,onlineReward:totalReward,state};
+}
+function applyMetaStrategy(action,baseAction,features,adj){
+  const best=bestMetaStrategy(features);const ss=learner.knowledge?.strategyStats?.[strategyKey(features)]?.[best];
+  if(!best||!ss||Number(ss.n||0)<5)return{action,reason:'meta evidence insufficient',strategy:null};
+  const trust=(Number(ss.hits||0)+1)/(Number(ss.n||0)+2);
+  if(trust<.58)return{action,reason:`meta trust low ${trust.toFixed(2)}`,strategy:null};
+  if(best==='sequence')return{action:baseAction,reason:`meta selects sequence strategy · trust ${trust.toFixed(2)}`,strategy:best};
+  if(best==='regime-guard'&&features.drift)return{action:'WAIT',reason:`meta selects regime guard · trust ${trust.toFixed(2)}`,strategy:best};
+  if(best==='case-memory')return{action:adj.action,reason:`meta selects case memory · trust ${trust.toFixed(2)}`,strategy:best};
+  if(best==='rl+sequence')return{action:baseAction,reason:`meta selects RL+sequence · trust ${trust.toFixed(2)}`,strategy:best};
+  return{action,reason:`meta strategy ${best} retained`,strategy:best};
+}
+function makeForecast(h,options={}){
+  const x=sanitize(h),replay=Boolean(options.replay),sf=sequenceForecast(x),policy=rlAction(x,sf.prob,replay),baseAction=deterministicPolicy(x,sf.prob);
+  const features=situationFeatures(x,sf),similar=findSimilarCases(features),adj=applyMemoryAdjustment(baseAction,features,similar);
+  const meta=applyMetaStrategy(adj.action,baseAction,features,adj);const metaAction=meta.action;const validated=applyValidatedFixes(metaAction,features,sf,similar);const finalAction=validated.action,conf=Math.max(sf.prob.P,sf.prob.B),candidate=conf>=sf.prob.T?(sf.prob.P>=sf.prob.B?'P':'B'):'T';
+  const appliedFix=validated.fix||adj.appliedFix;let policyPath=meta.strategy||'sequence';if(baseAction!==metaAction && !meta.strategy)policyPath=adj.appliedFix||'case-memory';if(features.situation==='regime_shift'&&finalAction==='WAIT')policyPath='regime-guard';
+  pending={history:x.slice(),action:finalAction,baseAction,memoryAction:adj.action,metaAction,appliedFix,policyPath,policyQ:{P:policy.q?.P||0,B:policy.q?.B||0,WAIT:policy.q?.WAIT||0},seqRows:sf.rows,state:stateKey(x),createdAt:Date.now(),sf,features,method:'sequence+rl+case-memory+meta+validated-fix',similar};
+  return{seq:sf,policy,action:finalAction,baseAction,memoryAction:adj.action,metaAction,candidate,confidence:conf,history:x,features,similar,adjustment:{...adj,appliedFix,reason:`${adj.reason}${meta.reason?` · ${meta.reason}`:''}${validated.fix?` · ${validated.reason}`:''}`},policyPath};
+}
+function recordDecisionAudit(prior,p){if(!p||!p.features)return;const row={type:'decision',version:VERSION,at:Date.now(),index:prior.length,state:p.state,action:p.action,baseAction:p.baseAction,memoryAction:p.memoryAction||p.action,metaAction:p.metaAction||p.memoryAction||p.action,appliedFix:p.appliedFix||null,policyPath:p.policyPath||'sequence',situation:p.features.situation,drift:p.features.drift||false,driftScore:p.features.driftScore||0,confidence:p.sf?.prob?Math.max(p.sf.prob.P,p.sf.prob.B):0,prob:p.sf?.prob||null,order:p.sf?.order||null,support:p.sf?.support||0,features:p.features,similar:(p.similar||[]).slice(0,6).map(c=>({id:c.id,outcome:c.outcome,fix:c.fix,similarity:c.similarity,effectiveSimilarity:c.effectiveSimilarity})),q:p.policyQ||null};audit.push(row);audit=audit.slice(-MAX_AUDIT)}
+function latestDecisionAudits(){return audit.filter(x=>x&&x.type==='decision').slice(-20).reverse()}
+function getBenchmarkSummary(){return audit.filter(x=>x&&x.type==='benchmarkSummary').at(-1)||null}
+function render(){
+  const x=history;const r=makeForecast(x);
+  $('hands').textContent=String(x.length);
+  $('forecast').textContent=r.action==='P'?'PLAYER':r.action==='B'?'BANKER':'WAIT';
+  $('prob').textContent=`${pct(r.seq.prob.P)} / ${pct(r.seq.prob.B)} / ${pct(r.seq.prob.T)}`;
+  $('confidence').textContent=x.length>=MIN_SEQUENCE?pct(r.confidence):'--';
+  $('seqOrder').textContent=r.seq.order?String(r.seq.order):'--';
+  $('rlAction').textContent=r.policy.action;
+  const onlineN=Object.values(learner.orderSkill||{}).reduce((s,z)=>s+(z?.n||0),0);$('learned').textContent=String(learner.steps||0);
+  $('onlineScore').textContent=onlineN?((mean(Object.values(learner.orderSkill).map(z=>Number(z.reward||0)))).toFixed(3)):'--';
+  const bt=getBacktestSummary();$('btHit').textContent=bt.forecasted?pct(bt.hits/bt.forecasted):'--';$('btCoverage').textContent=bt.evaluated?pct(bt.forecasted/bt.evaluated):'--';$('btBrier').textContent=bt.forecasted?bt.brier.toFixed(3):'--';$('btLogLoss').textContent=bt.forecasted?bt.logLoss.toFixed(3):'--';
+  $('mistakes').textContent=String((learner.memory?.cases||[]).filter(c=>c.outcome==='miss').length);
+  $('similarCases').textContent=String(r.similar?.length||0);
+  $('adaptiveGuard').textContent=r.action;
+  const lastBt=getBacktestSummary();$('calibrationMetric').textContent=lastBt.calibration?.ece==null?'--':lastBt.calibration.ece.toFixed(3);$('driftMetric').textContent=r.features.drift?`YES ${r.features.driftScore.toFixed(3)}`:'STABLE';
+
+  $('big').textContent=x.length<MIN_SEQUENCE?'WAIT · NEED SEQUENCE HISTORY':(r.action==='P'?'FORECAST · PLAYER':r.action==='B'?'FORECAST · BANKER':'WAIT');
+  $('detail').textContent=x.length<MIN_SEQUENCE?`ต้องมีอย่างน้อย ${MIN_SEQUENCE} ตาเพื่อให้ sequence state มีระยะเริ่มต้น`: `sequence order ${r.seq.order||'--'} · support ${r.seq.support} · P/B/T ${pct(r.seq.prob.P)}/${pct(r.seq.prob.B)}/${pct(r.seq.prob.T)} · policy ${r.policy.action}`;
+  $('confBar').style.width=x.length>=MIN_SEQUENCE?`${Math.round(r.confidence*100)}%`:'0%';
+  $('status').textContent=x.length<MIN_SEQUENCE?'สะสมประวัติเริ่มต้น':`online steps ${learner.steps} · state ${stateKey(x)} · similar cases ${r.similar?.length||0} · drift ${r.features.drift?`YES ${r.features.driftScore.toFixed(3)}`:'NO'} · storage ${VERSION}`;
+  renderHistory();renderSequence(r);renderOnline();renderRL(r);renderBacktest();renderMemory(r);renderAudit();renderBenchmark();renderSelfLab();renderKnowledge();renderCounterfactual();renderAblation();
+}
+function renderHistory(){const el=$('history');el.replaceChildren();if(!history.length){const d=document.createElement('div');d.className='empty';d.textContent='ยังไม่มีประวัติ';el.append(d);return}const frag=document.createDocumentFragment();const start=Math.max(0,history.length-280);for(let i=start;i<history.length;i++){const n=document.createElement('div');n.className='node '+history[i];n.textContent=history[i];n.title=`ตา ${i+1}`;frag.append(n)}el.append(frag)}
+function renderSequence(r){$('currentSeq').textContent=history.length?history.slice(-8).join(' · '):'--';$('seqMeta').textContent=`orders ${ORDERS.join(',')} · selected ${r.seq.order||'--'} · total history ${history.length}`;$('selectedOrder').textContent=r.seq.order?`ORDER ${r.seq.order}`:'--';$('orderDetail').textContent=r.seq.order?`suffix ${contextSuffix(history,r.seq.order)} · support ${r.seq.support}`:'ยังไม่มี suffix match';$('seqSupport').textContent=String(r.seq.support||0);$('supportDetail').textContent=r.seq.order?`occurrences of current suffix: ${r.seq.support}`:'--';const rows=r.seq.rows;const el=$('sequenceTable');if(!rows.length){el.innerHTML='<div class="tiny">ยังไม่มี sequence suffix ที่ซ้ำในอดีต</div>';return}let html='<table class="table"><thead><tr><th>ORDER</th><th>SUFFIX</th><th>RAW SUPPORT</th><th>P/B/T</th><th>WEIGHT</th></tr></thead><tbody>';for(const z of rows){html+=`<tr><td>${z.k}</td><td class="mono">${z.stats.suffix}</td><td>${z.stats.total}</td><td>${pct(z.prob.P)} / ${pct(z.prob.B)} / ${pct(z.prob.T)}</td><td>${Number(z.weight).toFixed(2)}</td></tr>`}html+='</tbody></table><div class="tiny">probability ใช้ recency half-life ${RECENCY_HALF_LIFE} hands</div>';el.innerHTML=html}
+function renderOnline(){const weights=ORDERS.map(k=>`${k}:${Number(learner.orderWeights[k]||1).toFixed(2)}`).join(' · ');$('orderWeights').textContent=weights;$('orderWeightsDetail').textContent='adaptive weight updated after each revealed outcome';$('lastUpdate').textContent=learner.last?`#${learner.last.at+1}`:'--';$('lastUpdateDetail').textContent=learner.last?`action ${learner.last.action} · actual ${learner.last.actual}`:'ยังไม่มี online update';$('lastReward').textContent=learner.last?Number(learner.last.reward).toFixed(3):'--';$('lastRewardDetail').textContent=learner.last?`RL reward · sequence reward ${Number(learner.last.onlineReward||0).toFixed(3)}`:'--'}
+function renderRL(r){const s=r.policy.state,q=seedQ(s);$('rlState').textContent=s;$('rlStateDetail').textContent=`epsilon ${EPSILON} · gamma ${GAMMA} · action space ${ACTIONS.join('/')}`;$('qValues').textContent=`${q.P.toFixed(3)} / ${q.B.toFixed(3)} / ${q.WAIT.toFixed(3)}`;$('qDetail').textContent='Q-learning values for current sequence state';$('policy').textContent=r.policy.action;$('policyDetail').textContent=`greedy ${r.policy.best||'WAIT'} · sequence-driven confidence ${pct(r.confidence)}`}
+function renderMemory(r){
+  const f=r.features, sim=r.similar||[], guide=methodGuidance(f,sim);
+  $('currentSituation').textContent=f.situation;
+  $('situationDetail').textContent=`order ${f.order||'--'} · support ${f.support} · confidence ${pct(f.confidence)} · T ${pct(f.t)} · drift ${f.drift?f.driftScore.toFixed(3):'stable'}`;
+  $('similarDetail').textContent=`${sim.length} เคส`;
+  $('similarReason').textContent=sim.length?sim.slice(0,4).map(c=>`${c.outcome.toUpperCase()} ${c.similarity}pt ${c.cause}`).join(' · '):'ยังไม่พบ precedent ที่ถึงเกณฑ์';
+  $('methodDecision').textContent=r.action;
+  $('methodReason').textContent=`${r.adjustment?.reason||'--'} · fix=${r.adjustment?.appliedFix||'none'}`;
+  $('methodMemory').innerHTML=`<b>ควรใช้:</b> ${guide.use.join(', ')}<br><b>ไม่ควรใช้/ระวัง:</b> ${guide.avoid.join(', ')}`;
+  const errs=(learner.memory?.cases||[]).filter(c=>c.outcome==='miss').slice(-5).reverse();
+  $('errorCases').textContent=errs.length?errs.map(c=>`#${c.features.len} ${c.features.situation} · ${c.cause} · แก้=${c.fix}`).join('\n'):'ยังไม่มี error case';
+}
+function renderAudit(){const el=$('decisionAudit'),rows=latestDecisionAudits();if(!el)return;if(!rows.length){el.textContent='ยังไม่มี decision snapshot';return}el.innerHTML='<table class="table"><thead><tr><th>#</th><th>SITUATION</th><th>ACTION</th><th>P/B/T</th><th>FIX</th></tr></thead><tbody>'+rows.map(x=>`<tr><td>${x.index}</td><td>${x.situation}</td><td>${x.action}</td><td>${x.prob?`${pct(x.prob.P)}/${pct(x.prob.B)}/${pct(x.prob.T)}`:'--'}</td><td>${x.appliedFix||'--'}</td></tr>`).join('')+'</tbody></table>'}
+function renderBenchmark(){const b=getBenchmarkSummary(),el=$('benchmarkPanel');if(!el)return;if(!b){el.textContent='ยังไม่ได้รัน benchmark';return}const names=Object.keys(b.methods||{});el.innerHTML='<table class="table"><thead><tr><th>METHOD</th><th>N</th><th>HIT</th><th>Brier</th><th>LOG LOSS</th><th>ECE</th></tr></thead><tbody>'+names.map(n=>{const m=b.methods[n];return`<tr><td>${n}</td><td>${m.n}</td><td>${pct(m.hit)}</td><td>${m.brier==null?'--':m.brier.toFixed(3)}</td><td>${m.logLoss==null?'--':m.logLoss.toFixed(3)}</td><td>${m.ece==null?'--':m.ece.toFixed(3)}</td></tr>`}).join('')+'</tbody></table><div class="tiny">benchmark ใช้ walk-forward จุดเดียวกัน · เปรียบเทียบเชิงข้อมูลโดยไม่จัดอันดับอัตโนมัติ</div>'}
+function getBacktestSummary(){const last=audit.filter(x=>x&&x.type==='backtestSummary').at(-1);return last||{evaluated:0,forecasted:0,hits:0,brier:0,logLoss:0,interval:null,orderStats:{},trace:[]}}
+function renderBacktest(){
+  const b=getBacktestSummary();
+  $('btEval').textContent=b.evaluated?String(b.evaluated):'--';
+  $('btForecasted').textContent=b.forecasted?String(b.forecasted):'--';
+  $('btInterval').textContent=b.interval?`${pct(b.interval.low)}–${pct(b.interval.high)}`:'--';
+  $('btBrier').textContent=b.forecasted?Number(b.brier).toFixed(3):'--';
+  $('btLogLoss').textContent=b.forecasted?Number(b.logLoss).toFixed(3):'--';
+  $('btTrace').textContent=b.trace?.length?b.trace.map(x=>`#${x.at+1} ${x.action} → ${x.actual} | ${pct(x.P)}:${pct(x.B)}:${pct(x.T)} | conf ${pct(x.confidence)} | ${x.hit?'HIT':'MISS'}`).join('\n'):'ยังไม่ได้รัน';
+  if(b.orderStats&&Object.keys(b.orderStats).length){
+    $('btOrderTable').innerHTML='<table class="table"><thead><tr><th>ORDER</th><th>N</th><th>HIT</th><th>WEIGHT</th></tr></thead><tbody>'+Object.entries(b.orderStats).map(([k,v])=>`<tr><td>${k}</td><td>${v.n}</td><td>${pct(v.n?v.hit/v.n:0)}</td><td>${Number(v.weight||0).toFixed(2)}</td></tr>`).join('')+'</tbody></table><div class="tiny">Calibration ECE: '+(b.calibration?.ece==null?'--':b.calibration.ece.toFixed(3))+'</div>';
+  }else $('btOrderTable').textContent='ยังไม่ได้รัน';
+}
+function wilson(h,n){if(!n)return null;const z=1.96,p=h/n,d=1+z*z/n,m=(p+z*z/(2*n))/d,s=z*Math.sqrt((p*(1-p)+z*z/(4*n))/n)/d;return{low:clamp(m-s,0,1),high:clamp(m+s,0,1)}}
+function runBacktest(){
+  const a=sanitize(history);if(a.length<MIN_SEQUENCE+3){setStatus(`BACKTEST: ต้องมีอย่างน้อย ${MIN_SEQUENCE+3} ตา`);return}
+  const warmup=MIN_SEQUENCE,rows=[],bench={asre:[],last_result:[],global_freq:[]};let evaluated=0,forecasted=0,hits=0,brier=0,logLoss=0;
+  const orderStats=Object.fromEntries(ORDERS.map(k=>[k,{n:0,hit:0,weight:1}]));let btLearner=defaultLearner();
+  function localSeed(state){if(!btLearner.q[state])btLearner.q[state]={P:0,B:0,WAIT:0};return btLearner.q[state]}
+  function localSeq(train){const out=[];for(const k of ORDERS){const st=sequenceStats(train,k),p=seqProb(st);if(!p)continue;out.push({k,stats:st,prob:p,weight:btLearner.orderWeights[k]||1})}let agg={P:0,B:0,T:0},sw=0;for(const z of out){const w=clamp(z.weight,.1,3);for(const o of OUTCOMES)agg[o]+=w*z.prob[o];sw+=w}return{prob:sw?{P:agg.P/sw,B:agg.B/sw,T:agg.T/sw}:{P:1/3,B:1/3,T:1/3},rows:out}}
+  function localAction(train,prob){const s=stateKey(train),q=localSeed(s),best=ACTIONS.reduce((x,y)=>q[y]>q[x]?y:x,'WAIT'),conf=Math.max(prob.P,prob.B);if(best!=='WAIT'&&conf>=MIN_ACTION_CONF)return best;return conf>=.60?(prob.P>=prob.B?'P':'B'):'WAIT'}
+  function baselineGlobal(train){const d=distribution(train),c=Math.max(d.P,d.B);return c>=.55?(d.P>=d.B?'P':'B'):'WAIT'}
+  function baselineLast(train){return train.length?train.at(-1):'WAIT'}
+  function pushBench(name,action,prob,truth,confidence){bench[name].push({action,prob,actual:truth,confidence,hit:action===truth})}
+  for(let i=warmup;i<a.length;i++){
+    const train=a.slice(0,i),truth=a[i];if(!['P','B'].includes(truth))continue;const sf=localSeq(train),action=localAction(train,sf.prob),conf=Math.max(sf.prob.P,sf.prob.B);evaluated++;
+    if(action!=='WAIT'){forecasted++;const hit=action===truth;if(hit)hits++;const p=clampProb(action==='P'?sf.prob.P:sf.prob.B),y=truth==='P'?1:0;brier+=(p-y)*(p-y);logLoss-=Math.log(y?p:1-p);rows.push({at:i,action,actual:truth,P:sf.prob.P,B:sf.prob.B,T:sf.prob.T,hit,confidence:conf});for(const z of sf.rows){const pr=z.prob[truth]||0;z.weight=clamp((btLearner.orderWeights[z.k]||1)+ALPHA*(2*pr-2/3),.15,3);btLearner.orderWeights[z.k]=z.weight;const st=orderStats[z.k];st.n++;st.hit+=(z.prob.P>=z.prob.B?'P':'B')===truth?1:0;st.weight=z.weight}}
+    pushBench('asre',action,action==='P'?sf.prob.P:action==='B'?sf.prob.B:conf,truth,conf);
+    const last=baselineLast(train),lastProb=(last==='P'||last==='B')?.999:.5;pushBench('last_result',last,lastProb,truth,lastProb);
+    const gd=distribution(train),gAction=baselineGlobal(train),gProb=gAction==='P'?gd.P:gAction==='B'?gd.B:.5;pushBench('global_freq',gAction,gProb,truth,gAction==='WAIT'?.5:Math.max(gd.P,gd.B));
+    const st=stateKey(train),q=localSeed(st),rwd=rewardFor(action,truth),next=localSeed(stateKey([...train,truth])),mx=Math.max(next.P,next.B,next.WAIT);q[action]=q[action]+.10*(rwd+GAMMA*mx-q[action]);
+  }
+  const iv=wilson(hits,forecasted),asreRows=bench.asre.filter(x=>x.action!=='WAIT'),cal=calibrationStats(asreRows),methods={};for(const [name,items] of Object.entries(bench))methods[name]=benchmarkMetrics(items);
+  const summary={type:'backtestSummary',at:Date.now(),evaluated,forecasted,hits,brier:forecasted?brier/forecasted:0,logLoss:forecasted?logLoss/forecasted:0,interval:iv,calibration:cal,orderStats,trace:rows.slice(-40)};
+  const benchmarkSummary={type:'benchmarkSummary',version:BENCHMARK_VERSION,at:Date.now(),evaluated,methods};audit=audit.filter(x=>!['backtestSummary','benchmarkSummary'].includes(x?.type));audit.push(summary,benchmarkSummary);saveAll();render();setStatus(`WALK-FORWARD COMPLETE · ${forecasted}/${evaluated} forecasted · hit ${forecasted?pct(hits/forecasted):'--'} · ECE ${cal.ece==null?'--':cal.ece.toFixed(3)}`)
+}
+function renderSelfLab(){const v=learner.knowledge?.validation||{};$('validationStatus').textContent=v.status||'NOT RUN';$('validationDetail').textContent=v.lastRun?`train ${v.trainN} · holdout ${v.testN} · Δutility ${Number(v.utilityDelta||0).toFixed(3)}`:'--';const ap=(learner.knowledge?.fixLibrary?.approved||[]).filter(x=>x.active!==false);$('approvedFixes').textContent=String(ap.length);$('approvedFixDetail').textContent=ap.length?ap.map(x=>x.fix).join(' · '):'ยังไม่มี validated fix';const r=learner.lastLab?.results||[];if(!r.length){$('fixLabPanel').textContent='ยังไม่ได้รัน self-improvement lab';return}$('fixLabPanel').innerHTML='<table class="table"><thead><tr><th>FIX</th><th>TRAIN Δ</th><th>HOLDOUT Δ</th><th>COVERAGE Δ</th><th>STATUS</th></tr></thead><tbody>'+r.map(x=>`<tr><td>${x.fix}</td><td>${Number(x.improvementTrain).toFixed(3)}</td><td>${Number(x.improvementTest).toFixed(3)}</td><td>${Number(x.coverageDrop).toFixed(3)}</td><td>${x.approved?'APPROVED':'HOLD'}</td></tr>`).join('')+'</tbody></table>';}
+function renderKnowledge(){const rules=Object.values(learner.knowledge?.rules||{}).sort((a,b)=>knowledgeTrust(b)-knowledgeTrust(a));$('knowledgeRules').textContent=String(rules.length);const top=rules.slice(0,6);$('knowledgeDetail').textContent=top.length?top.map(r=>`${r.key} trust ${knowledgeTrust(r).toFixed(2)} n=${r.n}`).join(' · '):'ยังไม่มี consolidated rule';$('knowledgePanel').innerHTML=top.length?top.map(r=>`<div>${r.key} · trust ${knowledgeTrust(r).toFixed(2)} · ${r.hits}/${r.n} · fixes ${Object.keys(r.fixes||{}).slice(0,2).join(', ')}</div>`).join(''):'--';const f=makeForecast(history).features,best=bestMetaStrategy(f);$('metaStrategy').textContent=best||'baseline';const ss=learner.knowledge?.strategyStats?.[strategyKey(f)]||{};$('metaStrategyDetail').textContent=Object.entries(ss).map(([k,v])=>`${k}:${v.n} / reward ${Number(v.reward||0).toFixed(2)}`).join(' · ')||'ยังไม่มี strategy evidence';$('strategyPanel').textContent=$('metaStrategyDetail').textContent;$('memoryDecayDetail').textContent=`half-life ${RECENCY_CASE_HALF_LIFE} hands · cases ${learner.memory?.cases?.length||0}`;}
+function renderCounterfactual(){const x=audit.slice().reverse().find(a=>a?.type==='counterfactual');if(!$('counterfactualPanel'))return;if(!x){$('counterfactualPanel').textContent='ยังไม่ได้รัน';return}const m=x.metrics||{};$('counterfactualPanel').innerHTML=`n=${x.n} · chosen reward ${Number(m.chosen?.rewardAvg||0).toFixed(3)} · P ${Number(m.P?.rewardAvg||0).toFixed(3)} · B ${Number(m.B?.rewardAvg||0).toFixed(3)} · WAIT ${Number(m.WAIT?.rewardAvg||0).toFixed(3)} · regret ${Number(x.regret||0).toFixed(3)}`;}
+function renderAblation(){const x=audit.slice().reverse().find(a=>a?.type==='ablation');if(!$('ablationPanel'))return;if(!x){$('ablationPanel').textContent='ยังไม่ได้รัน';return}const names=Object.keys(x.results||{});$('ablationPanel').innerHTML='<table class="table"><thead><tr><th>VARIANT</th><th>UTILITY</th><th>HIT</th><th>COVERAGE</th></tr></thead><tbody>'+names.map(n=>{const r=x.results[n];return`<tr><td>${n}</td><td>${Number(r.rewardAvg||0).toFixed(3)}</td><td>${r.hitRate==null?'--':pct(r.hitRate)}</td><td>${pct(r.coverage)}</td></tr>`}).join('')+'</tbody></table>'}
+function setStatus(t){$('status').textContent=t}
+function updateLatestDecisionOutcome(prior,result,p){const row=audit.slice().reverse().find(x=>x?.type==='decision'&&x.index===prior.length&&!x.actual);if(row){row.actual=result;row.hit=p?.action!=='WAIT'&&p?.action===result;row.reward=rewardFor(p?.action||'WAIT',result);row.postAt=Date.now();}}
+function push(result){const prior=history.slice();if(pending&&pending.history.length===prior.length){recordDecisionAudit(prior,pending);updateOnline(prior,result,pending);recordCase(pending,result);consolidateKnowledge(pending,result,pending.action!=='WAIT'&&pending.action===result);history.push(result);updateLatestDecisionOutcome(prior,result,pending);rollbackActiveFixes();pending=null;saveAll();render();return}history.push(result);saveAll();pending=null;render();}
+function undo(){if(!history.length)return;history.pop();audit=[];learner=defaultLearner();pending=null;rebuildFromHistory();saveAll();render();}
+function rebuildFromHistory(){const x=history.slice();history=[];learner=defaultLearner();audit=[];for(let i=0;i<x.length;i++){const prior=history.slice();makeForecast(prior,{replay:true});if(prior.length>=MIN_SEQUENCE){recordDecisionAudit(prior,pending);updateOnline(prior,x[i],pending);recordCase(pending,x[i]);if(pending.action!=='WAIT')consolidateKnowledge(pending,x[i],pending.action===x[i])}history.push(x[i]);pending=null}history=x}
+function reset(){history=[];learner=defaultLearner();audit=[];pending=null;saveAll();render();setStatus('รีเซ็ต V4 สำเร็จ')}
+function exportData(){const blob=new Blob([JSON.stringify({version:VERSION,results:history,learning:learner,audit},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='asre-v4-self-improving.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function importData(file){const rd=new FileReader();rd.onload=()=>{try{const x=JSON.parse(rd.result);const vals=Array.isArray(x)?x:(Array.isArray(x.results)?x.results:null);if(!Array.isArray(vals))throw new Error('results');history=sanitize(vals);learner=x.learning&&['ASRE-V2','ASRE-V3','ASRE-V4'].includes(x.learning.version)?loadLearnerFromObject(x.learning):defaultLearner();audit=Array.isArray(x.audit)?x.audit.slice(-MAX_AUDIT):[];pending=null;saveAll();render();setStatus('นำเข้า ASRE V4 สำเร็จ')}catch(e){setStatus('ไฟล์ไม่ถูกต้อง · ต้องเป็น JSON ของ ASRE V4 / V3 / V2')}};rd.readAsText(file)}
+document.querySelectorAll('[data-result]').forEach(btn=>btn.addEventListener('click',()=>push(btn.dataset.result)));
+$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('export').addEventListener('click',exportData);$('import').addEventListener('click',()=>$('file').click());$('file').addEventListener('change',e=>e.target.files[0]&&importData(e.target.files[0]));$('backtest').addEventListener('click',runBacktest);$('selfLab').addEventListener('click',runSelfImprovementLab);$('rollbackCheck').addEventListener('click',()=>{const r=rollbackActiveFixes();setStatus(r.length?`ROLLBACK: ${r.join(' · ')}`:'ROLLBACK CHECK · no regression detected')});$('counterfactual').addEventListener('click',runCounterfactual);$('ablation').addEventListener('click',runAblation);window.addEventListener('storage',e=>{if(e.key===KEY){history=loadHistory();render()}if(e.key===LEARN_KEY){learner=loadLearner();render()}if(e.key===AUDIT_KEY){audit=loadAudit();render()}});
+render();
+})();
+</script>
+</body></html>

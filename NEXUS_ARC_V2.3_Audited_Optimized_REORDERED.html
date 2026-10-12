@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>NEXUS ARC V2.3 · Adaptive Forecast</title>
+<style>
+:root{--bg:#05070a;--panel:#0c1116;--panel2:#090e13;--line:#27313a;--text:#edf3f8;--muted:#8b98a5;--a:#57d8c8;--p:#287cf2;--b:#e04b5a;--t:#69747f;--good:#72e2a7;--warn:#f3bd67;--bad:#ff8b9d;--violet:#a989ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#12252a 0,#05070a 44rem);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(100%,1220px);margin:auto;padding:14px 10px 44px}.app{overflow:hidden;border:1px solid var(--line);border-radius:24px;background:rgba(12,17,22,.985);box-shadow:0 30px 100px rgba(0,0,0,.34)}header{text-align:center;padding:28px 18px 16px}.eyebrow{font-size:9px;font-weight:950;letter-spacing:.16em;color:var(--a)}h1{margin:8px 0 6px;font-size:31px;letter-spacing:-.055em}.sub{max-width:980px;margin:auto;color:var(--muted);font-size:11px;line-height:1.72}.pill{display:inline-block;margin-top:8px;padding:4px 8px;border:1px solid rgba(87,216,200,.3);border-radius:999px;color:var(--a);font-size:8px;font-weight:950;letter-spacing:.08em}.principle{margin:0 14px 12px;padding:12px;border:1px solid rgba(87,216,200,.15);border-radius:14px;background:rgba(87,216,200,.035);font-size:9px;line-height:1.68;color:#c6d2da}.principle b{color:var(--a)}.top{display:grid;grid-template-columns:1.15fr .85fr;gap:10px;margin:12px}.forecast{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#0a1016,#090d12);text-align:center}.big{font-size:38px;line-height:1;font-weight:950;letter-spacing:-.055em}.detail{margin-top:9px;color:#d5dfe6;font-size:11px;font-weight:850;line-height:1.55}.meter{height:9px;border-radius:999px;background:#171e25;overflow:hidden;margin:12px auto 0;max-width:520px}.meter i{display:block;height:100%;width:0;background:var(--a);transition:width .18s ease}.smallstatus{margin-top:8px;color:var(--muted);font-size:9px;font-weight:800}.decision{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{padding:12px;border:1px solid var(--line);border-radius:14px;background:#090d12;min-height:75px}.label{display:block;color:#7f8b97;font-size:8px;font-weight:950;letter-spacing:.08em}.value{display:block;margin-top:6px;font-size:13px;font-weight:950;line-height:1.35;overflow-wrap:anywhere}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px}.btn{min-height:70px;border:0;border-bottom:5px solid rgba(0,0,0,.23);border-radius:16px;color:#fff;font-size:30px;font-weight:950;cursor:pointer}.btn:focus-visible,.small:focus-visible{outline:2px solid var(--a);outline-offset:2px}.btn:active,.small:active{transform:translateY(1px)}.p{background:var(--p)}.b{background:var(--b)}.t{background:var(--t);font-size:22px}.section{margin:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#090d12}.title{margin:0 0 4px;color:var(--a);font-size:10px;font-weight:950;letter-spacing:.09em}.desc{margin:0 0 10px;color:var(--muted);font-size:9px;line-height:1.58}.grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{min-height:72px;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--panel2)}.tiny{font-size:9px;color:#7f8d99;line-height:1.55}.rows{margin-top:4px}.row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #1d2730}.row:last-child{border-bottom:0}.name{min-width:124px;color:#dce5eb;font-weight:900;font-size:9px}.bar{height:7px;flex:1;background:#151c22;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--a)}.right{min-width:140px;text-align:right;color:#c9d5dd;font-weight:900;font-size:9px}.history{display:grid;grid-template-rows:repeat(8,31px);grid-auto-flow:column;grid-auto-columns:minmax(34px,1fr);gap:6px;overflow:auto;min-height:257px}.node{display:grid;place-items:center;min-height:31px;border-radius:9px;color:#fff;font-size:13px;font-weight:950;box-shadow:inset 0 -2px rgba(0,0,0,.15)}.node.P{background:var(--p)}.node.B{background:var(--b)}.node.T{background:var(--t);font-size:11px}.empty{grid-column:1/-1;grid-row:1/-1;display:grid;place-items:center;border:1px dashed #2d3741;border-radius:10px;color:#75828e;font-size:10px}.small{min-height:34px;border:1px solid #394651;border-radius:9px;padding:7px 11px;background:#11171d;color:#e0e8ed;font-size:9px;font-weight:900;cursor:pointer}.danger{border-color:#73343f;color:#ffb0bd}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.violet{color:var(--violet)}details{border:1px solid #222c34;border-radius:12px;padding:9px 10px;background:#080c10}summary{cursor:pointer;color:#c9d5dd;font-size:9px;font-weight:900}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.footer{padding:14px;text-align:center;color:#697682;font-size:8px;letter-spacing:.08em}.table{width:100%;border-collapse:collapse;font-size:9px}.table th,.table td{padding:7px 6px;border-bottom:1px solid #1d2730;text-align:left}.table th{color:#7f8b97;font-size:8px;letter-spacing:.08em}.table td{color:#d7e1e8}.controlgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.input,.select{width:100%;background:#0c1218;color:#e6edf2;border:1px solid #394651;border-radius:9px;padding:8px;font-size:9px}.statusbox{padding:8px 10px;border:1px dashed #2c3943;border-radius:10px;background:#080d12;color:#9dabb7;font-size:9px;line-height:1.55}.hidden{display:none!important}@media(max-width:980px){.top{grid-template-columns:1fr}.grid5{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){h1{font-size:23px}.grid5,.grid4,.grid3,.grid2,.controlgrid{grid-template-columns:1fr}.decision{grid-template-columns:1fr 1fr}.buttons{grid-template-columns:repeat(3,1fr)}.right{min-width:118px}}
+</style>
+</head>
+<body>
+<main class="shell"><section class="app">
+<header>
+<div class="eyebrow">NEXUS ARC V2.3 · ADAPTIVE CONTINUOUS FORECAST</div>
+<h1>NEXUS ARC <span class="pill">V2.3 · ADAPTIVE-FORECAST</span></h1>
+<p class="sub">Observe → infer → forecast → challenge → decide → learn → repair. ระบบจะแยกข้อมูลจริงออกจากการอนุมาน, ลดหลักฐานซ้ำ, ตรวจ contradiction, ทดสอบความเปราะบาง และเรียนรู้จากผลจริงแบบ prequential</p>
+</header>
+<div class="principle"><b>CORE RULE:</b> ไม่บังคับให้ทายเมื่อหลักฐานไม่พอ · ห้ามนับ evidence เดิมซ้ำ · forecast ≠ decision · ทุก forecast ต้องมีเหตุผลที่สนับสนุนและเหตุผลที่อาจทำให้ผิด · regime เปลี่ยนแล้วต้องลดความเชื่อเดิม · memory ต้องเรียนรู้ทั้งตอนที่ควรเชื่อและตอนที่ไม่ควรเชื่อ · ผลจริงทุกครั้งย้อนกลับไปปรับความน่าเชื่อถือ</div>
+
+<div class="top">
+<section class="forecast">
+<div class="big" id="big">WAIT</div>
+<div class="detail" id="detail">สะสมข้อมูลก่อนเปิดการวิเคราะห์เต็มรูปแบบ</div>
+<div class="meter"><i id="confidenceBar"></i></div>
+<div class="smallstatus" id="status">NEXUS ARC V2.2 READY</div>
+<div class="smallstatus" id="nextMode">NEXT: waiting for core criteria</div>
+</section>
+<section class="decision">
+<div class="metric"><span class="label">P / B</span><span class="value" id="prob">-- / --</span></div>
+<div class="metric"><span class="label">CONFIDENCE</span><span class="value" id="confidence">--</span></div>
+<div class="metric"><span class="label">ACTION</span><span class="value" id="action">WAIT</span></div>
+<div class="metric"><span class="label">OPPORTUNITY</span><span class="value" id="opportunity">--</span></div>
+<div class="metric"><span class="label">EVIDENCE</span><span class="value" id="evidence">--</span></div>
+<div class="metric"><span class="label">CONTRADICTION</span><span class="value" id="contradiction">--</span></div>
+<div class="metric"><span class="label">REGIME</span><span class="value" id="regimeLabel">--</span></div>
+<div class="metric"><span class="label">ROBUSTNESS</span><span class="value" id="robustness">--</span></div><div class="metric"><span class="label">ANALYSIS TIME</span><span class="value" id="analysisTime">--</span></div>
+</section>
+</div>
+<div class="buttons"><button class="btn p" type="button" data-result="P">P</button><button class="btn b" type="button" data-result="B">B</button><button class="btn t" type="button" data-result="T">T</button></div>
+
+<section class="section"><h2 class="title">10 · HISTORY</h2><div id="history" class="history"><div class="empty">ยังไม่มีประวัติ</div></div></section>
+
+<section class="section"><h2 class="title">08 · CONTROL / BRAIN</h2><div class="actions" style="display:flex;flex-wrap:wrap;gap:7px"><button class="small" id="undo" type="button">↩ ย้อนกลับ</button><button class="small danger" id="reset" type="button">↻ รีเซ็ต</button></div></section>
+
+<section class="section"><h2 class="title">00 · DOMAIN / INTEGRITY</h2><p class="desc">แกนหลักเป็น binary forecasting โดย P/B เป็น outcomes และ T เป็น environment event. ข้อมูลที่ไม่ถูกต้องจะถูกตัดออกก่อนเข้าสู่ reasoning.</p><div class="controlgrid"><div class="card"><span class="label">DOMAIN</span><strong id="domainLabel">P/B/T CONTINUOUS FORECAST</strong><div class="tiny" id="integrityDetail">--</div></div><div class="card"><span class="label">BRAIN STATUS</span><strong id="brainStatus">--</strong><div class="tiny" id="brainDetail">--</div></div></div></section>
+
+<section class="section"><h2 class="title">01 · LIVE STATE</h2><p class="desc">มองหลายระยะพร้อมกัน และตรวจความขัดแย้งระหว่าง scale.</p><div class="grid5"><div class="card"><span class="label">MICRO 6</span><strong id="micro">--</strong><div class="tiny" id="microDetail">--</div></div><div class="card"><span class="label">SHORT 12</span><strong id="short">--</strong><div class="tiny" id="shortDetail">--</div></div><div class="card"><span class="label">MEDIUM 24</span><strong id="medium">--</strong><div class="tiny" id="mediumDetail">--</div></div><div class="card"><span class="label">LONG 48</span><strong id="long">--</strong><div class="tiny" id="longDetail">--</div></div><div class="card"><span class="label">MACRO 96</span><strong id="macro">--</strong><div class="tiny" id="macroDetail">--</div></div></div><div style="margin-top:8px" class="grid5"><div class="card"><span class="label">RUN</span><strong id="run">--</strong><div class="tiny" id="runDetail">--</div></div><div class="card"><span class="label">SWITCH</span><strong id="switch">--</strong><div class="tiny" id="switchDetail">--</div></div><div class="card"><span class="label">ENTROPY</span><strong id="entropy">--</strong><div class="tiny" id="entropyDetail">--</div></div><div class="card"><span class="label">T EVENTS</span><strong id="tRate">--</strong><div class="tiny" id="tDetail">T ใช้เป็น environment event ไม่ใช่ P/B probability</div></div><div class="card"><span class="label">SCALE CONFLICT</span><strong id="scaleConflict">--</strong><div class="tiny" id="scaleDetail">--</div></div></div></section>
+
+<section class="section"><h2 class="title">02 · REGIME / CHANGE</h2><p class="desc">regime เป็น distribution; change-point มีหน้าที่ลดความเชื่อเก่า ไม่ใช่สั่งคำตอบเอง.</p><div class="grid2"><div class="card"><div id="regimeBoard" class="rows">--</div></div><div class="card"><div class="label">CHANGE DIAGNOSTIC</div><div style="margin-top:8px" id="changeBoard" class="tiny">--</div></div></div></section>
+
+<section class="section"><h2 class="title">03 · EVIDENCE LEDGER</h2><p class="desc">สี่ family หลัก + regime meta + contrarian challenge. น้ำหนักถูกหักเมื่อ evidence ซ้ำหรือมี history ว่าใช้ไม่ได้ในบริบทนั้น.</p><div class="rows" id="evidenceBoard">--</div><div class="statusbox" style="margin-top:8px"><b>SUPPORT:</b> <span id="supportReasons">--</span><br><b>AGAINST:</b> <span id="againstReasons">--</span><br><b>WHAT WOULD CHANGE MY MIND:</b> <span id="invalidation">--</span></div></section>
+
+<section class="section"><h2 class="title">04 · MEMORY / CONTEXT</h2><p class="desc">ค้นจาก state + sequence + regime + freshness พร้อมเรียนรู้ว่า memory ใช้ได้/ใช้ไม่ได้ในบริบทใด.</p><div class="grid5"><div class="card"><span class="label">MEMORY QUALITY</span><strong id="memoryQuality">--</strong><div class="tiny" id="memoryDetail">--</div></div><div class="card"><span class="label">MEMORY LEAD</span><strong id="memoryLead">--</strong><div class="tiny" id="memoryLeadDetail">--</div></div><div class="card"><span class="label">CONTEXT N</span><strong id="contextN">--</strong><div class="tiny" id="contextDetail">--</div></div><div class="card"><span class="label">MEMORY TRUST</span><strong id="memoryTrust">--</strong><div class="tiny" id="memoryTrustDetail">--</div></div><div class="card"><span class="label">ANALOGUE COUNT</span><strong id="analogueCount">--</strong><div class="tiny">deduplicated nearest cases</div></div></div><details style="margin-top:8px"><summary>TOP ASSOCIATIVE MATCHES</summary><div id="memoryBoard" class="tiny" style="margin-top:8px">--</div></details></section>
+
+<section class="section"><h2 class="title">05 · CONTRADICTION / ROBUSTNESS</h2><p class="desc">ทดสอบว่าคำตอบยังอยู่หรือไม่เมื่อถอด evidence, สลับรายละเอียดรอง, และลดความเชื่อจาก expert ที่ขัดแย้ง.</p><div class="grid5"><div class="card"><span class="label">POSTERIOR</span><strong id="posterior">--</strong><div class="tiny" id="posteriorDetail">--</div></div><div class="card"><span class="label">CONTRADICTION</span><strong id="contradiction2">--</strong><div class="tiny" id="contradictionDetail">--</div></div><div class="card"><span class="label">ROBUSTNESS</span><strong id="robustness2">--</strong><div class="tiny" id="robustnessDetail">--</div></div><div class="card"><span class="label">FRAGILITY</span><strong id="fragility">--</strong><div class="tiny" id="fragilityDetail">--</div></div><div class="card"><span class="label">UNCERTAINTY</span><strong id="uncertainty">--</strong><div class="tiny" id="uncertaintyDetail">--</div></div></div><details style="margin-top:8px"><summary>COUNTERFACTUAL STRESS</summary><div id="stressBoard" class="tiny" style="margin-top:8px">--</div></details></section>
+
+<section class="section"><h2 class="title">06 · OPPORTUNITY / DECISION</h2><p class="desc">edge ไม่เท่ากับ opportunity. ระบบจะพิจารณา edge × evidence × robustness × stability × regime fit.</p><div class="grid4"><div class="card"><span class="label">EDGE</span><strong id="edge">--</strong><div class="tiny">distance from 50%</div></div><div class="card"><span class="label">STABILITY</span><strong id="stability">--</strong><div class="tiny">evidence + regime + drift</div></div><div class="card"><span class="label">OPPORTUNITY SCORE</span><strong id="opportunity2">--</strong><div class="tiny" id="opportunityDetail">--</div></div><div class="card"><span class="label">ACTION GATE</span><strong id="actionGate">--</strong><div class="tiny">PASS = decision-ready · CAUTION = forecast active but decision gate not fully passed · WAIT = direction not reliable enough</div></div></div></section>
+
+<section class="section"><h2 class="title">07 · LEARNING / REPAIR</h2><p class="desc">ผลจริงทุกครั้งย้อนกลับไปอัปเดต model reliability, context reliability, calibration และ root cause.</p><div class="grid5"><div class="card"><span class="label">PREQUENTIAL N</span><strong id="learnN">0</strong><div class="tiny" id="learnDetail">--</div></div><div class="card"><span class="label">ACCURACY</span><strong id="learnAcc">--</strong><div class="tiny">rolling 200 scored cases</div></div><div class="card"><span class="label">LOG LOSS</span><strong id="learnLL">--</strong><div class="tiny">lower is better</div></div><div class="card"><span class="label">RECOVERY</span><strong id="recovery">--</strong><div class="tiny" id="recoveryDetail">--</div></div><div class="card"><span class="label">CALIBRATION TEMP</span><strong id="temp">--</strong><div class="tiny">online held-out-style temperature fit</div></div></div><div class="grid2" style="margin-top:8px"><div class="card"><div class="label">MODEL RELIABILITY</div><div id="reliabilityBoard" class="tiny" style="margin-top:8px">--</div></div><div class="card"><div class="label">ERROR ROOT CAUSE</div><div id="errorBoard" class="tiny" style="margin-top:8px">--</div></div></div></section>
+
+<section class="section"><h2 class="title">09 · FORECAST LEDGER</h2><p class="desc">บันทึกว่า ณ ตอนนั้นระบบเห็นอะไร, เชื่ออะไร, ระวังอะไร และผลจริงคืออะไร เพื่อให้ย้อนหลังตรวจ reasoning ได้.</p><div style="overflow:auto"><table class="table"><thead><tr><th>IDX</th><th>FORECAST</th><th>CONF</th><th>ACTION</th><th>REGIME</th><th>EVIDENCE</th><th>CONTRA</th><th>RESULT</th><th>ROOT CAUSE</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">ยังไม่มี scored forecasts</td></tr></tbody></table></div></section>
+<div class="footer">NEXUS ARC V2.3 · ONLY REASONING THAT SURVIVES AUDIT, STRESS AND ACTUAL OUTCOMES SURVIVES</div>
+</section></main>
+<script>
+(function(){'use strict';
+const VERSION='NEXUS-ARC-V2.3';
+const HKEY='nexus-arc-v2.3-history', LKEY='nexus-arc-v2.3-learning';
+const LEGACY_HKEYS=['nexus-arc-v2.2-history','nexus-arc-v2.1-history'];
+const LEGACY_LKEYS=['nexus-arc-v2.2-learning','nexus-arc-v2.1-learning'];
+const PB=['P','B'], OUT=['P','B','T'], FAMILIES=['base','transition','hazard','memory'];
+const LABEL={base:'BASE DISTRIBUTION',transition:'SEQUENTIAL TRANSITION',hazard:'RUN HAZARD',memory:'CONTEXTUAL MEMORY'};
+const MAX_H=60000,MAX_CASES=5000,MAX_ERRORS=3000,WINDOW=240,MIN_CORE=8;
+const MEMORY_SCAN=700, HAZARD_SCAN=700, LEDGER_ROWS=18, CORR_REFRESH=10, TRANSITION_LOOKBACK=2400, MAX_CONTEXTS=4000;
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const finite=x=>Number.isFinite(Number(x));
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:0;
+const pct=x=>finite(x)?Math.round(Number(x)*100)+'%':'--';
+const fmt=x=>finite(x)?Number(x).toFixed(3):'--';
+const esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+const pbNorm=o=>{const p=Math.max(1e-6,finite(o?.P)?Number(o.P):0),b=Math.max(1e-6,finite(o?.B)?Number(o.B):0),z=p+b;return{P:p/z,B:b/z}};
+const argmax=p=>pbNorm(p).P>=pbNorm(p).B?'P':'B';
+const entropyP=p=>{const q=pbNorm(p),a=q.P,b=q.B;return -(a*Math.log2(a)+b*Math.log2(b));};
+const logLoss=(p,y)=>-Math.log(Math.max(1e-6,pbNorm(p)[y]));
+const brier=(p,y)=>{const q=pbNorm(p);return(q.P-(y==='P'?1:0))**2+(q.B-(y==='B'?1:0))**2;};
+const sanitize=h=>{if(!Array.isArray(h)||!h.length)return[];const out=[],start=Math.max(0,h.length-MAX_H);for(let i=start;i<h.length;i++){const raw=typeof h[i]==='string'?h[i]:h[i]?.result||'';const v=String(raw).toUpperCase().trim();if(OUT.includes(v))out.push(v);}return out;};
+const pbOnly=h=>{const x=Array.isArray(h)?h:sanitize(h),out=[];for(const v of x)if(PB.includes(v))out.push(v);return out;};
+const tRate=h=>{const x=Array.isArray(h)?h:sanitize(h);if(!x.length)return 0;let n=0;for(const v of x)if(v==='T')n++;return n/x.length;};
+const pRate=x=>x.length?x.filter(v=>v==='P').length/x.length:.5;
+const swRate=x=>x.length<2?0:mean(x.slice(1).map((v,i)=>v!==x[i]?1:0));
+const runLen=x=>{if(!x.length)return 0;const y=x[x.length-1];let n=0;for(let i=x.length-1;i>=0&&x[i]===y;i--)n++;return n;};
+const runs=x=>{const out=[];for(let i=0;i<x.length;){const v=x[i];let j=i+1;while(j<x.length&&x[j]===v)j++;out.push({v,n:j-i});i=j;}return out;};
+const slope=x=>{const n=x.length;if(n<3)return 0;const m=(n-1)/2,ym=pRate(x);let den=0,num=0;for(let i=0;i<n;i++){const dx=i-m;den+=dx*dx;num+=dx*((x[i]==='P'?1:0)-ym);}return den?num/den:0;};
+const transitionRate=(x,a,b)=>{let n=0,m=0;for(let i=1;i<x.length;i++){if(x[i-1]!==a)continue;n++;if(x[i]===b)m++;}return n?m/n:.5;};
+const distance=(a,b)=>{if(!Array.isArray(a)||!Array.isArray(b)||a.length!==b.length||!a.length)return 1;let s=0;for(let i=0;i<a.length;i++)s+=Math.abs(Number(a[i])-Number(b[i]));return s/a.length;};
+function fastSeqScore(a,b){
+  const aa0=Array.isArray(a)?a.join(''):String(a||''), bb0=Array.isArray(b)?b.join(''):String(b||'');
+  const m=Math.min(aa0.length,bb0.length); if(!m) return {score:0,transform:'DIRECT'};
+  const aa=aa0.slice(-m), bb=bb0.slice(-m);
+  let direct=0, comp=0, wsum=0;
+  for(let i=0;i<m;i++){
+    const w=0.65+0.35*((i+1)/m), av=aa[i], bv=bb[i];
+    wsum+=w; direct+=w*(av===bv?1:0); comp+=w*((av==='P'?'B':'P')===bv?1:0);
+  }
+  const lengthFactor=Math.min(1,m/Math.max(1,Math.max(aa0.length,bb0.length)));
+  direct=(direct/wsum)*(.78+.22*lengthFactor); comp=(comp/wsum)*(.78+.22*lengthFactor);
+  const bonus=aa.at(-1)===bb.at(-1)?0.04:0;
+  return {score:clamp(Math.max(direct,.94*comp)+bonus,0,1),transform:comp>direct?'COMPLEMENT':'DIRECT'};
+}
+const decay=(age,half)=>Math.pow(.5,Math.max(0,age)/Math.max(1,half));
+function stateFeatures(hOrX){
+  const raw=Array.isArray(hOrX)?hOrX:sanitize(hOrX), x=(Array.isArray(hOrX)&&hOrX.every(v=>v==='P'||v==='B'))?hOrX:raw.filter(v=>PB.includes(v)),tf={};
+  for(const [k,w] of [['micro',6],['short',12],['medium',24],['long',48],['macro',96]]){
+    const q=x.slice(-w), p=pRate(q); tf[k]={n:q.length,p,sw:swRate(q),run:runLen(q),entropy:entropyP({P:p,B:1-p}),slope:slope(q)};
+  }
+  const scales=['micro','short','medium','long','macro']; let conflict=0;
+  for(let i=0;i<scales.length-1;i++) conflict+=Math.abs(tf[scales[i]].p-tf[scales[i+1]].p);
+  const tt=raw.length?raw.filter(v=>v==='T').length/raw.length:0;
+  return {tf,run:runLen(x),sw:swRate(x.slice(-24)),entropy:entropyP({P:pRate(x.slice(-12)),B:1-pRate(x.slice(-12))}),p6:pRate(x.slice(-6)),p12:pRate(x.slice(-12)),p24:pRate(x.slice(-24)),p48:pRate(x.slice(-48)),p96:pRate(x.slice(-96)),slope12:slope(x.slice(-12)),tt,last:x.at(-1)||'N',scaleConflict:clamp((conflict/4)/.22,0,1)};
+}
+function stateVectorFromState(s){const t=s.tf;return[t.micro.p,t.short.p,t.medium.p,t.long.p,t.macro.p,t.micro.sw,t.short.sw,t.medium.sw,t.long.sw,t.macro.sw,t.micro.run/8,t.short.run/8,t.micro.entropy,Math.abs(t.micro.p-t.long.p),Math.abs(t.short.p-t.medium.p),Math.abs(s.slope12)*6,s.tt];}
+function stateVector(h){return stateVectorFromState(stateFeatures(h));}
+function changePointX(x){
+  if(x.length<18)return{score:0,status:'WARMING',dp:0,ds:0,dt:0,dr:0,base:0};
+  const q=x.slice(-6),p=x.slice(-12,-6),o=x.slice(-18,-12);
+  const dp=Math.abs(pRate(q)-pRate(p)),ds=Math.abs(swRate(q)-swRate(p)),dr=Math.abs(runLen(q)-runLen(p))/8,dt=(Math.abs(transitionRate(q,'P','P')-transitionRate(p,'P','P'))+Math.abs(transitionRate(q,'B','B')-transitionRate(p,'B','B')))/2,base=Math.abs(pRate(p)-pRate(o));
+  const score=clamp(.34*(dp/.34)+.22*(ds/.55)+.16*dr+.12*(dt/.35)+.16*(base/.30),0,1); return{score,status:score>.68?'HIGH':score>.44?'CHANGE':'STABLE',dp,ds,dt,dr,base};
+}
+function regimeFromState(x,s){
+  const m=s.tf.micro,sh=s.tf.short,l=s.tf.long; const raw={BALANCED:1-Math.abs(sh.p-.5)*2,STREAK:clamp((m.run-1)/8,0,1),CHOP:clamp((sh.sw-.58)/.42,0,1),ALTERNATING:clamp((sh.sw-.75)/.25,0,1),SHIFT:clamp((Math.abs(m.p-l.p)-.04)/.28,0,1),UNSTABLE:clamp((Math.abs(m.sw-sh.sw)+Math.abs(m.p-sh.p)+s.scaleConflict*.22)/.65,0,1)};
+  const z=Object.values(raw).reduce((a,b)=>a+b,1e-9),probs=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,v/z])); let lead=Object.entries(probs).sort((a,b)=>b[1]-a[1])[0];
+  const cp=changePointX(x); if(cp.score>.72)lead=['SHIFT',Math.max(lead[1],cp.score)]; return{lead:lead[0],confidence:lead[1],probs,change:cp};
+}
+function regime(h){const x=pbOnly(h),s=stateFeatures(x);return regimeFromState(x,s);}
+function contextKeyFromState(s,r){const run=s.tf.short.run,sw=s.tf.short.sw,imb=Math.abs(s.tf.short.p-.5),te=s.tt>0.08?'T+':'T0';return[r.lead,run>=5?'R5+':run>=3?'R3-4':run>=2?'R2':'R0-1',sw>.82?'SW+':sw>.62?'SW':'CALM',imb>.18?'IMB':'BAL',te,s.last].join('|');}
+function contextKey(h){const x=pbOnly(h),s=stateFeatures(x),r=regimeFromState(x,s);return contextKeyFromState(s,r);}
+function defaultLearning(){return{version:VERSION,models:Object.fromEntries(FAMILIES.map(k=>[k,{n:0,ewma:Math.log(2),weight:1,recent:[]}])),contexts:{},cases:[],errors:[],memoryTrust:1,calibration:{temp:1,rows:[]},global:{n:0,loss:0,brier:0,recent:[],lastError:null,recoveryStreak:0},repair:{penalties:{},recentBoost:1},integrity:{hash:null,updatedAt:null}};}
+function safeParse(raw,d){try{const v=JSON.parse(raw||'null');return v==null?d:v;}catch(_){return d;}}
+function normalizeLearning(v){
+  const b=defaultLearning(),n={...b,...(v||{})};
+  n.version=String(v?.version||VERSION);
+  n.models={...b.models,...(v?.models||{})};
+  for(const k of FAMILIES){const z=n.models[k]||{};n.models[k]={n:Math.max(0,Number(z.n)||0),ewma:finite(z.ewma)?Number(z.ewma):Math.log(2),weight:clamp(finite(z.weight)?Number(z.weight):1,.2,4),recent:Array.isArray(z.recent)?z.recent.filter(finite).slice(-WINDOW):[]};}
+  n.contexts={};
+  const rawContexts=v?.contexts&&typeof v.contexts==='object'?v.contexts:{};
+  for(const [key,z0] of Object.entries(rawContexts).slice(-MAX_CONTEXTS)){
+    const z=z0&&typeof z0==='object'?z0:{};
+    const engines={};
+    for(const name of FAMILIES){const e=z.engines?.[name]||{};engines[name]={n:Math.max(0,Number(e.n)||0),weight:clamp(finite(e.weight)?Number(e.weight):1,.2,4),loss:finite(e.loss)?Number(e.loss):Math.log(2)};}
+    n.contexts[String(key)]={n:Math.max(0,Number(z.n)||0),lastAt:Math.max(0,Number(z.lastAt)||0),mistakes:Math.max(0,Number(z.mistakes)||0),engines};
+  }
+  n.cases=Array.isArray(v?.cases)?v.cases.filter(c=>c&&PB.includes(c.actual)).slice(-MAX_CASES):[];
+  n.errors=Array.isArray(v?.errors)?v.errors.filter(e=>e&&typeof e==='object').slice(-MAX_ERRORS):[];
+  n.memoryTrust=clamp(finite(v?.memoryTrust)?Number(v.memoryTrust):1,.35,1);
+  n.calibration={...b.calibration,...(v?.calibration||{})};
+  n.calibration.temp=clamp(finite(n.calibration.temp)?Number(n.calibration.temp):1,.75,1.3);
+  n.calibration.rows=Array.isArray(n.calibration.rows)?n.calibration.rows.filter(r=>r&&PB.includes(r.actual)&&r.prob&&finite(r.prob.P)&&finite(r.prob.B)).slice(-WINDOW):[];
+  n.global={...b.global,...(v?.global||{})};
+  n.global.n=Math.max(0,Number(n.global.n)||0);n.global.loss=finite(n.global.loss)?Number(n.global.loss):0;n.global.brier=finite(n.global.brier)?Number(n.global.brier):0;
+  n.global.recent=Array.isArray(n.global.recent)?n.global.recent.filter(r=>r&&PB.includes(r.actual)&&finite(r.loss)).slice(-WINDOW):[];
+  n.repair={...b.repair,...(v?.repair||{})};
+  n.repair.penalties={};
+  const rawPen=n.repair.penalties&&typeof n.repair.penalties==='object'?n.repair.penalties:{};
+  for(const name of FAMILIES)if(finite(rawPen[name]))n.repair.penalties[name]=clamp(Number(rawPen[name]),.35,1);
+  n.repair.recentBoost=clamp(finite(n.repair.recentBoost)?Number(n.repair.recentBoost):1,1,2);
+  n.integrity={...b.integrity,...(v?.integrity||{})};
+  return n;
+}
+function readFirst(keys,d){for(const key of keys){const raw=localStorage.getItem(key);if(raw!==null)return safeParse(raw,d);}return d;}
+function loadHistory(){return sanitize(readFirst([HKEY,...LEGACY_HKEYS],[]));}
+function loadLearning(){return normalizeLearning(readFirst([LKEY,...LEGACY_LKEYS],null));}
+let history=loadHistory(), learner=loadLearning(), pending=null,lastKey='',busy=false,lastSelfTest=null;
+let corrCache=null,corrCacheN=-1;
+function canonicalForHash(obj){return JSON.parse(JSON.stringify(obj,(_,v)=>v));}
+function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return(h>>>0).toString(16).padStart(8,'0');}
+function brainPayload(){return{schema:VERSION,history:history.slice(-MAX_H),learner:normalizeLearning(learner)};}
+function save(){try{learner.version=VERSION;learner.integrity={...(learner.integrity||{}),updatedAt:new Date().toISOString()};const payload=brainPayload();const fingerprint=hash(JSON.stringify({schema:payload.schema,history:payload.history,learner:{...payload.learner,integrity:{}}}));learner.integrity.hash=fingerprint;localStorage.setItem(HKEY,JSON.stringify(payload.history));localStorage.setItem(LKEY,JSON.stringify(learner));return true;}catch(e){statusMsg('SAVE ERROR · '+e.message);return false;}}
+function makeContext(){return{n:0,lastAt:0,mistakes:0,engines:Object.fromEntries(FAMILIES.map(k=>[k,{n:0,weight:1,loss:Math.log(2)}]))};}
+function ensureContext(k){if(!learner.contexts[k])learner.contexts[k]=makeContext();return learner.contexts[k];}
+function modelSkill(name,ctxKey){const g=learner.models[name],c=learner.contexts[ctxKey],cw=c?.engines?.[name],globalGain=Math.log(2)-g.ewma,ctxGain=cw?Math.log(2)-cw.loss:globalGain;let w=.58*g.weight+.42*(cw?.weight||1);w*=Math.exp(clamp(.9*(.38*globalGain+.62*ctxGain),-1,1));return{weight:clamp(w,.15,3.8),globalGain,contextGain:ctxGain,n:g.n||0,contextN:cw?.n||0};}
+function baseModel(x){const tf=stateFeatures(x).tf;const rows=[['micro',.33],['short',.26],['medium',.20],['long',.13],['macro',.08]];let p=0,w=0;for(const [k,a] of rows){p+=a*tf[k].p;w+=a;}const q=x.slice(-64);let ew=.5;for(const y of q)ew=.14*(y==='P'?1:0)+.86*ew;const p2=clamp(.76*(p/Math.max(.01,w))+.24*ew,.02,.98);const shrink=.78;const shrunk=.5+(p2-.5)*shrink;return{prob:{P:shrunk,B:1-shrunk},support:x.length,quality:clamp(x.length/80,0,1),detail:'multi-scale distribution + recency EWMA'};}
+function transitionModel(x){if(x.length<3)return{prob:{P:.5,B:.5},support:0,quality:0,detail:'warming'};const rows=[];for(let k=1;k<=Math.min(10,x.length-1);k++){const key=x.slice(-k).join('');let p=1.5,b=1.5,n=0;const start=Math.max(k,x.length-TRANSITION_LOOKBACK);for(let i=start;i<x.length;i++){if(x.slice(i-k,i).join('')!==key)continue;n++;if(x[i]==='P')p++;else b++;}if(n){const pr=pbNorm({P:p,B:b}),certainty=1-entropyP(pr);rows.push({k,prob:pr,n,score:Math.sqrt(n)*(0.24+.76*certainty)/(1+.11*k)});}}if(!rows.length)return{prob:{P:.5,B:.5},support:0,quality:0,detail:'no support'};rows.sort((a,b)=>b.score-a.score);const pick=rows.slice(0,4),tot=pick.reduce((s,z)=>s+z.score,0),P=pick.reduce((s,z)=>s+z.score*z.prob.P,0)/tot;return{prob:pbNorm({P,B:1-P}),support:pick.reduce((s,z)=>s+z.n,0),quality:clamp(pick.reduce((s,z)=>s+z.n,0)/42,0,1),detail:'adaptive suffix lengths '+pick.map(z=>z.k).join(',')};}
+function hazardModel(x){
+  const last=x.at(-1),r=runLen(x); if(x.length<8||!last)return{prob:{P:.5,B:.5},support:0,quality:0,detail:'warming'};
+  let count=0,stay=0; const maxRun=Math.min(8,r); const cases=learner.cases, start=Math.max(0,cases.length-HAZARD_SCAN);
+  for(let i=cases.length-1;i>=start;i--){const c=cases[i]; if(!PB.includes(c?.actual)||c.hazard?.last!==last||c.hazard?.run!==maxRun)continue; count++; if(c.actual===last)stay++;}
+  if(!count){const q=x.slice(-96);let same=0,cont=0;for(let i=1;i<q.length;i++){if(q[i-1]===last){same++;if(q[i]===last)cont++;}}const stayRate=same?cont/same:.5,p=last==='P'?stayRate:1-stayRate;return{prob:pbNorm({P:p,B:1-p}),support:0,quality:.05,detail:'global run prior'};}
+  const stayRate=stay/count,p=last==='P'?stayRate:1-stayRate;return{prob:pbNorm({P:p,B:1-p}),support:count,quality:clamp(count/90,0,1),detail:'contextual continuation n='+count};
+}
+function memoryRetrieve(x,s,r,key){
+  const stateVec=stateVectorFromState(s),tail=x.slice(-24).join(''),tail6=tail.slice(-6),rows=[],pool=learner.cases,start=Math.max(0,pool.length-MEMORY_SCAN);
+  for(let i=pool.length-1;i>=start;i--){const c=pool[i]; if(!PB.includes(c?.actual)||!Array.isArray(c.state)||c.state.length!==stateVec.length||!c.state.every(finite)||!c.pbTail)continue;
+    // Cheap prefilter that preserves opposite-outcome analogues; never bias memory toward the current last outcome.
+    const seq6=String(c.pbTail).slice(-6);
+    if(c.regime!==r.lead && c.ctxKey!==key && seq6!==tail6)continue;
+    const sq=fastSeqScore(c.pbTail,tail),st=clamp(1-1.55*distance(stateVec,c.state),0,1);
+    if(sq.score<.34&&st<.46&&c.ctxKey!==key&&c.regime!==r.lead)continue;
+    const rg=c.regime===r.lead?1:Math.max(.30,r.prob?.[r.lead]||0),ctx=c.ctxKey===key?1:.45,age=Math.max(0,x.length-(c.at||0)),fresh=decay(age,learner.repair.recentBoost>1.05?180:280);
+    const score=clamp(.40*sq.score+.34*st+.13*rg+.08*ctx+.05*fresh,0,1);
+    if(finite(score)&&score>.48)rows.push({at:c.at,actual:c.actual,score,seq:sq.score,st,regime:c.regime,ctx:c.ctxKey,fresh,transform:sq.transform});
+  }
+  rows.sort((a,b)=>b.score-a.score); const top=[];
+  for(const z of rows){if(top.length>=10)break;if(!top.some(y=>Math.abs((y.at||0)-(z.at||0))<=2))top.push(z);}
+  const P=top.reduce((sum,z)=>sum+z.score*(z.actual==='P'),0),B=top.reduce((sum,z)=>sum+z.score*(z.actual==='B'),0),q=top.length?mean(top.map(z=>z.score)):0;
+  return{prob:pbNorm({P:P+.8,B:B+.8}),support:top.length,quality:q,rows:top,ctxKey:key,detail:top.length?'top '+top.length+' analogues':'no strong analogue'};
+}
+function correlations(){
+  const n=learner.global.n||0; if(corrCache&&n-corrCacheN<CORR_REFRESH)return corrCache;
+  const rows=learner.cases.filter(c=>c?.experts&&PB.includes(c.actual)).slice(-160),out={};
+  for(let i=0;i<FAMILIES.length;i++)for(let j=i+1;j<FAMILIES.length;j++){const A=[],B=[];for(const c of rows){const a=c.experts?.[FAMILIES[i]]?.P,b=c.experts?.[FAMILIES[j]]?.P;if(finite(a)&&finite(b)){A.push(a);B.push(b);}}if(A.length<16){out[FAMILIES[i]+'|'+FAMILIES[j]]=0;continue;}const ma=mean(A),mb=mean(B);let n2=0,da=0,db=0;for(let k=0;k<A.length;k++){const u=A[k]-ma,v=B[k]-mb;n2+=u*v;da+=u*u;db+=v*v;}out[FAMILIES[i]+'|'+FAMILIES[j]]=da&&db?n2/Math.sqrt(da*db):0;}
+  corrCache=out;corrCacheN=n;return out;
+}
+function regimeExpert(s,r,x){const bias=s.p12*.55+s.p6*.45;const regimeP=r.lead==='STREAK'?(0.50+bias*.05):(r.lead==='ALTERNATING'?0.5+(s.p12-.5)*.60:(r.lead==='SHIFT'?bias*.9+.05:bias));const core=clamp(regimeP,.15,.85);return{prob:{P:core,B:1-core},support:Math.min(120,x.length),quality:clamp(x.length/70,0,1),detail:'regime-adjusted contextual expectation'};}
+function contrarianExpert(models,s){const candidates=Object.values(models).map(m=>m?.prob?.P).filter(finite),meanP=mean(candidates.length?candidates:[.5]),p=clamp(.5-(meanP-.5)*.45,.20,.80);return{prob:{P:p,B:1-p},support:candidates.length,quality:candidates.length>=3?.65:.35,detail:'disconfirming pressure against consensus'};}
+function fuse(models,ctxKey,h,s,r,x){
+  const corr=correlations(),items=[]; for(const name of FAMILIES){const m=models[name],skill=modelSkill(name,ctxKey),pairs=Object.entries(corr).filter(([k])=>k.includes(name)).map(([,v])=>Math.abs(v)),red=pairs.length?mean(pairs):0,pen=clamp(Number(learner.repair.penalties[name])||1,.30,1),supportFactor=.34+.66*Math.min(1,(m.support||0)/48),q=m.quality||0;let w=skill.weight*supportFactor*(.44+.56*q)*(1-.50*red)*pen;if(name==='memory')w*=learner.memoryTrust;if(learner.repair.recentBoost>1.05&&['base','transition'].includes(name))w*=1+.10*(learner.repair.recentBoost-1);items.push({name,prob:pbNorm(m.prob),weight:clamp(w,.03,4),redundancy:red,support:m.support||0,quality:q,skill,detail:m.detail});}
+  const reg=regimeExpert(s,r,x),con=contrarianExpert(models,s),meta=[{name:'regime',prob:reg.prob,weight:.32,support:reg.support,quality:reg.quality,detail:reg.detail,meta:true},{name:'contrarian',prob:con.prob,weight:clamp(.18+.24*(1-s.scaleConflict),.12,.42),support:con.support,quality:con.quality,detail:con.detail,meta:true}],all=items.concat(meta);
+  let logit=0,tw=0;for(const e of all){const p=clamp(e.prob.P,.03,.97),l=Math.log(p/(1-p));logit+=e.weight*l;tw+=e.weight;}
+  const p=1/(1+Math.exp(-logit/Math.max(.4,tw*.70))),disagreement=mean(all.map(e=>Math.abs(e.prob.P-p)))*2,ess=(tw*tw)/Math.max(1e-9,all.reduce((sum,e)=>sum+e.weight*e.weight,0));return{items,meta,all,prob:pbNorm({P:p,B:1-p}),disagreement,ess,redundancy:mean(items.map(e=>e.redundancy)),corr};
+}
+function calibrated(p){const t=clamp(learner.calibration.temp,.75,1.3),q=pbNorm(p),a=Math.pow(q.P,1/t),b=Math.pow(q.B,1/t);return pbNorm({P:a,B:b});}
+function fitCalibration(){const rows=learner.calibration.rows;if(rows.length<60)return;let bestT=learner.calibration.temp,best=Infinity;for(let i=0;i<=22;i++){const t=.75+i*.025,ll=mean(rows.slice(-160).map(r=>{const q=pbNorm(r.prob),a=Math.pow(q.P,1/t),b=Math.pow(q.B,1/t);return logLoss(pbNorm({P:a,B:b}),r.actual);}));if(ll<best){best=ll;bestT=t;}}learner.calibration.temp=.86*learner.calibration.temp+.14*bestT;}
+function stress(fused){const vals=[],full=fused.prob.P;for(const name of [...FAMILIES,'regime','contrarian']){const kept=fused.all.filter(e=>e.name!==name);let logit=0,tw=0;for(const e of kept){const p=clamp(e.prob.P,.03,.97),l=Math.log(p/(1-p));logit+=e.weight*l;tw+=e.weight;}const q=1/(1+Math.exp(-logit/Math.max(.4,tw*.70)));vals.push({name,without:q,delta:Math.abs(q-full)});}const maxDelta=Math.max(0,...vals.map(v=>v.delta)),robustness=clamp(1-maxDelta/.20,0,1),fragility=clamp(maxDelta*4.6,0,1);return{rows:vals,maxDelta,robustness,fragility};}
+function contradiction(fused,s,r){const side=fused.prob.P>=.5?'P':'B',opp=fused.all.filter(e=>(e.prob.P>=.5?'P':'B')!==side),conflict=mean(fused.all.map(e=>Math.abs(e.prob.P-fused.prob.P)))*2,opposingWeight=opp.reduce((sum,e)=>sum+e.weight,0),totalWeight=fused.all.reduce((sum,e)=>sum+e.weight,0);return clamp(.52*conflict+.25*(opposingWeight/Math.max(.01,totalWeight))+.13*s.scaleConflict+.10*r.change.score,0,1);}
+function drift(){const rows=learner.global.recent;if(rows.length<48)return{status:'WARMING',score:0,shift:0};const a=rows.slice(-24),b=rows.slice(-48,-24),la=mean(a.map(x=>x.loss)),lb=mean(b.map(x=>x.loss)),shift=la-lb;return{status:shift>.12?'HIGH':shift>.035?'DRIFT':'STABLE',score:clamp(shift/.30,0,1),shift};}
+function learningStats(){const rows=learner.cases.filter(c=>PB.includes(c.actual)&&c.forecast?.prob).slice(-200);if(!rows.length)return{n:0,acc:null,ll:null,brier:null};return{n:rows.length,acc:mean(rows.map(c=>argmax(c.forecast.prob)===c.actual?1:0)),ll:mean(rows.map(c=>logLoss(c.forecast.prob,c.actual))),brier:mean(rows.map(c=>brier(c.forecast.prob,c.actual)))};}
+function causeOf(prev,actual){if(!prev||!PB.includes(actual))return null;const p=prev.forecast.prob,pred=argmax(p),wrong=pred!==actual,causes=[];if(wrong){if(p[pred]>.72)causes.push('OVERCONFIDENCE');if(prev.regime.change.score>.5)causes.push('CHANGE-MISSED');if(prev.contradiction>.30)causes.push('EVIDENCE-CONFLICT');if(prev.fused.ess<2.2)causes.push('LOW-SUPPORT');if(prev.stress.fragility>.5)causes.push('FRAGILE-FORECAST');if(prev.memory.quality>.78&&Math.max(prev.engines.memory.prob.P,prev.engines.memory.prob.B)>.68)causes.push('MEMORY-MISS');if(prev.quality<.5)causes.push('DATA-QUALITY');if(!causes.length)causes.push('MODEL-MISS');}else if(prev.action==='WAIT'&&p[pred]>.60){causes.push('MISSED-EDGE');}if(!causes.length)return null;const weak=prev.fused.items.filter(e=>FAMILIES.includes(e.name)).map(e=>({name:e.name,loss:logLoss(e.prob,actual)})).sort((a,b)=>b.loss-a.loss).slice(0,2);return{cause:causes[0],causes,weak,at:prev.index};}
+function updateRepair(d){if(!d)return;for(const c of d.causes){if(c==='OVERCONFIDENCE')learner.repair.recentBoost=clamp(learner.repair.recentBoost*1.02,1,1.6);if(c==='CHANGE-MISSED')learner.repair.recentBoost=clamp(learner.repair.recentBoost*1.10,1,2);if(c==='EVIDENCE-CONFLICT')for(const w of d.weak||[])learner.repair.penalties[w.name]=clamp((learner.repair.penalties[w.name]||1)*.96,.35,1);if(c==='FRAGILE-FORECAST')learner.memoryTrust=clamp(learner.memoryTrust*.98,.35,1);if(c==='MEMORY-MISS')learner.memoryTrust=clamp(learner.memoryTrust*.94,.35,1);if(c==='LOW-SUPPORT')learner.repair.recentBoost=clamp(learner.repair.recentBoost*1.015,1,1.6);}}
+function recover(){for(const k of Object.keys(learner.repair.penalties)){learner.repair.penalties[k]=clamp(learner.repair.penalties[k]*1.004,.35,1);if(learner.repair.penalties[k]>.995)delete learner.repair.penalties[k];}learner.repair.recentBoost=clamp(learner.repair.recentBoost*.998,1,2);learner.memoryTrust=clamp(learner.memoryTrust*1.0008,.35,1);}
+function updateLearning(prev,actual){if(!prev||!PB.includes(actual)||!prev.forecast?.prob)return;const loss=logLoss(prev.forecast.prob,actual),br=brier(prev.forecast.prob,actual),baseLL=Math.log(2),ctx=ensureContext(prev.ctxKey);learner.global.n++;if((learner.global.n%CORR_REFRESH)===0){corrCache=null;corrCacheN=-1;}learner.global.loss+=loss;learner.global.brier+=br;learner.global.recent.push({loss,actual,at:prev.index});learner.global.recent=learner.global.recent.slice(-WINDOW);learner.calibration.rows.push({prob:prev.forecast.prob,actual,at:prev.index});learner.calibration.rows=learner.calibration.rows.slice(-WINDOW);if(learner.calibration.rows.length%12===0)fitCalibration();for(const name of FAMILIES){const e=prev.fused.items.find(z=>z.name===name),m=learner.models[name],c=ctx.engines[name];if(!e)continue;const el=logLoss(e.prob,actual),eta=clamp(.05*(1+Math.min(1,Math.abs(baseLL-el))),.025,.09);m.ewma=(1-eta)*m.ewma+eta*el;m.n++;m.recent.push(el);m.recent=m.recent.slice(-WINDOW);const gain=baseLL-m.ewma;m.weight=clamp(m.weight*Math.exp(.045*clamp(gain,-1,1)),.2,4);c.n=(c.n||0)+1;c.loss=(1-eta)*Number(c.loss||baseLL)+eta*el;c.weight=clamp((c.weight||1)*Math.exp(.05*clamp(baseLL-el,-1,1)),.2,4);}const d=causeOf(prev,actual);if(d){learner.errors.push(d);learner.errors=learner.errors.slice(-MAX_ERRORS);ctx.mistakes=(ctx.mistakes||0)+1;learner.global.lastError=d;learner.global.recoveryStreak=0;updateRepair(d);}else learner.global.recoveryStreak=(learner.global.recoveryStreak||0)+1;ctx.n++;ctx.lastAt=prev.index;learner.cases.push({at:prev.index,actual,forecast:{prob:prev.forecast.prob,action:prev.action,confidence:prev.confidence},experts:Object.fromEntries(prev.fused.items.map(e=>[e.name,e.prob])),state:prev.stateVector,ctxKey:prev.ctxKey,regime:prev.regime.lead,prob:prev.regime.probs,hazard:prev.hazardMeta,pbTail:pbOnly(prev.history).slice(-24).join(''),cause:d?.cause||null,reason:prev.reason||null});learner.cases=learner.cases.slice(-MAX_CASES);recover();}
+function buildReasons(fused,r,st,stressResult,contra){const support=[],against=[];fused.all.forEach(e=>{const side=e.prob.P>=.5?'P':'B';if((e.prob[side]||.5)>=.60)side===(fused.prob.P>=.5?'P':'B')?support.push(`${e.name} ${side} ${pct(e.prob[side])}`):against.push(`${e.name} ${side} ${pct(e.prob[side])}`);});if(r.change.score>.50)against.push('CHANGE '+pct(r.change.score));if(st.scaleConflict>.45)against.push('SCALE-CONFLICT '+pct(st.scaleConflict));if(stressResult.fragility>.50)against.push('FRAGILITY '+pct(stressResult.fragility));if(contra>.45)against.push('CONTRADICTION '+pct(contra));return{support:support.slice(0,5),against:against.slice(0,5)};}
+function invalidation(r,st,stressResult,driftState){const xs=[];if(r.change.score>.68)xs.push('change-point > 68%');if(st.scaleConflict>.55)xs.push('cross-scale conflict > 55%');if(stressResult.fragility>.50)xs.push('leave-one-out fragility > 50%');if(driftState.score>.45)xs.push('loss drift > 45%');if(!xs.length)xs.push('a future result must overturn the current leading evidence');return xs.join(' · ');}
+function makeForecast(h){
+  const t0=performance.now(),raw=sanitize(h),x=raw.filter(v=>PB.includes(v)),key=raw.length+'|'+raw.slice(-TRANSITION_LOOKBACK).join(''); if(key===lastKey&&pending)return pending;
+  const sf=stateFeatures(raw),r=regimeFromState(x,sf),ctxKey=contextKeyFromState(sf,r),coreN=x.length,quality=clamp(.52*Math.min(1,coreN/36)+.25*(1-Math.max(0,sf.tt-.15)*2)+.23*Math.min(1,raw.length/60),0,1);
+  const finish=(out)=>{out.analysisMs=performance.now()-t0;pending=out;lastKey=key;return out;};
+  if(coreN<MIN_CORE){return finish({index:raw.length,history:raw.slice(),state:sf,stateVector:stateVectorFromState(sf),regime:r,quality,ctxKey,engines:{},fused:{items:[],all:[],prob:{P:.5,B:.5},disagreement:1,ess:0,redundancy:0},memory:{prob:{P:.5,B:.5},quality:0,rows:[],support:0},stress:{fragility:1,robustness:0,rows:[],maxDelta:.5},forecast:{prob:{P:.5,B:.5}},action:'WAIT',eligible:false,confidence:.5,margin:0,evidence:0,contradiction:1,uncertainty:1,stability:0,edge:0,opportunity:0,opportunityClass:'NO EDGE',forecastTier:'WAIT',drift:drift(),hazardMeta:{last:sf.last,run:Math.min(8,sf.run)},blind:['warming'],supportReasons:[],againstReasons:[],invalidation:'accumulate at least '+MIN_CORE+' P/B outcomes',reason:'insufficient core data'});}
+  const engines={base:baseModel(x),transition:transitionModel(x),hazard:hazardModel(x),memory:memoryRetrieve(x,sf,r,ctxKey)},fused=fuse(engines,ctxKey,h,sf,r,x),calibratedProb=calibrated(fused.prob),stressResult=stress({...fused,prob:calibratedProb}),d=drift(),contra=contradiction({...fused,prob:calibratedProb},sf,r);
+  const p=calibratedProb.P,cp=r.change.score,evidence=clamp(.23*Math.min(1,fused.ess/3.5)+.18*(1-fused.disagreement)+.16*(1-fused.redundancy)+.16*fused.items.reduce((sum,e)=>sum+Math.min(1,e.quality)*e.weight,0)/Math.max(.01,fused.items.reduce((sum,e)=>sum+e.weight,0))+.12*(1-stressResult.fragility)+.10*(1-d.score)+.05*(1-contra),0,1);
+  let confidence=Math.max(p,1-p),uncertainty=entropyP({P:p,B:1-p}),stability=clamp(.30*evidence+.22*(1-fused.disagreement)+.18*(1-cp)+.15*(1-d.score)+.10*stressResult.robustness+.05*(1-contra),0,1);
+  const regimePenalty=cp>.70?.70:cp>.50?.84:1; confidence=.5+(confidence-.5)*regimePenalty*clamp(.45+.55*evidence,.45,1); const sideConfidence=Math.max(p,1-p),edge=Math.abs(p-.5)*2;
+  const opportunity=clamp(edge*evidence*stability*stressResult.robustness*(1-contra)*(1-.45*d.score),0,1),opportunityClass=opportunity>=.72?'EXCEPTIONAL EDGE':opportunity>=.56?'STRONG EDGE':opportunity>=.42?'MODERATE EDGE':opportunity>=.28?'WEAK EDGE':'NO EDGE';
+  // Two gates: forecast readiness (more frequent, still evidence-based) and decision readiness (stricter).
+  // WAIT is reserved for cases where the direction itself is not reliable enough to publish.
+  const forecastReady=coreN>=MIN_CORE&&quality>=.34&&sideConfidence>=.535&&edge>=.07&&evidence>=.40&&stability>=.34&&stressResult.fragility<=.70&&cp<.82&&d.score<.58&&contra<.68;
+  const eligible=forecastReady&&quality>=.40&&evidence>=.50&&stability>=.48&&stressResult.fragility<=.58&&cp<.76&&d.score<.50&&contra<.60&&sideConfidence>=.56&&opportunity>=.26;
+  const action=forecastReady?(p>=.5?'P':'B'):'WAIT';
+  const forecastTier=!forecastReady?'WAIT':(eligible?'STRONG':(opportunity>=.30&&evidence>=.46?'ACTIVE':'LEAN'));
+  const blind=[]; if(sideConfidence<.535||edge<.07)blind.push('edge');if(evidence<.40)blind.push('evidence');if(stability<.34)blind.push('stability');if(stressResult.fragility>.70)blind.push('fragility');if(cp>=.82)blind.push('change');if(d.score>=.58)blind.push('drift');if(contra>=.68)blind.push('contradiction');if(uncertainty>.97)blind.push('uncertainty');
+  const reasons=buildReasons({...fused,prob:calibratedProb},r,sf,stressResult,contra);
+  return finish({index:raw.length,history:raw.slice(),state:sf,stateVector:stateVectorFromState(sf),regime:r,quality,ctxKey,engines,fused:{...fused,prob:calibratedProb},memory:engines.memory,stress:stressResult,forecast:{prob:pbNorm({P:.5+(p-.5)*(confidence-.5)*2,B:.5+(1-p-.5)*(confidence-.5)*2})},action,eligible,forecastTier,confidence,margin:edge,evidence,contradiction:contra,uncertainty,stability,edge,opportunity,opportunityClass,drift:d,hazardMeta:{last:sf.last,run:Math.min(8,sf.run)},blind,supportReasons:reasons.support,againstReasons:reasons.against,invalidation:invalidation(r,sf,stressResult,d),reason:reasons.support.join(' · ')});
+}
+function statusMsg(t){$('status').textContent=t;}
+function renderHistory(){const el=$('history');el.innerHTML='';if(!history.length){el.innerHTML='<div class="empty">ยังไม่มีประวัติ</div>';return;}for(const y of history.slice(-240)){const d=document.createElement('div');d.className='node '+y;d.textContent=y;el.appendChild(d);}}
+function renderLedger(){const el=$('ledgerBody'),rows=learner.cases.slice(-LEDGER_ROWS).reverse();if(!rows.length){el.innerHTML='<tr><td colspan="9">ยังไม่มี scored forecasts</td></tr>';return;}el.innerHTML=rows.map(c=>{const p=c.forecast?.prob||{P:.5,B:.5};const conf=c.forecast?.confidence??Math.max(p.P,p.B);const action=c.forecast?.action||'--';return `<tr><td>${Number(c.at)+1}</td><td>${argmax(p)} ${pct(Math.max(p.P,p.B))}</td><td>${pct(conf)}</td><td>${esc(action)}</td><td>${esc(c.regime||'--')}</td><td>${esc(c.reason||'--')}</td><td>${esc(c.cause?'YES':'--')}</td><td>${esc(c.actual)}</td><td>${esc(c.cause||'--')}</td></tr>`;}).join('');}
+function render(z){const r=z||makeForecast(history),p=r.forecast.prob,st=r.state,tf=st.tf,m=r.memory,ft=r.fused,rs=r.regime,ss=r.stress,ls=learningStats(),dr=r.drift;const opp=r.opportunityClass||'NO EDGE';$('big').textContent=`${r.action==='WAIT'?'WAIT':argmax(p)} · ${pct(r.confidence)} · ${r.forecastTier||'WAIT'}`;$('detail').textContent=`P ${pct(p.P)} · B ${pct(p.B)} · ${rs.lead} · ${opp}`;$('nextMode').textContent=r.action!=='WAIT'?`NEXT HAND: ${argmax(p)} · ${pct(Math.max(p.P,p.B))} · ${r.forecastTier} FORECAST${r.eligible?' · DECISION GATE PASS':' · DECISION GATE CAUTION'}`:`NEXT HAND: WAIT · ${r.blind?.join(', ')||'warming'}`;$('confidenceBar').style.width=Math.round(r.confidence*100)+'%';$('prob').textContent=`${pct(p.P)} / ${pct(p.B)}`;$('confidence').textContent=pct(r.confidence);$('action').textContent=r.action;$('opportunity').textContent=opp;$('evidence').textContent=pct(r.evidence);$('contradiction').textContent=pct(r.contradiction);$('contradiction2').textContent=pct(r.contradiction);$('regimeLabel').textContent=rs.lead;$('robustness').textContent=pct(ss.robustness);$('analysisTime').textContent=finite(r.analysisMs)?r.analysisMs.toFixed(1)+' ms':'--';$('robustness2').textContent=pct(ss.robustness);$('fragility').textContent=pct(ss.fragility);$('fragilityDetail').textContent=`max leave-one-out Δ ${pct(ss.maxDelta)}`;$('edge').textContent=pct(r.edge);$('stability').textContent=pct(r.stability);$('opportunity2').textContent=pct(r.opportunity);$('opportunityDetail').textContent=opp;$('actionGate').textContent=r.eligible?'PASS':(r.action!=='WAIT'?'CAUTION':'WAIT');
+for(const [id,k] of [['micro','micro'],['short','short'],['medium','medium'],['long','long'],['macro','macro']]){$(id).textContent=`P ${pct(tf[k].p)} · B ${pct(1-tf[k].p)}`;$(id+'Detail').textContent=`N ${tf[k].n} · switch ${pct(tf[k].sw)} · run ${tf[k].run} · slope ${fmt(tf[k].slope)}`;}
+$('run').textContent=String(st.run);$('runDetail').textContent=st.last==='N'?'--':`last ${st.last} · run ${st.run}`;$('switch').textContent=pct(st.sw);$('switchDetail').textContent='recent 24 P/B';$('entropy').textContent=pct(st.entropy);$('entropyDetail').textContent='short P/B distribution';$('tRate').textContent=pct(st.tt);$('tDetail').textContent=`raw ${history.length} · P/B ${pbOnly(history).length}`;$('scaleConflict').textContent=pct(st.scaleConflict);$('scaleDetail').textContent=st.scaleConflict>.55?'strong cross-scale conflict':'scales broadly aligned';
+$('regimeBoard').innerHTML=Object.entries(rs.probs).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="row"><span class="name">${k}</span><div class="bar"><i style="width:${Math.round(v*100)}%"></i></div><span class="right">${pct(v)}</span></div>`).join('');$('changeBoard').innerHTML=`score <b>${pct(rs.change.score)}</b><br>Δrate ${fmt(rs.change.dp)} · Δswitch ${fmt(rs.change.ds)} · Δtrans ${fmt(rs.change.dt)}<br>Δrun ${fmt(rs.change.dr)} · baseline ${fmt(rs.change.base)}<br>drift <b>${dr.status}</b> · ${pct(dr.score)}`;
+$('evidenceBoard').innerHTML=ft.all.slice().sort((a,b)=>b.weight-a.weight).map(e=>`<div class="row"><span class="name">${LABEL[e.name]||String(e.name).toUpperCase()}</span><div class="bar"><i style="width:${Math.round(Math.max(e.prob.P,e.prob.B)*100)}%"></i></div><span class="right">${argmax(e.prob)} ${pct(Math.max(e.prob.P,e.prob.B))} · w ${fmt(e.weight)}${e.meta?' · META':''}</span></div>`).join('');$('supportReasons').textContent=r.supportReasons?.length?r.supportReasons.join(' · '):'--';$('againstReasons').textContent=r.againstReasons?.length?r.againstReasons.join(' · '):'--';$('invalidation').textContent=r.invalidation||'--';
+$('memoryQuality').textContent=pct(m.quality);$('memoryDetail').textContent=`support ${m.support} · ${m.detail}`;$('memoryLead').textContent=m.rows?.length?argmax(m.prob):'NONE';$('memoryLeadDetail').textContent=`P ${pct(m.prob.P)} / B ${pct(m.prob.B)}`;$('contextN').textContent=String(learner.contexts[r.ctxKey]?.n||0);$('contextDetail').textContent=r.ctxKey;$('memoryTrust').textContent=pct(learner.memoryTrust);$('memoryTrustDetail').textContent='trust falls after repeated false-match';$('analogueCount').textContent=String(m.rows?.length||0);$('memoryBoard').innerHTML=(m.rows||[]).slice(0,10).map(z=>`<div>#${Number(z.at)+1} · ${esc(z.ctx)} · ${z.actual} · sim ${pct(z.score)} · seq ${pct(z.seq)} · state ${pct(z.st)} · fresh ${pct(z.fresh)} · ${esc(z.transform)}</div>`).join('')||'ยังไม่มี associative match';
+$('posterior').textContent=`P ${pct(ft.prob.P)} / B ${pct(ft.prob.B)}`;$('posteriorDetail').textContent=`ESS ${fmt(ft.ess)} · disagreement ${pct(ft.disagreement)} · redundancy ${pct(ft.redundancy)}`;$('contradictionDetail').textContent=`against-side pressure + scale conflict + change-point`;$('robustnessDetail').textContent=`max leave-one-out Δ ${pct(ss.maxDelta)}`;$('uncertainty').textContent=pct(r.uncertainty);$('uncertaintyDetail').textContent=`entropy ${pct(r.uncertainty)} · blind ${r.blind?.join(', ')||'none'}`;$('stressBoard').innerHTML=ss.rows.map(z=>`<div>${esc(LABEL[z.name]||z.name)} removed → P ${pct(z.without)} · Δ ${pct(z.delta)}</div>`).join('');
+$('learnN').textContent=ls.n;$('learnDetail').textContent=`global updates ${learner.global.n} · memory cases ${learner.cases.length}`;$('learnAcc').textContent=ls.n?pct(ls.acc):'--';$('learnLL').textContent=ls.n?fmt(ls.ll):'--';$('recovery').textContent=learner.global.lastError?(learner.global.recoveryStreak>=8?'RECOVERED':learner.global.recoveryStreak>=3?'RECOVERING':'REBUILDING'):'STABLE';$('recoveryDetail').textContent=`streak ${learner.global.recoveryStreak||0}`;$('temp').textContent=fmt(learner.calibration.temp);$('reliabilityBoard').innerHTML=ft.items.slice().sort((a,b)=>b.skill.contextGain-a.skill.contextGain).map(e=>`<div>${LABEL[e.name]} · global ${fmt(e.skill.globalGain)} · context ${fmt(e.skill.contextGain)} · N ${e.skill.n} · CW ${e.skill.contextN}</div>`).join('');const er=learner.errors.slice(-14),causes={};for(const e of er)causes[e.cause]=(causes[e.cause]||0)+1;$('errorBoard').innerHTML=Object.entries(causes).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div>${esc(k)} · ${v}</div>`).join('')||'ยังไม่มี root cause';
+$('domainLabel').textContent='P/B/T · BINARY FORECAST + ENVIRONMENT EVENTS';$('brainStatus').textContent=lastSelfTest?.status||'READY';$('brainDetail').textContent=`history ${history.length} · cases ${learner.cases.length} · errors ${learner.errors.length}`;$('integrityDetail').textContent=`schema ${VERSION} · local persistence ON`;
+renderLedger();renderHistory();}
+function record(actual,prev){if(!OUT.includes(actual))return false;if(prev&&prev.index===history.length&&PB.includes(actual))updateLearning(prev,actual);history.push(actual);pending=null;lastKey='';save();return true;}
+function onResult(actual){if(busy)return;const prev=pbOnly(history).length>=MIN_CORE?(pending&&pending.index===history.length?pending:makeForecast(history)):null;record(actual,prev);render(makeForecast(history));statusMsg(`บันทึก ${actual} · วิเคราะห์ + challenge + learning ใหม่แล้ว`);}
+function rebuild(){if(busy)return;busy=true;corrCache=null;corrCacheN=-1;const original=history.slice(),start=Math.max(0,original.length-Math.min(1900,original.length));learner=defaultLearning();history=original.slice(0,start);pending=null;lastKey='';for(let i=start;i<original.length;i++){const p=makeForecast(history);const a=original[i];if(pbOnly(history).length>=MIN_CORE&&PB.includes(a))updateLearning(p,a);history.push(a);pending=null;lastKey='';}history=original;pending=null;lastKey='';busy=false;save();render(makeForecast(history));statusMsg('Rebuild learning แบบ prequential เสร็จแล้ว');}
+function selfTest(){if(busy)return;busy=true;const originalH=history.slice(),originalL=learner,originalP=pending,originalK=lastKey;const suites=['PBBPPBBPPBBPPBBPBPBPBPBP','PPPPPPPPBBBBBBBBPPPPBBBB','PBPBPBPBPBPBPBPBPBPBPBPB','PPPPPPBBBBBBBBPPPPPPBBBB','PBTBPPPTPPBBTBBPPPPBTBB','BBPPBBTBBPPTPBPPBBPBBTPP'];let passed=0;const failures=[];try{for(const seq of suites){history=[];learner=defaultLearning();pending=null;lastKey='';for(const a of seq){if(pbOnly(history).length>=MIN_CORE){const p=makeForecast(history);if(!finite(p.forecast.prob.P)||!finite(p.forecast.prob.B)||!finite(p.confidence)||!finite(p.evidence)||!finite(p.opportunity))throw Error('non-finite forecast');if(PB.includes(a))updateLearning(p,a);}history.push(a);pending=null;lastKey='';}const p=makeForecast(history);if(!finite(p.forecast.prob.P)||!finite(p.forecast.prob.B))throw Error('final non-finite');passed++;}
+// deterministic reconstruction check
+history=['P','B','P','P','B','B','P','B','P','P'];learner=defaultLearning();pending=null;lastKey='';const a=makeForecast(history);pending=null;lastKey='';const b=makeForecast(history);if(JSON.stringify(a.forecast.prob)!==JSON.stringify(b.forecast.prob))throw Error('non-deterministic forecast');
+// sanitize + T/environment separation check
+const sh=sanitize(['P','x','b','T','bad',{result:'P'}]);if(JSON.stringify(sh)!==JSON.stringify(['P','B','T','P']))throw Error('sanitize failure');
+const mix=['P','B','T','T','P','B','T'];const mixedState=stateFeatures(mix);if(mixedState.tf.micro.n!==4||Math.abs(mixedState.tt-3/7)>1e-12)throw Error('T separation failure');const mf=makeForecast(mix);if(mf.index!==mix.length||mf.history.length!==mix.length)throw Error('raw history index failure');if(mf.state.tf.short.n!==4||mf.blind.includes('warming')&&mf.action!=='WAIT')throw Error('core counting failure');
+// round-trip schema/hash check
+const bp=brainPayload();const fp=hash(JSON.stringify({schema:bp.schema,history:bp.history,learner:{...bp.learner,integrity:{}}}));if(!/^[0-9a-f]{8}$/.test(fp))throw Error('checksum failure');
+lastSelfTest={status:'PASS',detail:`${passed}/${suites.length} suites · deterministic · sanitize · checksum`};}
+catch(e){lastSelfTest={status:'FAIL',detail:e.message};failures.push(e.message);}finally{history=originalH;learner=originalL;pending=originalP;lastKey=originalK;busy=false;render(makeForecast(history));$('selfTestBox').textContent=`Self-test ${lastSelfTest.status} · ${lastSelfTest.detail}`;statusMsg(`Self-test ${lastSelfTest.status}`);}}
+function exportBrain(){if(!save())return;const p=brainPayload();const integrity=hash(JSON.stringify({schema:p.schema,history:p.history,learner:{...p.learner,integrity:{}}}));p.checksum=integrity;const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='NEXUS_ARC_V2_Brain_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800);statusMsg('Export brain เสร็จแล้ว · checksum '+integrity);}
+function importBrain(file){const rd=new FileReader();rd.onload=()=>{try{const p=JSON.parse(String(rd.result||''));const legacy=['NEXUS-ARC-V2.2','NEXUS-ARC-V2.1'];if(!p||(![VERSION,...legacy].includes(p.schema))||!Array.isArray(p.history)||!p.learner)throw Error('invalid schema');const normalized=normalizeLearning(p.learner);const c=hash(JSON.stringify({schema:p.schema,history:sanitize(p.history),learner:{...normalized,integrity:{}}}));if(p.checksum&&p.checksum!==c)throw Error('checksum mismatch');history=sanitize(p.history);learner=normalized;learner.version=VERSION;corrCache=null;corrCacheN=-1;pending=null;lastKey='';save();render(makeForecast(history));statusMsg('Import สำเร็จ · memory + learner restored');}catch(e){statusMsg('IMPORT ERROR · '+e.message);}};rd.readAsText(file);}
+function resetProject(){
+  if(busy)return;
+  try{
+    busy=true;
+    history=[];
+    learner=defaultLearning();
+    pending=null;
+    lastKey='';
+    corrCache=null;
+    corrCacheN=-1;
+    localStorage.removeItem(HKEY);
+    localStorage.removeItem(LKEY);
+    LEGACY_HKEYS.forEach(k=>localStorage.removeItem(k));
+    LEGACY_LKEYS.forEach(k=>localStorage.removeItem(k));
+    save();
+    render(makeForecast(history));
+    statusMsg('รีเซ็ตสำเร็จ · ล้างประวัติและ Learning แล้ว');
+  }catch(e){
+    statusMsg('RESET ERROR · '+e.message);
+  }finally{
+    busy=false;
+  }
+}
+function init(){
+  render(makeForecast(history));
+  document.querySelectorAll('[data-result]').forEach(b=>b.addEventListener('click',()=>onResult(b.dataset.result)));
+  $('undo').addEventListener('click',()=>{if(busy||!history.length)return;history.pop();pending=null;lastKey='';save();render(makeForecast(history));statusMsg('ย้อนกลับสำเร็จ · วิเคราะห์ใหม่แล้ว');});
+  $('reset').addEventListener('click',resetProject);
+}
+init();
+window.NEXUS={makeForecast,render,selfTest,get history(){return history.slice();},get learner(){return learner;},version:VERSION};
+// Optional automated smoke mode: append ?selftest=1
+if(location.search.includes('selftest=1')){setTimeout(selfTest,10);}
+})();
+</script>
+</body>
+</html>

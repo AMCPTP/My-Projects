@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0b1020" />
+<title>Baccarat Analyzer Pro 5.4 — Weighted Evidence & Walk-Forward Learning</title>
+<style>
+  :root {
+    --bg:#0b1020; --panel:#121a2d; --panel2:#17223a; --line:#2a3753;
+    --text:#edf2ff; --muted:#99a8c4; --blue:#4d9cff; --blue2:#1e63cb;
+    --red:#ff6477; --red2:#b62948; --green:#3dd6ae; --amber:#ffc66d;
+    --shadow:0 18px 60px rgba(0,0,0,.22); --radius:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1000px 450px at 15% -10%,#18274a 0%,transparent 70%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.5}
+  button{font:inherit;cursor:pointer}
+  .wrap{max-width:1400px;margin:auto;padding:28px 22px 48px}
+  .topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{height:48px;width:48px;border-radius:15px;background:linear-gradient(145deg,#2c83ff,#7c4dff);display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 10px 25px #1e63cb55}
+  h1{font-size:clamp(23px,3vw,34px);line-height:1.1;margin:0;letter-spacing:-.7px}
+  .subtitle{color:var(--muted);font-size:13px;margin-top:5px}
+  .save-pill{font-size:12px;color:#a9f1d9;background:#11372f;border:1px solid #246b5a;padding:7px 12px;border-radius:999px;white-space:nowrap}
+  .grid{display:grid;gap:18px}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}
+  .card{background:linear-gradient(180deg,rgba(23,34,58,.96),rgba(18,26,45,.98));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .kpi{padding:18px 20px;min-height:112px}
+  .kpi-label{color:var(--muted);font-size:12px;letter-spacing:.4px}
+  .kpi-value{font-size:29px;font-weight:800;margin-top:8px;letter-spacing:-.5px}
+  .kpi-note{font-size:12px;color:var(--muted);margin-top:2px}
+  .main-grid{grid-template-columns:minmax(320px,.92fr) minmax(440px,1.48fr);align-items:stretch}
+  .section{padding:21px}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:17px}
+  h2{font-size:17px;margin:0;font-weight:750}
+  .desc{font-size:12px;color:var(--muted);margin-top:5px}
+  .input-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pick{min-height:88px;border:1px solid transparent;border-radius:15px;color:white;font-size:27px;font-weight:850;letter-spacing:.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:transform .15s,filter .15s}
+  .pick small{font-size:11px;font-weight:600;opacity:.88;letter-spacing:0}
+  .pick:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .pick:active{transform:translateY(0)}
+  .pick-b{background:linear-gradient(135deg,#d93d5a,#8e1e43);box-shadow:0 10px 28px #d93d5a24}
+  .pick-p{background:linear-gradient(135deg,#2586f7,#174aaf);box-shadow:0 10px 28px #2586f724}
+  .tool-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .tool{background:#202d48;border:1px solid #344461;color:#dce6fa;border-radius:10px;padding:9px 12px;font-size:12px}
+  .tool:hover{background:#2a3a5b}
+  .tool.danger{color:#ffb8c2;border-color:#683349;background:#301b2b}
+  .history-head{display:flex;justify-content:space-between;align-items:center;margin-top:22px;margin-bottom:10px}
+  .tiny{color:var(--muted);font-size:11px}
+  .road{display:flex;flex-wrap:wrap;gap:7px;min-height:45px;align-content:flex-start}
+  .road-chip{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;border:1px solid #ffffff1b}
+  .road-chip.B{background:#aa2945;color:#fff}
+  .road-chip.P{background:#1763ba;color:#fff}
+  .empty{font-size:12px;color:#7687a7;padding:12px 0}
+  .history-list{display:flex;flex-direction:column;gap:7px;max-height:250px;overflow:auto;padding-right:4px}
+  .history-row{display:flex;align-items:center;gap:10px;background:#10182a;border:1px solid #25324d;border-radius:10px;padding:8px 10px;font-size:12px}
+  .history-row .round{color:var(--muted);width:52px}
+  .mini-chip{height:25px;min-width:25px;display:grid;place-items:center;border-radius:50%;font-size:11px;font-weight:850}
+  .mini-chip.B{background:#aa2945}.mini-chip.P{background:#1763ba}
+  .history-row .time{margin-left:auto;color:var(--muted);font-size:10px}
+  .prediction{position:relative;overflow:hidden;padding:22px}
+  .prediction::after{content:"";position:absolute;width:300px;height:300px;right:-120px;top:-155px;border-radius:50%;background:radial-gradient(circle,#345ba133,transparent 70%);pointer-events:none}
+  .pred-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;position:relative;z-index:1}
+  .pred-state{display:flex;gap:15px;align-items:center;margin:15px 0 14px;position:relative;z-index:1}
+  .pred-ball{width:75px;height:75px;flex:none;border-radius:22px;display:grid;place-items:center;font-size:31px;font-weight:900;border:1px solid #ffffff15;background:#222e46;color:#bac6dc}
+  .pred-ball.B{background:linear-gradient(145deg,#d93d5a,#8e1e43);color:white}
+  .pred-ball.P{background:linear-gradient(145deg,#2586f7,#174aaf);color:white}
+  .pred-ball.HOLD{font-size:28px;background:linear-gradient(145deg,#3b455b,#202a40)}
+  .pred-label{font-size:23px;font-weight:850;letter-spacing:-.4px}
+  .pred-reason{font-size:12px;color:var(--muted);max-width:510px;margin-top:4px}
+  .score-wrap{width:100%;margin-top:14px;position:relative;z-index:1}
+  .score-label{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px;margin-bottom:7px}
+  .bar{height:8px;background:#26334d;border-radius:100px;overflow:hidden;display:flex}
+  .bar-p{background:var(--blue);width:50%;transition:width .2s}
+  .bar-b{background:var(--red);width:50%;transition:width .2s}
+  .support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px;position:relative;z-index:1}
+  .support{border:1px solid #293653;background:#10182a;border-radius:12px;padding:11px 12px}
+  .support .label{font-size:10px;color:var(--muted)}
+  .support .val{font-size:17px;font-weight:800;margin-top:3px}
+  .note-box{font-size:11px;color:#c5d1e8;background:#111b30;border:1px solid #293956;padding:11px 13px;border-radius:11px;margin-top:13px;position:relative;z-index:1}
+  .note-box strong{color:#fff}
+  .metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:18px}
+  .metric{padding:13px;background:#111a2d;border:1px solid #283650;border-radius:12px}
+  .metric .m-label{font-size:10px;color:var(--muted)}
+  .metric .m-val{font-size:18px;font-weight:800;margin-top:4px}
+  .selection-panel{margin-top:18px;padding:21px}
+  .prediction{margin-top:18px}
+  .record-panel{margin-top:18px}
+  .selection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+  .selection-item{background:#10182a;border:1px solid #293653;border-radius:12px;padding:12px}
+  .selection-item .small{font-size:10px;color:var(--muted)}.selection-item .big{font-size:15px;font-weight:800;margin-top:4px}
+  .rank-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .rank-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:#10182a;border:1px solid #293653;border-radius:10px;font-size:12px}
+  .rank-num{height:27px;width:27px;border-radius:8px;background:#223451;display:grid;place-items:center;font-weight:800}
+  .rank-meta{color:var(--muted);font-size:10px;margin-top:3px}.rank-score{font-weight:800;color:var(--green)}
+  .patterns-section{margin-top:18px;padding:21px}
+  .pattern-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .filter{border:1px solid #354460;background:#162139;color:#c6d2e8;padding:8px 12px;border-radius:999px;font-size:11px}
+  .filter.active{background:#2865b8;border-color:#4b8ee8;color:white}
+  .pattern-search{margin-left:auto;min-width:190px;max-width:280px;flex:1;background:#0c1425;color:var(--text);border:1px solid #33425f;border-radius:10px;padding:9px 12px;outline:none;font:inherit;font-size:12px}
+  .pattern-search:focus{border-color:#5494f5}
+  .group-title{display:flex;align-items:center;gap:9px;margin:19px 0 10px;font-size:13px;font-weight:800}
+  .group-count{font-size:10px;color:var(--muted);font-weight:500}
+  .group-dot{height:8px;width:8px;border-radius:50%;background:#739df0}
+  .pattern-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .pattern{padding:13px 14px;border:1px solid #283650;background:#10182a;border-radius:13px;min-height:122px;display:flex;flex-direction:column;gap:8px}
+  .pattern.active{border-color:#427bb8;background:linear-gradient(140deg,#152844,#10182a)}
+  .pattern-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .pattern-name{font-size:12px;font-weight:800}
+  .pattern-id{font-size:10px;color:#8ca1c2;margin-right:5px}
+  .status{font-size:9px;border-radius:999px;padding:4px 7px;white-space:nowrap;border:1px solid #384660;background:#1a263d;color:#aab8d0}
+  .status.on{background:#13382f;color:#86e8cc;border-color:#276a58}
+  .pattern-desc{font-size:10px;color:#8f9fbb;line-height:1.45;flex:1}
+  .pattern-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid #26334b;padding-top:8px;font-size:10px;color:#a9b8d1}
+  .pattern-signal{font-weight:800}
+  .signal-B{color:#ff8291}.signal-P{color:#69afff}.signal-HOLD{color:#c1c9d9}
+  .confidence{color:var(--green)}
+  .footer{margin-top:17px;font-size:11px;color:#8292af;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+  .warning{border:1px solid #6b5430;background:#2a2318;color:#e8c98e;border-radius:12px;padding:12px 14px;margin-top:17px;font-size:11px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#eff6ff;color:#18223a;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:0 10px 35px #0005;transition:.2s;z-index:20}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  .pick-t{background:linear-gradient(135deg,#2aa785,#176652);box-shadow:0 10px 28px #2aa78524}
+  .road-chip.T,.mini-chip.T{background:#168768;color:#fff}
+  .input-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .setting-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border:1px solid #293653;background:#10182a;border-radius:12px}
+  .setting-row label{font-size:12px;color:#dce6fa;font-weight:700}
+  .setting-select{padding:7px 10px;min-width:190px}
+  .record-mode{margin-bottom:12px}
+  .research-panel{margin-top:18px;padding:21px}
+  .report-metrics{margin:0 0 16px;grid-template-columns:repeat(5,minmax(0,1fr))}
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .report-box{border:1px solid #293653;background:#10182a;border-radius:13px;padding:14px;min-width:0}
+  .report-box h3{margin:0 0 6px;font-size:13px}
+  .fh-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+  .fh-prob{background:#10182a;border:1px solid #293653;border-radius:13px;padding:14px}
+  .fh-prob .label{font-size:11px;color:var(--muted)}.fh-prob .value{font-size:25px;font-weight:850;margin-top:4px}
+  .fh-detail-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:12px}
+  .fh-detail{background:#10182a;border:1px solid #293653;border-radius:11px;padding:11px}
+  .fh-detail .label{font-size:10px;color:var(--muted)}.fh-detail .value{font-size:14px;font-weight:800;margin-top:4px}
+  .fh-note{margin-top:12px;padding:11px 13px;background:#111b30;border:1px solid #293956;border-radius:11px;color:#c5d1e8;font-size:11px}
+  .scroll-table{overflow:auto;max-width:100%;margin-top:10px}
+
+  .v4-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
+  .v4-metric{background:#10182a;border:1px solid #293653;border-radius:11px;padding:12px;min-width:0}
+  .v4-metric .m-label{font-size:10px;color:var(--muted)}.v4-metric .m-val{font-size:21px;font-weight:850;margin-top:4px;overflow-wrap:anywhere}
+  #v4Calibration{max-height:440px;overflow:auto}
+  .learning-status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
+  .learning-stat{background:#10182a;border:1px solid #293653;border-radius:11px;padding:12px;min-width:0}
+  .learning-stat .m-label{font-size:10px;color:var(--muted)}.learning-stat .m-val{font-size:20px;font-weight:850;margin-top:4px;overflow-wrap:anywhere}
+  .learning-good{color:#71e4bd}.learning-caution{color:#ffc66d}.learning-bad{color:#ff8291}
+  .learning-table-wrap{overflow:auto;max-height:300px;margin-top:8px}
+  @media(max-width:1000px){.learning-status-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:600px){.learning-status-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .v4-status{padding:10px 12px;border:1px solid #293956;border-radius:10px;background:#111b30;color:#c5d1e8;font-size:11px;margin-top:12px}
+  @media(max-width:1000px){.v4-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .data-table{width:100%;border-collapse:collapse;font-size:11px;min-width:410px}
+  .data-table th,.data-table td{padding:8px 7px;border-bottom:1px solid #283650;text-align:left;white-space:nowrap}
+  .data-table th{color:#9caecb;font-weight:700;background:#151f34}
+  .data-table td{color:#dce6fa}
+  .data-table .num{text-align:right;font-variant-numeric:tabular-nums}
+  .metric-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+  .metric-line{padding:9px;border:1px solid #283650;border-radius:9px;background:#141e32}
+  .metric-line span{display:block;color:var(--muted);font-size:10px}
+  .metric-line strong{font-size:15px}
+  .forecast-history{display:flex;flex-direction:column;gap:7px;margin-top:10px;max-height:320px;overflow:auto}
+  .forecast-row{display:grid;grid-template-columns:minmax(100px,1.2fr) 70px 65px minmax(100px,1.5fr);gap:8px;align-items:center;border:1px solid #283650;border-radius:9px;background:#141e32;padding:9px 10px;font-size:11px}
+  .forecast-row .muted{font-size:10px;color:var(--muted)}
+  .outcome-hit{color:#71e4bd;font-weight:800}.outcome-miss{color:#ff8291;font-weight:800}.outcome-hold{color:#c0cbdf;font-weight:800}.outcome-void{color:#ffc66d;font-weight:800}
+  .family-note{font-size:9px;color:#98abc9;border-top:1px solid #26334b;padding-top:6px}
+  #activeShoeLabel{color:#9dcaff;font-weight:800}
+  .tool:disabled{opacity:.45;cursor:not-allowed}
+
+  @media(max-width:1000px){.main-grid{grid-template-columns:1fr}.pattern-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.report-grid{grid-template-columns:1fr}}
+  @media(max-width:600px){.fh-grid{grid-template-columns:1fr}.fh-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.selection-grid{grid-template-columns:1fr}.rank-row{grid-template-columns:28px minmax(0,1fr) auto}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.forecast-row{grid-template-columns:1fr 45px 55px}.forecast-row .forecast-detail{grid-column:1/-1}.wrap{padding:18px 12px 30px}.topbar{align-items:flex-start}.save-pill{display:none}.section,.prediction,.patterns-section{padding:16px}.pattern-grid{grid-template-columns:1fr}.support-grid{grid-template-columns:1fr 1fr}.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pred-label{font-size:20px}.pattern-search{max-width:none;min-width:100%;order:2}.pattern-toolbar{gap:6px}.kpi{padding:14px}.kpi-value{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand"><div class="logo">B<span style="color:#c5e4ff">/</span>P</div><div><h1>Baccarat Analyzer Pro 5.4</h1><div class="subtitle">ครบ 50 รูปแบบ · Pattern-by-Pattern Learning · Family Ensemble · Regime Router · Walk-forward Validation</div></div></div>
+    <div class="save-pill" id="saveStatus">● บันทึกในเบราว์เซอร์อัตโนมัติ</div>
+  </header>
+
+  <div class="grid kpis">
+    <div class="card kpi"><div class="kpi-label">ผลสะสมในประวัติ</div><div class="kpi-value" id="kpiRounds">0</div><div class="kpi-note">ตาที่บันทึกไว้ในเบราว์เซอร์นี้</div></div>
+    <div class="card kpi"><div class="kpi-label">รูปแบบที่กำลังตรง</div><div class="kpi-value" id="kpiActive">0<span style="font-size:14px;color:var(--muted);font-weight:500"> / 50</span></div><div class="kpi-note">ประเมินจากลำดับล่าสุด</div></div>
+    <div class="card kpi"><div class="kpi-label">ตัวอย่างรูปแบบย้อนหลังรวม</div><div class="kpi-value" id="kpiSamples">0</div><div class="kpi-note">จำนวนที่ตรงในแต่ละรูปแบบ (อาจนับซ้ำ)</div></div>
+    <div class="card kpi"><div class="kpi-label">ความแม่นยำ Walk-forward</div><div class="kpi-value" id="kpiAccuracy">—</div><div class="kpi-note">ทดสอบระบบเลือกสัญญาณจริงแบบ Walk-forward</div></div>
+  </div>
+
+
+
+<section class="card prediction">
+      <div class="pred-top"><div><h2>ผลเปรียบเทียบและการประเมิน</h2><div class="desc">เลือกสัญญาณตามสถานการณ์ แล้วคาดการณ์จากเสียงข้างมากของสัญญาณที่ผ่านเกณฑ์</div></div><span class="status" id="modelStatus">รอข้อมูล</span></div>
+      <div class="pred-state">
+        <div class="pred-ball HOLD" id="predBall">—</div>
+        <div><div class="pred-label" id="predLabel">คาดการณ์: งดคาดการณ์</div><div class="pred-reason" id="predReason">บันทึกผลก่อน ระบบจึงจะตรวจจับรูปแบบและประเมินหลักฐานได้</div></div>
+      </div>
+      <div class="score-wrap">
+        <div class="score-label"><span>สัดส่วนเสียงข้างมากของสัญญาณที่เลือกใช้ (ไม่ใช่โอกาสชนะจริง)</span><span id="supportText">P 0% · B 0%</span></div>
+        <div class="bar"><div class="bar-p" id="barP"></div><div class="bar-b" id="barB"></div></div>
+      </div>
+      <div class="support-grid">
+        <div class="support"><div class="label">รูปแบบตรวจพบ</div><div class="val" id="supActive">0 / 50</div></div>
+        <div class="support"><div class="label">เสียงสัญญาณที่ใช้โหวต</div><div class="val" id="supVotes">0</div></div>
+        <div class="support"><div class="label">ตัวอย่างรวมของรูปแบบที่ตรง (นับซ้ำได้)</div><div class="val" id="supSamples">0</div></div>
+      </div>
+      <div class="note-box" id="evidenceNote"><strong>หลักการตัดสินใจ:</strong> ต้องมีผลย้อนหลังอย่างน้อย 20 ตาและครอบครัวสัญญาณที่ผ่านเกณฑ์อย่างน้อย 3 แหล่ง (อาจเพิ่มเป็น 4 แหล่งในโหมดระมัดระวัง) หากเสียงเสมอกันหรือข้อมูลไม่พอจะแสดง “งดคาดการณ์”</div>
+      <div class="metrics-grid">
+        <div class="metric"><div class="m-label">ผล P ล่าสุด 10 ตา</div><div class="m-val" id="recentP">0</div></div>
+        <div class="metric"><div class="m-label">ผล B ล่าสุด 10 ตา</div><div class="m-val" id="recentB">0</div></div>
+        <div class="metric"><div class="m-label">เปลี่ยนฝั่งล่าสุด 10 ตา</div><div class="m-val" id="recentSwitch">—</div></div>
+        <div class="metric"><div class="m-label">ช่วงติดกันปัจจุบัน</div><div class="m-val" id="currentStreak">—</div></div>
+      </div>
+    </section>
+
+
+
+<section class="card section record-panel">
+      <div class="section-head"><div><h2>บันทึกผลล่าสุด</h2><div class="desc">กดฝั่งที่ชนะในแต่ละตา · ระบบวิเคราะห์ใหม่ทันที</div></div><span class="tiny" id="activeShoeLabel">Shoe 1</span><span class="tiny" id="latestRound">ยังไม่มีข้อมูล</span></div>
+      <div class="setting-row record-mode"><label for="recordMode">โหมดบันทึกผล</label><select id="recordMode" class="tool setting-select"><option value="live">โหมดสด — เก็บคำคาดการณ์ก่อนผล</option><option value="history">ป้อนย้อนหลัง — ไม่คิดเป็นคำคาดการณ์สด</option></select><span id="recordModeHint" class="tiny">โหมดสดจะบันทึกคำคาดการณ์ก่อนรับผลจริง</span></div>
+      <div class="input-actions">
+        <button class="pick pick-p" id="addP" aria-label="บันทึก Player">P<small>PLAYER</small></button>
+        <button class="pick pick-b" id="addB" aria-label="บันทึก Banker">B<small>BANKER</small></button>
+        <button class="pick pick-t" id="addT" aria-label="บันทึก Tie">T<small>TIE / เสมอ</small></button>
+
+      </div>
+      <div class="tool-row">
+        <button class="tool" id="newShoeBtn">＋ เริ่ม Shoe ใหม่</button>
+        <button class="tool" id="undoBtn">↶ ย้อนกลับ 1 ตา</button>
+        <button class="tool" id="exportBtn">↓ ส่งออก CSV</button>
+        <button class="tool" id="exportJsonBtn">สำรอง JSON</button>
+        <button class="tool" id="importBtn">นำเข้า CSV / JSON</button>
+        <input type="file" id="importFile" accept=".csv,.json,application/json,text/csv" hidden />
+        <button class="tool danger" id="resetBtn">ล้างประวัติทั้งหมด</button>
+      </div>
+      <div class="history-head"><h2 style="font-size:14px">Road / ลำดับผลของ Shoe ปัจจุบัน</h2><span class="tiny" id="roadMeta">0 รายการ</span></div>
+      <div class="road" id="road"><div class="empty">ยังไม่มีผล — เริ่มกด P หรือ B เพื่อบันทึก</div></div>
+      <div class="history-head"><h2 style="font-size:14px">ประวัติที่บันทึก</h2><span class="tiny">ใหม่สุดอยู่บน</span></div>
+      <div class="history-list" id="historyList"><div class="empty">ประวัติจะปรากฏที่นี่</div></div>
+    </section>
+
+<section class="card selection-panel">
+    <div class="section-head"><div><h2>ตัวเลือกสัญญาณอัตโนมัติ</h2><div class="desc">ตรวจประเมินรูปแบบครบทั้ง 50 รายการทุกครั้ง: คัดเฉพาะแบบที่ตรงสถานการณ์ มีหลักฐานย้อนหลัง และได้คะแนนตามข้อมูลก่อนผลจริง จากนั้นรวมสัญญาณที่สัมพันธ์กันเป็นเสียงระดับครอบครัว · ใช้หน้าต่างฝึก 300 ผลและ Walk-forward validation</div></div><span class="status" id="regimeBadge">รอข้อมูล</span></div>
+    <div class="selection-grid">
+      <div class="selection-item"><div class="small">สถานการณ์ที่ตรวจพบ</div><div class="big" id="regimeText">ยังไม่มีข้อมูล</div></div>
+      <div class="selection-item"><div class="small">สัญญาณที่เลือกใช้</div><div class="big" id="chosenSignals">ยังไม่มี</div></div>
+      <div class="selection-item"><div class="small">ความเห็นพ้องของสัญญาณ</div><div class="big" id="agreementText">—</div></div>
+    </div>
+    <div class="v4-status" id="strategyAdvice">ตัวเลือกกลยุทธ์จะปรับตามสถานการณ์ล่าสุดและสถิติที่สะสมได้</div>
+    <div class="setting-row"><label for="agreementThreshold">เกณฑ์เสียงข้างมากขั้นต่ำ</label><select id="agreementThreshold" class="tool setting-select"><option value="0.5">มากกว่า 50% (เสียงข้างมาก)</option><option value="0.55">อย่างน้อย 55%</option><option value="0.6" selected>อย่างน้อย 60%</option><option value="0.65">อย่างน้อย 65%</option><option value="0.7">อย่างน้อย 70%</option></select><span class="tiny">เป็นเกณฑ์พื้นฐาน; ระบบอาจเพิ่มเกณฑ์อัตโนมัติเมื่อคำทำนายช่วงหลังผิดบ่อย</span></div>
+    <div class="desc" style="margin-top:14px">รูปแบบรายตัวที่ได้คะแนนสูงสุดจากทั้ง 50 รายการ; “ร่วมโหวตจริง” หมายถึงอยู่ในครอบครัวที่ผ่านเกณฑ์ · คะแนนเป็นอันดับ ไม่ใช่โอกาสชนะ · รูปแบบที่คล้ายกันถูกรวมเป็นเสียงเดียว</div>
+    <div id="rankedSignals" class="rank-list"><div class="empty">เพิ่มผลย้อนหลังเพื่อจัดอันดับสัญญาณ</div></div>
+  </section>
+
+<section class="card section research-panel" id="adaptiveLearningPanel">
+  <div class="section-head"><div><h2>Adaptive Learning — จำผลผิดและปรับน้ำหนักสัญญาณ</h2><div class="desc">บันทึกสัญญาณรายรูปแบบก่อนรู้ผลจริง แล้วแยกนับถูก/ผิดและปรับน้ำหนักของแต่ละ Pattern จากผลจริง รวมถึงแยกตามสถานการณ์; รูปแบบที่ไม่ได้ชี้ P/B จะไม่ถูกนับว่าผิด</div></div><span class="status" id="learningStatus">รอคำทำนาย</span></div>
+  <div class="learning-status-grid">
+    <div class="learning-stat"><div class="m-label">คำทำนายที่บันทึกไว้</div><div class="m-val" id="learnForecastCount">0</div></div>
+    <div class="learning-stat"><div class="m-label">ความแม่นยำจากคำทำนายที่ตัดสิน P/B</div><div class="m-val" id="learnAccuracy">—</div></div>
+    <div class="learning-stat"><div class="m-label">ผิดติดต่อกันล่าสุด</div><div class="m-val" id="learnMissStreak">0</div></div>
+    <div class="learning-stat"><div class="m-label">โหมดการเลือกสัญญาณ</div><div class="m-val" id="learnMode">ปกติ</div></div>
+  </div>
+  <div class="report-grid">
+    <div class="report-box"><h3>ระบบกำลังปรับอย่างไร</h3><div id="learningAdvice" class="fh-note">เมื่อมีสัญญาณ ระบบจะคาดการณ์ทันทีและบันทึกก่อนผลจริง จากนั้นประเมินความถูก/ผิดรายรูปแบบ</div><div id="learningLastResult" class="desc" style="margin-top:9px">ยังไม่มีคำทำนายสดให้วิเคราะห์ข้อผิดพลาด</div></div>
+    <div class="report-box"><h3>ความน่าเชื่อถือรายครอบครัวสัญญาณ</h3><div class="desc">สัญญาณที่สัมพันธ์กันจะถูกรวมเป็นหนึ่งเสียง ครอบครัวที่มีตัวอย่างน้อยจะถูกหดน้ำหนักกลับเข้าหาค่ากลาง</div><div id="learningFamilyTable" class="learning-table-wrap"><div class="empty">เริ่มบันทึกคำทำนายในโหมดสดเพื่อสะสมตัวอย่างรายสัญญาณ</div></div></div>
+    <div class="report-box"><h3>ความน่าเชื่อถือรายรูปแบบ (1–50)</h3><div class="desc">แสดงครบทั้ง 50 Pattern: นับเฉพาะรอบที่รูปแบบนั้นออกสัญญาณ P/B และถูกบันทึกก่อนเห็นผลจริง พร้อมแยกสถานการณ์</div><div id="learningPatternTable" class="learning-table-wrap"><div class="empty">เริ่มบันทึกคำทำนายสดที่มีสัญญาณ เพื่อสะสมตัวอย่างรายรูปแบบ</div></div></div>
+  </div>
+  <div class="fh-note">น้ำหนักราย Pattern จะคำนวณใหม่จากคำชี้นำ P/B ที่บันทึกไว้ก่อนผลจริง: เมื่อชี้ถูกจะเพิ่มความน่าเชื่อถืออย่างค่อยเป็นค่อยไป เมื่อชี้ผิดจะลดลงตามสถิติสะสมและจำนวนตัวอย่าง โดยมีการหดค่ากลับเข้าค่ากลางและจำกัดช่วงน้ำหนักเพื่อลดการแกว่ง; แสดงครบทั้ง 50 รูปแบบ แม้รูปแบบที่ยังไม่มีตัวอย่างจะมีน้ำหนักเริ่มต้น ×1.00 รูปแบบที่ไม่ออกสัญญาณจะไม่ถูกนับเป็นผิด ข้อมูลเก็บในเบราว์เซอร์และติดไปกับไฟล์สำรอง JSON/CSV โหมดระมัดระวังจะเพิ่มความเข้มงวด ไม่สลับ P เป็น B หรือ B เป็น P โดยอัตโนมัติ เพราะการแพ้ครั้งก่อนพิสูจน์ไม่ได้ว่าฝั่งตรงข้ามจะชนะครั้งถัดไป</div>
+</section>
+
+<section class="card section research-panel" id="fullHistoryPanel">
+  <div class="section-head"><div><h2>Full-History Probability Engine — วิเคราะห์ประวัติทั้งหมด</h2><div class="desc">ใช้ผลที่บันทึกไว้ทุก Shoe · จับคู่บริบทที่เกิดก่อนผลจริง · ปรับค่าจากฐานข้อมูลรวมไปสู่บริบทที่เฉพาะขึ้น</div></div><span class="status" id="fhStatus">รอข้อมูล</span></div>
+  <div class="fh-grid">
+    <div class="fh-prob"><div class="label">P · ค่าประมาณเชิงประวัติ</div><div class="value" id="fhP">—</div></div>
+    <div class="fh-prob"><div class="label">B · ค่าประมาณเชิงประวัติ</div><div class="value" id="fhB">—</div></div>
+    <div class="fh-prob"><div class="label">T · ค่าประมาณเชิงประวัติ</div><div class="value" id="fhT">—</div></div>
+  </div>
+  <div class="fh-detail-grid">
+    <div class="fh-detail"><div class="label">ผลทั้งหมดในประวัติ</div><div class="value" id="fhTotal">0</div></div>
+    <div class="fh-detail"><div class="label">บริบทตรงกัน</div><div class="value" id="fhExact">—</div></div>
+    <div class="fh-detail"><div class="label">หลังผลล่าสุด</div><div class="value" id="fhTransition">—</div></div>
+    <div class="fh-detail"><div class="label">จำนวน Shoe</div><div class="value" id="fhShoes">0</div></div>
+  </div>
+  <div class="report-grid">
+    <div class="report-box"><h3>ระดับหลักฐาน</h3><div id="fhEvidence" class="metric-list"><div class="empty">เพิ่มประวัติ P/B/T เพื่อเริ่มวิเคราะห์</div></div></div>
+    <div class="report-box"><h3>ประวัติทั้งหมดเทียบช่วงล่าสุด</h3><div id="fhRecent" class="metric-list"><div class="empty">ยังไม่มีข้อมูล</div></div></div>
+  </div>
+  <div class="fh-note" id="fhNote">ค่าประมาณจะแสดงเมื่อมีข้อมูลย้อนหลังเท่านั้น ตัวเลขเป็นสัดส่วนเชิงประจักษ์ที่ปรับให้เสถียรด้วยการรวมข้อมูลระดับต่าง ๆ ไม่ใช่ความน่าจะเป็นที่รับประกันผลตาถัดไป</div>
+</section>
+
+<section class="card section research-panel">
+  <div class="section-head"><div><h2>รายงานการเรียนรู้และทดสอบ — ระยะที่ 1–3</h2><div class="desc">Walk-forward ทดสอบคะแนนถ่วงน้ำหนักเทียบเสียงดิบและ Baseline แทง B · แยก Shoe · สูงสุด 50 จุดล่าสุด</div></div><button class="tool" id="rerunBacktestBtn">↻ ทดสอบย้อนหลังใหม่</button></div>
+  <div class="metrics-grid report-metrics">
+    <div class="metric"><div class="m-label">รอบทดสอบระบบจริง</div><div class="m-val" id="wfCount">—</div></div>
+    <div class="metric"><div class="m-label">Accuracy ระบบสัญญาณ</div><div class="m-val" id="wfAccuracy">—</div></div>
+    <div class="metric"><div class="m-label">Accuracy Baseline แทง B</div><div class="m-val" id="wfBaselineAccuracy">—</div></div>
+    <div class="metric"><div class="m-label">Coverage ระบบสัญญาณ</div><div class="m-val" id="wfCoverage">—</div></div>
+    <div class="metric"><div class="m-label">งดคาดการณ์ / Tie</div><div class="m-val" id="wfAbstainTie">—</div></div>
+  </div>
+  <div id="wfDetail" class="desc" style="margin-top:-6px;margin-bottom:12px">Accuracy จะคำนวณเมื่อมีรอบทดสอบที่คาดการณ์ P/B จริง</div>
+  <div class="report-grid">
+    <div class="report-box"><h3>Walk-forward แยกตามสถานการณ์</h3><div class="desc">จำลองทีละตา โดยไม่ให้ระบบเห็นผลเป้าหมายล่วงหน้า · ใช้รอบล่าสุดได้สูงสุด 50 จุดทดสอบ</div><div id="regimeReport" class="scroll-table"><div class="empty">ต้องมีประวัติมากพอให้เกิดจุดทดสอบ</div></div></div>
+    <div class="report-box"><h3>การคาดการณ์จริงที่บันทึกไว้</h3><div class="desc">ประเมินจากคำคาดการณ์ที่ถูกบันทึกไว้ก่อนป้อนผลจริง ไม่ย้อนแก้คำทำนายเดิม</div><div id="liveMetrics"><div class="empty">คำคาดการณ์ใหม่จะถูกบันทึกเมื่อคุณกดผล P, B หรือ T</div></div></div>
+  </div>
+  <div class="report-box history-report"><h3>บันทึกคำคาดการณ์ล่าสุด</h3><div id="forecastHistory" class="forecast-history"><div class="empty">ยังไม่มีคำคาดการณ์ที่บันทึกไว้</div></div></div>
+</section>
+
+
+<section class="card section research-panel" id="v4ValidationPanel">
+  <div class="section-head"><div><h2>Validation Lab 4.0 — ทดสอบความน่าเชื่อถือจากประวัติทั้งหมด</h2><div class="desc">Walk-forward ทีละตา ครอบคลุมทุกจุดที่มีบริบทอย่างน้อย 20 ผล P/B ภายใน Shoe · แต่ละคำประมาณใช้เฉพาะข้อมูลที่รู้ก่อนผลเป้าหมาย</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="status" id="v4Status">รอข้อมูล</span><button class="tool" id="v4EnsembleBtn">ทดสอบระบบรวม 50 รูปแบบทั้งหมด</button></div></div>
+  <div class="v4-metrics">
+    <div class="v4-metric"><div class="m-label">จุดทดสอบจากทุกประวัติ</div><div class="m-val" id="v4Count">—</div></div>
+    <div class="v4-metric"><div class="m-label">Brier Score · Full-History</div><div class="m-val" id="v4Brier">—</div></div>
+    <div class="v4-metric"><div class="m-label">Brier Score · Global Baseline</div><div class="m-val" id="v4BrierGlobal">—</div></div>
+    <div class="v4-metric"><div class="m-label">Brier Score · Transition Baseline</div><div class="m-val" id="v4BrierTrans">—</div></div>
+    <div class="v4-metric"><div class="m-label">Log Loss · Full-History</div><div class="m-val" id="v4LogLoss">—</div></div>
+    <div class="v4-metric"><div class="m-label">Multiclass Calibration Error*</div><div class="m-val" id="v4CalibrationError">—</div></div>
+    <div class="v4-metric"><div class="m-label">Accuracy เมื่อระบบเลือก P/B</div><div class="m-val" id="v4Accuracy">—</div></div>
+    <div class="v4-metric"><div class="m-label">Coverage · เลือก P/B</div><div class="m-val" id="v4Coverage">—</div></div>
+  </div>
+  <div id="v4Summary" class="desc">รายงานจะคำนวณเมื่อมีข้อมูลย้อนหลังที่เข้าเกณฑ์</div>
+  <div class="report-grid">
+    <div class="report-box"><h3>เปรียบเทียบแบบทำนายความน่าจะเป็น</h3><div class="desc">Brier Score และ Log Loss ยิ่งต่ำยิ่งดี; Accuracy นับเฉพาะผล P/B ที่ระบบกล้าคาดการณ์</div><div id="v4Comparison" class="scroll-table"><div class="empty">ยังไม่มีจุดทดสอบ</div></div></div>
+    <div class="report-box"><h3>Calibration รายผลลัพธ์</h3><div class="desc">เทียบค่าเฉลี่ยที่โมเดลให้ P/B/T กับความถี่ที่เกิดจริงในช่วงความน่าจะเป็นเดียวกัน</div><div id="v4Calibration" class="scroll-table"><div class="empty">ยังไม่มีจุดทดสอบ</div></div></div>
+  </div>
+  <div id="v4Evidence" class="v4-status">ข้อควรทราบ: ผลย้อนหลังเพียงอย่างเดียวไม่พิสูจน์ว่าจะทายอนาคตได้ แม้คะแนนดีกว่า Baseline ก็ต้องยืนยันด้วยข้อมูลใหม่ที่ไม่ได้ใช้พัฒนาโมเดล</div>
+  <div class="report-box" style="margin-top:12px"><h3>ทดสอบระบบสัญญาณรวม 50 รูปแบบจากทุกจุดย้อนหลัง</h3><div class="desc">ทดสอบคำตัดสินจากระบบสัญญาณจริงและ Full-History vote ด้วยข้อมูลก่อนผลเป้าหมายเท่านั้น · แบ่งทำเป็นชุดย่อยเพื่อไม่ให้หน้าเว็บค้าง · กดทดสอบใหม่หลังนำเข้าหรือแก้ประวัติ</div><div id="v4EnsembleProgress" class="v4-status">ยังไม่ได้รันทดสอบระบบรวมทั้งหมด</div><div id="v4EnsembleSummary" class="desc" style="margin-top:10px">ผลทดสอบระบบรวมจะแสดงที่นี่</div><div id="v4EnsembleMetrics" class="scroll-table"><div class="empty">กด “ทดสอบระบบรวม 50 รูปแบบทั้งหมด” เพื่อเริ่มทดสอบ</div></div></div>
+  <div class="desc" style="margin-top:10px">*Calibration Error เป็นค่าประมาณแบบ class-wise โดยแบ่งช่วงความน่าจะเป็น 10% · ช่วงความไม่แน่นอนของ Δ Brier คำนวณจากความแตกต่างแบบจับคู่ราย Shoe (ประมาณ 95%) เมื่อมี Shoe เพียงพอ · รายงานระบบรวมด้านล่างจะทดสอบทุกจุดย้อนหลังที่เข้าเกณฑ์ แต่ยังไม่ใช่หลักฐานรับประกันผลอนาคต</div>
+</section>
+
+  <section class="card patterns-section">
+    <div class="section-head"><div><h2>คลังรูปแบบเริ่มต้น — 50 รูปแบบ</h2><div class="desc">แสดงสถานะปัจจุบัน; ตัวอย่างย้อนหลังคำนวณสำหรับรูปแบบที่ตรงกับสถานการณ์เท่านั้น และอาจนับซ้ำกันระหว่างรูปแบบ</div></div><span class="status on" id="patternCount">50 รูปแบบ</span></div>
+    <div class="pattern-toolbar" id="filters">
+      <button class="filter active" data-filter="all">ทั้งหมด 50</button>
+      <button class="filter" data-filter="active">ตรวจพบ</button>
+      <button class="filter" data-filter="signal">มีสัญญาณ</button>
+      <button class="filter" data-filter="A">กลุ่ม A</button>
+      <button class="filter" data-filter="B">กลุ่ม B</button>
+      <button class="filter" data-filter="C">กลุ่ม C</button>
+      <button class="filter" data-filter="D">กลุ่ม D</button>
+      <button class="filter" data-filter="E">กลุ่ม E</button>
+      <button class="filter" data-filter="X">รูปแบบเสริม</button>
+      <input class="pattern-search" id="patternSearch" placeholder="ค้นหารูปแบบ เช่น มังกร, 2-1, N-gram…" />
+    </div>
+    <div id="patternGroups"></div>
+  </section>
+
+  <div class="warning"><strong>ข้อจำกัดสำคัญ:</strong> รุ่นนี้รวมคะแนนแบบถ่วงน้ำหนัก ไม่ใช่หลักฐานว่าความแม่นยำดีขึ้นแล้ว ต้องดูผล Walk-forward ของข้อมูลที่ไม่ถูกใช้สร้างคำทำนายนั้นก่อนเสมอ รูปแบบ 50 แบบอาจเป็นการมองข้อมูลลำดับเดียวกันหลายมุมและเสี่ยง overfitting; ถ้าผลย้อนหลังไม่ชนะ baseline ให้ถือว่าไม่มีหลักฐานพอ ระบบรับเพียง P/B/T จึงไม่เห็นแต้มไพ่ที่ออกไปหรือองค์ประกอบไพ่ที่เหลือใน Shoe ซึ่งเป็นข้อมูลที่จำเป็นต่อการประเมินผลจากไพ่ที่ยังเหลืออยู่ การเรียนรู้ในไฟล์นี้สร้างจากคำทำนายที่บันทึกก่อนผลจริง และ Tie ไม่นับเป็นถูกหรือผิด แต่ระบบไม่สามารถรับประกันผลหรือกำไรได้</div>
+  <div class="footer"><span>Local-first · ข้อมูลและการเรียนรู้เก็บไว้ในเบราว์เซอร์เครื่องนี้</span><span>เวอร์ชัน 5.4 · Weighted Evidence · All-50 Individual Learning · Regime Router · Walk-forward Validation · แยก Shoe</span></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'baccarat_analyzer_pro_state_v2';
+  const LEGACY_STORAGE_KEY = 'baccarat_analyzer_pro_history_v1';
+  const SETTINGS_KEY = 'baccarat_analyzer_pro_settings_v2';
+  const INPUT_MODE_KEY = 'baccarat_analyzer_pro_input_mode_v2';
+  const MODEL_VERSION = '5.4-weighted-evidence-walk-forward';
+  const TRAIN_WINDOW = 300;
+  const MIN_CONTEXT = 20;
+  const MIN_BACKTEST_CONTEXT = 8;
+  const MIN_PATTERN_SAMPLES = 8;
+  const MIN_PATTERN_LEAD = 3;
+  const MAX_VOTING_SIGNALS = 8;
+  const MAX_WALK_FORWARD_TARGETS = 50;
+  const $ = id => document.getElementById(id);
+  let state = loadState();
+  let records = state.records;
+  let activeShoeId = Number(state.activeShoeId) || nextShoeId(records);
+  let agreementThreshold = loadThreshold();
+  let recordMode = loadRecordMode();
+  let currentFilter = 'all';
+  let searchText = '';
+  let analysis = null;
+  let toastTimer = null;
+  let cachedWfSignature = '';
+  let cachedWfReport = null;
+  let cachedV4Signature = '';
+  let cachedV4Report = null;
+  let v4EnsembleSignature = '';
+  let v4EnsembleReport = null;
+  let v4EnsembleRunning = false;
+  let v4EnsembleToken = 0;
+  let dataMutationVersion = 0;
+
+  function normalizeForecast(f) {
+    if(!f || typeof f!=='object') return null;
+    const pick=['P','B','HOLD'].includes(f.pick)?f.pick:'HOLD';
+    const votes=f.votes&&typeof f.votes==='object'?f.votes:{};
+    return {
+      modelVersion:String(f.modelVersion||'legacy'), pick,
+      regime:String(f.regime||'ไม่ระบุ'), regimeKey:String(f.regimeKey||'mixed'),
+      contextDecisive:Math.max(0,Number(f.contextDecisive)||0), shoeRound:Math.max(0,Number(f.shoeRound)||0),
+      votes:{P:Math.max(0,Number(votes.P)||0),B:Math.max(0,Number(votes.B)||0)},
+      agreement:Math.max(0,Math.min(1,Number(f.agreement)||0)), baselinePick:['P','B','HOLD'].includes(f.baselinePick)?f.baselinePick:'HOLD',
+      signalIds:Array.isArray(f.signalIds)?f.signalIds.map(Number).filter(Number.isFinite).slice(0,20):[],
+      signalNames:Array.isArray(f.signalNames)?f.signalNames.map(x=>String(x).slice(0,80)).slice(0,20):[],
+      signalFamilies:Array.isArray(f.signalFamilies)?f.signalFamilies.map(x=>String(x).slice(0,80)).slice(0,20):[],
+      signalVotes:Array.isArray(f.signalVotes)?f.signalVotes.slice(0,20).map(v=>({id:Math.max(0,Number(v?.id)||0),family:String(v?.family||'').slice(0,80),signal:['P','B'].includes(v?.signal)?v.signal:null,rankScore:Number.isFinite(Number(v?.rankScore))?Number(v.rankScore):0,voteWeight:Number.isFinite(Number(v?.voteWeight))?Math.max(0,Number(v.voteWeight)):0})).filter(v=>v.family&&v.signal):[],
+      weightedVotes:f.weightedVotes&&typeof f.weightedVotes==='object'?{P:Math.max(0,Number(f.weightedVotes.P)||0),B:Math.max(0,Number(f.weightedVotes.B)||0)}:null,
+      patternSignals:Array.isArray(f.patternSignals)?f.patternSignals.slice(0,50).map(v=>({id:Math.floor(Number(v?.id)||0),family:String(v?.family||'').slice(0,80),signal:['P','B'].includes(v?.signal)?v.signal:null,rankScore:Number.isFinite(Number(v?.rankScore))?Number(v.rankScore):0})).filter(v=>v.id>=1&&v.id<=50&&v.family&&v.signal):[],
+      historyVote:['P','B'].includes(f.historyVote)?f.historyVote:null,
+      historyEvidence:f.historyEvidence&&typeof f.historyEvidence==='object'?{total:Math.max(0,Number(f.historyEvidence.total)||0),exactN:Math.max(0,Number(f.historyEvidence.exactN)||0),exactK:Math.max(0,Number(f.historyEvidence.exactK)||0),transitionN:Math.max(0,Number(f.historyEvidence.transitionN)||0),probabilities:f.historyEvidence.probabilities&&typeof f.historyEvidence.probabilities==='object'?{P:Number(f.historyEvidence.probabilities.P)||0,B:Number(f.historyEvidence.probabilities.B)||0,T:Number(f.historyEvidence.probabilities.T)||0}:null}:null,
+      at:Number(f.at)||Date.now(), reason:String(f.reason||'')
+    };
+  }
+  function normalizeRecords(list) {
+    if(!Array.isArray(list)) return [];
+    let fallbackShoe=1;
+    return list.map((x,i)=>{
+      if(!x || !['P','B','T'].includes(x.side)) return null;
+      const shoeId=Number(x.shoeId ?? x.shoe_id);
+      return {
+        side:x.side, at:Number(x.at ?? x.timestamp)||Date.now(),
+        shoeId:Number.isFinite(shoeId)&&shoeId>0?Math.floor(shoeId):fallbackShoe,
+        shoeRound:Math.max(0,Number(x.shoeRound ?? x.shoe_round)||0),
+        forecastBefore:normalizeForecast(x.forecastBefore ?? x.forecast_before)
+      };
+    }).filter(Boolean).map((r,i,arr)=>{
+      if(!r.shoeRound){let round=0;for(let j=i;j>=0;j--){if(arr[j].shoeId!==r.shoeId)break;round++;}r.shoeRound=round;}
+      return r;
+    });
+  }
+  function nextShoeId(rs){return (rs||[]).reduce((m,r)=>Math.max(m,Number(r.shoeId)||0),0)+1;}
+  function loadState(){
+    try {
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(raw){const x=JSON.parse(raw);if(x&&Array.isArray(x.records))return {records:normalizeRecords(x.records),activeShoeId:Number(x.activeShoeId)||nextShoeId(x.records),};}
+    } catch(e) {}
+    try {
+      const old=JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY)||'null');
+      if(Array.isArray(old)) return {records:normalizeRecords(old),activeShoeId:1};
+    } catch(e) {}
+    return {records:[],activeShoeId:1};
+  }
+  function loadThreshold(){
+    try {const n=Number(JSON.parse(localStorage.getItem(SETTINGS_KEY)||'0.6'));return [0.5,0.55,0.6,0.65,0.7].includes(n)?n:0.6;}catch(e){return 0.6;}
+  }
+  function loadRecordMode(){try{return localStorage.getItem(INPUT_MODE_KEY)==='history'?'history':'live';}catch(e){return 'live';}}
+  function saveState(){
+    try {
+      localStorage.setItem(STORAGE_KEY,JSON.stringify({version:3,modelVersion:MODEL_VERSION,activeShoeId,recordMode,records}));
+      localStorage.setItem(SETTINGS_KEY,JSON.stringify(agreementThreshold));
+      localStorage.setItem(INPUT_MODE_KEY,recordMode);
+      $('saveStatus').textContent='● บันทึกข้อมูลและค่าตั้งในเบราว์เซอร์แล้ว';
+      return true;
+    } catch(e) {
+      $('saveStatus').textContent='⚠ บันทึกไม่ได้ — พื้นที่จัดเก็บอาจเต็มหรือไฟล์เปิดในโหมดจำกัด';
+      return false;
+    }
+  }
+  function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2600);}
+  function countIn(s,side){return s.reduce((n,x)=>n+(x===side?1:0),0);}
+  function pbSequence(rows){return (rows||[]).map(x=>typeof x==='string'?x:x?.side).filter(x=>x==='P'||x==='B');}
+  function groupShoes(rs=records){
+    const groups=[],map=new Map();
+    rs.forEach(r=>{const id=Number(r.shoeId)||1;if(!map.has(id)){const g={id,rows:[]};map.set(id,g);groups.push(g);}map.get(id).rows.push(r);});
+    return groups;
+  }
+  function currentRows(){return records.filter(r=>Number(r.shoeId)===Number(activeShoeId));}
+  function fmtTime(ts){try{return new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'2-digit'}).format(new Date(ts));}catch(e){return new Date(ts).toLocaleString();}}
+  function downloadFile(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  function escapeHtml(str){return String(str??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function trimContext(s,id){if(s.length<=TRAIN_WINDOW)return s;const tail=s.slice(-TRAIN_WINDOW);return id===9&&s[0]==='P'?['P',...tail.slice(-TRAIN_WINDOW+1)]:tail;}
+
+  function countIn(s, side){ return s.reduce((n,x)=>n+(x===side?1:0),0); }
+  function trailingRun(s){
+    if(!s.length) return {side:null,len:0,start:0};
+    const side=s[s.length-1], other=side==='B'?'P':'B';
+    const boundary=s.lastIndexOf(other,s.length-2), start=boundary+1;
+    return {side,len:s.length-start,start};
+  }
+  function runLens(s, maxRuns=18){
+    if(!s.length) return [];
+    // Jump from run boundary to run boundary instead of scanning every result.
+    // This matters when a shoe contains a very long streak.
+    const out=[]; let end=s.length;
+    while(end>0 && out.length<maxRuns){
+      const side=s[end-1], other=side==='B'?'P':'B';
+      const boundary=s.lastIndexOf(other,end-2), start=boundary+1;
+      out.push({side,len:end-start});
+      end=start;
+    }
+    return out.reverse();
+  }
+  function suffixAlternations(s){
+    if(s.length<2) return 0; let n=0;
+    // Detection only distinguishes up to five consecutive switches; cap work on long chop runs.
+    for(let i=s.length-1;i>0 && n<5;i--){ if(s[i]!==s[i-1]) n++; else break; }
+    return n;
+  }
+  function lastCycle(arr, motif, cycles=2){
+    const needed=motif.length*cycles; if(arr.length<needed) return false;
+    const tail=arr.slice(-needed);
+    for(let i=0;i<tail.length;i++) if(tail[i]!==motif[i%motif.length]) return false;
+    return true;
+  }
+  function hasIncreasingTail(arr){
+    if(arr.length<3) return false;
+    const a=arr.slice(-3); return a[0]<a[1] && a[1]<a[2];
+  }
+  function hasDecreasingTail(arr){
+    if(arr.length<3) return false;
+    const a=arr.slice(-3); return a[0]>a[1] && a[1]>a[2];
+  }
+  function repeatedBlock(s){
+    for(let n=2;n<=5;n++) if(s.length>=n*2){
+      const a=s.slice(-n*2,-n).join(''), b=s.slice(-n).join('');
+      if(a===b) return {n,block:b};
+    }
+    return null;
+  }
+  function previousSuffixOccurrences(s, n){
+    if(s.length < n+1) return {count:0, after:{P:0,B:0}};
+    const q=s.slice(-n).join(''); let count=0; const after={P:0,B:0};
+    for(let i=0;i<=s.length-n-1;i++){
+      if(s.slice(i,i+n).join('')===q){ count++; after[s[i+n]]++; }
+    }
+    return {count,after};
+  }
+  function transitionCounts(s, from){
+    const out={P:0,B:0};
+    for(let i=0;i<s.length-1;i++) if(s[i]===from) out[s[i+1]]++;
+    return out;
+  }
+  function backtestStats(s){
+    const trans={P:{P:0,B:0},B:{P:0,B:0}};
+    let evaluated=0, correct=0;
+    for(let i=1;i<s.length;i++){
+      if(i>=5){
+        const prev=s[i-1], c=trans[prev];
+        let pick=null;
+        if(c.P!==c.B) pick=c.P>c.B?'P':'B';
+        else {
+          const cp=countIn(s.slice(0,i),'P'), cb=i-cp;
+          if(cp!==cb) pick=cp>cb?'P':'B';
+        }
+        if(pick){ evaluated++; if(pick===s[i]) correct++; }
+      }
+      trans[s[i-1]][s[i]]++;
+    }
+    return {evaluated,correct,accuracy:evaluated?correct/evaluated:null};
+  }
+  function runDistribution(s){
+    const r=runLens(s, Math.max(18,s.length)); const dist={};
+    for(const x of r) dist[x.len]=(dist[x.len]||0)+1;
+    return dist;
+  }
+  function failedCycle(s){
+    const r=runLens(s,16).map(x=>x.len); const motifs=[[2,1],[1,2],[2,2],[3,1],[1,3],[3,2],[2,3],[3,3],[4,1],[1,4],[1,1,2],[1,2,3],[3,2,1]];
+    if(r.length<4) return false;
+    const prior=r.slice(0,-1);
+    return motifs.some(m=>lastCycle(prior,m,2) && r[r.length-1]!==m[0]);
+  }
+  function runPattern(s,motif){ return lastCycle(runLens(s,18).map(x=>x.len), motif,2); }
+  function detectById(id,s){
+    const n=s.length; const run=trailingRun(s); const r=runLens(s,18); const lens=r.map(x=>x.len); const tail=s.slice(-10); const alt=suffixAlternations(s);
+    const active=(v,score,detail)=>({active:!!v,score:v?Math.max(1,Math.min(100,score||60)):0,detail:detail||''});
+    switch(id){
+      case 1: return active(run.side==='B'&&run.len>=3,Math.min(100,56+run.len*6),`ฝั่ง B ต่อเนื่อง ${run.len} ตา`);
+      case 2: return active(run.side==='P'&&run.len>=3,Math.min(100,56+run.len*6),`ฝั่ง P ต่อเนื่อง ${run.len} ตา`);
+      case 3: return active(run.len>=2&&run.len<=3,70,`ช่วงล่าสุดยาว ${run.len} ตา`);
+      case 4: return active(run.len>=5,Math.min(100,65+run.len*4),`ช่วงล่าสุดยาว ${run.len} ตา`);
+      case 5: return active(r.length>=2&&r[r.length-1].len===1&&r[r.length-2].len>=3,76,`ช่วงยาว ${r[r.length-2]?.side||''} ถูกคั่นด้วย 1 ตา`);
+      case 6: return active(r.length>=3&&r[r.length-3].len>=3&&r[r.length-2].len===1&&r[r.length-3].side===r[r.length-1].side,82,`ฝั่งเดิมกลับมาหลังถูกคั่น`);
+      case 7: return active(r.length>=3&&r.slice(-3).every(x=>x.len>=2),72,`สามช่วงล่าสุดยาว ${r.slice(-3).map(x=>x.len).join('-')}`);
+      case 8: return active(alt>=4,Math.min(100,54+alt*5),`${alt>=5?'สลับฝั่งต่อเนื่องอย่างน้อย 6 ผล':`สลับฝั่งต่อเนื่อง ${alt+1} ผล`}`);
+      case 9: return active(s[0]==='P'&&alt>=3,68,`เริ่มลำดับด้วย P และช่วงท้ายสลับฝั่ง`);
+      case 10: return active(runPattern(s,[2,2]),85,'ช่วงความยาว 2-2 ซ้ำอย่างน้อย 2 รอบ');
+      case 11: return active(runPattern(s,[3,3]),85,'ช่วงความยาว 3-3 ซ้ำอย่างน้อย 2 รอบ');
+      case 12: return active(runPattern(s,[4,4]),88,'ช่วงความยาว 4-4 ซ้ำอย่างน้อย 2 รอบ');
+      case 13: {
+        const regular=[[1,1],[2,1],[1,2],[2,2],[3,1],[1,3],[3,2],[2,3],[3,3],[4,1],[1,4],[1,1,2],[1,2,3],[3,2,1]];
+        const any=regular.some(m=>runPattern(s,m));
+        return active(n>=8&&!any&&alt<5&&run.len<5,62,'ช่วงล่าสุดไม่ตรงกับวงจรชุดซ้ำหลักที่ตั้งไว้');
+      }
+      case 14: return active(runPattern(s,[1,1]),84,'ช่วงเดี่ยว 1-1 ซ้ำ');
+      case 15: return active(runPattern(s,[2,1]),84,'ช่วง 2-1 ซ้ำ');
+      case 16: return active(runPattern(s,[1,2]),84,'ช่วง 1-2 ซ้ำ');
+      case 17: { const last2=lens.slice(-2), last4=lens.slice(-4); const pair=last2.length===2&&last2[0]===2&&last2[1]===2; const repeated=last4.length===4&&last4.every(x=>x===2); return active(pair&&!repeated,82,'คู่ช่วง 2-2 เพิ่งเกิด แต่ยังไม่ใช่วงจร 2-2 ซ้ำสองรอบ'); }
+      case 18: return active(runPattern(s,[3,1]),84,'ช่วง 3-1 ซ้ำ');
+      case 19: return active(runPattern(s,[1,3]),84,'ช่วง 1-3 ซ้ำ');
+      case 20: return active(runPattern(s,[3,2]),84,'ช่วง 3-2 ซ้ำ');
+      case 21: return active(runPattern(s,[2,3]),84,'ช่วง 2-3 ซ้ำ');
+      case 22: { const last2=lens.slice(-2), last4=lens.slice(-4); const pair=last2.length===2&&last2[0]===3&&last2[1]===3; const repeated=last4.length===4&&last4.every(x=>x===3); return active(pair&&!repeated,82,'คู่ช่วง 3-3 เพิ่งเกิด แต่ยังไม่ใช่วงจร 3-3 ซ้ำสองรอบ'); }
+      case 23: return active(runPattern(s,[4,1]),84,'ช่วง 4-1 ซ้ำ');
+      case 24: return active(runPattern(s,[1,4]),84,'ช่วง 1-4 ซ้ำ');
+      case 25: return active(runPattern(s,[1,1,2]),86,'วงจรช่วง 1-1-2 ซ้ำ');
+      case 26: return active(runPattern(s,[1,2,3]),86,'วงจรช่วง 1-2-3 ซ้ำ');
+      case 27: return active(runPattern(s,[3,2,1]),86,'วงจรช่วง 3-2-1 ซ้ำ');
+      case 28: return active(hasIncreasingTail(lens),76,`ความยาวช่วงเพิ่มเป็น ${lens.slice(-3).join('-')}`);
+      case 29: return active(hasDecreasingTail(lens),76,`ความยาวช่วงลดเป็น ${lens.slice(-3).join('-')}`);
+      case 30: return active(r.length>=3&&r[r.length-1].len>=3&&r[r.length-2].len===1&&r[r.length-3].len>=3,78,'ช่วงสั้น 1 ตาแทรกระหว่างช่วงยาว');
+      case 31: {
+        const a=r.slice(-4).map(x=>x.len); const isLong=x=>x>=3; const ok=a.length===4&&isLong(a[0])!==isLong(a[1])&&isLong(a[1])!==isLong(a[2])&&isLong(a[2])!==isLong(a[3])&&a.some(x=>x===1);
+        return active(ok,73,`ช่วงยาว/สั้นล่าสุด ${a.join('-')}`);
+      }
+      case 32: {
+        const a=lens.slice(-6); const ok=a.length===6&&a.slice(0,3).every((x,i)=>x===a[i+3]);
+        return active(ok,78,`ชุดความยาว ${a.join('-')} มีครึ่งหลังซ้ำครึ่งแรก`);
+      }
+      case 33: return active(n>=7&&r.length>=4&&new Set(lens.slice(-6)).size>=3,58,'พบความยาวช่วงหลายระดับปะปนกัน');
+      case 34: return active(n>=8&&alt<5&&run.len<5&&new Set(lens.slice(-7)).size>=3&&![[2,1],[1,2],[2,2],[3,1],[1,3],[3,2],[2,3],[3,3],[4,1],[1,4],[1,1,2],[1,2,3],[3,2,1]].some(m=>runPattern(s,m)),56,'ไม่พบวัฏจักรเด่นในช่วงล่าสุด');
+      case 35: {
+        let changes=0; for(let i=1;i<tail.length;i++) if(tail[i]!==tail[i-1]) changes++;
+        const rate=tail.length>1?changes/(tail.length-1):0;
+        return active(tail.length>=6&&rate>=.67,Math.round(rate*100),`เปลี่ยนฝั่ง ${changes}/${Math.max(1,tail.length-1)} ครั้งในหน้าต่าง 10 ตา`);
+      }
+      case 36: {
+        const w=s.slice(-10), b=countIn(w,'B'),p=countIn(w,'P'),dominant=Math.max(b,p)/Math.max(1,w.length);
+        return active(w.length>=6&&dominant>=.7,Math.round(dominant*100),`10 ตาล่าสุด: B ${b} · P ${p}`);
+      }
+      case 37: return active(failedCycle(s),70,'วงจรเดิมที่เคยซ้ำมีช่วงล่าสุดเบี่ยงจากส่วนที่คาด');
+      case 38: { const rep=repeatedBlock(s); return active(!!rep,82,rep?`บล็อก “${rep.block}” ซ้ำ 2 รอบ (ความยาว ${rep.n})`: ''); }
+      case 39: {
+        const a=lens.slice(-6); const rev=a.length===6&&a[0]===a[5]&&a[1]===a[4]&&a[2]===a[3];
+        const turn=hasIncreasingTail(lens.slice(0,-1))&&hasDecreasingTail(lens);
+        return active(rev||turn,70,rev?`ช่วง 6 ค่า ${a.join('-')} มีสมมาตร`: 'แนวโน้มความยาวช่วงกลับทิศ');
+      }
+      case 40: {
+        if(lens.length<4) return active(false,0,'ต้องมีอย่างน้อย 4 ช่วง');
+        const pair=lens.slice(-2).join('-'); let found=false;
+        for(let i=0;i<lens.length-3;i++) if(lens.slice(i,i+2).join('-')===pair) { found=true; break; }
+        return active(found,67,found?`คู่ความยาว ${pair} เคยปรากฏก่อนหน้า`:'');
+      }
+      case 41: {
+        if(n<5) return active(false,0,'ต้องมีผลอย่างน้อย 5 ตา');
+        const q=s.slice(-3).join(''), occ=previousSuffixOccurrences(s,3);
+        return active(occ.count>=2,Math.min(95,55+occ.count*6),`ความถี่ชุด ${q}: เคยเกิดก่อนหน้า ${occ.count} ครั้ง (ต้องพบอย่างน้อย 2 ครั้ง)`);
+      }
+      case 42: {
+        if(n<4) return active(false,0,'ข้อมูลยังไม่พอ');
+        const c=transitionCounts(s,s[n-1]), total=c.P+c.B;
+        return active(total>=2,Math.min(95,55+total*5),`หลัง ${s[n-1]}: พบ P ${c.P} ครั้ง · B ${c.B} ครั้ง`);
+      }
+      case 43: {
+        if(n<5) return active(false,0,'ต้องมีผลอย่างน้อย 5 ตา');
+        const w=s.slice(-10), p=countIn(w,'P'), b=countIn(w,'B');
+        const imbalanced=Math.abs(p-b)>=2;
+        return active(imbalanced,Math.min(95,55+Math.abs(p-b)*4),`หน้าต่าง ${w.length} ตา: P ${p} · B ${b} · ส่วนต่าง ${Math.abs(p-b)}`);
+      }
+      case 44: {
+        if(n<10) return active(false,0,'ต้องมีผลอย่างน้อย 10 ตา');
+        let maxAll=0,cur=0,prev=null; for(const x of s){cur=x===prev?cur+1:1;prev=x;maxAll=Math.max(maxAll,cur);}
+        const recent=s.slice(-20); let maxRecent=0,run=0,last=null;
+        for(const x of recent){run=x===last?run+1:1;last=x;maxRecent=Math.max(maxRecent,run);}
+        return active(maxRecent>=4,Math.min(95,58+maxRecent*5),`ช่วงสูงสุดใน 20 ตาล่าสุด ${maxRecent} ตา · สูงสุดตลอดประวัติ ${maxAll} ตา`);
+      }
+      case 45: {
+        if(n<8) return active(false,0,'ต้องมีผลอย่างน้อย 8 ตา');
+        const w=s.slice(-20), rr=runLens(w,Math.max(18,w.length)), avg=w.length/rr.length;
+        return active(avg>=1.8,Math.min(95,55+Math.round((avg-1.5)*25)),`ค่าเฉลี่ยความยาวช่วงใน ${w.length} ตาล่าสุด ${avg.toFixed(2)} ตา จาก ${rr.length} ช่วง`);
+      }
+      case 46: {
+        if(n<15) return active(false,0,'ต้องมีผลอย่างน้อย 15 ตา');
+        const recent=s.slice(-10), hist=s.slice(0,-10); if(hist.length<5) return active(false,0,'ต้องมีข้อมูลเก่ากว่าอีกอย่างน้อย 5 ตา');
+        const rp=countIn(recent,'P')/recent.length, hp=countIn(hist,'P')/hist.length, delta=Math.abs(rp-hp);
+        return active(delta>=.15,Math.min(95,55+Math.round(delta*100)),`P ล่าสุด ${(rp*100).toFixed(0)}% เทียบข้อมูลเก่า ${(hp*100).toFixed(0)}% · ต่าง ${(delta*100).toFixed(0)} จุด`);
+      }
+      case 47: {
+        if(n<5) return active(false,0,'ต้องมีผลอย่างน้อย 5 ตา');
+        const occ=previousSuffixOccurrences(s,3), q=s.slice(-3).join('');
+        return active(occ.count>=1,Math.min(95,55+occ.count*8),`N-gram “${q}” พบก่อนหน้า ${occ.count} ครั้ง; หลังชุดนี้ P ${occ.after.P} · B ${occ.after.B}`);
+      }
+      case 48: {
+        if(n<8) return active(false,0,'ต้องมีผลอย่างน้อย 8 ตา');
+        const recent=s.slice(-30), rr=runLens(recent,Math.max(18,recent.length)), d={};
+        for(const x of rr) d[x.len]=(d[x.len]||0)+1;
+        const summary=Object.keys(d).sort((a,b)=>Number(a)-Number(b)).slice(0,5).map(k=>`${k}ตา:${d[k]}`).join(' · ');
+        const modeCount=Math.max(0,...Object.values(d));
+        return active(modeCount>=3,Math.min(95,55+modeCount*5),`ความถี่ความยาวช่วงใน 30 ตาล่าสุด: ${summary||'—'} · ค่าซ้ำสูงสุด ${modeCount} ช่วง`);
+      }
+      case 49: {
+        if(n<6) return active(false,0,'ต้องมีผลอย่างน้อย 6 ตา');
+        const w=s.slice(-10); let ch=0; for(let i=1;i<w.length;i++) if(w[i]!==w[i-1]) ch++;
+        const rate=w.length>1?ch/(w.length-1):0;
+        const moderate=rate>=.35&&rate<.67;
+        return active(moderate,Math.round(rate*100),`อัตราเปลี่ยนฝั่ง ${(rate*100).toFixed(0)}% (${ch}/${Math.max(1,w.length-1)}) · ${moderate?'อยู่ในช่วงปานกลาง':'ไม่อยู่ในช่วงปานกลาง'}`);
+      }
+      case 50: {
+        if(n<12) return active(false,0,'ต้องมีผลอย่างน้อย 12 ตา');
+        const bt=backtestStats(s), qualified=bt.accuracy!=null&&bt.evaluated>=7&&bt.accuracy>=.55;
+        return active(qualified,bt.accuracy==null?0:Math.round(bt.accuracy*100),`Walk-forward transition baseline: ${bt.accuracy==null?'—':(bt.accuracy*100).toFixed(1)+'%'} (${bt.correct}/${bt.evaluated}) · เกณฑ์สัญญาณ ≥55%`);
+      }
+      default:return active(false,0,'');
+    }
+  }
+
+
+  const patterns = [
+    [1,'A','มังกร Banker','B ชนะต่อเนื่องอย่างน้อย 3 ตา'],[2,'A','มังกร Player','P ชนะต่อเนื่องอย่างน้อย 3 ตา'],[3,'A','มังกรสั้น','ช่วงล่าสุดยาว 2–3 ตา'],[4,'A','มังกรยาว','ช่วงล่าสุดยาวอย่างน้อย 5 ตา'],[5,'A','มังกรขาด','ช่วงยาวถูกคั่นด้วยผลอีกฝั่ง 1 ตา'],[6,'A','มังกรขาดแล้วกลับ','กลับไปฝั่งเดิมหลังถูกคั่น'],[7,'A','มังกรสลับฝั่ง','มีช่วงต่อเนื่องตั้งแต่ 2 ตาขึ้นไปสลับกัน'],
+    [8,'B','ปิงปอง 1-1','สลับฝั่งทุกตาในช่วงท้าย'],[9,'B','ปิงปองเริ่มด้วย P','เริ่มด้วย P และช่วงท้ายสลับฝั่ง'],[10,'B','ปิงปอง 2-2','ช่วง 2-2 ซ้ำอย่างน้อย 2 รอบ'],[11,'B','ปิงปอง 3-3','ช่วง 3-3 ซ้ำอย่างน้อย 2 รอบ'],[12,'B','ปิงปอง 4-4','ช่วง 4-4 ซ้ำอย่างน้อย 2 รอบ'],[13,'B','ปิงปองไม่สม่ำเสมอ','ผลสลับ/ต่อเนื่องโดยไม่ตรงวงจรหลัก'],
+    [14,'C','เค้าไพ่ 1-1','ความยาวช่วง 1-1 ซ้ำ'],[15,'C','เค้าไพ่ 2-1','ความยาวช่วง 2-1 ซ้ำ'],[16,'C','เค้าไพ่ 1-2','ความยาวช่วง 1-2 ซ้ำ'],[17,'C','เค้าไพ่ 2-2','ความยาวช่วง 2-2 ซ้ำ'],[18,'C','เค้าไพ่ 3-1','ความยาวช่วง 3-1 ซ้ำ'],[19,'C','เค้าไพ่ 1-3','ความยาวช่วง 1-3 ซ้ำ'],[20,'C','เค้าไพ่ 3-2','ความยาวช่วง 3-2 ซ้ำ'],[21,'C','เค้าไพ่ 2-3','ความยาวช่วง 2-3 ซ้ำ'],[22,'C','เค้าไพ่ 3-3','ความยาวช่วง 3-3 ซ้ำ'],[23,'C','เค้าไพ่ 4-1','ความยาวช่วง 4-1 ซ้ำ'],[24,'C','เค้าไพ่ 1-4','ความยาวช่วง 1-4 ซ้ำ'],
+    [25,'D','เค้าไพ่ 1-1-2','วงจรความยาวช่วง 1-1-2'],[26,'D','เค้าไพ่ 1-2-3','วงจรความยาวช่วง 1-2-3'],[27,'D','เค้าไพ่ 3-2-1','วงจรความยาวช่วง 3-2-1'],[28,'D','บันไดขาขึ้น','ความยาวช่วงเพิ่มขึ้นต่อเนื่อง'],[29,'D','บันไดขาลง','ความยาวช่วงลดลงต่อเนื่อง'],[30,'D','ชุดสั้นแทรกชุดยาว','ช่วง 1 ตาคั่นช่วงยาว'],[31,'D','ชุดยาวสลับชุดสั้น','มีช่วงยาว/สั้นสลับกัน'],[32,'D','ชุดซ้ำหลายจังหวะ','ความยาว 3 ช่วงซ้ำกัน 2 ชุด'],
+    [33,'E','Mixed / ผสม','ความยาวช่วงหลากหลายปะปน'],[34,'E','Irregular / ไม่สม่ำเสมอ','ไม่มีวงจรเด่นจากชุดที่ตั้งไว้'],[35,'E','Frequent Switch','อัตราเปลี่ยนฝั่งสูงในหน้าต่างล่าสุด'],[36,'E','One-side Dominance','ฝั่งหนึ่งมีสัดส่วนอย่างน้อย 70%'],[37,'E','Failed Cycle / วงจรขาด','วงจรเดิมเบี่ยงจากรูปแบบที่เคยซ้ำ'],[38,'E','Repeated Block / บล็อกซ้ำ','บล็อกผลย่อยซ้ำติดกัน'],[39,'E','Reversal / กลับทิศ','รูปแบบความยาวช่วงกลับทิศ/สมมาตร'],[40,'E','Re-formation / สร้างชุดใหม่','คู่ความยาวช่วงเกิดซ้ำในอดีต'],
+    [41,'X','Pattern Frequency','ความถี่ของชุดผล 3 ตัวท้าย'],[42,'X','Transition Frequency','ความถี่ผลที่ตามหลัง P หรือ B'],[43,'X','Rolling Window','สรุปจำนวน P/B ในหน้าต่างล่าสุด'],[44,'X','Maximum Streak','ความยาวช่วงต่อเนื่องสูงสุด'],[45,'X','Average Run Length','ความยาวช่วงเฉลี่ย'],[46,'X','Recent vs Historical','เทียบ 10 ตาล่าสุดกับข้อมูลก่อนหน้า'],[47,'X','N-gram Frequency','ความถี่และผลตามหลังชุด 3 ตัวท้าย'],[48,'X','Run-length Distribution','แจกแจงความถี่ความยาวช่วง'],[49,'X','Change Rate','อัตราการเปลี่ยนฝั่ง'],[50,'X','Backtest Performance','ผลทดสอบแบบ walk-forward ของ baseline']
+  ].map(([id,group,name,desc])=>({id,group,name,desc}));
+
+
+  // Patterns that use the same underlying evidence are treated as one voting family.
+  function signalFamily(id){
+    if([1,2,3,4].includes(id))return 'current-streak';
+    if([5,6,30].includes(id))return 'streak-interruption';
+    if([8,9,13,35,49].includes(id))return 'switching-regime';
+    if([7,10,11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,31,32,37,39,40].includes(id))return 'run-length-patterns';
+    if([41,47].includes(id))return 'ngram-3';
+    if(id===42)return 'transition-frequency';
+    if(id===50)return 'backtest-performance';
+    if([36,43,46].includes(id))return 'recent-window-balance';
+    if([44,45,48].includes(id))return 'run-length-statistics';
+    if([33,34].includes(id))return 'mixed-structure';
+    return `pattern-${id}`;
+  }
+  const FAMILY_LABELS={
+    'current-streak':'ช่วงต่อเนื่องล่าสุด','streak-interruption':'มังกรขาด/ถูกคั่น','switching-regime':'การสลับฝั่ง','run-length-patterns':'โครงสร้างความยาวช่วง/วงจร','ngram-3':'ชุดผล 3 ตัวท้าย','recent-window-balance':'สัดส่วน 10 ตาล่าสุด','run-length-statistics':'สถิติความยาวช่วง','mixed-structure':'โครงสร้างผสม','transition-frequency':'ความถี่ผลถัดไป','backtest-performance':'ผลทดสอบย้อนหลัง'
+  };
+  function familyLabel(key){return FAMILY_LABELS[key]||key;}
+  // Online learner: score only archived forecasts that were stored before their outcomes.
+  // Its statistics are rebuilt from persisted records, so undo/import/export stay consistent.
+  function createLearningTracker(){
+    const st={forecastCount:0,scored:0,correct:0,misses:0,holds:0,ties:0,families:new Map(),familyRegimes:new Map(),patterns:new Map(),patternRegimes:new Map(),recent:[]};
+    function observe(r){
+      const f=r?.forecastBefore;
+      if(!f||!['P','B','HOLD'].includes(f.pick))return;
+      st.forecastCount++;
+      if(r.side==='T'){st.ties++;return;}
+      if(!['P','B'].includes(r.side))return;
+      if(f.pick==='P'||f.pick==='B'){
+        const hit=f.pick===r.side;st.scored++;if(hit)st.correct++;else st.misses++;
+        st.recent.push({hit,pick:f.pick,actual:r.side,regimeKey:f.regimeKey||'mixed'});
+        if(st.recent.length>20)st.recent.shift();
+      }else st.holds++;
+      const regimeKey=['short','chop','streak','runs','trend','mixed'].includes(f.regimeKey)?f.regimeKey:'mixed';
+      for(const v of (Array.isArray(f.signalVotes)?f.signalVotes:[])){
+        if(!v||!v.family||!['P','B'].includes(v.signal))continue;
+        const row=st.families.get(v.family)||{family:v.family,n:0,correct:0};
+        row.n++;if(v.signal===r.side)row.correct++;st.families.set(v.family,row);
+        const key=`${regimeKey}::${v.family}`;
+        const local=st.familyRegimes.get(key)||{family:v.family,regimeKey,n:0,correct:0};
+        local.n++;if(v.signal===r.side)local.correct++;st.familyRegimes.set(key,local);
+      }
+      // Individual pattern outcomes are logged at forecast time, before the result arrives.
+      // Older backups without patternSignals fall back to the historical family representatives.
+      const pv=Array.isArray(f.patternSignals)&&f.patternSignals.length?f.patternSignals:(Array.isArray(f.signalVotes)?f.signalVotes:[]);
+      for(const v of pv){
+        if(!v||!Number.isFinite(Number(v.id))||!['P','B'].includes(v.signal))continue;
+        const id=Math.floor(Number(v.id));if(id<1||id>50)continue;
+        const row=st.patterns.get(id)||{id,n:0,correct:0};row.n++;if(v.signal===r.side)row.correct++;st.patterns.set(id,row);
+        const key=`${regimeKey}::${id}`;
+        const local=st.patternRegimes.get(key)||{id,regimeKey,n:0,correct:0};local.n++;if(v.signal===r.side)local.correct++;st.patternRegimes.set(key,local);
+      }
+    }
+    function snapshot(){
+      const familyStats={},familyRegimeStats={},patternStats={},patternRegimeStats={};
+      for(const [key,row] of st.families){
+        const posterior=(row.correct+3)/(row.n+6),confidence=row.n/(row.n+12);
+        const multiplier=row.n<4?1:Math.max(.70,Math.min(1.30,1+(posterior-.5)*1.4*confidence));
+        familyStats[key]={...row,accuracy:row.n?row.correct/row.n:null,posterior,multiplier};
+      }
+      for(const [key,row] of st.familyRegimes){
+        const global=familyStats[row.family],globalPosterior=global?.posterior??.5;
+        const posterior=(row.correct+8*globalPosterior)/(row.n+8),confidence=row.n/(row.n+10);
+        const multiplier=row.n<5?1:Math.max(.80,Math.min(1.20,1+(posterior-globalPosterior)*1.7*confidence));
+        familyRegimeStats[key]={...row,accuracy:row.n?row.correct/row.n:null,posterior,multiplier};
+      }
+      for(const [id,row] of st.patterns){
+        const posterior=(row.correct+3)/(row.n+6),confidence=row.n/(row.n+12);
+        const multiplier=row.n<4?1:Math.max(.72,Math.min(1.28,1+(posterior-.5)*1.35*confidence));
+        patternStats[id]={...row,accuracy:row.n?row.correct/row.n:null,posterior,multiplier};
+      }
+      for(const [key,row] of st.patternRegimes){
+        const global=patternStats[row.id],globalPosterior=global?.posterior??.5;
+        const posterior=(row.correct+8*globalPosterior)/(row.n+8),confidence=row.n/(row.n+10);
+        const multiplier=row.n<5?1:Math.max(.82,Math.min(1.18,1+(posterior-globalPosterior)*1.6*confidence));
+        patternRegimeStats[key]={...row,accuracy:row.n?row.correct/row.n:null,posterior,multiplier};
+      }
+      const window=st.recent.slice(-10),windowAccuracy=window.length?window.filter(x=>x.hit).length/window.length:null;
+      let missStreak=0;for(let i=st.recent.length-1;i>=0&&!st.recent[i].hit;i--)missStreak++;
+      const cautious=missStreak>=3||(st.recent.length>=10&&windowAccuracy!=null&&windowAccuracy<=.4);
+      const weakLongRun=st.scored>=10&&st.correct/st.scored<.45;
+      const effectiveThreshold=Math.max(agreementThreshold,cautious ? 0.70 : (weakLongRun ? 0.65 : agreementThreshold));
+      return {forecastCount:st.forecastCount,scored:st.scored,correct:st.correct,misses:st.misses,holds:st.holds,ties:st.ties,accuracy:st.scored?st.correct/st.scored:null,windowAccuracy,windowN:window.length,missStreak,cautious,weakLongRun,effectiveThreshold,minSources:cautious?4:3,familyStats,familyRegimeStats,patternStats,patternRegimeStats,recent:st.recent.slice()};
+    }
+    return {observe,snapshot};
+  }
+  function adaptiveLearningState(rows=records){const tracker=createLearningTracker();for(const r of (rows||[]))tracker.observe(r);return tracker.snapshot();}
+  function classifyRegime(s){
+    const win=s.slice(-10),run=trailingRun(s),runs=runLens(s,10);
+    const switches=win.length>1?win.slice(1).reduce((n,x,i)=>n+(x!==win[i]?1:0),0):0;
+    const switchRate=win.length>1?switches/(win.length-1):0;
+    if(s.length<8)return {regime:'ข้อมูลยังสั้น',key:'short',switchRate,run};
+    if(switchRate>=.72)return {regime:'สลับฝั่งถี่',key:'chop',switchRate,run};
+    if(run.len>=4)return {regime:`ต่อเนื่อง ${run.side} ${run.len} ตา`,key:'streak',switchRate,run};
+    if(runs.length>=3&&runs.slice(-3).every(x=>x.len>=2))return {regime:'ช่วงต่อเนื่องสลับเป็นชุด',key:'runs',switchRate,run};
+    if(switchRate<=.35)return {regime:'ฝั่งเดิม/ช่วงยาวเด่น',key:'trend',switchRate,run};
+    return {regime:'รูปแบบผสม',key:'mixed',switchRate,run};
+  }
+  // Build one chronology-safe evidence set for all 50 detectors. Each pattern is evaluated
+  // only on prefixes that existed before the corresponding next result; Shoe boundaries stay intact.
+  function collectPatternHistory(segments){
+    const byPattern=new Map(patterns.map(p=>[p.id,[]]));
+    let scanned=0,globalP=0,globalN=0;
+    outer: for(let si=segments.length-1;si>=0;si--){
+      const rows=segments[si]||[];
+      for(let i=rows.length-1;i>=1;i--){
+        if(scanned>=TRAIN_WINDOW)break outer;
+        scanned++;
+        const next=typeof rows[i]==='string'?rows[i]:rows[i]?.side;
+        if(next!=='P'&&next!=='B')continue;
+        globalN++;if(next==='P')globalP++;
+        const prefix=pbSequence(rows.slice(0,i));
+        if(prefix.length<4)continue;
+        const regime=classifyRegime(prefix).key;
+        for(const pat of patterns){
+          const ctx=trimContext(prefix,pat.id);
+          if(detectById(pat.id,ctx).active)byPattern.get(pat.id).push({side:next,regime});
+        }
+      }
+    }
+    const baseRef=FH_BASE_PRIOR.P/(FH_BASE_PRIOR.P+FH_BASE_PRIOR.B);
+    const baselineP=globalN?(globalP+5*baseRef)/(globalN+5):baseRef;
+    return {byPattern,baselineP,baselineN:globalN,scanned};
+  }
+  function patternLearning(p,examples,currentDet,currentRegimeKey,baselineP){
+    const all=Array.isArray(examples)?examples:[];
+    const pCount=all.filter(x=>x.side==='P').length,bCount=all.filter(x=>x.side==='B').length,n=pCount+bCount;
+    const local=all.filter(x=>x.regime===currentRegimeKey);
+    const localP=local.filter(x=>x.side==='P').length,localB=local.filter(x=>x.side==='B').length,localN=localP+localB;
+    const base=Number.isFinite(baselineP)?baselineP:(FH_BASE_PRIOR.P/(FH_BASE_PRIOR.P+FH_BASE_PRIOR.B));
+    // Shrink sparse pattern estimates toward the Shoe-history base rate, then shrink
+    // regime-specific evidence toward the pattern's overall estimate.
+    const overallPosterior=(pCount+8*base)/(n+8);
+    const regimePosterior=(localP+8*overallPosterior)/(localN+8);
+    const useRegime=localN>=MIN_PATTERN_SAMPLES;
+    const posteriorP=useRegime?regimePosterior:overallPosterior;
+    const posteriorB=1-posteriorP;
+    const supportP=useRegime?localP:pCount,supportB=useRegime?localB:bCount;
+    const supportN=supportP+supportB,lead=Math.abs(supportP-supportB);
+    const edge=posteriorP-base;
+    let signal=null;
+    if(currentDet.active&&n>=MIN_PATTERN_SAMPLES&&supportN>=MIN_PATTERN_SAMPLES&&lead>=MIN_PATTERN_LEAD){
+      if(edge>=0.06&&posteriorP>=0.55)signal='P';
+      else if(edge<=-0.06&&posteriorP<=0.45)signal='B';
+    }
+    const sampleConfidence=n/(n+18);
+    const edgeStrength=Math.min(1,Math.abs(edge)/0.20);
+    const weight=signal?sampleConfidence*edgeStrength*(0.60+Math.max(0,Math.min(100,currentDet.score||0))/250):0;
+    return {n,p:pCount,b:bCount,pRate:n?pCount/n:null,posteriorP,posteriorB,baselineP:base,edge,signal,weight,
+      allN:n,sameRegimeN:localN,regimeP:localP,regimeB:localB,learnScope:useRegime?'สถานการณ์เดียวกัน (หดเข้าหาค่ารวม)':'รวมสถานการณ์',
+      historySupportN:supportN,historyLead:lead};
+  }
+  const STRATEGY_GUIDANCE={
+    short:{label:'ข้อมูลยังสั้น',primary:'ยังไม่จัดอันดับทิศทางจากตัวอย่างน้อย',focus:'รอข้อมูลเพิ่มและเน้นงดคาดการณ์',reduce:'ทุกครอบครัวสัญญาณ'},
+    chop:{label:'สลับฝั่งถี่',primary:'พิจารณา Change Rate / Switching Regime และ N-gram ที่มีผลย้อนหลังรองรับ',focus:'กลุ่มสลับฝั่ง',reduce:'ช่วงติดยาวและรูปแบบความยาวช่วงที่มีตัวอย่างน้อย'},
+    streak:{label:'ช่วงต่อเนื่องเด่น',primary:'พิจารณาช่วงต่อเนื่อง, สถิติความยาวช่วง และสัดส่วนล่าสุด',focus:'กลุ่มช่วงต่อเนื่อง',reduce:'รูปแบบปิงปองที่ขัดกับสภาพช่วงล่าสุด'},
+    runs:{label:'จังหวะหลายช่วง',primary:'พิจารณาเค้าไพ่ความยาวช่วง, วงจรซ้ำ และ N-gram',focus:'กลุ่มโครงสร้างความยาวช่วง',reduce:'สัญญาณอัตราสลับที่ไม่เข้ากับจังหวะ'},
+    trend:{label:'ฝั่งเดิม/ช่วงยาวเด่น',primary:'พิจารณาความต่อเนื่องและ Rolling Window โดยตรวจจำนวนตัวอย่างก่อน',focus:'ช่วงต่อเนื่องและสัดส่วนล่าสุด',reduce:'การสลับฝั่งแบบปิงปอง'},
+    mixed:{label:'รูปแบบผสม',primary:'กระจายน้ำหนักอย่างระมัดระวังและให้คะแนนจากผลย้อนหลังจริงเป็นหลัก',focus:'หลักฐานจากหลายครอบครัว',reduce:'ไม่ให้รูปแบบใดครองน้ำหนักจากคะแนนรูปร่างเพียงอย่างเดียว'}
+  };
+  function strategyGuidance(regimeKey){return STRATEGY_GUIDANCE[regimeKey]||STRATEGY_GUIDANCE.mixed;}
+  function regimeFit(p,regimeKey){
+    const family=signalFamily(p.id);
+    if(regimeKey==='short')return .65;
+    const weights={
+      chop:{'switching-regime':1.18,'ngram-3':1.04,'mixed-structure':1.02,'current-streak':.78,'streak-interruption':.88,'run-length-patterns':.82,'recent-window-balance':.94,'run-length-statistics':.88},
+      streak:{'current-streak':1.18,'streak-interruption':1.04,'run-length-statistics':1.10,'recent-window-balance':1.04,'run-length-patterns':.98,'switching-regime':.78,'ngram-3':.96},
+      runs:{'run-length-patterns':1.20,'streak-interruption':1.08,'ngram-3':1.08,'run-length-statistics':1.12,'switching-regime':.84,'current-streak':.96,'recent-window-balance':.98},
+      trend:{'current-streak':1.12,'recent-window-balance':1.14,'run-length-statistics':1.08,'streak-interruption':1.02,'switching-regime':.82,'run-length-patterns':.98,'ngram-3':.96},
+      mixed:{'mixed-structure':1.04,'ngram-3':1.01,'recent-window-balance':1.00,'current-streak':.98,'switching-regime':.98,'run-length-patterns':1.00,'run-length-statistics':1.00,'streak-interruption':1.00}
+    };
+    const map=weights[regimeKey]||weights.mixed;
+    let fit=map[family]??1;
+    // Small, explicit within-family refinements for signals most relevant to this state.
+    if(regimeKey==='chop'&&[8,35,49].includes(p.id))fit*=1.03;
+    if(regimeKey==='streak'&&[1,2,4,36,44,45].includes(p.id))fit*=1.03;
+    if(regimeKey==='runs'&&[10,11,12,14,15,16,18,19,20,21,25,26,27,32].includes(p.id))fit*=1.03;
+    if(regimeKey==='trend'&&[36,43,46].includes(p.id))fit*=1.03;
+    return Math.max(.65,Math.min(1.25,fit));
+  }
+  function summarizeTransitions(segments,from){const counts={P:0,B:0};for(const raw of segments){const s=pbSequence(raw);for(let i=0;i<s.length-1;i++)if(s[i]===from)counts[s[i+1]]++;}return counts;}
+  function majorityBaselinePick(s,knownSegments){const p=countIn(s,'P'),b=countIn(s,'B');if(p!==b)return p>b?'P':'B';let allP=0,allB=0;for(const raw of knownSegments){const seq=pbSequence(raw);allP+=countIn(seq,'P');allB+=countIn(seq,'B');}return allP===allB?'HOLD':allP>allB?'P':'B';}
+  const FH_BASE_PRIOR={P:0.4462,B:0.4586,T:0.0952};
+  function outcomeCounts(rows){const c={P:0,B:0,T:0};for(const raw of rows||[]){const x=typeof raw==='string'?raw:raw?.side;if(x==='P'||x==='B'||x==='T')c[x]++;}return c;}
+  function addCounts(a,b){return {P:a.P+b.P,B:a.B+b.B,T:a.T+b.T};}
+  function totalCounts(c){return c.P+c.B+c.T;}
+  function distribution(counts,prior,strength=0){const n=totalCounts(counts),den=n+strength;return Object.fromEntries(['P','B','T'].map(k=>[k,den?(counts[k]+strength*(prior?.[k]??(1/3)))/den:(prior?.[k]??1/3)]));}
+  function normalizeDist(d){const sum=d.P+d.B+d.T;return sum?{P:d.P/sum,B:d.B/sum,T:d.T/sum}:{P:1/3,B:1/3,T:1/3};}
+  function fullHistoryProbability(currentOutcomes,segments){
+    const current=(currentOutcomes||[]).filter(x=>['P','B','T'].includes(x));
+    const normalized=(segments||[]).map(raw=>(raw||[]).map(x=>typeof x==='string'?x:x?.side).filter(x=>['P','B','T'].includes(x)));
+    let global={P:0,B:0,T:0},transition={P:0,B:0,T:0},regimeCounts={P:0,B:0,T:0};
+    const kMax=Math.min(8,current.length);let exact={P:0,B:0,T:0},exactN=0,exactK=0;
+    const currentPB=pbSequence(current),currentRegime=classifyRegime(currentPB).key;
+    const last=current[current.length-1]||null;
+    const suffixes=[];
+    for(let k=kMax;k>=2;k--)suffixes.push({k,key:current.slice(-k).join('')});
+    const exactByK=new Map(suffixes.map(x=>[x.k,{P:0,B:0,T:0,n:0}]));
+    const recentRows=normalized.flatMap(x=>x).slice(-100),recent=outcomeCounts(recentRows);
+    for(const seq of normalized){
+      const pbPrefix=[];
+      for(let i=1;i<seq.length;i++){
+        const actual=seq[i],prev=seq[i-1];
+        global[actual]++;
+        if(prev===last)transition[actual]++;
+        if(prev==='P'||prev==='B')pbPrefix.push(prev);
+        const regime=classifyRegime(pbPrefix.slice(-10)).key;
+        if(regime===currentRegime)regimeCounts[actual]++;
+        for(const item of suffixes){if(i>=item.k&&seq.slice(i-item.k,i).join('')===item.key){const row=exactByK.get(item.k);row[actual]++;row.n++;}}
+      }
+    }
+    for(const item of suffixes){const row=exactByK.get(item.k);if(row.n>=5){exact={P:row.P,B:row.B,T:row.T};exactN=row.n;exactK=item.k;break;}}
+    const globalN=totalCounts(global),transitionN=totalCounts(transition),regimeN=totalCounts(regimeCounts);
+    const base=globalN?distribution(global,FH_BASE_PRIOR,20):null;
+    let final=null,regimePost=null,transitionPost=null,exactPost=null;
+    if(base){
+      regimePost=distribution(regimeCounts,base,20);
+      transitionPost=distribution(transition,regimePost,12);
+      exactPost=exactN?distribution(exact,transitionPost,8):transitionPost;
+      final=normalizeDist(exactPost);
+    }
+    const nonTie=final?final.P+final.B:0;
+    const pDec=nonTie?final.P/nonTie:null,bDec=nonTie?final.B/nonTie:null;
+    const difference=pDec==null?0:Math.abs(pDec-bDec);
+    const evidenceN=Math.max(exactN,transitionN);
+    const vote=(evidenceN>=20&&difference>=0.06)?(pDec>bDec?'P':'B'):null;
+    const recentN=totalCounts(recent),recentDist=recentN?distribution(recent,null,0):null;
+    return {total:normalized.reduce((n,x)=>n+x.length,0),shoes:normalized.filter(x=>x.length).length,global,globalN,transition,transitionN,regimeCounts,regimeN,exact,exactN,exactK,base,regimePost,transitionPost,exactPost,final,pDec,bDec,difference,vote,evidenceN,last,currentRegime,recent,recentN,recentDist};
+  }
+  function runAnalysis(s,trainingSegments,contextHands=s.length,contextOutcomes=s,historyOverride=null,learningOverride=null){
+    const stateRegime=classifyRegime(s);
+    const learning=learningOverride||adaptiveLearningState();
+    const history=historyOverride||fullHistoryProbability(contextOutcomes,trainingSegments);
+    const historyBank=collectPatternHistory(trainingSegments);
+    const latest=patterns.map(p=>{
+      const det=detectById(p.id,trimContext(s,p.id));
+      const learn=patternLearning(p,historyBank.byPattern.get(p.id)||[],det,stateRegime.key,historyBank.baselineP);
+      return {...p,...det,...learn,family:signalFamily(p.id),familyTitle:familyLabel(signalFamily(p.id))};
+    });
+    const active=latest.filter(p=>p.active);
+    const eligibleAll=active.filter(p=>p.signal&&p.n>=MIN_PATTERN_SAMPLES&&p.weight>0).map(p=>{
+      const pPost=p.posteriorP, edge=Math.abs(pPost-p.baselineP), sample=Math.min(1,p.n/24), fit=regimeFit(p,stateRegime.key);
+      const stability=1-Math.min(.65,edge*.2);
+      const learned=learning.patternStats?.[p.id];
+      const localLearned=learning.patternRegimeStats?.[`${stateRegime.key}::${p.id}`];
+      const patternLearningMultiplier=learned?.multiplier??1;
+      const regimePatternMultiplier=localLearned?.n>=5?(localLearned.multiplier??1):1;
+      const familyLearned=learning.familyStats[p.family];
+      const localFamilyLearned=learning.familyRegimeStats?.[`${stateRegime.key}::${p.family}`];
+      const familyMultiplier=familyLearned?.multiplier??1;
+      const regimeFamilyMultiplier=localFamilyLearned?.n>=5?(localFamilyLearned.multiplier??1):1;
+      const combinedLearningMultiplier=patternLearningMultiplier*regimePatternMultiplier*familyMultiplier*regimeFamilyMultiplier;
+      const rankScore=p.weight*fit*(.45+.55*sample)*stability*combinedLearningMultiplier*100;
+      return {...p,fit,edge,patternLearningMultiplier,regimePatternMultiplier,patternSamples:learned?.n??0,patternCorrect:learned?.correct??0,
+        familyMultiplier,regimeFamilyMultiplier,regimeSamples:localFamilyLearned?.n??0,regimeCorrect:localFamilyLearned?.correct??0,rankScore};
+    }).sort((a,b)=>b.rankScore-a.rankScore);
+
+    // Aggregate every eligible pattern within its evidence family. A family emits at most
+    // one vote, so near-duplicate patterns contribute agreement without pretending to be independent.
+    const grouped=new Map();
+    for(const p of eligibleAll){if(!grouped.has(p.family))grouped.set(p.family,[]);grouped.get(p.family).push(p);}
+    const familyVotes=[];
+    const diminishingScore=list=>list.slice().sort((a,b)=>b.rankScore-a.rankScore).reduce((sum,p,i)=>sum+p.rankScore*(i===0?1:(0.28/Math.sqrt(i))),0);
+    for(const [family,membersRaw] of grouped){
+      const members=membersRaw.slice().sort((a,b)=>b.rankScore-a.rankScore);
+      const pMembers=members.filter(p=>p.signal==='P'),bMembers=members.filter(p=>p.signal==='B');
+      const pScore=diminishingScore(pMembers),bScore=diminishingScore(bMembers),sum=pScore+bScore;
+      if(!sum)continue;
+      const signal=pScore===bScore?null:(pScore>bScore?'P':'B');
+      const dominance=Math.max(pScore,bScore)/sum;
+      if(!signal||dominance<0.58)continue;
+      const supporting=(signal==='P'?pMembers:bMembers).slice().sort((a,b)=>b.rankScore-a.rankScore);
+      if(!supporting.length)continue;
+      const rep=supporting[0];
+      const rankScore=diminishingScore(supporting)*(0.70+0.30*dominance);
+      familyVotes.push({...rep,signal,rankScore,memberIds:supporting.map(p=>p.id),memberNames:supporting.map(p=>p.name),candidateCount:members.length,
+        agreeingCount:supporting.length,disagreeingCount:members.length-supporting.length,familyAgreement:dominance,isFamilyAggregate:true,familyTitle:familyLabel(family)});
+    }
+    familyVotes.sort((a,b)=>b.rankScore-a.rankScore);
+    const selectedBase=familyVotes.slice(0,MAX_VOTING_SIGNALS);
+    const maxFamilyRank=Math.max(1,...selectedBase.map(f=>Number(f.rankScore)||0));
+    // Historical hit rates are measured from forecasts stored BEFORE each outcome.
+    // They softly adjust a family's vote weight; sparse samples stay close to neutral.
+    const patternQuality=id=>{
+      const st=learning.patternStats?.[id];
+      if(!st||!Number.isFinite(Number(st.n))||st.n<8)return 1;
+      const n=Number(st.n),correct=Number(st.correct)||0;
+      const posterior=(correct+4)/(n+8),confidence=n/(n+30);
+      return Math.max(.55,Math.min(1.40,1+(posterior-.5)*2.0*confidence));
+    };
+    const selected=selectedBase.map(f=>{
+      const ids=(f.memberIds||[f.id]).filter(id=>Number.isFinite(Number(id)));
+      let qSum=0,qWeight=0;
+      for(const id of ids){const st=learning.patternStats?.[id];const n=Math.max(0,Number(st?.n)||0);const q=patternQuality(id);const w=n?Math.sqrt(n):1;qSum+=q*w;qWeight+=w;}
+      const learnedQuality=qWeight?qSum/qWeight:1;
+      // Square-root scaling limits domination by a single raw score while still
+      // preventing many weakly-ranked families from trivially outvoting one strong family.
+      const rankWeight=Math.sqrt(Math.max(0,Number(f.rankScore)||0)/maxFamilyRank);
+      return {...f,learnedQuality,voteWeight:rankWeight*learnedQuality};
+    });
+    const selectedFamilies=new Set(selectedBase.map(f=>f.family));
+    const usedPatternIds=new Set(selected.flatMap(p=>p.memberIds||[p.id]));
+    const familySignalByName=new Map(familyVotes.map(f=>[f.family,{signal:f.signal,agreement:f.familyAgreement,selected:selectedFamilies.has(f.family),candidateCount:f.candidateCount}]));
+    const latestForDisplay=latest.map(p=>{
+      const c=eligibleAll.find(x=>x.id===p.id),f=familySignalByName.get(p.family);
+      let routerStatus='รอข้อมูล/ยังไม่ตรง';
+      if(p.active&&c){
+        if(usedPatternIds.has(p.id))routerStatus='ร่วมโหวตจริง';
+        else if(f&&!f.selected)routerStatus=f.signal===p.signal?'ครอบครัวอยู่ในอันดับสำรอง':'ขัดกับเสียงรวม';
+        else if(f)routerStatus=f.signal===p.signal?'สำรองในกลุ่ม':'ขัดกับเสียงรวม';
+        else routerStatus='มีสัญญาณแต่ครอบครัวไม่ผ่านเกณฑ์';
+      }
+      else if(p.active&&p.n<MIN_PATTERN_SAMPLES)routerStatus='ตัวอย่างยังน้อย';
+      else if(p.active)routerStatus='ตรงรูปแบบ แต่หลักฐานยังไม่ชี้ทิศ';
+      return {...p,...(c||{}),used:usedPatternIds.has(p.id),routerStatus,familySignal:f?.signal||null,familyAgreement:f?.agreement||null,
+        familySelected:f?.selected||false,routerScore:c?.rankScore??0};
+    });
+    const sideCounts={P:selected.filter(p=>p.signal==='P').length,B:selected.filter(p=>p.signal==='B').length};
+    const historyVote=history.vote;
+    if(historyVote)sideCounts[historyVote]++;
+    const evidenceSources=selected.length+(historyVote?1:0);
+    const totalVotes=sideCounts.P+sideCounts.B,majorityVotes=Math.max(sideCounts.P,sideCounts.B);
+    const agreement=totalVotes?majorityVotes/totalVotes:0;
+    let weightedP=selected.filter(p=>p.signal==='P').reduce((sum,p)=>sum+p.voteWeight,0);
+    let weightedB=selected.filter(p=>p.signal==='B').reduce((sum,p)=>sum+p.voteWeight,0);
+    let historyWeight=0;
+    if(historyVote){
+      const evidenceN=Math.max(Number(history.exactN)||0,Number(history.transitionN)||0,Number(history.evidenceN)||0);
+      const den=(Number(history.final?.P)||0)+(Number(history.final?.B)||0);
+      const historyGap=den?Math.abs((Number(history.final.P)||0)/den-(Number(history.final.B)||0)/den):0;
+      historyWeight=Math.max(.25,Math.min(1.20,Math.sqrt(evidenceN/(evidenceN+20||1))*(historyGap/.06)));
+      if(historyVote==='P')weightedP+=historyWeight;else weightedB+=historyWeight;
+    }
+    const weightedTotal=weightedP+weightedB;
+    const pSupport=weightedTotal?weightedP/weightedTotal:0,bSupport=weightedTotal?weightedB/weightedTotal:0;
+    const current=trailingRun(s),win=s.slice(-10);
+    const switches=win.length>1?win.slice(1).reduce((n,x,i)=>n+(x!==win[i]?1:0),0):0;
+    let pick='HOLD',reason='';
+    if(weightedTotal<=0)reason='ยังไม่มีสัญญาณ P/B ที่ผ่านเกณฑ์จากทั้ง 50 รูปแบบหรือ Full-History จึงรอสัญญาณ';
+    else if(Math.abs(weightedP-weightedB)<0.015)reason=`คะแนนถ่วงน้ำหนักใกล้เสมอ P ${weightedP.toFixed(2)} ต่อ B ${weightedB.toFixed(2)} จึงงดคาดการณ์เพื่อไม่ฝืนเลือก`;
+    else {pick=weightedP>weightedB?'P':'B';reason=`คาดการณ์ทันทีเป็น ${pick} จากคะแนนถ่วงน้ำหนัก P ${weightedP.toFixed(2)} ต่อ B ${weightedB.toFixed(2)}; ใช้ ${selected.length} ครอบครัวสัญญาณ${historyVote?` และ Full-History ${historyVote} (น้ำหนัก ${historyWeight.toFixed(2)})`:''}. จำนวนเสียงดิบ P ${sideCounts.P} ต่อ B ${sideCounts.B} เป็นข้อมูลประกอบ ไม่ใช่ความน่าจะเป็นชนะจริง`}
+    const ranked=eligibleAll.slice(0,12).map(p=>({...p,used:usedPatternIds.has(p.id),familySignal:familySignalByName.get(p.family)?.signal||null,
+      familyAggregateSelected:familySignalByName.get(p.family)?.selected||false,familyAgreement:familySignalByName.get(p.family)?.agreement||null}));
+    const allPatternSamples=latestForDisplay.filter(p=>p.active).reduce((sum,p)=>sum+(p.n||0),0);
+    return {patterns:latestForDisplay,active:latestForDisplay.filter(p=>p.active),signals:selected,ranked,selected,pick,reason,
+      baselinePick:majorityBaselinePick(s,trainingSegments),eligibleSignals:selected.length,eligiblePatternCount:eligibleAll.length,activePatternCount:active.length,
+      familyVoteCount:familyVotes.length,usedPatternIds:[...usedPatternIds],patternCandidates:eligibleAll,evidenceSources,history,historyVote,allPatternSamples,
+      pSupport,bSupport,sideCounts,weightedVotes:{P:weightedP,B:weightedB},historyWeight,totalVotes,majorityVotes,agreement,recentP:countIn(win,'P'),recentB:countIn(win,'B'),switches,streak:current,
+      regime:stateRegime.regime,regimeKey:stateRegime.key,switchRate:stateRegime.switchRate,contextHands,decisiveCount:s.length,threshold:learning.effectiveThreshold,learning,patternHistory:historyBank};
+  }
+  function makeForecastSnapshot(a,shoeRound){return {modelVersion:MODEL_VERSION,pick:a.pick,regime:a.regime,regimeKey:a.regimeKey,contextDecisive:a.decisiveCount,shoeRound,votes:{P:a.sideCounts.P,B:a.sideCounts.B},agreement:a.agreement,baselinePick:a.baselinePick,signalIds:a.selected.map(p=>p.id),signalNames:a.selected.map(p=>p.name),signalFamilies:a.selected.map(p=>p.family),signalVotes:a.selected.map(p=>({id:p.id,family:p.family,signal:p.signal,rankScore:p.rankScore||0,voteWeight:p.voteWeight||0})),weightedVotes:a.weightedVotes||null,patternSignals:(a.patternCandidates||[]).map(p=>({id:p.id,family:p.family,signal:p.signal,rankScore:p.rankScore||0})),historyVote:a.historyVote||null,historyEvidence:a.history?{total:a.history.total,exactN:a.history.exactN,exactK:a.history.exactK,transitionN:a.history.transitionN,probabilities:a.history.final}:null,at:Date.now(),reason:a.reason};}
+  function addResult(side){
+    const rows=currentRows();const before=(recordMode==='live'&&analysis)?makeForecastSnapshot(analysis,rows.length):null;
+    records.push({side,at:Date.now(),shoeId:activeShoeId,shoeRound:rows.length+1,forecastBefore:before});dataMutationVersion++;
+    cachedWfSignature='';saveState();render();toast(`บันทึกผล ${side} ใน Shoe ${activeShoeId} แล้ว`);
+  }
+  function undo(){if(!records.length){toast('ไม่มีประวัติให้ย้อนกลับ');return;}const r=records.pop();activeShoeId=r.shoeId;dataMutationVersion++;cachedWfSignature='';saveState();render();toast(`ย้อนกลับผล ${r.side} จาก Shoe ${r.shoeId} แล้ว`);}
+  function reset(){if(!records.length){toast('ประวัติว่างอยู่แล้ว');return;}if(!window.confirm(`ล้างประวัติทั้งหมด ${records.length} ตาและคำคาดการณ์ที่ผูกกับประวัตินี้ใช่หรือไม่?`))return;records=[];activeShoeId=1;dataMutationVersion++;cachedWfSignature='';saveState();render();toast('ล้างประวัติทั้งหมดแล้ว');}
+  function newShoe(){if(!currentRows().length){toast('Shoe ปัจจุบันว่างอยู่แล้ว');return;}activeShoeId=Math.max(nextShoeId(records),activeShoeId+1);dataMutationVersion++;cachedWfSignature='';saveState();render();toast(`เริ่ม Shoe ${activeShoeId} แล้ว — ประวัติ Shoe เดิมยังอยู่`);}
+  function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
+  function exportCsv(){if(!records.length){toast('ยังไม่มีประวัติให้ส่งออก');return;}const header=['round','result','timestamp_iso','shoe_id','shoe_round','forecast_pick','forecast_regime','forecast_context','forecast_votes_p','forecast_votes_b','forecast_agreement','forecast_baseline_pick','forecast_signal_ids','forecast_signal_families','forecast_model_version','forecast_history_vote','forecast_history_evidence','forecast_signal_votes','forecast_pattern_signals','forecast_weighted_votes'];const rows=[header,...records.map((r,i)=>{const f=r.forecastBefore||{};return [i+1,r.side,new Date(r.at).toISOString(),r.shoeId,r.shoeRound,f.pick||'',f.regime||'',f.contextDecisive??'',f.votes?.P??'',f.votes?.B??'',f.agreement??'',f.baselinePick||'',JSON.stringify(f.signalIds||[]),JSON.stringify(f.signalFamilies||[]),f.modelVersion||'',f.historyVote||'',JSON.stringify(f.historyEvidence||{}),JSON.stringify(f.signalVotes||[]),JSON.stringify(f.patternSignals||[]),JSON.stringify(f.weightedVotes||{})];})];downloadFile(`baccarat-v4-history-${new Date().toISOString().slice(0,10)}.csv`,'\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8;');toast('ส่งออก CSV รวมประวัติและคำคาดการณ์แล้ว');}
+  function exportJson(){const pack={format:'BaccaratAnalyzerProBackup',version:7,modelVersion:MODEL_VERSION,exportedAt:new Date().toISOString(),activeShoeId,agreementThreshold,recordMode,records};downloadFile(`baccarat-v4-backup-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(pack,null,2),'application/json;charset=utf-8;');toast('ส่งออกไฟล์สำรอง JSON แล้ว');}
+  function parseCSV(text){const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(c==='"')quoted=false;else cell+=c;}else if(c==='"')quoted=true;else if(c===','){row.push(cell);cell='';}else if(c==='\n'){row.push(cell.replace(/\r$/,''));if(row.some(x=>x!==''))rows.push(row);row=[];cell='';}else cell+=c;}if(cell!==''||row.length){row.push(cell.replace(/\r$/,''));if(row.some(x=>x!==''))rows.push(row);}if(!rows.length)return [];const headers=rows[0].map(x=>x.trim().toLowerCase());const hasHeader=headers.some(x=>['result','side','winner'].includes(x));const data=hasHeader?rows.slice(1):rows;const headerIndex=name=>headers.indexOf(name);return data.map((r,i)=>{const get=(...names)=>{for(const n of names){const idx=hasHeader?headerIndex(n):({result:1,side:1,winner:1,timestamp_iso:2,shoe_id:3,shoe_round:4,forecast_pick:5,forecast_regime:6,forecast_context:7,forecast_votes_p:8,forecast_votes_b:9,forecast_agreement:10,forecast_baseline_pick:11,forecast_signal_ids:12,forecast_signal_families:13,forecast_model_version:14,forecast_history_vote:15,forecast_history_evidence:16,forecast_signal_votes:17,forecast_pattern_signals:18,forecast_weighted_votes:19}[n]??-1);if(idx>=0&&r[idx]!=null&&r[idx]!=='')return r[idx];}return '';};const side=String(get('result','side','winner')).trim().toUpperCase();if(!['P','B','T'].includes(side))return null;let at=Date.now();const ts=get('timestamp_iso','timestamp','at');if(ts){const parsed=Date.parse(ts);if(Number.isFinite(parsed))at=parsed;}let forecastBefore=null;const pick=String(get('forecast_pick')).toUpperCase();if(['P','B','HOLD'].includes(pick)){let signalIds=[],signalFamilies=[];try{signalIds=JSON.parse(get('forecast_signal_ids')||'[]');}catch(e){}try{signalFamilies=JSON.parse(get('forecast_signal_families')||'[]');}catch(e){}let historyEvidence=null,signalVotes=[],patternSignals=[],weightedVotes=null;try{historyEvidence=JSON.parse(get('forecast_history_evidence')||'null');}catch(e){}try{signalVotes=JSON.parse(get('forecast_signal_votes')||'[]');}catch(e){}try{patternSignals=JSON.parse(get('forecast_pattern_signals')||'[]');}catch(e){}try{weightedVotes=JSON.parse(get('forecast_weighted_votes')||'null');}catch(e){}forecastBefore=normalizeForecast({modelVersion:get('forecast_model_version')||'csv-import',pick,regime:get('forecast_regime'),contextDecisive:Number(get('forecast_context'))||0,votes:{P:Number(get('forecast_votes_p'))||0,B:Number(get('forecast_votes_b'))||0},agreement:Number(get('forecast_agreement'))||0,baselinePick:String(get('forecast_baseline_pick')).toUpperCase(),signalIds,signalFamilies,signalVotes,patternSignals,weightedVotes,historyVote:String(get('forecast_history_vote')).toUpperCase(),historyEvidence});}return {side,at,shoeId:Number(get('shoe_id'))||1,shoeRound:Number(get('shoe_round'))||i+1,forecastBefore};}).filter(Boolean);}
+  async function importFile(file){try{const text=await file.text();let incoming=[],newActive=null,newThreshold=null,newMode=null;if(file.name.toLowerCase().endsWith('.json')){const parsed=JSON.parse(text);incoming=normalizeRecords(Array.isArray(parsed)?parsed:parsed.records);newActive=Number(parsed.activeShoeId)||null;newThreshold=Number(parsed.agreementThreshold)||null;newMode=parsed.recordMode==='history'?'history':parsed.recordMode==='live'?'live':null;}else{incoming=parseCSV(text).map(r=>({...r,shoeId:Number(r.shoeId)||1}));}
+      if(!incoming.length){toast('ไม่พบแถวผล P/B/T ที่นำเข้าได้');return;}
+      if(!window.confirm(`นำเข้า ${incoming.length} ตาและแทนที่ประวัติปัจจุบันทั้งหมดใช่หรือไม่? แนะนำให้ส่งออกสำรองก่อน`))return;
+      records=normalizeRecords(incoming);dataMutationVersion++;activeShoeId=newActive&&newActive>0?newActive:(records.length?records[records.length-1].shoeId:nextShoeId(records));if(newThreshold&&[.5,.55,.6,.65,.7].includes(newThreshold))agreementThreshold=newThreshold;if(newMode)recordMode=newMode;
+      cachedWfSignature='';saveState();render();toast(`นำเข้าข้อมูล ${records.length} ตาแล้ว`);
+    }catch(e){console.error(e);toast('นำเข้าไม่สำเร็จ: ไฟล์ไม่ถูกต้องหรืออ่านไม่ได้');}finally{$('importFile').value='';}}
+
+  function dataSignature(){let h=2166136261;for(const r of records){const str=`${r.shoeId}:${r.side}:${r.at}:${r.forecastBefore?.pick||''}:${(r.forecastBefore?.signalVotes||[]).map(v=>`${v.family}:${v.signal}`).join(',')}:${(r.forecastBefore?.patternSignals||[]).map(v=>`${v.id}:${v.signal}`).join(',')};`;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}}return `${records.length}:${activeShoeId}:${agreementThreshold}:${h>>>0}`;}
+  function walkForwardBacktest(force=false){
+    const sig=dataSignature();if(!force&&sig===cachedWfSignature&&cachedWfReport)return cachedWfReport;
+    const groups=groupShoes(records),jobs=[],learner=createLearningTracker();
+    groups.forEach((g,si)=>{for(let i=0;i<g.rows.length;i++){const prefix=g.rows.slice(0,i);const seq=pbSequence(prefix);if(seq.length>=MIN_BACKTEST_CONTEXT){jobs.push({si,i,prefix,actual:g.rows[i].side,regimeHint:classifyRegime(seq).key,learning:learner.snapshot()});}learner.observe(g.rows[i]);}});
+    const chosenJobs=jobs.slice(-MAX_WALK_FORWARD_TARGETS);
+    const total={opportunities:0,decisive:0,predicted:0,scored:0,correct:0,abstained:0,ties:0,baselinePredicted:0,baselineScored:0,baselineCorrect:0,rawVotePredicted:0,rawVoteScored:0,rawVoteCorrect:0,bankerScored:0,bankerCorrect:0,weightedBets:0,weightedNetUnits:0,rawVoteBets:0,rawVoteNetUnits:0,bankerBets:0,bankerNetUnits:0,majorityBets:0,majorityNetUnits:0};const byRegime={};
+    for(const job of chosenJobs){
+      const currentGroup=groups[job.si];const prefixSides=job.prefix.map(r=>r.side);const seq=pbSequence(job.prefix);
+      const known=groups.slice(0,job.si).map(g=>g.rows.map(r=>r.side));known.push(prefixSides);
+      const a=runAnalysis(seq,known,job.prefix.length,prefixSides,null,job.learning);const rg=a.regime;
+      if(!byRegime[rg])byRegime[rg]={opportunities:0,decisive:0,predicted:0,scored:0,correct:0,abstained:0,ties:0,baselinePredicted:0,baselineScored:0,baselineCorrect:0,rawVotePredicted:0,rawVoteScored:0,rawVoteCorrect:0,bankerScored:0,bankerCorrect:0,weightedBets:0,weightedNetUnits:0,rawVoteBets:0,rawVoteNetUnits:0,bankerBets:0,bankerNetUnits:0,majorityBets:0,majorityNetUnits:0};
+      const rawPick=a.sideCounts.P===a.sideCounts.B?'HOLD':(a.sideCounts.P>a.sideCounts.B?'P':'B');
+      const unitProfit=(pick,actual)=>!['P','B'].includes(pick)||actual==='T'?0:(pick!==actual?-1:(pick==='B'?.95:1));
+      const buckets=[total,byRegime[rg]];
+      for(const b of buckets){
+        b.opportunities++;
+        if(a.pick==='P'||a.pick==='B'){b.weightedBets++;b.weightedNetUnits+=unitProfit(a.pick,job.actual);}
+        if(rawPick==='P'||rawPick==='B'){b.rawVoteBets++;b.rawVoteNetUnits+=unitProfit(rawPick,job.actual);}
+        b.bankerBets++;b.bankerNetUnits+=unitProfit('B',job.actual);
+        if(a.baselinePick==='P'||a.baselinePick==='B'){b.majorityBets++;b.majorityNetUnits+=unitProfit(a.baselinePick,job.actual);}
+        if(job.actual==='T'){b.ties++;continue;}b.decisive++;
+        if(a.pick==='P'||a.pick==='B'){b.predicted++;b.scored++;if(a.pick===job.actual)b.correct++;}else b.abstained++;
+        if(a.baselinePick==='P'||a.baselinePick==='B'){b.baselinePredicted++;b.baselineScored++;if(a.baselinePick===job.actual)b.baselineCorrect++;}
+        if(rawPick==='P'||rawPick==='B'){b.rawVotePredicted++;b.rawVoteScored++;if(rawPick===job.actual)b.rawVoteCorrect++;}
+        b.bankerScored++;if(job.actual==='B')b.bankerCorrect++;
+      }
+    }
+    const result={...total,accuracy:total.scored?total.correct/total.scored:null,baselineAccuracy:total.bankerScored?total.bankerCorrect/total.bankerScored:null,majorityBaselineAccuracy:total.baselineScored?total.baselineCorrect/total.baselineScored:null,rawVoteAccuracy:total.rawVoteScored?total.rawVoteCorrect/total.rawVoteScored:null,weightedNetPerBet:total.weightedBets?total.weightedNetUnits/total.weightedBets:null,rawVoteNetPerBet:total.rawVoteBets?total.rawVoteNetUnits/total.rawVoteBets:null,bankerNetPerBet:total.bankerBets?total.bankerNetUnits/total.bankerBets:null,majorityNetPerBet:total.majorityBets?total.majorityNetUnits/total.majorityBets:null,coverage:total.decisive?total.predicted/total.decisive:0,baselineCoverage:total.decisive?total.baselinePredicted/total.decisive:0,decisiveCoverage:total.decisive?total.predicted/total.decisive:0,byRegime};
+    cachedWfSignature=sig;cachedWfReport=result;return result;
+  }
+  function livePredictionMetrics(){
+    const logged=records.filter(r=>r.forecastBefore);
+    const out={opportunities:0,decisive:0,predicted:0,scored:0,correct:0,abstained:0,ties:0,baselinePredicted:0,baselineScored:0,baselineCorrect:0,byRegime:{},items:[]};
+    for(const r of logged){const f=r.forecastBefore;const key=f.regime||'ไม่ระบุ';if(!out.byRegime[key])out.byRegime[key]={opportunities:0,decisive:0,predicted:0,scored:0,correct:0,abstained:0,ties:0,baselinePredicted:0,baselineScored:0,baselineCorrect:0};const buckets=[out,out.byRegime[key]];for(const b of buckets){b.opportunities++;if(r.side==='T'){b.ties++;continue;}b.decisive=(b.decisive||0)+1;if(f.pick==='P'||f.pick==='B'){b.predicted++;b.scored++;if(f.pick===r.side)b.correct++;}else b.abstained++;if(f.baselinePick==='P'||f.baselinePick==='B'){b.baselinePredicted=(b.baselinePredicted||0)+1;b.baselineScored=(b.baselineScored||0)+1;if(f.baselinePick===r.side)b.baselineCorrect=(b.baselineCorrect||0)+1;}}out.items.push({record:r,forecast:f});}
+    out.accuracy=out.scored?out.correct/out.scored:null;out.baselineAccuracy=out.baselineScored?out.baselineCorrect/out.baselineScored:null;out.coverage=out.decisive?out.predicted/out.decisive:0;out.baselineCoverage=out.decisive?out.baselinePredicted/out.decisive:0;out.items.reverse();return out;
+  }
+  function renderHistory(){
+    const allRows=currentRows(),s=pbSequence(allRows);$('kpiRounds').textContent=records.length.toLocaleString('th-TH');$('activeShoeLabel').textContent=`Shoe ${activeShoeId} · ${allRows.length} ตา`; $('latestRound').textContent=allRows.length?`ล่าสุด #${allRows.length} · ${allRows[allRows.length-1].side}`:'ยังไม่มีข้อมูลใน Shoe นี้';$('roadMeta').textContent=`${allRows.length} ตา · P/B ${s.length}`;
+    const road=$('road');road.innerHTML='';if(!allRows.length)road.innerHTML='<div class="empty">Shoe นี้ยังไม่มีผล — เริ่มกด P, B หรือ T เพื่อบันทึก</div>';else allRows.slice(-70).forEach((r,i)=>{const d=document.createElement('div');d.className=`road-chip ${r.side}`;d.title=`Shoe ${activeShoeId} ตา ${Math.max(1,allRows.length-69)+i}: ${r.side}`;d.textContent=r.side;road.appendChild(d);});
+    const hist=$('historyList');hist.innerHTML='';if(!records.length)hist.innerHTML='<div class="empty">ประวัติจะปรากฏที่นี่</div>';else records.slice(-100).reverse().forEach((r,idx)=>{const round=records.length-idx;const row=document.createElement('div');row.className='history-row';const outcome=r.side==='B'?'Banker ชนะ':r.side==='P'?'Player ชนะ':'Tie / เสมอ';row.innerHTML=`<span class="round">#${round} · S${r.shoeId}</span><span class="mini-chip ${r.side}">${r.side}</span><span>${outcome}</span><span class="time">${fmtTime(r.at)}</span>`;hist.appendChild(row);});
+  }
+  function renderPrediction(a,s,wf){
+    $('kpiActive').innerHTML=`${a.active.length}<span style="font-size:14px;color:var(--muted);font-weight:500"> / 50</span>`;$('kpiSamples').textContent=a.allPatternSamples.toLocaleString('th-TH');$('kpiAccuracy').textContent=wf.accuracy==null?'—':`${(wf.accuracy*100).toFixed(1)}%`;
+    $('predBall').className='pred-ball '+(a.pick==='HOLD'?'HOLD':a.pick);$('predBall').textContent=a.pick==='HOLD'?'—':a.pick;$('predLabel').textContent=a.pick==='HOLD'?'คาดการณ์: งดคาดการณ์':`คาดการณ์: ${a.pick}`;$('predReason').textContent=a.reason;
+    $('modelStatus').className='status '+(a.pick==='HOLD'?'':'on');$('modelStatus').textContent=a.pick==='HOLD'?'คะแนนยังไม่ชี้ข้าง':'เลือกจากคะแนนถ่วงน้ำหนัก';const pPct=a.pSupport*100,bPct=a.bSupport*100;$('supportText').textContent=`P ${a.sideCounts.P} เสียง · คะแนน ${a.weightedVotes.P.toFixed(2)} (${pPct.toFixed(0)}%) | B ${a.sideCounts.B} เสียง · คะแนน ${a.weightedVotes.B.toFixed(2)} (${bPct.toFixed(0)}%)`;$('barP').style.width=`${pPct}%`;$('barB').style.width=`${bPct}%`;
+    $('supActive').textContent=`${a.active.length} / 50`;$('supVotes').textContent=a.totalVotes;$('supSamples').textContent=a.allPatternSamples.toLocaleString('th-TH');
+    $('evidenceNote').innerHTML=`<strong>หลักฐาน:</strong> ใช้ ${a.signals.length} ครอบครัวสัญญาณและถ่วงน้ำหนักด้วยอันดับรูปแบบกับผลทำนายรายรูปแบบในอดีต${a.historyVote?` · Full-History ${a.historyVote} น้ำหนัก ${a.historyWeight.toFixed(2)}`:''}. คะแนน P ${a.weightedVotes.P.toFixed(2)} / B ${a.weightedVotes.B.toFixed(2)}. <span style="color:#9eacc6">คะแนนถ่วงน้ำหนักไม่ใช่ความน่าจะเป็นชนะจริง และรูปแบบหลายตัวอาจใช้ข้อมูลชุดเดียวกัน</span>`;
+    $('recentP').textContent=a.recentP;$('recentB').textContent=a.recentB;$('recentSwitch').textContent=s.length<2?'—':`${a.switches} ครั้ง`;$('currentStreak').textContent=a.streak.side?`${a.streak.side} × ${a.streak.len}`:'—';
+    $('regimeText').textContent=a.regime;$('regimeBadge').textContent=s.length<8?'ข้อมูลยังสั้น':a.regime;$('chosenSignals').textContent=(a.selected.length||a.historyVote)?`${a.selected.length} ครอบครัว · ${a.eligiblePatternCount} รูปแบบมีสัญญาณ${a.historyVote?' + Full-History':''}`:'ครบ 50 รูปแบบแล้ว · ยังไม่มีสัญญาณผ่านเกณฑ์';$('agreementText').textContent=a.totalVotes?`${Math.round(a.agreement*100)}% (${a.sideCounts.P} P ต่อ ${a.sideCounts.B} B)`:'—';
+    const guide=strategyGuidance(a.regimeKey);
+    const usedFamilies=a.selected.slice(0,3).map(p=>`${p.familyTitle} ×${p.fit.toFixed(2)} · ${p.agreeingCount}/${p.candidateCount}`).join(' · ');
+    $('strategyAdvice').textContent=`ตรวจครบ 50 รูปแบบในสถานการณ์ “${guide.label}”. ${guide.primary}. ตรงสถานการณ์ ${a.activePatternCount}/50 · มีหลักฐานทิศทาง ${a.eligiblePatternCount} รูปแบบ · ผ่านการรวมเสียง ${a.familyVoteCount} ครอบครัว · ใช้จริง ${a.selected.length} ครอบครัว. เน้น: ${guide.focus}; ลดน้ำหนัก: ${guide.reduce}.${usedFamilies?` กลุ่มที่เลือก: ${usedFamilies}.`:''} น้ำหนักจากการเรียนรู้รายรูปแบบ/รายสถานการณ์จะมีผลเมื่อมีคำทำนายที่บันทึกก่อนผลจริงเพียงพอ; คะแนนไม่ใช่โอกาสชนะ`;
+    const ranked=$('rankedSignals');ranked.innerHTML='';if(!a.ranked.length)ranked.innerHTML='<div class="empty">ระบบตรวจครบ 50 รูปแบบแล้ว แต่ยังไม่มีรูปแบบที่มีตัวอย่างและความต่างจากฐานย้อนหลังมากพอให้ส่งสัญญาณ จึงไม่ฝืนเลือก</div>';else a.ranked.forEach((p,i)=>{const row=document.createElement('div');row.className='rank-row';const localRate=p.sameRegimeN?`${p.regimeP}/${p.sameRegimeN}`:'—';const usage=p.used?'ร่วมโหวตจริง':p.familyAggregateSelected?'สำรองในครอบครัว':'ยังไม่ถูกเลือก';const familyDir=p.familySignal?` · เสียงรวม ${p.familySignal}`:' · เสียงครอบครัวยังไม่ผ่านเกณฑ์';row.innerHTML=`<div class="rank-num">${i+1}</div><div><strong>#${String(p.id).padStart(2,'0')} ${escapeHtml(p.name)} · เสนอ ${p.signal} · ${usage}${familyDir}</strong><div class="rank-meta">${escapeHtml(p.detail||p.desc)} · ตัวอย่าง P/B ${p.p}/${p.b} (N=${p.n}) · P posterior ${(p.posteriorP*100).toFixed(1)}% เทียบฐาน ${(p.baselineP*100).toFixed(1)}% · สถานการณ์นี้ ${localRate} · Router ×${p.fit.toFixed(2)} · เรียนรู้รายรูปแบบ ×${(p.patternLearningMultiplier??1).toFixed(2)} (${p.patternCorrect}/${p.patternSamples})</div><div class="family-note">${escapeHtml(p.familyTitle)} · คะแนนจัดอันดับ ${p.rankScore.toFixed(1)} · ตัวอย่างที่เห็นด้วยในครอบครัว ${p.familyAgreement==null?'—':(p.familyAgreement*100).toFixed(0)+'%'}</div></div><div class="rank-score">${p.rankScore.toFixed(1)} คะแนน</div>`;ranked.appendChild(row);});
+  }
+  const GROUPS={A:'A — มังกรและการต่อเนื่อง',B:'B — ปิงปองและการสลับฝั่ง',C:'C — เค้าไพ่ชุดซ้ำตามความยาวช่วง',D:'D — รูปแบบหลายช่วงและลักษณะบันได',E:'E — เค้าไพ่ผสมและไม่เป็นระเบียบ',X:'รูปแบบเสริม — สถิติและ Backtest'};
+  function renderPatterns(a){
+    const root=$('patternGroups');root.innerHTML='';const q=searchText.trim().toLowerCase();const filtered=a.patterns.filter(p=>{const text=`${p.id} ${p.name} ${p.desc} ${p.detail} ${p.familyTitle}`.toLowerCase();const mq=!q||text.includes(q);const mf=currentFilter==='all'||(currentFilter==='active'&&p.active)||(currentFilter==='signal'&&p.signal)||(currentFilter===p.group);return mq&&mf;});$('patternCount').textContent=`${filtered.length} รายการ`;const groups=[...new Set(filtered.map(p=>p.group))];if(!filtered.length){root.innerHTML='<div class="empty">ไม่พบรูปแบบที่ตรงกับตัวกรอง</div>';return;}
+    for(const g of groups){const list=filtered.filter(p=>p.group===g);const heading=document.createElement('div');heading.className='group-title';heading.innerHTML=`<span class="group-dot"></span>${GROUPS[g]} <span class="group-count">${list.length} รายการ</span>`;root.appendChild(heading);const grid=document.createElement('div');grid.className='pattern-grid';list.forEach(p=>{const card=document.createElement('article');card.className='pattern'+(p.active?' active':'');const sig=p.signal||'—';const sigClass=p.signal?`signal-${p.signal}`:'signal-HOLD';const rate=p.n?`P ${p.p}/${p.n} · B ${p.b}/${p.n}`:'ยังไม่มีตัวอย่าง';const sample=`${p.n||0} ตัวอย่าง · ${rate}`;const posterior=Number.isFinite(p.posteriorP)?`P posterior ${(p.posteriorP*100).toFixed(1)}% · ฐาน ${(p.baselineP*100).toFixed(1)}%`:'ยังไม่มี posterior';const router=p.routerStatus||'รอวิเคราะห์';const routerClass=p.used?'on':'';const rank=p.routerScore?` · คะแนน ${p.routerScore.toFixed(1)}`:'';card.innerHTML=`<div class="pattern-top"><div class="pattern-name"><span class="pattern-id">#${String(p.id).padStart(2,'0')}</span>${escapeHtml(p.name)}</div><span class="status ${routerClass}">${escapeHtml(router)}</span></div><div class="pattern-desc">${escapeHtml(p.detail||p.desc)}<br>${escapeHtml(posterior)}${rank}</div><div class="family-note">ครอบครัวสัญญาณ: ${escapeHtml(p.familyTitle)}${p.sameRegimeN?` · สถานการณ์นี้ ${p.regimeP}/${p.sameRegimeN}`:''}</div><div class="pattern-foot"><span>${sample}</span><span class="pattern-signal ${sigClass}">${p.signal?`เสนอ ${sig}`:'ยังไม่เสนอ'}</span></div>`;grid.appendChild(card);});root.appendChild(grid);}
+  }
+  function percent(n,d){return d?`${(100*n/d).toFixed(1)}%`:'—';}
+  function wilsonInterval(correct,total){if(!total)return null;const z=1.96,phat=correct/total,den=1+z*z/total,center=(phat+z*z/(2*total))/den,half=z*Math.sqrt((phat*(1-phat)+z*z/(4*total))/total)/den;return [Math.max(0,center-half),Math.min(1,center+half)];}
+  function renderRegimeTable(report,source='wf'){
+    const container=$('regimeReport');const dict=report.byRegime||{};const rows=Object.entries(dict).sort((a,b)=>b[1].opportunities-a[1].opportunities);if(!rows.length){container.innerHTML='<div class="empty">ข้อมูลยังไม่พอสำหรับรายงานแยกสถานการณ์</div>';return;}
+    container.innerHTML=`<table class="data-table"><thead><tr><th>สถานการณ์</th><th class="num">รอบ</th><th class="num">เลือก P/B</th><th class="num">Accuracy ระบบ</th><th class="num">Baseline</th><th class="num">Coverage</th></tr></thead><tbody>${rows.map(([name,x])=>`<tr><td>${escapeHtml(name)}</td><td class="num">${x.opportunities}</td><td class="num">${x.predicted}</td><td class="num">${percent(x.correct,x.scored)}</td><td class="num">${percent(x.baselineCorrect,x.baselineScored)}</td><td class="num">${percent(x.predicted,x.decisive)}</td></tr>`).join('')}</tbody></table>`;
+  }
+  function renderForecastHistory(live){const root=$('forecastHistory');if(!live.items.length){root.innerHTML='<div class="empty">ยังไม่มีคำคาดการณ์สด; ระบบจะเก็บคำคาดการณ์ก่อนป้อนผลจริงเมื่อมีสัญญาณ</div>';return;}root.innerHTML='';live.items.slice(0,25).forEach(({record:r,forecast:f})=>{let status='งดคาดการณ์',klass='outcome-hold';if(r.side==='T'){status='Tie / ไม่นับ';klass='outcome-void';}else if(f.pick==='P'||f.pick==='B'){if(f.pick===r.side){status='ถูก';klass='outcome-hit';}else{status='ผิด';klass='outcome-miss';}}const div=document.createElement('div');div.className='forecast-row';div.innerHTML=`<div><strong>Shoe ${r.shoeId} · ตา ${r.shoeRound||'—'}</strong><div class="muted">${fmtTime(r.at)} · ${escapeHtml(f.regime)}</div></div><div><strong>${f.pick==='HOLD'?'งด':f.pick}</strong><div class="muted">P${f.votes.P} / B${f.votes.B}${f.weightedVotes?` · คะแนน P${Number(f.weightedVotes.P).toFixed(2)} / B${Number(f.weightedVotes.B).toFixed(2)}`:''}</div></div><div class="${klass}">${status}</div><div class="forecast-detail"><span class="muted">ผลจริง ${r.side} · สัญญาณ ${f.signalIds.length} · Full-History ${f.historyVote||'—'} · เวอร์ชัน ${escapeHtml(f.modelVersion)}</span></div>`;root.appendChild(div);});}
+  function fmtDist(v){return v==null?'—':`${(v*100).toFixed(1)}%`;}
+  function renderFullHistory(h){
+    $('fhTotal').textContent=(h?.total||0).toLocaleString('th-TH');$('fhShoes').textContent=String(h?.shoes||0);
+    if(!h||!h.final){$('fhStatus').textContent='ข้อมูลไม่พอ';$('fhP').textContent=$('fhB').textContent=$('fhT').textContent='—';$('fhExact').textContent=$('fhTransition').textContent='—';$('fhEvidence').innerHTML='<div class="empty">ต้องมีผลย้อนหลังในแต่ละ Shoe อย่างน้อยพอให้เกิดคู่บริบทและผลถัดไปก่อนคำนวณ</div>';$('fhRecent').innerHTML='<div class="empty">ยังไม่มีข้อมูลเพียงพอ</div>';$('fhNote').textContent='ยังไม่มีตัวอย่างผลถัดไปเพียงพอสำหรับประมาณสัดส่วนจากประวัติทั้งหมด ระบบจะไม่สร้างเปอร์เซ็นต์จากข้อมูลที่ไม่มี';return;}
+    $('fhStatus').textContent=h.vote?`พบหลักฐานสนับสนุน ${h.vote}`:'ยังไม่มีทิศทางที่ผ่านเกณฑ์';$('fhP').textContent=fmtDist(h.final.P);$('fhB').textContent=fmtDist(h.final.B);$('fhT').textContent=fmtDist(h.final.T);
+    $('fhExact').textContent=h.exactN?`${h.exactN} ครั้ง · ${h.exactK}-gram`:'ไม่มี exact match ≥5';$('fhTransition').textContent=`${h.transitionN} ตัวอย่าง`;
+    $('fhEvidence').innerHTML=`<div class="metric-line"><span>ผลย้อนหลังทั้งหมด</span><strong>${h.total.toLocaleString('th-TH')}</strong></div><div class="metric-line"><span>ผลถัดไปที่ใช้สร้างฐานรวม</span><strong>${h.globalN}</strong></div><div class="metric-line"><span>หลังผลล่าสุด (${h.last||'—'})</span><strong>${h.transitionN} ตัวอย่าง</strong></div><div class="metric-line"><span>สถานการณ์เดียวกัน (${escapeHtml(h.currentRegime)})</span><strong>${h.regimeN} ตัวอย่าง</strong></div><div class="metric-line"><span>บริบทยาวที่สุดที่พบ ≥5 ครั้ง</span><strong>${h.exactK?`${h.exactK} ผล · ${h.exactN} ครั้ง`:'ยังไม่พบ'}</strong></div><div class="metric-line"><span>ความต่าง P/B เมื่อไม่นับ T</span><strong>${(h.difference*100).toFixed(1)} จุดเปอร์เซ็นต์</strong></div>`;
+    const full=distribution(h.global,null,0),recent=h.recentDist||{P:0,B:0,T:0};
+    $('fhRecent').innerHTML=`<div class="metric-line"><span>ตัวอย่างช่วงล่าสุด</span><strong>${h.recentN} ผล</strong></div><div class="metric-line"><span>P · ทั้งหมด / ล่าสุด</span><strong>${fmtDist(full.P)} / ${fmtDist(recent.P)}</strong></div><div class="metric-line"><span>B · ทั้งหมด / ล่าสุด</span><strong>${fmtDist(full.B)} / ${fmtDist(recent.B)}</strong></div><div class="metric-line"><span>T · ทั้งหมด / ล่าสุด</span><strong>${fmtDist(full.T)} / ${fmtDist(recent.T)}</strong></div><div class="metric-line"><span>สัญญาณประวัติใช้โหวต</span><strong>${h.vote||'ไม่ใช้'}</strong></div>`;
+    $('fhNote').textContent=`ค่าประมาณสุดท้ายได้จากการปรับแบบลำดับชั้น: ฐานประวัติทั้งหมด → สถานการณ์เดียวกัน → ผลหลังผลล่าสุด → บริบทตรงกัน${h.exactN?` (${h.exactK} ผลตรงกัน ${h.exactN} ครั้ง)`:''}. Full-History จะออกเสียงเพิ่มเพียง 1 เสียงเมื่อมีตัวอย่างที่เกี่ยวข้องอย่างน้อย 20 และความต่าง P/B หลังไม่นับ Tie ≥6 จุดเปอร์เซ็นต์เท่านั้น; ตัวเลขเหล่านี้เป็นสัดส่วนจากประวัติ ไม่ใช่โอกาสชนะที่พิสูจน์แล้ว; ใช้ prior อ้างอิง P 44.62% / B 45.86% / T 9.52% เพื่อ smoothing ซึ่งเป็นสมมติฐานทั่วไปและอาจไม่ตรงกับกติกาหรือจำนวนสำรับของโต๊ะที่เล่น`;
+  }
+  // V4: chronological full-history probability validation. Every target is scored
+  // before its result is added to the model, and contexts never cross shoe boundaries.
+  function v4ZeroCounts(){return {P:0,B:0,T:0};}
+  function v4EmptyModel(){return {marginal:v4ZeroCounts(),next:v4ZeroCounts(),after:{P:v4ZeroCounts(),B:v4ZeroCounts(),T:v4ZeroCounts()},byRegime:new Map(),byContext:new Map()};}
+  function v4AddCount(bucket,side){if(bucket&&Object.prototype.hasOwnProperty.call(bucket,side))bucket[side]++;}
+  function v4ProbabilityForPrefix(prefix,model){
+    const seq=(prefix||[]).map(x=>typeof x==='string'?x:x?.side).filter(x=>['P','B','T'].includes(x));
+    const currentPB=pbSequence(seq),regimeKey=classifyRegime(currentPB).key,last=seq[seq.length-1]||null;
+    const base=distribution(model.next,FH_BASE_PRIOR,20);
+    const regimeCounts=model.byRegime.get(regimeKey)||v4ZeroCounts();
+    const regimePost=distribution(regimeCounts,base,20);
+    const transitionCounts=last?model.after[last]:v4ZeroCounts();
+    const transitionPost=distribution(transitionCounts,regimePost,12);
+    const transitionN=totalCounts(transitionCounts);
+    let exactCounts=v4ZeroCounts(),exactN=0,exactK=0;
+    for(let k=Math.min(8,seq.length);k>=2;k--){
+      const row=model.byContext.get(`${k}|${seq.slice(-k).join('')}`);
+      if(row&&row.n>=5){exactCounts={P:row.P,B:row.B,T:row.T};exactN=row.n;exactK=k;break;}
+    }
+    const final=normalizeDist(exactN?distribution(exactCounts,transitionPost,8):transitionPost);
+    const globalBaseline=distribution(model.marginal,FH_BASE_PRIOR,20);
+    const transitionBaseline=distribution(transitionCounts,globalBaseline,12);
+    const nPB=final.P+final.B,pDec=nPB?final.P/nPB:.5,bDec=nPB?final.B/nPB:.5;
+    const evidenceN=Math.max(exactN,transitionN),difference=Math.abs(pDec-bDec);
+    const pick=(evidenceN>=20&&difference>=.06)?(pDec>bDec?'P':'B'):'HOLD';
+    return {final,globalBaseline,transitionBaseline,pick,evidenceN,exactN,exactK,transitionN,regimeKey};
+  }
+  function v4UpdateModel(model,prefix,actual){
+    const seq=(prefix||[]).map(x=>typeof x==='string'?x:x?.side).filter(x=>['P','B','T'].includes(x));
+    v4AddCount(model.marginal,actual);
+    if(!seq.length)return;
+    v4AddCount(model.next,actual);
+    v4AddCount(model.after[seq[seq.length-1]],actual);
+    const regimeKey=classifyRegime(pbSequence(seq)).key;
+    if(!model.byRegime.has(regimeKey))model.byRegime.set(regimeKey,v4ZeroCounts());
+    v4AddCount(model.byRegime.get(regimeKey),actual);
+    for(let k=2;k<=Math.min(8,seq.length);k++){
+      const key=`${k}|${seq.slice(-k).join('')}`;
+      if(!model.byContext.has(key))model.byContext.set(key,{P:0,B:0,T:0,n:0});
+      const row=model.byContext.get(key);row[actual]++;row.n++;
+    }
+  }
+  function v4Brier(prob,actual){return ['P','B','T'].reduce((sum,k)=>sum+Math.pow(prob[k]-(actual===k?1:0),2),0);}
+  function v4LogLoss(prob,actual){return -Math.log(Math.max(1e-9,Math.min(1,prob[actual]||0)));}
+  function v4PickBaseline(prob){return prob.P===prob.B?'HOLD':prob.P>prob.B?'P':'B';}
+  function v4CalibrationBins(){return Object.fromEntries(['P','B','T'].map(k=>[k,Array.from({length:10},(_,i)=>({lo:i/10,hi:(i+1)/10,n:0,sumP:0,observed:0}))]));}
+  function v4ValidationBacktest(force=false){
+    const sig=dataSignature();if(!force&&sig===cachedV4Signature&&cachedV4Report)return cachedV4Report;
+    const model=v4EmptyModel(),groups=groupShoes(records);
+    const out={opportunities:0,ties:0,decisive:0,modelPredicted:0,modelScored:0,modelCorrect:0,globalCorrect:0,globalScored:0,transitionPredicted:0,transitionScored:0,transitionCorrect:0,modelBrier:0,globalBrier:0,transitionBrier:0,modelLogLoss:0,globalLogLoss:0,transitionLogLoss:0,calBins:v4CalibrationBins(),shoeDeltas:[],shoesWithTests:0,exactTotal:0,transitionTotal:0};
+    groups.forEach(g=>{
+      const seq=[];let sb={n:0,model:0,global:0,transition:0};
+      for(const row of g.rows){
+        const actual=row.side;
+        if(pbSequence(seq).length>=MIN_CONTEXT){
+          const pred=v4ProbabilityForPrefix(seq,model),m=pred.final,gb=pred.globalBaseline,tb=pred.transitionBaseline;
+          out.opportunities++;out.exactTotal+=pred.exactN;out.transitionTotal+=pred.transitionN;
+          const mb=v4Brier(m,actual),gbr=v4Brier(gb,actual),tbr=v4Brier(tb,actual);
+          out.modelBrier+=mb;out.globalBrier+=gbr;out.transitionBrier+=tbr;out.modelLogLoss+=v4LogLoss(m,actual);out.globalLogLoss+=v4LogLoss(gb,actual);out.transitionLogLoss+=v4LogLoss(tb,actual);
+          sb.n++;sb.model+=mb;sb.global+=gbr;sb.transition+=tbr;
+          for(const k of ['P','B','T']){const bin=out.calBins[k][Math.min(9,Math.floor(Math.max(0,Math.min(.999999,m[k]))*10))];bin.n++;bin.sumP+=m[k];if(actual===k)bin.observed++;}
+          if(actual==='T')out.ties++;
+          else{
+            out.decisive++;
+            const bp=v4PickBaseline(gb);if(bp==='P'||bp==='B'){out.globalScored++;if(bp===actual)out.globalCorrect++;}
+            if(pred.pick==='P'||pred.pick==='B'){out.modelPredicted++;out.modelScored++;if(pred.pick===actual)out.modelCorrect++;}
+            const tp=(pred.transitionN>=20&&Math.abs((tb.P/(tb.P+tb.B||1))-(tb.B/(tb.P+tb.B||1)))>=.06)?(tb.P>tb.B?'P':'B'):'HOLD';
+            if(tp==='P'||tp==='B'){out.transitionPredicted++;out.transitionScored++;if(tp===actual)out.transitionCorrect++;}
+          }
+        }
+        // Update only after evaluating this target; no target/future result can leak into its forecast.
+        v4UpdateModel(model,seq,actual);seq.push(actual);
+      }
+      if(sb.n){out.shoesWithTests++;out.shoeDeltas.push({model:(sb.model-sb.global)/sb.n,transition:(sb.model-sb.transition)/sb.n,n:sb.n});}
+    });
+    const n=out.opportunities;
+    out.modelBrierAvg=n?out.modelBrier/n:null;out.globalBrierAvg=n?out.globalBrier/n:null;out.transitionBrierAvg=n?out.transitionBrier/n:null;out.modelLogLossAvg=n?out.modelLogLoss/n:null;out.globalLogLossAvg=n?out.globalLogLoss/n:null;out.transitionLogLossAvg=n?out.transitionLogLoss/n:null;
+    out.accuracy=out.modelScored?out.modelCorrect/out.modelScored:null;out.globalAccuracy=out.globalScored?out.globalCorrect/out.globalScored:null;out.transitionAccuracy=out.transitionScored?out.transitionCorrect/out.transitionScored:null;out.coverage=out.decisive?out.modelPredicted/out.decisive:0;
+    let eceNumerator=0,eceDen=0;for(const klass of ['P','B','T'])for(const b of out.calBins[klass])if(b.n){eceNumerator+=b.n*Math.abs(b.sumP/b.n-b.observed/b.n);eceDen+=b.n;}out.calibrationError=eceDen?eceNumerator/eceDen:null;
+    function deltaCI(key){const ds=out.shoeDeltas.map(x=>x[key]);if(ds.length<2)return null;const mean=ds.reduce((a,b)=>a+b,0)/ds.length;const variance=ds.reduce((a,b)=>a+Math.pow(b-mean,2),0)/(ds.length-1);const half=1.96*Math.sqrt(variance/ds.length);return {mean,lo:mean-half,hi:mean+half,n:ds.length};}
+    out.deltaGlobalCI=deltaCI('model');out.deltaTransitionCI=deltaCI('transition');
+    cachedV4Signature=sig;cachedV4Report=out;return out;
+  }
+  function renderV4EnsembleResult(message=''){
+    const sig=dataSignature();
+    if(v4EnsembleRunning){$('v4EnsembleBtn').disabled=true;return;}
+    $('v4EnsembleBtn').disabled=false;
+    if(!v4EnsembleReport||v4EnsembleSignature!==sig){
+      $('v4EnsembleProgress').textContent=message||'ข้อมูลปัจจุบันยังไม่ผ่านการทดสอบระบบรวมทั้งหมด';
+      $('v4EnsembleSummary').textContent='ยังไม่มีผล Walk-forward ของระบบรวมที่ตรงกับประวัติปัจจุบัน';
+      $('v4EnsembleMetrics').innerHTML='<div class="empty">กดปุ่มทดสอบเพื่อประเมินทุกจุดในประวัติที่เข้าเกณฑ์</div>';
+      return;
+    }
+    const r=v4EnsembleReport;
+    $('v4EnsembleProgress').textContent=message||`ทดสอบเสร็จแล้ว · ${r.opportunities.toLocaleString('th-TH')} จุด`;
+    const ci=wilsonInterval(r.correct,r.scored);
+    $('v4EnsembleSummary').textContent=`คำตัดสินถูก ${r.correct}/${r.scored} (${percent(r.correct,r.scored)}) · Baseline ถูก ${r.baselineCorrect}/${r.baselineScored} (${percent(r.baselineCorrect,r.baselineScored)}) · Coverage ${percent(r.predicted,r.decisive)} · งดคาดการณ์ ${r.abstained} · Tie ${r.ties}${ci?` · Wilson 95% สำหรับ Accuracy ระบบ ${(ci[0]*100).toFixed(1)}–${(ci[1]*100).toFixed(1)}%`:''}`;
+    const rows=[['จุดทดสอบทั้งหมด',r.opportunities,r.opportunities],['ผล P/B ที่นำมาคิด Accuracy',r.scored,r.baselineScored],['Accuracy เมื่อให้คำตอบ',r.accuracy,r.baselineAccuracy],['Coverage · เลือก P/B',r.decisive? r.predicted/r.decisive:0,r.decisive? r.baselinePredicted/r.decisive:0],['งดคาดการณ์',r.abstained,'—'],['Tie (ไม่นับถูก/ผิด)',r.ties,r.ties]];
+    $('v4EnsembleMetrics').innerHTML=`<table class="data-table"><thead><tr><th>ตัวชี้วัด</th><th class="num">ระบบรวม 50 รูปแบบ</th><th class="num">Baseline เสียงส่วนใหญ่</th></tr></thead><tbody>${rows.map((row,i)=>`<tr><td>${row[0]}</td><td class="num">${row[1]==null||row[1]==='—'?'—':i===0||i===1||i===4||i===5?Number(row[1]).toLocaleString('th-TH'):percent(row[1],1)}</td><td class="num">${row[2]==null||row[2]==='—'?'—':i===0||i===1||i===5?Number(row[2]).toLocaleString('th-TH'):percent(row[2],1)}</td></tr>`).join('')}</tbody></table>`;
+  }
+  function startV4EnsembleTest(){
+    if(v4EnsembleRunning)return;
+    const sig=dataSignature();
+    if(v4EnsembleReport&&v4EnsembleSignature===sig){renderV4EnsembleResult('ผลทดสอบของข้อมูลชุดนี้มีอยู่แล้ว');return;}
+    const groups=groupShoes(records),groupSides=groups.map(g=>g.rows.map(r=>r.side));
+    const model=v4EmptyModel(),jobs=[],learner=createLearningTracker();
+    // Build every target from the prefix only. The learner observes each archived forecast
+    // only after its result is passed, so future misses cannot affect earlier selections.
+    groups.forEach((g,si)=>{
+      const prefix=[];
+      for(let i=0;i<g.rows.length;i++){
+        const row=g.rows[i];
+        if(pbSequence(prefix).length>=MIN_CONTEXT){
+          const h=v4ProbabilityForPrefix(prefix,model);
+          jobs.push({si,i,actual:row.side,learning:learner.snapshot(),history:{vote:h.pick==='HOLD'?null:h.pick,evidenceN:h.evidenceN,final:h.final,exactN:h.exactN,exactK:h.exactK,transitionN:h.transitionN,total:totalCounts(model.marginal)}});
+        }
+        v4UpdateModel(model,prefix,row.side);prefix.push(row.side);learner.observe(row);
+      }
+    });
+    if(!jobs.length){$('v4EnsembleProgress').textContent=`ยังไม่มีจุดทดสอบ: ต้องมีอย่างน้อย ${MIN_CONTEXT} ผล P/B ก่อนแต่ละตาใน Shoe`;$('v4EnsembleSummary').textContent='เพิ่มประวัติหรือเลือกไฟล์ที่มี Shoe ยาวพอ แล้วเริ่มทดสอบใหม่';return;}
+    const token=++v4EnsembleToken,revisionAtStart=dataMutationVersion,thresholdAtStart=agreementThreshold,activeShoeAtStart=activeShoeId;v4EnsembleRunning=true;v4EnsembleSignature=sig;v4EnsembleReport=null;
+    const result={opportunities:jobs.length,decisive:0,predicted:0,scored:0,correct:0,abstained:0,ties:0,baselinePredicted:0,baselineScored:0,baselineCorrect:0};
+    let cursor=0;
+    $('v4EnsembleBtn').disabled=true;$('v4EnsembleProgress').textContent=`กำลังเตรียมทดสอบ ${jobs.length.toLocaleString('th-TH')} จุด…`;$('v4EnsembleSummary').textContent='ทุกจุดจะถูกคำนวณด้วยข้อมูลที่มีอยู่ก่อนผลเป้าหมายเท่านั้น';$('v4EnsembleMetrics').innerHTML='<div class="empty">กำลังประมวลผลแบบชุดย่อย…</div>';
+    function processChunk(){
+      if(token!==v4EnsembleToken)return;
+      if(dataMutationVersion!==revisionAtStart||agreementThreshold!==thresholdAtStart||activeShoeId!==activeShoeAtStart){v4EnsembleRunning=false;$('v4EnsembleBtn').disabled=false;$('v4EnsembleProgress').textContent='หยุดทดสอบ เพราะข้อมูลหรือค่าตั้งเปลี่ยนระหว่างประมวลผล';$('v4EnsembleSummary').textContent='กดทดสอบใหม่เพื่อให้ผลตรงกับข้อมูลปัจจุบัน';return;}
+      const stop=Math.min(jobs.length,cursor+3);
+      for(;cursor<stop;cursor++){
+        const job=jobs[cursor],g=groups[job.si];
+        const prefixSides=g.rows.slice(0,job.i).map(r=>r.side),seq=pbSequence(prefixSides);
+        const known=groupSides.slice(0,job.si).concat([prefixSides]);
+        const a=runAnalysis(seq,known,prefixSides.length,prefixSides,job.history,job.learning),actual=job.actual;
+        if(actual==='T'){result.ties++;continue;}
+        result.decisive++;
+        if(a.pick==='P'||a.pick==='B'){result.predicted++;result.scored++;if(a.pick===actual)result.correct++;}else result.abstained++;
+        if(a.baselinePick==='P'||a.baselinePick==='B'){result.baselinePredicted++;result.baselineScored++;if(a.baselinePick===actual)result.baselineCorrect++;}
+      }
+      $('v4EnsembleProgress').textContent=`กำลังทดสอบ ${cursor.toLocaleString('th-TH')} / ${jobs.length.toLocaleString('th-TH')} จุด (${(100*cursor/jobs.length).toFixed(1)}%)`;
+      if(cursor<jobs.length){setTimeout(processChunk,0);return;}
+      result.accuracy=result.scored?result.correct/result.scored:null;result.baselineAccuracy=result.baselineScored?result.baselineCorrect/result.baselineScored:null;result.coverage=result.decisive?result.predicted/result.decisive:0;result.baselineCoverage=result.decisive?result.baselinePredicted/result.decisive:0;
+      v4EnsembleReport=result;v4EnsembleSignature=sig;v4EnsembleRunning=false;renderV4EnsembleResult('ทดสอบระบบรวมครบทุกจุดแล้ว');
+    }
+    setTimeout(processChunk,0);
+  }
+
+  function v4Fmt(n,d=3){return n==null||!Number.isFinite(n)?'—':n.toFixed(d);}
+  function renderV4Validation(){
+    const r=v4ValidationBacktest();
+    $('v4Count').textContent=r.opportunities.toLocaleString('th-TH');$('v4Brier').textContent=v4Fmt(r.modelBrierAvg);$('v4BrierGlobal').textContent=v4Fmt(r.globalBrierAvg);$('v4BrierTrans').textContent=v4Fmt(r.transitionBrierAvg);$('v4LogLoss').textContent=v4Fmt(r.modelLogLossAvg);$('v4CalibrationError').textContent=r.calibrationError==null?'—':`${(r.calibrationError*100).toFixed(2)}%`;$('v4Accuracy').textContent=percent(r.modelCorrect,r.modelScored);$('v4Coverage').textContent=percent(r.modelPredicted,r.decisive);
+    if(!r.opportunities){$('v4Status').textContent='ข้อมูลยังไม่พอ';$('v4Summary').textContent=`ยังไม่มีจุดทดสอบที่มีบริบท P/B อย่างน้อย ${MIN_CONTEXT} ตาใน Shoe; ระบบไม่สร้างคะแนนจากข้อมูลที่ไม่มี`;$('v4Comparison').innerHTML='<div class="empty">เพิ่มประวัติให้แต่ละ Shoe มีบริบทอย่างน้อย 20 ผล P/B</div>';$('v4Calibration').innerHTML='<div class="empty">ยังไม่มีจุดทดสอบ</div>';$('v4Evidence').textContent='ผลลัพธ์ว่างไม่ใช่หลักฐานว่าโมเดลดีหรือไม่ดี; ต้องมีจุดทดสอบตามลำดับเวลาเสียก่อน';return;}
+    $('v4Status').textContent=r.opportunities<100?'ทดสอบแล้ว · ตัวอย่างยังน้อย':'ทดสอบประวัติทั้งหมดแล้ว';
+    const dg=r.deltaGlobalCI,dt=r.deltaTransitionCI,deltaText=dg?`Δ Brier ราย Shoe เทียบ Global = ${dg.mean>=0?'+':''}${dg.mean.toFixed(4)} (ช่วงประมาณ 95% ${dg.lo>=0?'+':''}${dg.lo.toFixed(4)} ถึง ${dg.hi>=0?'+':''}${dg.hi.toFixed(4)}, ${dg.n} Shoe)`:'ยังคำนวณช่วงความไม่แน่นอนไม่ได้';
+    $('v4Summary').textContent=`ประเมิน ${r.opportunities.toLocaleString('th-TH')} จุดจาก ${r.shoesWithTests} Shoe · ผลจริง Tie ${r.ties} · Accuracy P/B ${r.modelCorrect}/${r.modelScored} (${percent(r.modelCorrect,r.modelScored)}) · Coverage ${percent(r.modelPredicted,r.decisive)} · ${deltaText}`;
+    const comparison=[
+      ['Brier Score (ยิ่งต่ำยิ่งดี)',r.modelBrierAvg,r.globalBrierAvg,r.transitionBrierAvg],
+      ['Log Loss (ยิ่งต่ำยิ่งดี)',r.modelLogLossAvg,r.globalLogLossAvg,r.transitionLogLossAvg],
+      ['Accuracy เมื่อเลือก P/B',r.accuracy,r.globalAccuracy,r.transitionAccuracy],
+      ['Coverage / สัดส่วนที่เลือก',r.coverage,1,r.decisive?r.transitionPredicted/r.decisive:0],
+      ['จำนวนตัวอย่างคะแนนความน่าจะเป็น',r.opportunities,r.opportunities,r.opportunities],
+      ['จำนวนคำตอบ P/B ที่ประเมิน',r.modelScored,r.globalScored,r.transitionScored]
+    ];
+    $('v4Comparison').innerHTML=`<table class="data-table"><thead><tr><th>ตัวชี้วัด</th><th class="num">Full-History</th><th class="num">Global</th><th class="num">Transition</th></tr></thead><tbody>${comparison.map((row,idx)=>`<tr><td>${row[0]}</td>${row.slice(1).map(v=>`<td class="num">${v==null?'—':idx===2||idx===3?percent(v===1?1:v,1):idx>=4?Number(v).toLocaleString('th-TH'):v4Fmt(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    const calRows=[];for(const klass of ['P','B','T'])for(const b of r.calBins[klass])if(b.n){const lo=Math.round(b.lo*100),hi=Math.round(b.hi*100);calRows.push(`<tr><td>${klass}</td><td class="num">${lo}–${hi}%</td><td class="num">${b.n}</td><td class="num">${(100*b.sumP/b.n).toFixed(1)}%</td><td class="num">${(100*b.observed/b.n).toFixed(1)}%</td><td class="num">${(100*Math.abs(b.sumP/b.n-b.observed/b.n)).toFixed(1)} จุด</td></tr>`);}
+    $('v4Calibration').innerHTML=calRows.length?`<table class="data-table"><thead><tr><th>ผล</th><th class="num">ช่วง P</th><th class="num">N</th><th class="num">P เฉลี่ยที่คาด</th><th class="num">เกิดจริง</th><th class="num">คลาดเคลื่อน</th></tr></thead><tbody>${calRows.join('')}</tbody></table>`:'<div class="empty">ไม่มีข้อมูลพอสำหรับ Calibration</div>';
+    let verdict='ยังไม่มีหลักฐานพอที่จะบอกว่าโมเดลเหนือกว่า Baseline';
+    if(r.opportunities>=100&&r.shoesWithTests>=10&&dg){if(dg.hi<0)verdict='Brier Score สนับสนุนว่า Full-History ดีกว่า Global Baseline ในข้อมูลทดสอบนี้ แต่ยังต้องยืนยันกับข้อมูลใหม่';else if(dg.lo>0)verdict='Brier Score ของ Full-History แย่กว่า Global Baseline ในข้อมูลทดสอบนี้ ควรปรับโมเดลก่อนอ้างความได้เปรียบ';else verdict='ยังสรุปไม่ได้ว่า Full-History ดีกว่าหรือแย่กว่า Global Baseline เพราะช่วงความไม่แน่นอนทับศูนย์';}
+    $('v4Evidence').textContent=`${verdict} ${r.opportunities<100||r.shoesWithTests<10?'จำนวนตัวอย่างหรือจำนวน Shoe ยังต่ำกว่าเกณฑ์ขั้นต่ำ 100 จุด / 10 Shoe; อย่าใช้ผลนี้อ้างความแม่นยำทั่วไป. ':''} ${dt?`เทียบ Transition: Δ Brier ${dt.mean>=0?'+':''}${dt.mean.toFixed(4)} (ช่วงประมาณ 95% ${dt.lo>=0?'+':''}${dt.lo.toFixed(4)} ถึง ${dt.hi>=0?'+':''}${dt.hi.toFixed(4)}). `:''}Accuracy อย่างเดียวไม่พอ; Brier/Log Loss วัดคุณภาพความน่าจะเป็นทั้ง P/B/T. ผลอดีตไม่รับประกันอนาคต และการทดสอบนี้ประเมิน Full-History Engine ไม่ใช่การพิสูจน์คำแนะนำการเดิมพันทั้งหมด`;
+  }
+
+  function renderLearningPanel(){
+    const l=adaptiveLearningState();
+    $('learnForecastCount').textContent=l.forecastCount.toLocaleString('th-TH');
+    $('learnAccuracy').textContent=l.accuracy==null?'—':percent(l.correct,l.scored);
+    $('learnMissStreak').textContent=String(l.missStreak);
+    $('learnMode').textContent=l.cautious?'ระมัดระวัง':l.weakLongRun?'เพิ่มความเข้มงวด':'ปกติ';
+    $('learnMode').className='m-val '+(l.cautious?'learning-caution':l.weakLongRun?'learning-bad':'learning-good');
+    $('learningStatus').className='status '+(l.cautious?'':l.scored>=10&&l.accuracy>=.5?'on':'');
+    $('learningStatus').textContent=l.cautious?'โหมดระมัดระวัง':l.scored<10?'กำลังสะสมข้อมูล':'เรียนรู้จากผลจริง';
+    let latestText='ยังไม่มีคำทำนายสดที่มีบริบทอย่างน้อย 20 ผล';
+    const lastLogged=[...records].reverse().find(r=>r.forecastBefore);
+    if(lastLogged){
+      const f=lastLogged.forecastBefore;
+      if(lastLogged.side==='T')latestText=`คำทำนายล่าสุด: ${f.pick==='HOLD'?'งดคาดการณ์':f.pick} · ผลจริง Tie (ไม่นับเป็นถูก/ผิด) · สถานการณ์ ${f.regime||'ไม่ระบุ'}`;
+      else if(['P','B'].includes(f.pick)){
+        const hit=f.pick===lastLogged.side;
+        const votes=Array.isArray(f.signalVotes)?f.signalVotes:[];
+        const right=votes.filter(v=>v.signal===lastLogged.side).map(v=>familyLabel(v.family));
+        const wrong=votes.filter(v=>v.signal!==lastLogged.side).map(v=>familyLabel(v.family));
+        latestText=`คำทำนายล่าสุด ${hit?'ถูก':'ผิด'}: ระบบเลือก ${f.pick} · ผลจริง ${lastLogged.side} · สถานการณ์ ${f.regime||'ไม่ระบุ'}${votes.length?` · สัญญาณที่ตรงผล ${right.length} ครอบครัว / ไม่ตรง ${wrong.length} ครอบครัว`:''}${!hit?' · ระบบจะลดน้ำหนักครอบครัวที่พลาดตามสถิติสะสม ไม่กลับฝั่งให้อัตโนมัติ':''}`;
+      }else latestText=`คำทำนายล่าสุดงดเลือก · ผลจริง ${lastLogged.side} · ใช้ผลนี้ทบทวนสถิติแต่ไม่คิดเป็นถูก/ผิด`;
+    }
+    $('learningLastResult').textContent=latestText;
+    let advice=`เกณฑ์เสียงเห็นพ้องที่ใช้อยู่ ${Math.round(l.effectiveThreshold*100)}% (ค่าตั้งผู้ใช้ ${Math.round(agreementThreshold*100)}%) · ต้องมีอย่างน้อย ${l.minSources} ครอบครัวสัญญาณ/เสียง Full-History ที่ผ่านเกณฑ์. `;
+    if(l.scored<10)advice+='ยังมีคำทำนายที่ตัดสิน P/B ได้ไม่ถึง 10 ครั้ง จึงยังไม่ปรับน้ำหนักแรงและไม่สรุปว่าระบบแม่นยำ';
+    else if(l.cautious)advice+=`เข้าโหมดระมัดระวัง เพราะพลาดติดกัน ${l.missStreak} ครั้งหรือความแม่นยำ 10 ครั้งล่าสุดต่ำ/เท่ากับ 40% ระบบยกเกณฑ์อย่างน้อย 70% และต้องการ 4 แหล่งก่อนให้คำตอบ`;
+    else if(l.weakLongRun)advice+=`ผลรวมที่ผ่านมา ${percent(l.correct,l.scored)} ต่ำกว่า 45% จึงเพิ่มเกณฑ์อย่างน้อย 65% จนกว่าหลักฐานใหม่จะดีขึ้น`;
+    else advice+=`ระบบคำนวณความน่าเชื่อถือแต่ละครอบครัวแบบถ่วงกลับเข้าหาค่า 50% เมื่อข้อมูลน้อย; ไม่ลดเกณฑ์ลงเพียงเพราะช่วงหนึ่งชนะติดกัน`;
+    advice+=' การพลาดไม่ใช่หลักฐานว่าควรกลับไปเลือกฝั่งตรงข้ามทันที';
+    $('learningAdvice').textContent=advice;
+    const fam=Object.values(l.familyStats).filter(x=>x.n>0).sort((a,b)=>b.multiplier-a.multiplier);
+    const activeRegime=analysis?.regimeKey||'mixed';
+    if(!fam.length){$('learningFamilyTable').innerHTML='<div class="empty">ยังไม่มีบันทึกทิศทางของแต่ละครอบครัวสัญญาณในเวอร์ชัน Adaptive Learning; คำทำนายเก่าจะยังใช้ประเมินภาพรวมได้ แต่ไม่มีทิศทางรายสัญญาณให้เรียนย้อนหลัง</div>';}
+    else{
+      const rows=fam.sort((a,b)=>b.n-a.n).slice(0,20);
+      $('learningFamilyTable').innerHTML=`<table class="data-table"><thead><tr><th>ครอบครัวสัญญาณ</th><th class="num">รวมถูก/ทั้งหมด</th><th class="num">Accuracy รวม</th><th class="num">สถานการณ์นี้</th><th class="num">น้ำหนักรวม/เฉพาะ</th></tr></thead><tbody>${rows.map(x=>{const local=l.familyRegimeStats?.[`${activeRegime}::${x.family}`];const localText=local?`${local.correct}/${local.n}`:'—';const localMult=local&&local.n>=5?`×${local.multiplier.toFixed(2)}`:'×1.00';return `<tr><td>${escapeHtml(familyLabel(x.family))}</td><td class="num">${x.correct}/${x.n}</td><td class="num">${percent(x.correct,x.n)}</td><td class="num">${localText}</td><td class="num">×${x.multiplier.toFixed(2)} / ${localMult}</td></tr>`;}).join('')}</tbody></table><div class="desc" style="margin-top:7px">“สถานการณ์นี้” อ้างอิง ${escapeHtml(strategyGuidance(activeRegime).label)}; น้ำหนักเฉพาะสถานการณ์ยังเป็น 1.00 จนกว่าจะมีตัวอย่างอย่างน้อย 5 ครั้ง</div>`;
+    }
+    const patternRows=patterns.slice().sort((a,b)=>a.id-b.id).map(base=>{
+      const x=l.patternStats?.[base.id]||{id:base.id,n:0,correct:0,accuracy:null,multiplier:1};
+      const local=l.patternRegimeStats?.[`${activeRegime}::${base.id}`];
+      const live=analysis?.patterns?.find(p=>p.id===base.id);
+      const currentSignal=live?.signal==='P'?'P':live?.signal==='B'?'B':'—';
+      const currentStatus=live?.signal?`มีสัญญาณ ${currentSignal}`:(live?.active?'เข้าเงื่อนไขแต่ยังไม่มีทิศ':'ยังไม่เข้าเงื่อนไข');
+      return {base,x,local,currentStatus};
+    });
+    $('learningPatternTable').innerHTML=`<table class="data-table"><thead><tr><th>รูปแบบ</th><th>สถานะ/สัญญาณตอนนี้</th><th class="num">ตัวอย่างที่ประเมิน</th><th class="num">ถูก/ผิด</th><th class="num">Accuracy</th><th class="num">สถานการณ์นี้</th><th class="num">น้ำหนัก</th></tr></thead><tbody>${patternRows.map(({base,x,local,currentStatus})=>{const wrong=x.n-x.correct;return `<tr><td>#${String(base.id).padStart(2,'0')} ${escapeHtml(base.name||`Pattern ${base.id}`)}</td><td>${escapeHtml(currentStatus)}</td><td class="num">${x.n}</td><td class="num">${x.correct}/${wrong}</td><td class="num">${x.n?percent(x.correct,x.n):'—'}</td><td class="num">${local?`${local.correct}/${local.n}`:'—'}</td><td class="num">×${x.multiplier.toFixed(2)}${local&&local.n>=5?` / ×${local.multiplier.toFixed(2)}`:''}</td></tr>`;}).join('')}</tbody></table><div class="desc" style="margin-top:7px">แสดงครบ 50 รูปแบบเรียงตามหมายเลข · “ถูก/ผิด” นับเฉพาะรอบที่รูปแบบออกสัญญาณ P/B และมีการบันทึกคำทำนายก่อนผลจริง · น้ำหนักเฉพาะสถานการณ์จะแสดงเมื่อมีตัวอย่างอย่างน้อย 5 ครั้ง · รูปแบบที่ไม่มีสัญญาณจะไม่ถูกนับเป็นแพ้</div>`;
+  }
+  function renderReports(){const wf=walkForwardBacktest();$('wfCount').textContent=String(wf.opportunities);$('wfAccuracy').textContent=percent(wf.correct,wf.scored);$('wfBaselineAccuracy').textContent=percent(wf.bankerCorrect,wf.bankerScored);$('wfCoverage').textContent=percent(wf.predicted,wf.decisive);$('wfAbstainTie').textContent=`${wf.abstained} / ${wf.ties}`;const ci=wilsonInterval(wf.correct,wf.scored);$('wfDetail').textContent=`คะแนนถ่วงน้ำหนัก ${wf.correct}/${wf.scored} (${percent(wf.correct,wf.scored)}) · เสียงดิบแบบเดิม ${wf.rawVoteCorrect}/${wf.rawVoteScored} (${percent(wf.rawVoteCorrect,wf.rawVoteScored)}) · Baseline แทง B ${wf.bankerCorrect}/${wf.bankerScored} (${percent(wf.bankerCorrect,wf.bankerScored)}) · Baseline เสียงส่วนใหญ่ย้อนหลัง ${wf.baselineCorrect}/${wf.baselineScored} (${percent(wf.baselineCorrect,wf.baselineScored)}) · Net ต่อหน่วยเดิมพัน (สมมติ Banker ชนะ +0.95, Player +1, Tie 0): ถ่วงน้ำหนัก ${wf.weightedNetUnits>=0?'+':''}${wf.weightedNetUnits.toFixed(2)} / ${wf.weightedBets} bets (${wf.weightedNetPerBet==null?'—':(100*wf.weightedNetPerBet).toFixed(2)+'%'}) · เสียงดิบ ${wf.rawVoteNetUnits>=0?'+':''}${wf.rawVoteNetUnits.toFixed(2)} / ${wf.rawVoteBets} bets · แทง B ตลอด ${wf.bankerNetUnits>=0?'+':''}${wf.bankerNetUnits.toFixed(2)} / ${wf.bankerBets} bets · Coverage ${wf.predicted}/${wf.decisive} · ${wf.opportunities} จุดทดสอบล่าสุดที่มีบริบท P/B ≥ ${MIN_BACKTEST_CONTEXT} (สูงสุด ${MAX_WALK_FORWARD_TARGETS})${ci?` · ช่วง Wilson 95% ของระบบ ${(ci[0]*100).toFixed(1)}–${(ci[1]*100).toFixed(1)}%`:''}. ตัวเลขกำไรเป็นการจำลองด้วยกติกาจ่ายมาตรฐาน ไม่ใช่เงินชนะจริง; ใช้เทียบกันเพื่อดูว่าการถ่วงน้ำหนักดีขึ้นจริงหรือไม่; ผลสั้น ๆ ยังมีความไม่แน่นอนสูง`;if(wf.opportunities<10)$('regimeReport').innerHTML='<div class="empty">มีจุดทดสอบน้อยกว่า 10 รอบที่มีบริบท P/B อย่างน้อย 8 ผลต่อ Shoe; สะสมประวัติเพิ่มเพื่อให้รายงานมีความหมายมากขึ้น</div>';else renderRegimeTable(wf);
+    const live=livePredictionMetrics();$('liveMetrics').innerHTML=`<div class="metric-list"><div class="metric-line"><span>คำคาดการณ์ที่บันทึกไว้ทั้งหมด</span><strong>${live.opportunities}</strong></div><div class="metric-line"><span>Accuracy ระบบ (ถูก/ที่ให้คำตอบ)</span><strong>${percent(live.correct,live.scored)} (${live.correct}/${live.scored})</strong></div><div class="metric-line"><span>Baseline เสียงส่วนใหญ่</span><strong>${percent(live.baselineCorrect,live.baselineScored)} (${live.baselineCorrect}/${live.baselineScored})</strong></div><div class="metric-line"><span>Coverage เลือก P/B</span><strong>${percent(live.predicted,live.decisive)}</strong></div><div class="metric-line"><span>งดคาดการณ์ / Tie</span><strong>${live.abstained} / ${live.ties}</strong></div></div><div class="desc" style="margin-top:8px">คิด Accuracy จากคำคาดการณ์ P/B ที่มีผลจริงเป็น P/B เท่านั้น; Tie ไม่นับถูกหรือผิด</div>`;renderForecastHistory(live);
+  }
+  function render(){const shoe=currentRows();const s=pbSequence(shoe);const shoeGroups=groupShoes(records);const train=shoeGroups.map(g=>g.rows.map(r=>r.side));if(!shoeGroups.some(g=>g.id===activeShoeId))train.push(shoe.map(r=>r.side));analysis=runAnalysis(s,train,shoe.length,shoe.map(r=>r.side));const wf=walkForwardBacktest();renderHistory();renderPrediction(analysis,s,wf);renderPatterns(analysis);renderFullHistory(analysis.history);renderReports();renderLearningPanel();renderV4Validation();if(!v4EnsembleRunning)renderV4EnsembleResult();$('undoBtn').disabled=!records.length;$('resetBtn').disabled=!records.length;$('agreementThreshold').value=String(agreementThreshold);$('recordMode').value=recordMode;$('recordModeHint').textContent=recordMode==='live'?'คำคาดการณ์ก่อนผลจะถูกบันทึกเพื่อประเมินผลจริง':'ผลจะถูกใช้ใน Backtest แต่ไม่ถือว่าเป็นคำคาดการณ์สด';}
+
+  // Wire up input and file actions.
+  $('addB').addEventListener('click',()=>addResult('B'));$('addP').addEventListener('click',()=>addResult('P'));$('addT').addEventListener('click',()=>addResult('T'));
+  $('undoBtn').addEventListener('click',undo);$('resetBtn').addEventListener('click',reset);$('newShoeBtn').addEventListener('click',newShoe);$('exportBtn').addEventListener('click',exportCsv);$('exportJsonBtn').addEventListener('click',exportJson);$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)importFile(f);});
+  $('recordMode').addEventListener('change',e=>{recordMode=e.target.value==='history'?'history':'live';saveState();render();toast(recordMode==='live'?'เปิดโหมดสด: บันทึกคำคาดการณ์ก่อนผล':'เปิดโหมดป้อนย้อนหลัง: จะไม่นับเป็นคำคาดการณ์สด');});
+  $('agreementThreshold').addEventListener('change',e=>{const n=Number(e.target.value);if([.5,.55,.6,.65,.7].includes(n)){agreementThreshold=n;cachedWfSignature='';saveState();render();toast(`ตั้งเกณฑ์เสียงข้างมาก ${(n*100).toFixed(0)}% แล้ว`);}});
+  $('rerunBacktestBtn').addEventListener('click',()=>{cachedWfSignature='';render();toast('ทดสอบ Walk-forward ระบบจริงใหม่แล้ว');});
+  $('v4EnsembleBtn').addEventListener('click',startV4EnsembleTest);
+  $('patternSearch').addEventListener('input',e=>{searchText=e.target.value;if(analysis)renderPatterns(analysis);});
+  $('filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;currentFilter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));if(analysis)renderPatterns(analysis);});
+  window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key.toLowerCase()==='b')addResult('B');if(e.key.toLowerCase()==='p')addResult('P');if(e.key.toLowerCase()==='t')addResult('T');if(e.key.toLowerCase()==='z')undo();});
+  render();
+})();
+</script>
+</body>
+</html>

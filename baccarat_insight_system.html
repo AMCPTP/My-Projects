@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Baccarat Insight Lab — ระบบบันทึกและวิเคราะห์บาคาร่า</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#172438;--line:#26364c;--muted:#96a8bd;--text:#eef4fb;--blue:#4da3ff;--blue2:#173d68;--red:#ff747b;--red2:#512b39;--green:#5ed0a1;--gold:#e7c477;--shadow:0 14px 36px rgba(0,0,0,.22)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 450px at 90% -10%,#1b3451 0%,transparent 60%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.5}
+button{font:inherit;cursor:pointer} .app{max-width:1440px;margin:auto;padding:24px 22px 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#28517c,#17304a);display:grid;place-items:center;font-weight:900;color:#d9ecff;border:1px solid #426181;box-shadow:var(--shadow)}h1{font-size:21px;margin:0;letter-spacing:.2px}.subtitle{font-size:12px;color:var(--muted);margin-top:3px}.pill{border:1px solid #43536a;border-radius:999px;padding:6px 11px;color:#bdcbd9;font-size:11px;white-space:nowrap;background:#142033}
+.grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.panel{background:linear-gradient(180deg,rgba(23,36,56,.96),rgba(17,28,44,.98));border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:15px;margin:0 0 13px;display:flex;align-items:center;gap:8px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);font-weight:700}.forecast{display:grid;grid-template-columns:1fr auto;align-items:center;gap:18px}.forecast-side{display:flex;align-items:center;gap:14px}.forecast-token{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;font-size:28px;font-weight:900;border:1px solid #40556d;background:#1b2c42}.forecast-token.b{color:var(--red);background:var(--red2);border-color:#854953}.forecast-token.p{color:var(--blue);background:var(--blue2);border-color:#356897}.forecast-token.none{color:#b8c6d5}.forecast-title{font-size:22px;font-weight:800}.forecast-desc{font-size:12px;color:var(--muted);max-width:530px}.forecast-score{min-width:156px;text-align:right}.score-num{font-size:25px;font-weight:800;font-variant-numeric:tabular-nums}.score-label{font-size:11px;color:var(--muted)}.meter{height:9px;border-radius:99px;overflow:hidden;background:#24344a;display:flex;margin:16px 0 9px}.meter .b{background:var(--red)}.meter .p{background:var(--blue)}.meter-note{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.notice{margin-top:14px;border:1px solid #5a4a2b;background:#332c1d;color:#e8d9b3;padding:10px 12px;border-radius:12px;font-size:11px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.entry-btn{border:0;border-radius:13px;min-width:112px;padding:13px 20px;font-size:16px;font-weight:900;letter-spacing:.3px;transition:.15s;box-shadow:0 7px 18px rgba(0,0,0,.18)}.entry-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.entry-btn:active{transform:translateY(0)}.entry-btn.b{background:linear-gradient(135deg,#ff8d91,#e65d6b);color:#2b1017}.entry-btn.p{background:linear-gradient(135deg,#7fc4ff,#4494e9);color:#071d35}.action-btn{border:1px solid #40516a;color:#dce7f2;background:#1a2a40;border-radius:11px;padding:11px 14px;font-size:12px;font-weight:700}.action-btn:hover{background:#243953}.action-btn.danger{border-color:#71404a;color:#ffb5ba;background:#36212b}.controls-hint{color:var(--muted);font-size:11px;margin-left:auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#111d2e;border:1px solid #293a50;border-radius:13px;padding:12px}.stat-label{font-size:10px;color:var(--muted)}.stat-value{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}.stat-sub{font-size:10px;color:var(--muted)}
+.history-wrap{overflow:auto;border:1px solid #2b3b50;border-radius:13px;background:#0e1929;max-height:390px}.history-table{border-collapse:separate;border-spacing:5px;min-width:100%;width:max-content;padding:8px}.history-table th{font-size:10px;color:#71859e;font-weight:600;min-width:38px}.history-table td{width:38px;height:38px;text-align:center;border:1px solid #34475d;border-radius:50%;font-weight:900;font-size:12px;background:#17263a}.history-table td.b{background:#492a37;border-color:#a04f60;color:#ff9298}.history-table td.p{background:#1b3b5b;border-color:#427eb1;color:#8bc7ff}.history-table td.empty{background:#111d2d;border:1px dashed #26374d;color:#40536c}.empty-state{padding:24px;color:var(--muted);text-align:center;font-size:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.road-grid-wrap{overflow:auto;padding-bottom:5px}.road-grid{display:grid;grid-template-rows:repeat(6,25px);grid-auto-columns:25px;grid-auto-flow:column;gap:4px;width:max-content;min-width:100%;padding:5px}.dot{width:25px;height:25px;border-radius:50%;border:1px solid #4d617a;display:grid;place-items:center;font-size:10px;font-weight:800}.dot.b{background:#552b39;border-color:#a45264;color:#ff9aa0}.dot.p{background:#193e61;border-color:#4384b8;color:#94ceff}.dot.r{background:#6b303d;border-color:#b35b68;color:#ffd2d4}.dot.bl{background:#17486a;border-color:#498bb8;color:#d0edff}.dot.blank{background:#111d2c;border:1px dashed #26384e}.derived{display:flex;flex-wrap:wrap;gap:5px;min-height:30px}.derived .dot{width:22px;height:22px}.derived-info{font-size:10px;color:var(--muted);margin-top:7px}
+.table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{padding:9px 7px;border-bottom:1px solid #29394d;text-align:right}.table th:first-child,.table td:first-child{text-align:left;color:#c9d6e4}.table th{font-size:10px;color:#8ea2b8;font-weight:700}.table tr:last-child td{border-bottom:0}.badge{border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700;display:inline-block}.badge.red{background:#512b39;color:#ffadb2}.badge.blue{background:#193d5c;color:#9bd1ff}.badge.gold{background:#40351f;color:#f0d491}.tag-row{display:flex;flex-wrap:wrap;gap:7px}.tag{font-size:10px;padding:6px 9px;border:1px solid #34485f;border-radius:999px;color:#bdccdc;background:#15243a}.tag.active{border-color:#8f7846;background:#3b321f;color:#f0d99e}.small-muted{font-size:11px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-head small{color:var(--muted);font-size:10px}.disclaimer{border-left:3px solid #d3ad59;padding:8px 11px;background:#302a1d;border-radius:0 10px 10px 0;font-size:11px;color:#dfd0aa;margin-top:12px}.method-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.method{padding:10px;border-radius:11px;border:1px solid #2c3d53;background:#111e30}.method strong{display:block;font-size:11px;margin-bottom:3px}.method span{display:block;color:var(--muted);font-size:10px}.method.disabled{opacity:.72}.footer{text-align:center;color:#637991;font-size:10px;margin:22px 0 0}.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);background:#e7f0fa;color:#132239;border-radius:12px;padding:10px 16px;font-size:12px;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.grid,.two-col{grid-template-columns:1fr}.forecast{grid-template-columns:1fr}.forecast-score{text-align:left}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.app{padding:16px 12px 35px}.topbar{align-items:flex-start}.topbar .pill{display:none}.panel{padding:14px}.entry-btn{flex:1;min-width:0}.controls-hint{width:100%;margin:0}.forecast-title{font-size:19px}.forecast-token{width:58px;height:58px}.method-list{grid-template-columns:1fr}.stats{gap:7px}.stat{padding:10px}.stat-value{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">BI</div><div><h1>Baccarat Insight Lab</h1><div class="subtitle">ระบบบันทึกผล · วิเคราะห์รูปแบบ · ประเมินแนวโน้มเชิงสถิติ</div></div></div>
+    <div class="pill">LOCAL MODE · บันทึกในอุปกรณ์นี้</div>
+  </header>
+
+  <section class="panel" style="margin-bottom:16px">
+    <div class="section-head"><h2>ผลคาดการณ์</h2><small id="modelStatus">โมเดลเริ่มต้น · รอข้อมูล</small></div>
+    <div class="forecast">
+      <div class="forecast-side">
+        <div id="forecastToken" class="forecast-token none">—</div>
+        <div><div class="eyebrow">สัญญาณจากข้อมูลย้อนหลัง</div><div id="forecastTitle" class="forecast-title">ยังไม่มีข้อมูล</div><div id="forecastDesc" class="forecast-desc">กด P หรือ B เพื่อเริ่มบันทึกผล ระบบจะแสดงแนวโน้มเชิงทดลองเมื่อมีข้อมูล</div></div>
+      </div>
+      <div class="forecast-score"><div class="score-num" id="signalStrength">—</div><div class="score-label">คะแนนโมเดล B เทียบกับ P</div></div>
+    </div>
+    <div class="meter"><div class="b" id="meterB" style="width:50.68%"></div><div class="p" id="meterP" style="width:49.32%"></div></div>
+    <div class="meter-note"><span id="meterBLabel">B 50.68</span><span id="meterPLabel">P 49.32</span></div>
+    <div class="notice"><strong>อ่านก่อนใช้:</strong> คะแนนนี้เป็นดัชนีทดลองจากผลย้อนหลัง ไม่ใช่ความน่าจะเป็นจริงหรือคำยืนยันผลตาถัดไป เค้าไพ่และสถิติย้อนหลังอาจไม่ให้ความได้เปรียบในการเล่น</div>
+  </section>
+
+  <div class="grid">
+    <div>
+      <section class="panel" style="margin-bottom:16px">
+        <h2>บันทึกผลตาใหม่</h2>
+        <div class="controls">
+          <button class="entry-btn p" id="addP" aria-label="บันทึก Player">P · PLAYER</button>
+          <button class="entry-btn b" id="addB" aria-label="บันทึก Banker">B · BANKER</button>
+          <button class="action-btn" id="undo">↶ ย้อนกลับ</button>
+          <button class="action-btn danger" id="reset">รีเซ็ตทั้งหมด</button>
+          <span class="controls-hint">คีย์บอร์ด: P / B · ย้อนกลับ: Backspace</span>
+        </div>
+      </section>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>สถิติภาพรวม</h2><small id="totalRounds">0 ตา</small></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">BANKER (B)</div><div class="stat-value" id="countB">0</div><div class="stat-sub" id="rateB">0.0% ของผลที่บันทึก</div></div>
+          <div class="stat"><div class="stat-label">PLAYER (P)</div><div class="stat-value" id="countP">0</div><div class="stat-sub" id="rateP">0.0% ของผลที่บันทึก</div></div>
+          <div class="stat"><div class="stat-label">STREAK ปัจจุบัน</div><div class="stat-value" id="streak">—</div><div class="stat-sub" id="streakSub">รอผล</div></div>
+          <div class="stat"><div class="stat-label">สลับฝั่ง 10 ตาล่าสุด</div><div class="stat-value" id="chopRate">—</div><div class="stat-sub">จำนวนการเปลี่ยนฝั่ง</div></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><h2>ตารางบันทึกประวัติ</h2><small>บนลงล่าง · ครบ 6 แล้วเริ่มคอลัมน์ใหม่</small></div>
+        <div id="historyArea" class="history-wrap"><div class="empty-state">ยังไม่มีประวัติ กดปุ่ม P หรือ B เพื่อเริ่มต้น</div></div>
+        <div class="small-muted" style="margin-top:9px">แต่ละคอลัมน์บันทึก 6 ช่องจากบนลงล่าง จากนั้นเริ่มคอลัมน์ถัดไปทางขวา · ผลเสมอ (Tie) ไม่รวมในเวอร์ชันนี้</div>
+      </section>
+    </div>
+
+    <div>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>วิเคราะห์รูปแบบผลย้อนหลัง</h2><small>Pattern scanner</small></div>
+        <div id="patternTags" class="tag-row"><span class="tag">รอข้อมูล</span></div>
+        <div class="small-muted" id="patternExplain" style="margin-top:10px">ระบบจะตรวจจับมังกร ปิงปอง สองตัดสอง หนึ่งต่อสอง และช่วงที่รูปแบบไม่ชัดเจน</div>
+      </section>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>Transition Analysis</h2><small>ผลถัดไปหลังผลก่อนหน้า</small></div>
+        <table class="table"><thead><tr><th>ผลก่อนหน้า</th><th>ผลถัดไป B</th><th>ผลถัดไป P</th><th>จำนวน</th></tr></thead><tbody id="transitionBody"><tr><td colspan="4" style="text-align:center;color:#8295aa">ยังไม่มีข้อมูลเพียงพอ</td></tr></tbody></table>
+        <div class="small-muted" style="margin-top:8px">เป็นอัตราที่พบในประวัติของชุดข้อมูลนี้ ไม่ใช่ค่าความน่าจะเป็นที่รับประกันในตาถัดไป</div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><h2>ทดสอบย้อนหลัง (Walk-forward)</h2><small>ไม่ใช้ข้อมูลอนาคตในการทายอดีต</small></div>
+        <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+          <div class="stat"><div class="stat-label">จำนวนครั้งที่ทดสอบ</div><div class="stat-value" id="btN">0</div><div class="stat-sub">เริ่มประเมินหลังมีข้อมูล 20 ตา</div></div>
+          <div class="stat"><div class="stat-label">ทายถูกในชุดทดสอบ</div><div class="stat-value" id="btRate">—</div><div class="stat-sub" id="btCompare">ยังไม่มีข้อมูลทดสอบ</div></div>
+        </div>
+        <div class="disclaimer">ผลทดสอบย้อนหลังเป็นเพียงการตรวจสอบแบบจำลองกับข้อมูลชุดเดิม มีโอกาสคลาดเคลื่อนจากความผันผวนและการเลือกแบบจำลอง ไม่ใช่หลักฐานว่าทายอนาคตได้</div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><h2>เค้าไพ่ (Road Map)</h2><small>แสดงผลจากข้อมูลที่บันทึก</small></div>
+    <div class="two-col">
+      <div><div class="eyebrow" style="margin:5px 0 7px">Big Road · แสดงแนวต่อเนื่อง</div><div id="bigRoad" class="road-grid-wrap"><div class="empty-state">ยังไม่มีข้อมูล</div></div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Bead Plate · ตารางผลตามลำดับ</div><div id="beadRoad" class="road-grid-wrap"><div class="empty-state">ยังไม่มีข้อมูล</div></div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Big Eye Boy</div><div id="bigEye" class="derived"><span class="small-muted">รอข้อมูล</span></div><div class="derived-info">สีแดง/น้ำเงินเป็นสัญญาณเปรียบเทียบรูปแบบจาก Big Road ไม่ได้บอกว่า B/P จะออก</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Small Road</div><div id="smallRoad" class="derived"><span class="small-muted">รอข้อมูล</span></div><div class="derived-info">เป็นตัวชี้ความเหมือน/ต่างของรูปแบบย้อนหลัง</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Cockroach Pig</div><div id="cockroach" class="derived"><span class="small-muted">รอข้อมูล</span></div><div class="derived-info">เป็นเค้าไพ่ประกอบการอ่าน ไม่ใช่โมเดลทำนายที่พิสูจน์แล้ว</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Road interpretation</div><div class="small-muted">Big Road แสดงการต่อเนื่อง/เปลี่ยนฝั่ง ส่วน Big Eye Boy, Small Road และ Cockroach Pig แปลงโครงสร้างนั้นเป็นสีเพื่อเปรียบเทียบความสม่ำเสมอ ไม่ควรตีความสีแดงหรือสีน้ำเงินเป็นคำสั่งเดิมพัน</div></div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <h2>เครื่องมือวิเคราะห์ขั้นสูงและข้อจำกัดของข้อมูล</h2>
+    <div class="method-list">
+      <div class="method"><strong>Probability / Expected Value</strong><span>แสดงค่าอ้างอิงของบาคาร่า 8 สำรับมาตรฐาน: Banker ชนะประมาณ 45.86%, Player 44.62%, Tie 9.52% ก่อนแยกเฉพาะผลไม่เสมอ · กติกาจริงอาจต่างกัน</span></div>
+      <div class="method"><strong>Rolling Window / Win Rate / Streak</strong><span>คำนวณอัตรา B/P, สตรีค, การสลับฝั่ง และช่วงล่าสุดจากประวัติที่กดบันทึก</span></div>
+      <div class="method"><strong>Card Counting / Shoe Composition</strong><span>ยังคำนวณไม่ได้จากปุ่ม B/P อย่างเดียว ต้องบันทึกแต้มไพ่ทุกใบที่เปิดและจำนวนสำรับที่ใช้</span></div>
+      <div class="method"><strong>Shuffle Tracking / Edge Sorting</strong><span>ไม่สามารถอนุมานได้จากผล B/P และต้องอาศัยข้อมูล/เงื่อนไขทางกายภาพเฉพาะ ไม่ได้รวมเป็นคำแนะนำการเล่น</span></div>
+      <div class="method"><strong>Machine Learning / Simulation</strong><span>ระบบนี้มี walk-forward backtest แบบง่ายเพื่อเปิดเผยความแม่นยำบนข้อมูลที่บันทึก แต่ยังไม่ใช่โมเดลที่ผ่านการตรวจสอบอิสระ</span></div>
+      <div class="method"><strong>Betting Systems / Risk Management</strong><span>Martingale, Paroli, Fibonacci, D’Alembert และ 1-3-2-6 เปลี่ยนขนาดเดิมพัน ไม่ได้เปลี่ยนโอกาสชนะหรือกำจัดความได้เปรียบของคาสิโน</span></div>
+    </div>
+    <div class="disclaimer">ระบบนี้เป็นเครื่องมือบันทึกและศึกษาสถิติ ไม่ใช่เครื่องมือรับประกันกำไร ไม่มีรูปแบบเค้าไพ่หรือสูตรเดิมพันใดรับประกันผลลัพธ์ และควรกำหนดวงเงินที่ยอมเสียได้ก่อนเล่น</div>
+  </section>
+  <div class="footer">Baccarat Insight Lab · ข้อมูลจัดเก็บในเบราว์เซอร์ของอุปกรณ์นี้ · ไม่ส่งข้อมูลออกอินเทอร์เน็ต</div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+(()=>{
+  'use strict';
+  const KEY='baccaratInsightHistory_v1';
+  const BASE_B=0.5068; // 45.86 / (45.86 + 44.62), conditional on a non-tie result
+  const $=id=>document.getElementById(id);
+  let history=[];
+  let toastTimer;
+  try{const saved=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(saved))history=saved.filter(x=>x==='B'||x==='P');}catch(e){history=[];}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(history));}catch(e){showToast('บันทึกในเบราว์เซอร์ไม่ได้ อาจปิดพื้นที่จัดเก็บไว้');}}
+  function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
+  function add(side){history.push(side);save();render();}
+  function undo(){if(!history.length){showToast('ไม่มีรายการให้ย้อนกลับ');return;}history.pop();save();render();showToast('ย้อนกลับ 1 รายการแล้ว');}
+  function reset(){if(!history.length){showToast('ยังไม่มีข้อมูลให้รีเซ็ต');return;}if(confirm('ยืนยันลบประวัติทั้งหมดหรือไม่? การดำเนินการนี้ย้อนกลับไม่ได้')){history=[];save();render();showToast('รีเซ็ตประวัติแล้ว');}}
+  const pct=x=>(x*100).toFixed(1)+'%';
+  function streakInfo(arr){if(!arr.length)return {side:null,n:0};let s=arr[arr.length-1],n=0;for(let i=arr.length-1;i>=0&&arr[i]===s;i--)n++;return {side:s,n};}
+  function alternationLength(arr){if(!arr.length)return 0;let n=1;for(let i=arr.length-1;i>0;i--){if(arr[i]===arr[i-1])break;n++;}return n;}
+  function countTrans(arr,from){let b=0,p=0;for(let i=1;i<arr.length;i++)if(arr[i-1]===from){if(arr[i]==='B')b++;else p++;}return {b,p,n:b+p};}
+  function model(arr){
+    if(!arr.length)return {pB:BASE_B,clear:false,side:null,signal:0,parts:null};
+    const bAll=arr.filter(x=>x==='B').length;
+    const recent=arr.slice(-20),bRecent=recent.filter(x=>x==='B').length;
+    const last=arr[arr.length-1],tr=countTrans(arr,last);
+    // Bayesian shrinkage toward the standard 8-deck non-tie reference; these are heuristic scores, not validated odds.
+    const pGlobal=(bAll+80*BASE_B)/(arr.length+80);
+    const pRecent=(bRecent+30*BASE_B)/(recent.length+30);
+    const pTransition=(tr.b+40*BASE_B)/(tr.n+40);
+    const pB=.20*pGlobal+.25*pRecent+.55*pTransition;
+    const delta=pB-.5;
+    const clear=Math.abs(delta)>=.02;
+    return {pB,clear,side:clear?(delta>0?'B':'P'):null,signal:Math.abs(delta)*200,parts:{pGlobal,pRecent,pTransition,tr}};
+  }
+  function patternInfo(arr){
+    if(arr.length<3)return {tags:[],explain:'ต้องมีข้อมูลอย่างน้อย 3 ตาเพื่อเริ่มตรวจจับรูปแบบ'};
+    const s=streakInfo(arr),alt=alternationLength(arr),last4=arr.slice(-4).join(''),last6=arr.slice(-6).join('');
+    const tags=[];
+    if(s.n>=4)tags.push({label:`มังกร ${s.side} ${s.n} ตาติด`,active:true});
+    if(alt>=5)tags.push({label:`ปิงปอง ${alt} ตา`,active:true});
+    if(last4==='BBPP'||last4==='PPBB')tags.push({label:'พบช่วงสองตัดสองล่าสุด',active:true});
+    if(arr.length>=6){const a=arr.slice(-6).join('');if(a==='BPPBPP'||a==='PBBPBB')tags.push({label:'พบช่วงหนึ่งต่อสองล่าสุด',active:true});}
+    if(tags.length===0)tags.push({label:'ยังไม่พบรูปแบบเด่น',active:false});
+    if(alt>=4&&s.n<3)return {tags,explain:'ผลช่วงล่าสุดมีการสลับฝั่งหลายครั้ง แต่การสลับที่ผ่านมาไม่ได้บังคับให้ตาถัดไปต้องสลับต่อ'};
+    if(s.n>=3)return {tags,explain:'มีผลฝั่งเดิมต่อเนื่องในช่วงล่าสุด สังเกตเป็นสตรีคได้ แต่ไม่ได้ยืนยันว่าจะต่อเนื่อง'};
+    return {tags,explain:'รูปแบบล่าสุดยังผสมกัน การจัดกลุ่มนี้มีไว้บรรยายอดีต ไม่ใช่สัญญาณทำนายที่รับประกัน'};
+  }
+  function renderHistory(){
+    const area=$('historyArea');if(!history.length){area.innerHTML='<div class="empty-state">ยังไม่มีประวัติ กดปุ่ม P หรือ B เพื่อเริ่มต้น</div>';return;}
+    const cols=Math.ceil(history.length/6);let html='<table class="history-table"><thead><tr><th>แถว</th>';
+    for(let c=0;c<cols;c++)html+=`<th>${c+1}</th>`;html+='</tr></thead><tbody>';
+    for(let r=0;r<6;r++){html+=`<tr><th>${r+1}</th>`;for(let c=0;c<cols;c++){const i=c*6+r;const val=history[i];html+=val?`<td class="${val.toLowerCase()}" title="ตาที่ ${i+1}: ${val}">${val}</td>`:'<td class="empty">·</td>'; }html+='</tr>';}
+    html+='</tbody></table>';area.innerHTML=html;
+  }
+  function buildBigRoad(arr){
+    const cells=new Map(),cols=[];let last=null,lastPos=null;
+    for(let i=0;i<arr.length;i++){
+      const v=arr[i];let c=0,r=0;
+      if(i===0){c=0;r=0;}
+      else if(v===last){c=lastPos.c;r=lastPos.r+1;if(r>5||cells.has(`${c},${r}`)){r=lastPos.r;c=lastPos.c+1;while(cells.has(`${c},${r}`))c++;}}
+      else{c=lastPos.c+1;r=0;while(cells.has(`${c},${r}`))c++;}
+      const pos={c,r,v,i};cells.set(`${c},${r}`,pos);cols[c]=Math.max(cols[c]||0,r+1);last=v;lastPos=pos;
+    }
+    return {cells,cols,positions:[...cells.values()].sort((a,b)=>a.i-b.i)};
+  }
+  function renderGridRoad(target,positions,kind){
+    if(!positions.length){$(target).innerHTML='<div class="empty-state">ยังไม่มีข้อมูล</div>';return;}
+    const maxC=Math.max(...positions.map(x=>x.c));const map=new Map(positions.map(x=>[`${x.c},${x.r}`,x]));let html='<div class="road-grid" style="grid-template-columns:repeat('+ (maxC+1)+',25px)">';
+    for(let r=0;r<6;r++)for(let c=0;c<=maxC;c++){const x=map.get(`${c},${r}`);if(x){const klass=x.v==='B'?'b':'p';html+=`<div class="dot ${klass}" title="${x.v}">${kind==='big'?x.v:''}</div>`;}else html+='<div class="dot blank"></div>';}
+    html+='</div>';$ (target).innerHTML=html;
+  }
+  function derivedRoad(big,offset){
+    const out=[];const cell=big.cells,heights=big.cols;
+    for(const pos of big.positions){const c=pos.c,r=pos.r;let eligible=false,red=false;
+      if(r===0&&c>=offset){eligible=true;red=(heights[c-1]||0)===(heights[c-offset]||0);}
+      else if(r>0&&c>=offset-1){eligible=true;red=cell.has(`${c-1},${r}`)===cell.has(`${c-offset},${r}`);}
+      if(eligible)out.push(red?'r':'bl');
+    }
+    return out;
+  }
+  function renderDerived(id,seq){if(!seq.length){$(id).innerHTML='<span class="small-muted">ข้อมูลยังไม่พอสร้างเค้าไพ่</span>';return;}$(id).innerHTML=seq.slice(-100).map((x,i)=>`<span class="dot ${x}" title="${x==='r'?'Red':'Blue'}"></span>`).join('');}
+  function renderTransitions(arr){
+    const b=countTrans(arr,'B'),p=countTrans(arr,'P');
+    if(!b.n&&!p.n){$('transitionBody').innerHTML='<tr><td colspan="4" style="text-align:center;color:#8295aa">ต้องมีผลอย่างน้อย 2 ตา</td></tr>';return;}
+    function cell(x){return x.n?`${x.b} (${pct(x.b/x.n)})`:'—';}
+    $('transitionBody').innerHTML=`<tr><td><span class="badge red">หลัง B</span></td><td>${cell(b)}</td><td>${b.n?`${b.p} (${pct(b.p/b.n)})`:'—'}</td><td>${b.n}</td></tr><tr><td><span class="badge blue">หลัง P</span></td><td>${p.n?`${p.b} (${pct(p.b/p.n)})`:'—'}</td><td>${p.n?`${p.p} (${pct(p.p/p.n)})`:'—'}</td><td>${p.n}</td></tr>`;
+  }
+  function backtest(arr){let tried=0,correct=0;for(let i=20;i<arr.length;i++){const m=model(arr.slice(0,i));const pick=m.pB>=.5?'B':'P';tried++;if(pick===arr[i])correct++;}return {tried,correct,rate:tried?correct/tried:null};}
+  function render(){
+    const n=history.length,b=history.filter(x=>x==='B').length,p=n-b,st=streakInfo(history),alt=alternationLength(history),recent=history.slice(-10);let changes=0;for(let i=1;i<recent.length;i++)if(recent[i]!==recent[i-1])changes++;
+    $('totalRounds').textContent=n.toLocaleString('th-TH')+' ตา';$('countB').textContent=b.toLocaleString('th-TH');$('countP').textContent=p.toLocaleString('th-TH');$('rateB').textContent=pct(n?b/n:0)+' ของผลที่บันทึก';$('rateP').textContent=pct(n?p/n:0)+' ของผลที่บันทึก';$('streak').textContent=st.n?st.n+' '+st.side:'—';$('streakSub').textContent=st.n?(st.side==='B'?'Banker ต่อเนื่อง':'Player ต่อเนื่อง'):'รอผล';$('chopRate').textContent=recent.length>1?changes+'/'+(recent.length-1):'—';
+    const m=model(history);$('meterB').style.width=(m.pB*100)+'%';$('meterP').style.width=((1-m.pB)*100)+'%';$('meterBLabel').textContent='B '+(m.pB*100).toFixed(2)+' คะแนน';$('meterPLabel').textContent='P '+((1-m.pB)*100).toFixed(2)+' คะแนน';$('signalStrength').textContent=history.length?`${(m.pB*100).toFixed(1)} / ${((1-m.pB)*100).toFixed(1)}`:'—';
+    const tok=$('forecastToken');tok.className='forecast-token '+(m.side?m.side.toLowerCase():'none');tok.textContent=m.side||'—';
+    $('forecastTitle').textContent=!n?'ยังไม่มีข้อมูล':m.side?`คะแนนเอนเอียงไปทาง ${m.side==='B'?'Banker (B)':'Player (P)'}`:'ยังไม่พบสัญญาณที่ชัดเจน';
+    $('forecastDesc').textContent=!n?'กด P หรือ B เพื่อเริ่มบันทึกผล ระบบจะแสดงแนวโน้มเชิงทดลองเมื่อมีข้อมูล':`คำนวณจากสถิติรวม, 20 ตาล่าสุด และผลเปลี่ยนผ่านหลัง ${history[history.length-1]} โดยถ่วงน้ำหนักและดึงค่าเข้าหาค่าฐาน · สัญญาณนี้ไม่ได้ยืนยันผลตาถัดไป`;
+    $('modelStatus').textContent=n?`วิเคราะห์จาก ${n} ตา · สัญญาณ ${Math.abs(m.pB-.5)>=.04?'ค่อนข้างเด่น':'อ่อน/ไม่ชัด'}`:'โมเดลเริ่มต้น · รอข้อมูล';
+    const pat=patternInfo(history);$('patternTags').innerHTML=pat.tags.map(t=>`<span class="tag ${t.active?'active':''}">${t.label}</span>`).join('');$('patternExplain').textContent=pat.explain;
+    renderHistory();renderTransitions(history);
+    const big=buildBigRoad(history);renderGridRoad('bigRoad',big.positions,'big');renderGridRoad('beadRoad',history.map((v,i)=>({c:Math.floor(i/6),r:i%6,v,i})),'bead');renderDerived('bigEye',derivedRoad(big,2));renderDerived('smallRoad',derivedRoad(big,3));renderDerived('cockroach',derivedRoad(big,4));
+    const bt=backtest(history);$('btN').textContent=bt.tried;$('btRate').textContent=bt.rate===null?'—':pct(bt.rate);$('btCompare').textContent=bt.tried?`ทายถูก ${bt.correct} จาก ${bt.tried} · เทียบค่าฐานประมาณ 50.68%`: 'ยังไม่มีข้อมูลทดสอบ';
+  }
+  $('addP').addEventListener('click',()=>add('P'));$('addB').addEventListener('click',()=>add('B'));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);
+  document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;const tag=(document.activeElement&&document.activeElement.tagName||'').toLowerCase();if(['input','textarea','select'].includes(tag))return;const k=e.key.toLowerCase();if(k==='p')add('P');else if(k==='b')add('B');else if(k==='backspace'){e.preventDefault();undo();}});
+  render();
+})();
+</script>
+</body>
+</html>

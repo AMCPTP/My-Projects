@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Baccarat Insight Lab v2 — ระบบบันทึกและวิเคราะห์บาคาร่า</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#172438;--line:#26364c;--muted:#96a8bd;--text:#eef4fb;--blue:#4da3ff;--blue2:#173d68;--red:#ff747b;--red2:#512b39;--green:#5ed0a1;--gold:#e7c477;--shadow:0 14px 36px rgba(0,0,0,.22)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 450px at 90% -10%,#1b3451 0%,transparent 60%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.5}
+button{font:inherit;cursor:pointer}.app{max-width:1480px;margin:auto;padding:24px 22px 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#28517c,#17304a);display:grid;place-items:center;font-weight:900;color:#d9ecff;border:1px solid #426181;box-shadow:var(--shadow)}h1{font-size:21px;margin:0;letter-spacing:.2px}.subtitle{font-size:12px;color:var(--muted);margin-top:3px}.pill{border:1px solid #43536a;border-radius:999px;padding:6px 11px;color:#bdcbd9;font-size:11px;white-space:nowrap;background:#142033}
+.grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.panel{background:linear-gradient(180deg,rgba(23,36,56,.96),rgba(17,28,44,.98));border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:15px;margin:0 0 13px;display:flex;align-items:center;gap:8px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);font-weight:700}.forecast{display:grid;grid-template-columns:1fr auto;align-items:center;gap:18px}.forecast-side{display:flex;align-items:center;gap:14px}.forecast-token{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;font-size:28px;font-weight:900;border:1px solid #40556d;background:#1b2c42}.forecast-token.b{color:var(--red);background:var(--red2);border-color:#854953}.forecast-token.p{color:var(--blue);background:var(--blue2);border-color:#356897}.forecast-token.none{color:#b8c6d5}.forecast-title{font-size:22px;font-weight:800}.forecast-desc{font-size:12px;color:var(--muted);max-width:650px}.forecast-score{min-width:190px;text-align:right}.score-num{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}.score-label{font-size:11px;color:var(--muted)}.meter{height:9px;border-radius:99px;overflow:hidden;background:#24344a;display:flex;margin:16px 0 9px}.meter .b{background:var(--red)}.meter .p{background:var(--blue)}.meter-note{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.notice{margin-top:14px;border:1px solid #5a4a2b;background:#332c1d;color:#e8d9b3;padding:10px 12px;border-radius:12px;font-size:11px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.entry-btn{border:0;border-radius:13px;min-width:112px;padding:13px 20px;font-size:16px;font-weight:900;letter-spacing:.3px;transition:.15s;box-shadow:0 7px 18px rgba(0,0,0,.18)}.entry-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.entry-btn:active{transform:translateY(0)}.entry-btn.b{background:linear-gradient(135deg,#ff8d91,#e65d6b);color:#2b1017}.entry-btn.p{background:linear-gradient(135deg,#7fc4ff,#4494e9);color:#071d35}.action-btn{border:1px solid #40516a;color:#dce7f2;background:#1a2a40;border-radius:11px;padding:11px 14px;font-size:12px;font-weight:700}.action-btn:hover:not(:disabled){background:#243953}.action-btn.danger{border-color:#71404a;color:#ffb5ba;background:#36212b}.action-btn:disabled{opacity:.4;cursor:not-allowed}.controls-hint{color:var(--muted);font-size:11px;margin-left:auto}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.stat{background:#111d2e;border:1px solid #293a50;border-radius:13px;padding:12px;min-width:0}.stat-label{font-size:10px;color:var(--muted)}.stat-value{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}.stat-sub{font-size:10px;color:var(--muted)}
+.history-wrap{overflow:auto;border:1px solid #2b3b50;border-radius:13px;background:#0e1929;max-height:390px}.history-table{border-collapse:separate;border-spacing:5px;min-width:100%;width:max-content;padding:8px}.history-table th{font-size:10px;color:#71859e;font-weight:600;min-width:38px}.history-table td{width:38px;height:38px;text-align:center;border:1px solid #34475d;border-radius:50%;font-weight:900;font-size:12px;background:#17263a}.history-table td.b{background:#492a37;border-color:#a04f60;color:#ff9298}.history-table td.p{background:#1b3b5b;border-color:#427eb1;color:#8bc7ff}.history-table td.empty{background:#111d2d;border:1px dashed #26374d;color:#40536c}.empty-state{padding:24px;color:var(--muted);text-align:center;font-size:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.road-grid-wrap{overflow:auto;padding-bottom:5px}.road-grid{display:grid;grid-template-rows:repeat(6,25px);grid-auto-columns:25px;grid-auto-flow:column;gap:4px;width:max-content;min-width:100%;padding:5px}.dot{width:25px;height:25px;border-radius:50%;border:1px solid #4d617a;display:grid;place-items:center;font-size:10px;font-weight:800}.dot.b{background:#552b39;border-color:#a45264;color:#ff9aa0}.dot.p{background:#193e61;border-color:#4384b8;color:#94ceff}.dot.r{background:#6b303d;border-color:#b35b68;color:#ffd2d4}.dot.bl{background:#17486a;border-color:#498bb8;color:#d0edff}.dot.blank{background:#111d2c;border:1px dashed #26384e}.dot.hollow.r{background:transparent;color:var(--red);border-color:#b35b68}.dot.hollow.bl{background:transparent;color:var(--blue);border-color:#498bb8}.dot.slash{background:transparent;border-color:transparent;font-size:21px;line-height:20px}.dot.slash.r{color:var(--red)}.dot.slash.bl{color:var(--blue)}.derived-info{font-size:10px;color:var(--muted);margin-top:7px;min-height:30px}
+.table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{padding:9px 7px;border-bottom:1px solid #29394d;text-align:right}.table th:first-child,.table td:first-child{text-align:left;color:#c9d6e4}.table th{font-size:10px;color:#8ea2b8;font-weight:700}.table tr:last-child td{border-bottom:0}.badge{border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700;display:inline-block}.badge.red{background:#512b39;color:#ffadb2}.badge.blue{background:#193d5c;color:#9bd1ff}.badge.gold{background:#40351f;color:#f0d491}.tag-row{display:flex;flex-wrap:wrap;gap:7px}.tag{font-size:10px;padding:6px 9px;border:1px solid #34485f;border-radius:999px;color:#bdccdc;background:#15243a}.tag.active{border-color:#8f7846;background:#3b321f;color:#f0d99e}.small-muted{font-size:11px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-head small{color:var(--muted);font-size:10px}.disclaimer{border-left:3px solid #d3ad59;padding:8px 11px;background:#302a1d;border-radius:0 10px 10px 0;font-size:11px;color:#dfd0aa;margin-top:12px}.method-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.method{padding:10px;border-radius:11px;border:1px solid #2c3d53;background:#111e30}.method strong{display:block;font-size:11px;margin-bottom:3px}.method span{display:block;color:var(--muted);font-size:10px}.method.disabled{opacity:.72}.footer{text-align:center;color:#637991;font-size:10px;margin:22px 0 0}.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);background:#e7f0fa;color:#132239;border-radius:12px;padding:10px 16px;font-size:12px;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}.odds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.odds{background:#111d2e;border:1px solid #293a50;border-radius:12px;padding:12px}.odds strong{font-size:12px;display:block}.odds .odds-value{font-size:21px;font-weight:800;margin:5px 0}.odds small{font-size:10px;color:var(--muted)}a{color:#8fc8ff}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:900px){.grid,.two-col{grid-template-columns:1fr}.forecast{grid-template-columns:1fr}.forecast-score{text-align:left}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.app{padding:16px 12px 35px}.topbar{align-items:flex-start}.topbar .pill{display:none}.panel{padding:14px}.entry-btn{flex:1;min-width:0}.controls-hint{width:100%;margin:0}.forecast-title{font-size:19px}.forecast-token{width:58px;height:58px}.method-list{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr);gap:7px}.stat{padding:10px}.stat-value{font-size:19px}.odds-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">BI</div><div><h1>Baccarat Insight Lab</h1><div class="subtitle">เวอร์ชัน 2 · บันทึกผล · เค้าไพ่ · สถิติ · ตรวจสอบโมเดล</div></div></div>
+    <div class="pill" id="storageStatus">LOCAL MODE · บันทึกในอุปกรณ์นี้</div>
+  </header>
+
+  <section class="panel" style="margin-bottom:16px">
+    <div class="section-head"><h2>ผลคาดการณ์เชิงทดลอง</h2><small id="modelStatus" aria-live="polite">รอข้อมูล</small></div>
+    <div class="forecast">
+      <div class="forecast-side">
+        <div id="forecastToken" class="forecast-token none">—</div>
+        <div><div class="eyebrow">แนวโน้มจากข้อมูลย้อนหลัง</div><div id="forecastTitle" class="forecast-title">ยังไม่มีข้อมูล</div><div id="forecastDesc" class="forecast-desc">กด P หรือ B เพื่อบันทึกผล ระบบจะคำนวณดัชนีแนวโน้มจากสถิติที่บันทึก</div></div>
+      </div>
+      <div class="forecast-score"><div class="score-num" id="signalStrength">—</div><div class="score-label">ความเบี่ยงเบนจากค่าฐาน · จุดเปอร์เซ็นต์</div></div>
+    </div>
+    <div class="meter"><div class="b" id="meterB" style="width:50.68%"></div><div class="p" id="meterP" style="width:49.32%"></div></div>
+    <div class="meter-note"><span id="meterBLabel">B 50.68 คะแนนดัชนี</span><span id="meterPLabel">P 49.32 คะแนนดัชนี</span></div>
+    <div class="notice"><strong>สำคัญ:</strong> ตัวเลข B/P เป็นคะแนนดัชนีภายในโมเดล ไม่ใช่ความน่าจะเป็นจริงของตาถัดไป และไม่ใช่คำแนะนำให้เดิมพัน ระบบจะงดแสดงฝั่งคาดการณ์เมื่อข้อมูลน้อยกว่า 20 ตาหรือสัญญาณไม่ถึงเกณฑ์</div>
+  </section>
+
+  <div class="grid">
+    <div>
+      <section class="panel" style="margin-bottom:16px">
+        <h2>บันทึกผลตาใหม่</h2>
+        <div class="controls">
+          <button class="entry-btn p" id="addP" aria-label="บันทึก Player">P · PLAYER</button>
+          <button class="entry-btn b" id="addB" aria-label="บันทึก Banker">B · BANKER</button>
+          <button class="action-btn" id="undo" disabled>↶ ย้อนกลับ</button>
+          <button class="action-btn danger" id="reset" disabled>รีเซ็ตทั้งหมด</button>
+          <span class="controls-hint">คีย์บอร์ด: P / B · ย้อนกลับ: Backspace</span>
+        </div>
+      </section>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>สถิติภาพรวม</h2><small id="totalRounds">0 ตา</small></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">BANKER (B)</div><div class="stat-value" id="countB">0</div><div class="stat-sub" id="rateB">0.0% ของผล B/P</div></div>
+          <div class="stat"><div class="stat-label">PLAYER (P)</div><div class="stat-value" id="countP">0</div><div class="stat-sub" id="rateP">0.0% ของผล B/P</div></div>
+          <div class="stat"><div class="stat-label">STREAK ปัจจุบัน</div><div class="stat-value" id="streak">—</div><div class="stat-sub" id="streakSub">รอผล</div></div>
+          <div class="stat"><div class="stat-label">สลับฝั่ง 10 ตาล่าสุด</div><div class="stat-value" id="chopRate">—</div><div class="stat-sub" id="chopSub">รอผล</div></div>
+          <div class="stat"><div class="stat-label">B ใน 20 ตาล่าสุด</div><div class="stat-value" id="rollingB">—</div><div class="stat-sub" id="rollingSub">รอข้อมูล</div></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><h2>ตารางบันทึกประวัติ</h2><small>บนลงล่าง · 6 ช่องต่อคอลัมน์</small></div>
+        <div id="historyArea" class="history-wrap"><div class="empty-state">ยังไม่มีประวัติ กดปุ่ม P หรือ B เพื่อเริ่มต้น</div></div>
+        <div class="small-muted" style="margin-top:9px">บันทึกตามลำดับจากบนลงล่าง 6 ช่อง เมื่อเต็มแล้วเริ่มคอลัมน์ถัดไปทางขวา · เวอร์ชันนี้รับเฉพาะผล B/P ยังไม่บันทึก Tie</div>
+      </section>
+    </div>
+
+    <div>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>วิเคราะห์รูปแบบผลย้อนหลัง</h2><small>Pattern scanner</small></div>
+        <div id="patternTags" class="tag-row"><span class="tag">รอข้อมูล</span></div>
+        <div class="small-muted" id="patternExplain" style="margin-top:10px">ระบบจะตรวจจับมังกร ปิงปอง สองตัดสอง หนึ่งต่อสอง และรูปแบบที่ไม่เด่น</div>
+      </section>
+      <section class="panel" style="margin-bottom:16px">
+        <div class="section-head"><h2>Transition Analysis</h2><small>ผลถัดไปหลังผลก่อนหน้า</small></div>
+        <table class="table"><thead><tr><th>ผลก่อนหน้า</th><th>ผลถัดไป B</th><th>ผลถัดไป P</th><th>จำนวน</th></tr></thead><tbody id="transitionBody"><tr><td colspan="4" style="text-align:center;color:#8295aa">ต้องมีผลอย่างน้อย 2 ตา</td></tr></tbody></table>
+        <div class="small-muted" style="margin-top:8px">เป็นสัดส่วนที่พบในประวัติที่บันทึกเท่านั้น ไม่ใช่โอกาสที่ผลถัดไปจะเกิดขึ้นจริง</div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><h2>ทดสอบย้อนหลัง (Walk-forward)</h2><small>ไม่ใช้ข้อมูลอนาคตในการสร้างคำทาย</small></div>
+        <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+          <div class="stat"><div class="stat-label">จำนวนคำทายที่มีสัญญาณ</div><div class="stat-value" id="btN">0</div><div class="stat-sub" id="btCoverage">ยังไม่มีชุดทดสอบ</div></div>
+          <div class="stat"><div class="stat-label">ความแม่นยำของคำทาย</div><div class="stat-value" id="btRate">—</div><div class="stat-sub" id="btCompare">ยังไม่มีชุดทดสอบ</div></div>
+        </div>
+        <div class="disclaimer">Backtest ใช้เฉพาะจุดที่โมเดลแสดง B/P จริง และเทียบกับการทาย B ในช่วงเดียวกัน ผลย้อนหลังไม่รับประกันผลในอนาคต และตัวอย่างน้อยอาจทำให้เปอร์เซ็นต์แกว่งมาก</div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><h2>เค้าไพ่ (Road Map)</h2><small>ทุกแผงคำนวณใหม่จากประวัติชุดเดียวกัน</small></div>
+    <div class="two-col">
+      <div><div class="eyebrow" style="margin:5px 0 7px">Big Road · มังกรและการเปลี่ยนฝั่ง</div><div id="bigRoad" class="road-grid-wrap"><div class="empty-state">ยังไม่มีข้อมูล</div></div><div class="derived-info">วงกลมแดง = Banker, น้ำเงิน = Player · มีการรองรับมังกรเกิน 6 ตาและการชนของช่อง</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Bead Plate · บันทึกผลตามลำดับ</div><div id="beadRoad" class="road-grid-wrap"><div class="empty-state">ยังไม่มีข้อมูล</div></div><div class="derived-info">แต่ละผลอยู่ในช่องของตัวเอง เรียงบนลงล่าง 6 ช่องต่อคอลัมน์</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Big Eye Boy</div><div id="bigEye" class="road-grid-wrap"><div class="empty-state">ข้อมูลยังไม่พอสร้างเค้าไพ่</div></div><div class="derived-info">เปรียบเทียบโครงสร้างกับคอลัมน์ก่อนหน้า สีแดง/น้ำเงินไม่ใช่ Banker/Player</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Small Road</div><div id="smallRoad" class="road-grid-wrap"><div class="empty-state">ข้อมูลยังไม่พอสร้างเค้าไพ่</div></div><div class="derived-info">ใช้หลักเปรียบเทียบเดียวกัน แต่เว้นระยะย้อนกลับ 2 คอลัมน์</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">Cockroach Pig</div><div id="cockroach" class="road-grid-wrap"><div class="empty-state">ข้อมูลยังไม่พอสร้างเค้าไพ่</div></div><div class="derived-info">ใช้หลักเปรียบเทียบเดียวกัน แต่เว้นระยะย้อนกลับ 3 คอลัมน์</div></div>
+      <div><div class="eyebrow" style="margin:5px 0 7px">คำอธิบายสี</div><div class="small-muted">ใน Big Road สีแดงและน้ำเงินแทนผล Banker/Player แต่ใน Big Eye Boy, Small Road และ Cockroach Pig สีแดงหมายถึงรูปแบบที่เปรียบเทียบแล้วเหมือนกัน สีน้ำเงินหมายถึงแตกต่างกัน ทั้งหมดเป็นการจัดรูปแบบข้อมูลย้อนหลัง ไม่ใช่สัญญาณทำนายที่พิสูจน์แล้ว</div></div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><h2>ความน่าจะเป็นและ Expected Value</h2><small>ค่ามาตรฐานบาคาร่า 8 สำรับ</small></div>
+    <div class="odds-grid">
+      <div class="odds"><strong>Banker</strong><div class="odds-value" style="color:var(--red)">45.86%</div><small>House Edge ประมาณ 1.06% · จ่ายชนะ 0.95:1</small></div>
+      <div class="odds"><strong>Player</strong><div class="odds-value" style="color:var(--blue)">44.62%</div><small>House Edge ประมาณ 1.24% · จ่ายชนะ 1:1</small></div>
+      <div class="odds"><strong>Tie</strong><div class="odds-value" style="color:var(--green)">9.52%</div><small>House Edge ประมาณ 14.36% · จ่ายชนะ 8:1</small></div>
+    </div>
+    <div class="small-muted" style="margin-top:10px">ค่าอ้างอิงนี้เป็นกติกามาตรฐาน 8 สำรับ มีค่าคอมมิชชัน Banker 5% และ Tie จ่าย 8:1 ตารางจริงอาจต่างกันตามผู้ให้บริการ</div>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <h2>ขอบเขตความสามารถของระบบ</h2>
+    <div class="method-list">
+      <div class="method"><strong>ทำงานแล้ว · สถิติผล B/P</strong><span>Win Rate, Streak, Chop, Rolling Window, Transition Analysis และ Pattern Scanner คำนวณใหม่ทุกครั้งที่เพิ่ม/ย้อนกลับ/รีเซ็ต</span></div>
+      <div class="method"><strong>ทำงานแล้ว · Road Map</strong><span>Bead Plate, Big Road และ Derived Roads ทั้ง 3 ชนิดสร้างจากข้อมูลชุดเดียวกัน โดยแก้การวางมังกรและจุดเริ่มต้นของเค้าไพ่</span></div>
+      <div class="method"><strong>ทำงานแบบทดลอง · Forecast</strong><span>ใช้ดัชนีแบบถ่วงน้ำหนักและดึงค่ากลับสู่ค่าฐานเพื่อสรุปแนวโน้ม ไม่ใช่ความน่าจะเป็นจริง และยังไม่ผ่านการยืนยันจากข้อมูลอิสระ</span></div>
+      <div class="method"><strong>ทำงานแล้ว · Walk-forward Backtest</strong><span>สร้างคำทายจากข้อมูลก่อนหน้าเท่านั้น และประเมินเฉพาะรอบที่โมเดลแสดงสัญญาณ พร้อมแสดง Coverage และค่าฐานเปรียบเทียบ</span></div>
+      <div class="method disabled"><strong>ยังไม่ทำงาน · Card Counting / Shoe Composition</strong><span>ปุ่ม B/P ไม่ได้เก็บแต้มไพ่รายใบ จึงยังคำนวณไพ่ที่เหลืออยู่หรือ Running Count ไม่ได้ ต้องมีระบบป้อนแต้มไพ่และจำนวนสำรับ</span></div>
+      <div class="method disabled"><strong>ยังไม่ทำงาน · Shuffle Tracking / Edge Sorting</strong><span>ต้องอาศัยข้อมูลการสับไพ่หรือคุณลักษณะทางกายภาพของไพ่ ซึ่งไม่มีอยู่ในประวัติ B/P</span></div>
+      <div class="method disabled"><strong>ยังไม่ทำงาน · Monte Carlo Simulation / Machine Learning</strong><span>เวอร์ชันนี้มี Backtest เท่านั้น ยังไม่มีการจำลองแจกไพ่จาก Shoe หรือฝึกโมเดล Machine Learning</span></div>
+      <div class="method"><strong>คำเตือน · Betting Systems / Risk Management</strong><span>Martingale, Fibonacci, Paroli และสูตรอื่นเปลี่ยนขนาดเดิมพัน ไม่ได้เพิ่มโอกาสชนะหรือกำจัด House Edge</span></div>
+    </div>
+    <div class="disclaimer">ข้อจำกัดสำคัญ: เวอร์ชันนี้บันทึกเฉพาะ B/P จึงยังไม่มี Tie ใน Bead Plate และสถิติจะคิดจากผลที่ตัดสินแล้วเท่านั้น ข้อมูลต้องมาจาก Shoe เดียวกันหากต้องการอ่าน Road Map ของ Shoe นั้นอย่างถูกต้อง</div>
+  </section>
+  <div class="footer">Baccarat Insight Lab v2 · ประวัติเก็บในเบราว์เซอร์นี้ · ไม่มีการส่งข้อมูลออกอินเทอร์เน็ต</div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{
+  'use strict';
+  const KEY='baccaratInsightHistory_v1';
+  // Standard 8-deck resolved-hand baseline: Banker / (Banker + Player).
+  const BASE_B=0.458597/(0.458597+0.446247);
+  const MIN_SIGNAL_ROUNDS=20;
+  const SIGNAL_THRESHOLD=0.01; // 1 percentage point from baseline; heuristic only.
+  const $=id=>document.getElementById(id);
+  let history=[];
+  let toastTimer=null;
+  let storageAvailable=true;
+
+  function sanitizeHistory(value){return Array.isArray(value)?value.filter(x=>x==='B'||x==='P'):[];}
+  try{history=sanitizeHistory(JSON.parse(localStorage.getItem(KEY)||'[]'));}catch(e){storageAvailable=false;history=[];}
+  function updateStorageStatus(){
+    const el=$('storageStatus');
+    el.textContent=storageAvailable?'LOCAL MODE · บันทึกในอุปกรณ์นี้':'SESSION MODE · บันทึกถาวรไม่ได้';
+    el.style.borderColor=storageAvailable?'#43536a':'#8a6540';
+  }
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(history));storageAvailable=true;}
+    catch(e){storageAvailable=false;showToast('เบราว์เซอร์บันทึกข้อมูลถาวรไม่ได้');}
+    updateStorageStatus();
+  }
+  function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1900);}
+  function add(side){if(side!=='B'&&side!=='P')return;history.push(side);save();render();}
+  function undo(){if(!history.length)return;history.pop();save();render();showToast('ย้อนกลับ 1 รายการแล้ว');}
+  function reset(){if(!history.length)return;if(confirm('ยืนยันลบประวัติทั้งหมดหรือไม่? การดำเนินการนี้ย้อนกลับไม่ได้')){history=[];save();render();showToast('รีเซ็ตประวัติแล้ว');}}
+  const pct=x=>(x*100).toFixed(1)+'%';
+  function streakInfo(arr){if(!arr.length)return {side:null,n:0};const side=arr[arr.length-1];let n=0;for(let i=arr.length-1;i>=0&&arr[i]===side;i--)n++;return {side,n};}
+  function alternationLength(arr){if(!arr.length)return 0;let n=1;for(let i=arr.length-1;i>0;i--){if(arr[i]===arr[i-1])break;n++;}return n;}
+  function countTrans(arr,from){let b=0,p=0;for(let i=1;i<arr.length;i++){if(arr[i-1]===from){if(arr[i]==='B')b++;else p++;}}return {b,p,n:b+p};}
+
+  // This returns model index values, not calibrated probabilities.
+  function model(arr){
+    if(!arr.length)return {indexB:BASE_B,side:null,delta:0,parts:null};
+    const bAll=arr.filter(x=>x==='B').length;
+    const recent=arr.slice(-20),bRecent=recent.filter(x=>x==='B').length;
+    const last=arr[arr.length-1],tr=countTrans(arr,last);
+    const global=(bAll+80*BASE_B)/(arr.length+80);
+    const rolling=(bRecent+30*BASE_B)/(recent.length+30);
+    const transition=(tr.b+40*BASE_B)/(tr.n+40);
+    const indexB=.20*global+.25*rolling+.55*transition;
+    const delta=indexB-BASE_B;
+    const enough=arr.length>=MIN_SIGNAL_ROUNDS;
+    const side=enough&&delta>=SIGNAL_THRESHOLD?'B':enough&&delta<=-SIGNAL_THRESHOLD?'P':null;
+    return {indexB,side,delta,parts:{global,rolling,transition,tr}};
+  }
+
+  function repeats(arr,pattern,cycles){
+    const need=pattern.length*cycles;if(arr.length<need)return false;
+    const tail=arr.slice(-need);return tail.every((v,i)=>v===pattern[i%pattern.length]);
+  }
+  function patternInfo(arr){
+    if(arr.length<3)return {tags:[{label:'ข้อมูลยังไม่พอ',active:false}],explain:'ต้องมีข้อมูลอย่างน้อย 3 ตาเพื่อเริ่มตรวจจับรูปแบบ'};
+    const s=streakInfo(arr),alt=alternationLength(arr),tags=[];
+    if(s.n>=4)tags.push({label:`มังกร ${s.side} ${s.n} ตาติด`,active:true});
+    if(alt>=5)tags.push({label:`ปิงปอง ${alt} ตาล่าสุด`,active:true});
+    if(repeats(arr,'BBPP',2)||repeats(arr,'PPBB',2))tags.push({label:'รูปแบบสองตัดสองซ้ำ 2 รอบ',active:true});
+    if(repeats(arr,'BPP',3)||repeats(arr,'PBB',3))tags.push({label:'รูปแบบหนึ่งต่อสองซ้ำ 3 รอบ',active:true});
+    if(!tags.length)tags.push({label:'ยังไม่พบรูปแบบเด่น',active:false});
+    let explain='รูปแบบเหล่านี้เป็นคำอธิบายประวัติที่ผ่านมา ไม่ได้ทำให้ผลตาถัดไปต้องเดินตาม';
+    if(s.n>=3)explain=`ผลล่าสุดออก ${s.side} ต่อเนื่อง ${s.n} ตา · เป็นการวัดสตรีค ไม่ได้ยืนยันว่าจะต่อเนื่อง`;
+    else if(alt>=4)explain=`ผลล่าสุดสลับฝั่ง ${alt} ตาต่อเนื่อง · การสลับที่ผ่านมาไม่ได้บังคับให้ตาถัดไปสลับต่อ`;
+    return {tags,explain};
+  }
+
+  // Big Road keeps BOTH logical streak coordinates and physical 6-row display coordinates.
+  // The logical column length is used by the derived-road formulas; visual coordinates bend dragon tails.
+  function buildBigRoad(arr){
+    const occupied=new Map(),positions=[],runs=[];
+    let lastSide=null,lastPos=null,currentRun=null;
+    for(let i=0;i<arr.length;i++){
+      const side=arr[i];let logicalCol,logicalRow,visualCol,visualRow;
+      if(i===0){
+        currentRun={index:0,side,length:0,visualStart:0};runs.push(currentRun);
+        logicalCol=0;logicalRow=0;visualCol=0;visualRow=0;
+      }else if(side===lastSide){
+        logicalCol=currentRun.index;logicalRow=currentRun.length;
+        visualCol=lastPos.visualCol;visualRow=lastPos.visualRow+1;
+        if(visualRow>=6||occupied.has(`${visualCol},${visualRow}`)){
+          visualRow=lastPos.visualRow;visualCol=lastPos.visualCol+1;
+          while(occupied.has(`${visualCol},${visualRow}`))visualCol++;
+        }
+      }else{
+        currentRun={index:runs.length,side,length:0,visualStart:runs[runs.length-1].visualStart+1};runs.push(currentRun);
+        logicalCol=currentRun.index;logicalRow=0;
+        visualCol=currentRun.visualStart;visualRow=0;
+        while(occupied.has(`${visualCol},0`))visualCol++;
+        currentRun.visualStart=visualCol;
+      }
+      currentRun.length++;
+      const pos={side,i,logicalCol,logicalRow,visualCol,visualRow};
+      occupied.set(`${visualCol},${visualRow}`,pos);positions.push(pos);lastPos=pos;lastSide=side;
+    }
+    return {occupied,positions,runs};
+  }
+
+  // Derived roads: offset 1 = Big Eye Boy, 2 = Small Road, 3 = Cockroach Pig.
+  // New streak (row 0): compare the two earlier streak lengths at that offset.
+  // Continuing streak: compare the prior column's cell at the current depth with the cell above the current one.
+  function deriveRoad(big,offset){
+    const marks=[];
+    for(const pos of big.positions){
+      const c=pos.logicalCol,r=pos.logicalRow;
+      let eligible=false,red=false;
+      if(r===0&&c>=offset+1){eligible=true;red=big.runs[c-1].length===big.runs[c-offset-1].length;}
+      else if(r>0&&c>=offset){eligible=true;red=big.runs[c-offset].length>r;}
+      if(eligible)marks.push(red?'R':'L');
+    }
+    return marks;
+  }
+
+  // Display any B/P or R/L sequence using 6-row road geometry and dragon-tail collision handling.
+  function buildDisplayRoad(sequence){
+    const occupied=new Map(),positions=[];let last=null,lastPos=null,runStart=0;
+    for(let i=0;i<sequence.length;i++){
+      const value=sequence[i];let c,r;
+      if(i===0){c=0;r=0;runStart=0;}
+      else if(value===last){c=lastPos.c;r=lastPos.r+1;if(r>=6||occupied.has(`${c},${r}`)){r=lastPos.r;c=lastPos.c+1;while(occupied.has(`${c},${r}`))c++;}}
+      else{c=runStart+1;r=0;while(occupied.has(`${c},0`))c++;runStart=c;}
+      const pos={value,i,c,r};occupied.set(`${c},${r}`,pos);positions.push(pos);last=value;lastPos=pos;
+    }
+    return positions;
+  }
+  function renderRoad(target,positions,kind){
+    const el=$(target);
+    if(!positions.length){el.innerHTML='<div class="empty-state">'+(kind==='derived'?'ข้อมูลยังไม่พอสร้างเค้าไพ่':'ยังไม่มีข้อมูล')+'</div>';return;}
+    const maxC=Math.max(...positions.map(x=>kind==='big'?x.visualCol:x.c));
+    const map=new Map(positions.map(x=>[`${kind==='big'?x.visualCol:x.c},${kind==='big'?x.visualRow:x.r}`,x]));
+    let html=`<div class="road-grid" style="grid-template-columns:repeat(${maxC+1},25px)">`;
+    for(let r=0;r<6;r++)for(let c=0;c<=maxC;c++){
+      const x=map.get(`${c},${r}`);
+      if(!x){html+='<div class="dot blank" aria-hidden="true"></div>';continue;}
+      let cls,label,shape='';
+      const derived=['bigEye','smallRoad','cockroach'].includes(kind);
+      if(derived){cls=x.value==='R'?'r':'bl';shape=kind==='bigEye'?'hollow':kind==='cockroach'?'slash':'';label=kind==='cockroach'?'╱':'';}
+      else{const side=x.side||x.value;cls=side==='B'?'b':'p';label=(kind==='big'||kind==='bead')?side:'';}
+      const title=derived?(x.value==='R'?'แดง: รูปแบบเหมือนกัน':'น้ำเงิน: รูปแบบแตกต่าง'):`ตาที่ ${x.i+1}: ${x.side||x.value}`;
+      html+=`<div class="dot ${cls} ${shape}" title="${title}">${label}</div>`;
+    }
+    html+='</div>';el.innerHTML=html;
+  }
+  function renderHistory(){
+    const area=$('historyArea');
+    if(!history.length){area.innerHTML='<div class="empty-state">ยังไม่มีประวัติ กดปุ่ม P หรือ B เพื่อเริ่มต้น</div>';return;}
+    const cols=Math.ceil(history.length/6);let html='<table class="history-table"><thead><tr><th>แถว</th>';
+    for(let c=0;c<cols;c++)html+=`<th>${c+1}</th>`;html+='</tr></thead><tbody>';
+    for(let r=0;r<6;r++){
+      html+=`<tr><th>${r+1}</th>`;
+      for(let c=0;c<cols;c++){const i=c*6+r,val=history[i];html+=val?`<td class="${val.toLowerCase()}" title="ตาที่ ${i+1}: ${val}">${val}</td>`:'<td class="empty">·</td>';}
+      html+='</tr>';
+    }
+    html+='</tbody></table>';area.innerHTML=html;
+  }
+  function renderTransitions(arr){
+    const b=countTrans(arr,'B'),p=countTrans(arr,'P');
+    if(!b.n&&!p.n){$('transitionBody').innerHTML='<tr><td colspan="4" style="text-align:center;color:#8295aa">ต้องมีผลอย่างน้อย 2 ตา</td></tr>';return;}
+    function cell(x,k){return x.n?`${x[k]} (${pct(x[k]/x.n)})`:'—';}
+    $('transitionBody').innerHTML=`<tr><td><span class="badge red">หลัง B</span></td><td>${cell(b,'b')}</td><td>${cell(b,'p')}</td><td>${b.n}</td></tr><tr><td><span class="badge blue">หลัง P</span></td><td>${cell(p,'b')}</td><td>${cell(p,'p')}</td><td>${p.n}</td></tr>`;
+  }
+  function backtest(arr){
+    let tested=0,predicted=0,correct=0,baseCorrect=0;
+    for(let i=MIN_SIGNAL_ROUNDS;i<arr.length;i++){
+      tested++;
+      const m=model(arr.slice(0,i));
+      if(!m.side)continue;
+      predicted++;
+      if(m.side===arr[i])correct++;
+      // Fixed Banker baseline, evaluated on exactly the same selected rounds.
+      if(arr[i]==='B')baseCorrect++;
+    }
+    return {tested,predicted,correct,baseCorrect,rate:predicted?correct/predicted:null,baseRate:predicted?baseCorrect/predicted:null,coverage:tested?predicted/tested:null};
+  }
+  function render(){
+    const n=history.length,b=history.filter(x=>x==='B').length,p=n-b,st=streakInfo(history),recent=history.slice(-10);
+    let changes=0;for(let i=1;i<recent.length;i++)if(recent[i]!==recent[i-1])changes++;
+    $('totalRounds').textContent=n.toLocaleString('th-TH')+' ตา';
+    $('countB').textContent=b.toLocaleString('th-TH');$('countP').textContent=p.toLocaleString('th-TH');
+    $('rateB').textContent=pct(n?b/n:0)+' ของผล B/P';$('rateP').textContent=pct(n?p/n:0)+' ของผล B/P';
+    $('streak').textContent=st.n?st.n+' '+st.side:'—';$('streakSub').textContent=st.n?(st.side==='B'?'Banker ต่อเนื่อง':'Player ต่อเนื่อง'):'รอผล';
+    $('chopRate').textContent=recent.length>1?`${changes}/${recent.length-1}`:'—';$('chopSub').textContent=recent.length>1?pct(changes/(recent.length-1))+' ของช่วงที่เปลี่ยน':'รอผล';
+    const rolling=history.slice(-20),rollingB=rolling.filter(x=>x==='B').length;
+    $('rollingB').textContent=rolling.length?`${rollingB}/${rolling.length}`:'—';$('rollingSub').textContent=rolling.length?`B ${pct(rollingB/rolling.length)} ในช่วงล่าสุด`:'รอข้อมูล';
+    $('undo').disabled=!n;$('reset').disabled=!n;
+
+    const m=model(history),idxB=m.indexB,idxP=1-idxB;
+    $('meterB').style.width=(idxB*100)+'%';$('meterP').style.width=(idxP*100)+'%';
+    $('meterBLabel').textContent='B '+(idxB*100).toFixed(2)+' คะแนนดัชนี';$('meterPLabel').textContent='P '+(idxP*100).toFixed(2)+' คะแนนดัชนี';
+    $('signalStrength').textContent=n?`${m.delta>=0?'+':''}${(m.delta*100).toFixed(2)} pp`:'—';
+    const tok=$('forecastToken');tok.className='forecast-token '+(m.side?m.side.toLowerCase():'none');tok.textContent=m.side||'—';
+    if(!n){$('forecastTitle').textContent='ยังไม่มีข้อมูล';$('forecastDesc').textContent='กด P หรือ B เพื่อเริ่มบันทึกผล ระบบจะคำนวณดัชนีแนวโน้มจากสถิติที่บันทึก';$('modelStatus').textContent='รอข้อมูล';}
+    else if(n<MIN_SIGNAL_ROUNDS){$('forecastTitle').textContent='ข้อมูลยังไม่เพียงพอ';$('forecastDesc').textContent=`มีข้อมูล ${n} จาก ${MIN_SIGNAL_ROUNDS} ตาที่กำหนดไว้ ระบบแสดงคะแนนดัชนีเบื้องต้น แต่ยังไม่ออกฝั่งแนวโน้ม`;$('modelStatus').textContent=`ข้อมูล ${n} ตา · รออย่างน้อย ${MIN_SIGNAL_ROUNDS} ตา`;}
+    else if(!m.side){$('forecastTitle').textContent='ยังไม่พบสัญญาณที่ชัดเจน';$('forecastDesc').textContent='คะแนนโมเดลอยู่ใกล้ค่าฐานมาตรฐาน จึงงดแสดงฝั่งคาดการณ์';$('modelStatus').textContent='ไม่มีสัญญาณเด่น';}
+    else{$('forecastTitle').textContent=`ดัชนีเอนเอียงไปทาง ${m.side==='B'?'Banker (B)':'Player (P)'}`;$('forecastDesc').textContent=`ดัชนีเบี่ยงจากค่าฐาน ${Math.abs(m.delta*100).toFixed(2)} จุดเปอร์เซ็นต์ · คำนวณจากภาพรวม 20 ตาล่าสุด และ Transition หลังผล ${history[n-1]} · ไม่ใช่ความน่าจะเป็นจริง`;$('modelStatus').textContent=`วิเคราะห์ ${n} ตา · สัญญาณทดลอง ${Math.abs(m.delta)>=.04?'เด่นกว่าเกณฑ์':'ระดับอ่อน'}`;}
+
+    const pat=patternInfo(history);$('patternTags').innerHTML=pat.tags.map(t=>`<span class="tag ${t.active?'active':''}">${t.label}</span>`).join('');$('patternExplain').textContent=pat.explain;
+    renderHistory();renderTransitions(history);
+    const big=buildBigRoad(history);renderRoad('bigRoad',big.positions,'big');
+    const bead=history.map((v,i)=>({value:v,i,c:Math.floor(i/6),r:i%6}));renderRoad('beadRoad',bead,'bead');
+    renderRoad('bigEye',buildDisplayRoad(deriveRoad(big,1)),'bigEye');
+    renderRoad('smallRoad',buildDisplayRoad(deriveRoad(big,2)),'smallRoad');
+    renderRoad('cockroach',buildDisplayRoad(deriveRoad(big,3)),'cockroach');
+    const bt=backtest(history);$('btN').textContent=bt.predicted;$('btCoverage').textContent=bt.tested?`สัญญาณ ${pct(bt.coverage)} จาก ${bt.tested} รอบทดสอบ`:'เริ่มทดสอบเมื่อมีข้อมูลเกิน 20 ตา';
+    $('btRate').textContent=bt.rate===null?'—':pct(bt.rate);
+    $('btCompare').textContent=bt.predicted?`ถูก ${bt.correct}/${bt.predicted} · ฐานทาย B ชุดเดียวกัน ${pct(bt.baseRate)}`:'ยังไม่มีคำทายที่มีสัญญาณ';
+  }
+
+  $('addP').addEventListener('click',()=>add('P'));
+  $('addB').addEventListener('click',()=>add('B'));
+  $('undo').addEventListener('click',undo);
+  $('reset').addEventListener('click',reset);
+  document.addEventListener('keydown',e=>{
+    if(e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;
+    const tag=(document.activeElement&&document.activeElement.tagName||'').toLowerCase();
+    if(['input','textarea','select','button'].includes(tag))return;
+    const k=e.key.toLowerCase();if(k==='p')add('P');else if(k==='b')add('B');else if(k==='backspace'){e.preventDefault();undo();}
+  });
+  window.addEventListener('storage',e=>{
+    if(e.key!==KEY)return;
+    try{history=sanitizeHistory(JSON.parse(e.newValue||'[]'));storageAvailable=true;render();showToast('อัปเดตประวัติจากแท็บอื่นแล้ว');}
+    catch(err){showToast('อ่านข้อมูลจากแท็บอื่นไม่สำเร็จ');}
+  });
+  updateStorageStatus();render();
+})();
+</script>
+</body>
+</html>

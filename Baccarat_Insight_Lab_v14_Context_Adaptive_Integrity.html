@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="#101827" name="theme-color"/>
+<title>Baccarat Insight Lab v14 — Context Adaptive Intelligence</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#172438;--line:#26364c;--muted:#96a8bd;--text:#eef4fb;--blue:#4da3ff;--red:#ff747b;--green:#5ed0a1;--gold:#e7c477;--shadow:0 14px 36px rgba(0,0,0,.22)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 450px at 90% -10%,#1b3451 0%,transparent 60%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.5}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1500px;margin:auto;padding:22px 20px 46px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#28517c,#17304a);display:grid;place-items:center;font-weight:900;color:#d9ecff;border:1px solid #426181}.title{font-size:21px;font-weight:800;margin:0}.subtitle{font-size:12px;color:var(--muted);margin-top:3px}.pill{border:1px solid #43536a;border-radius:999px;padding:6px 11px;color:#bdcbd9;font-size:11px;background:#142033;white-space:nowrap}.panel{background:linear-gradient(180deg,rgba(23,36,56,.97),rgba(17,28,44,.99));border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:15px;margin:0 0 12px;display:flex;gap:8px;align-items:center}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.section-head small{font-size:10px;color:var(--muted)}.eyebrow{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700}.muted{color:var(--muted);font-size:11px}.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:15px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.forecast{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.forecast-side{display:flex;align-items:center;gap:14px}.forecast-token{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:27px;font-weight:900;border:1px solid #40556d;background:#1b2c42}.forecast-token.b{color:var(--red);background:#492a37;border-color:#a04f60}.forecast-token.p{color:var(--blue);background:#1b3b5b;border-color:#427eb1}.forecast-token.t{color:var(--green);background:#153d39;border-color:#378c78}.forecast-token.none{color:#b8c6d5}.forecast-title{font-size:21px;font-weight:850}.forecast-desc{font-size:12px;color:var(--muted);max-width:780px}.forecast-score{text-align:right;min-width:175px}.score-num{font-size:21px;font-weight:850;font-variant-numeric:tabular-nums}.score-label{font-size:10px;color:var(--muted)}.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.prob-card{border:1px solid #2b3c52;background:#101d2e;border-radius:12px;padding:10px}.prob-card strong{font-size:11px}.prob-value{font-size:20px;font-weight:850;margin:3px 0}.prob-track{height:7px;border-radius:20px;background:#26374d;overflow:hidden}.prob-fill{height:100%;width:0;border-radius:20px}.prob-fill.b{background:var(--red)}.prob-fill.p{background:var(--blue)}.prob-fill.t{background:var(--green)}.notice,.disclaimer{margin-top:12px;border:1px solid #5a4a2b;background:#302a1d;color:#e8d9b3;padding:10px 12px;border-radius:11px;font-size:11px}.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.entry-btn{border:0;border-radius:12px;min-width:105px;padding:12px 18px;font-weight:900;font-size:15px;box-shadow:0 7px 18px rgba(0,0,0,.17);transition:.12s}.entry-btn:hover{transform:translateY(-1px);filter:brightness(1.07)}.entry-btn.b{background:linear-gradient(135deg,#ff8d91,#e65d6b);color:#2b1017}.entry-btn.p{background:linear-gradient(135deg,#7fc4ff,#4494e9);color:#071d35}.entry-btn.t{background:linear-gradient(135deg,#8be1c5,#43b995);color:#082d25}.action-btn{border:1px solid #40516a;color:#dce7f2;background:#1a2a40;border-radius:10px;padding:10px 12px;font-size:11px;font-weight:750}.action-btn:hover:not(:disabled){background:#243953}.action-btn.danger{border-color:#71404a;color:#ffb5ba;background:#36212b}.action-btn:disabled{opacity:.4;cursor:not-allowed}.input-row{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:12px}.field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}.field label{font-size:10px;color:var(--muted);font-weight:700}.field input,.field select{width:100%;border:1px solid #354a63;border-radius:9px;padding:9px 10px;background:#0d1929;color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:#6c9bc7}.field.compact{max-width:150px;flex:0 0 150px}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.stat{background:#111d2e;border:1px solid #293a50;border-radius:12px;padding:10px;min-width:0}.stat-label{font-size:9px;color:var(--muted)}.stat-value{font-size:21px;font-weight:850;margin-top:3px;font-variant-numeric:tabular-nums}.stat-sub{font-size:9px;color:var(--muted)}.history-wrap{overflow:auto;border:1px solid #2b3b50;border-radius:12px;background:#0e1929;max-height:370px}.history-table{border-collapse:separate;border-spacing:5px;min-width:100%;width:max-content;padding:8px}.history-table th{font-size:9px;color:#71859e;font-weight:650;min-width:35px}.history-table td{width:36px;height:36px;text-align:center;border:1px solid #34475d;border-radius:50%;font-weight:900;font-size:12px;background:#17263a}.history-table td.b{background:#492a37;border-color:#a04f60;color:#ff9298}.history-table td.p{background:#1b3b5b;border-color:#427eb1;color:#8bc7ff}.history-table td.t{background:#153d39;border-color:#378c78;color:#9af0d1}.history-table td.empty{background:#111d2d;border:1px dashed #26374d;color:#40536c}.empty-state{padding:22px;color:var(--muted);text-align:center;font-size:12px}.tag-row{display:flex;flex-wrap:wrap;gap:7px}.tag{font-size:10px;padding:6px 9px;border:1px solid #34485f;border-radius:999px;color:#bdccdc;background:#15243a}.tag.active{border-color:#8f7846;background:#3b321f;color:#f0d99e}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{padding:8px 6px;border-bottom:1px solid #29394d;text-align:right;white-space:nowrap}.table th:first-child,.table td:first-child{text-align:left;color:#c9d6e4}.table th{font-size:9px;color:#8ea2b8;font-weight:750}.table tr:last-child td{border-bottom:0}.badge{border-radius:999px;padding:3px 7px;font-size:9px;font-weight:800;display:inline-block}.badge.red{background:#512b39;color:#ffadb2}.badge.blue{background:#193d5c;color:#9bd1ff}.badge.green{background:#163b35;color:#96e6cc}.badge.gold{background:#40351f;color:#f0d491}.road-grid-wrap{overflow:auto;padding-bottom:5px}.road-grid{display:grid;grid-template-rows:repeat(6,25px);grid-auto-columns:25px;grid-auto-flow:column;gap:4px;width:max-content;min-width:100%;padding:5px}.dot{width:25px;height:25px;border-radius:50%;border:1px solid #4d617a;display:grid;place-items:center;font-size:10px;font-weight:800;position:relative}.dot.b{background:#552b39;border-color:#a45264;color:#ff9aa0}.dot.p{background:#193e61;border-color:#4384b8;color:#94ceff}.dot.t{background:#17483b;border-color:#4cae8f;color:#baf7e2}.dot.r{background:#6b303d;border-color:#b35b68;color:#ffd2d4}.dot.bl{background:#17486a;border-color:#498bb8;color:#d0edff}.dot.blank{background:#111d2c;border:1px dashed #26384e}.dot.hollow.r{background:transparent;color:var(--red);border-color:#b35b68}.dot.hollow.bl{background:transparent;color:var(--blue);border-color:#498bb8}.dot.slash{background:transparent;border-color:transparent;font-size:20px;line-height:20px}.dot.slash.r{color:var(--red)}.dot.slash.bl{color:var(--blue)}.tie-mark{position:absolute;right:-3px;top:-4px;font-size:8px;line-height:10px;border-radius:5px;padding:0 2px;background:#145b4c;color:#b9ffe6;border:1px solid #4cae8f}.derived-info{font-size:10px;color:var(--muted);margin-top:6px;min-height:26px}.meter{height:8px;border-radius:99px;overflow:hidden;background:#24344a;display:flex;margin:10px 0 5px}.method-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.method{padding:10px;border-radius:11px;border:1px solid #2c3d53;background:#111e30}.method strong{display:block;font-size:11px;margin-bottom:3px}.method span{display:block;color:var(--muted);font-size:10px}.method.off{opacity:.78}.footer{text-align:center;color:#637991;font-size:10px;margin:22px 0 0}.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);background:#e7f0fa;color:#132239;border-radius:12px;padding:10px 16px;font-size:12px;font-weight:800;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}.split{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}.mini-kpi{font-size:10px;color:var(--muted)}.mini-kpi strong{font-size:15px;color:var(--text);display:block}.positive{color:var(--green)}.negative{color:#ff9298}.neutral{color:var(--gold)}.progress{height:6px;background:#25364b;border-radius:20px;overflow:hidden}.progress>span{display:block;height:100%;background:#6faee5}.hint{font-size:10px;color:var(--muted);line-height:1.55}.hidden{display:none!important}.two-col>*,.grid>*{min-width:0}.table-wrap{min-width:0;max-width:100%}.engine-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.engine-kpi .stat-value{font-size:18px}.engine-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:7px}.engine-probs{margin-top:8px}.engine-table{max-height:190px;overflow:auto;border:1px solid #29394d;border-radius:10px}.engine-table .table{min-width:100%}.pattern-evidence{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pattern-card{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:11px}.pattern-card h3{font-size:12px;margin:0 0 7px}.pattern-card p{font-size:10px;color:var(--muted);margin:5px 0}.pattern-evidence .table{font-size:10px}.pattern-evidence .table td,.pattern-evidence .table th{white-space:normal}.engine-tag{display:inline-block;border:1px solid #34485f;background:#15243a;color:#c8d7e7;border-radius:999px;padding:3px 7px;font-size:9px;margin:2px 3px 2px 0}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:900px){.grid,.two-col{grid-template-columns:1fr}.forecast{grid-template-columns:1fr}.forecast-score{text-align:left}.stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:560px){.app{padding:14px 11px 32px}.topbar{align-items:flex-start}.topbar .pill{display:none}.panel{padding:13px}.entry-btn{flex:1;min-width:0;padding:11px 8px}.stats{grid-template-columns:repeat(2,1fr)}.method-list{grid-template-columns:1fr}.prob-grid{gap:6px}.prob-card{padding:8px}.prob-value{font-size:18px}.forecast-title{font-size:18px}.field.compact{max-width:none;flex:1}.forecast-token{width:55px;height:55px}}
+
+.horizon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.horizon-card{border:1px solid #2b3c52;background:#101d2e;border-radius:11px;padding:9px 11px;min-width:0}
+.horizon-label{font-size:9px;color:var(--muted);font-weight:750}
+.horizon-value{font-size:15px;font-weight:850;margin-top:3px;font-variant-numeric:tabular-nums}
+.horizon-note{font-size:9px;color:var(--muted);line-height:1.45}
+.horizon-summary{font-size:10px;color:var(--muted);margin-top:7px}
+@media(max-width:560px){.horizon-grid{gap:6px}.horizon-card{padding:8px 7px}.horizon-value{font-size:13px}}
+.v9-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.v9-subgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:12px}
+.v9-panel{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:12px;min-width:0}
+.v9-panel h3{font-size:12px;margin:0 0 8px}
+.v9-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}
+.v9-status{font-size:12px;font-weight:850;letter-spacing:.3px}
+.v9-status.good{color:var(--green)}.v9-status.warn{color:var(--gold)}.v9-status.bad{color:var(--red)}
+.v9-table{max-height:260px;overflow:auto;border:1px solid #29394d;border-radius:10px}
+.v9-table .table{min-width:100%}
+@media(max-width:900px){.v9-subgrid{grid-template-columns:1fr}.v9-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.v9-kpis{grid-template-columns:1fr 1fr}.v9-panel{padding:10px}}
+
+
+.v11-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.v11-small{font-size:13px!important;line-height:1.35;overflow-wrap:anywhere}
+.v11-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.v11-subpanel{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:12px;min-width:0}
+.v11-subpanel h3{font-size:12px;margin:0 0 8px}
+.v11-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}
+.v11-table{max-height:230px;overflow:auto;border:1px solid #29394d;border-radius:10px}
+.v11-table .table{min-width:100%}
+@media(max-width:900px){.v11-grid{grid-template-columns:1fr}.v11-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.v11-kpis{grid-template-columns:1fr 1fr}.v11-subpanel{padding:10px}}
+
+.v12-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.v12-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.v12-subpanel{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:12px;min-width:0}
+.v12-subpanel h3{font-size:12px;margin:0 0 8px}
+.v12-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}
+.v12-table{max-height:250px;overflow:auto;border:1px solid #29394d;border-radius:10px}
+.v12-table .table{min-width:100%}
+.v12-sequence{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:2px;word-break:break-all;font-weight:800}
+.v12-kpi-small{font-size:14px!important;overflow-wrap:anywhere}
+@media(max-width:900px){.v12-grid{grid-template-columns:1fr}.v12-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.v12-kpis{grid-template-columns:1fr 1fr}.v12-subpanel{padding:10px}.v12-table .table{font-size:9px}}
+
+
+.v13-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.v13-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.v13-subpanel{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:12px;min-width:0}
+.v13-subpanel h3{font-size:12px;margin:0 0 8px}
+.v13-note{font-size:10px;color:var(--muted);line-height:1.65;margin-top:7px;overflow-wrap:anywhere}
+.v13-readout{font-size:11px;line-height:1.65;color:#dce7f2}
+.v13-status{font-size:13px!important;line-height:1.35;overflow-wrap:anywhere}
+@media(max-width:900px){.v13-grid{grid-template-columns:1fr}.v13-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.v13-kpis{grid-template-columns:1fr 1fr}.v13-subpanel{padding:10px}}
+.v14-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.v14-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.v14-subpanel{border:1px solid #2c3d53;background:#111e30;border-radius:11px;padding:12px;min-width:0}
+.v14-subpanel h3{font-size:12px;margin:0 0 8px}
+.v14-note{font-size:10px;color:var(--muted);line-height:1.65;margin-top:8px;overflow-wrap:anywhere}
+.v14-table{max-height:240px;overflow:auto;border:1px solid #29394d;border-radius:10px}
+.v14-table .table{min-width:100%}
+.v14-status{font-size:13px!important;line-height:1.35;overflow-wrap:anywhere}
+@media(max-width:900px){.v14-grid{grid-template-columns:1fr}.v14-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.v14-kpis{grid-template-columns:1fr 1fr}.v14-subpanel{padding:10px}.v14-table .table{font-size:9px}}
+
+</style>
+</head>
+<body><div class="app">
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="topbar"><div class="brand"><div class="logo">BI</div><div><h1 class="title">Baccarat Insight Lab v14</h1><div class="subtitle">v14 · Context-Adaptive Learning · Data Integrity · Evidence Guard</div></div></div><div class="pill" id="storageStatus">LOCAL MODE</div></header><section class="panel" style="margin-bottom:15px">
+<div class="section-head"><h2>ผลวิเคราะห์และโอกาสคาดการณ์</h2><small id="modelStatus">รอข้อมูล</small></div>
+<div class="forecast"><div class="forecast-side"><div class="forecast-token none" id="forecastToken">—</div><div><div class="eyebrow">มุมมองผลถัดไป · อัปเดตทุกครั้งที่บันทึกผล</div><div class="forecast-title" id="forecastTitle">รอข้อมูล · แสดงค่าฐานเมื่อเริ่ม</div><div class="forecast-desc" id="forecastDesc">ระบบจะแสดงอันดับคาดการณ์ทันที พร้อมแยกระดับหลักฐานและความไม่แน่นอนจากการยืนยันสัญญาณ</div></div></div><div class="forecast-score"><div class="score-num" id="signalStrength">—</div><div class="score-label">ส่วนต่างอันดับ 1–2 · ไม่ใช่ความมั่นใจที่รับประกัน</div></div></div>
+<div class="prob-grid"><div class="prob-card"><strong style="color:var(--red)">BANKER (B)</strong><div class="prob-value" id="probB">45.86%</div><div class="prob-track"><div class="prob-fill b" id="probFillB"></div></div></div><div class="prob-card"><strong style="color:var(--blue)">PLAYER (P)</strong><div class="prob-value" id="probP">44.62%</div><div class="prob-track"><div class="prob-fill p" id="probFillP"></div></div></div><div class="prob-card"><strong style="color:var(--green)">TIE (T)</strong><div class="prob-value" id="probT">9.52%</div><div class="prob-track"><div class="prob-fill t" id="probFillT"></div></div></div></div>
+<div class="horizon-grid" aria-label="มุมมองจากข้อมูลย้อนหลังหลายระยะ">
+ <div class="horizon-card"><div class="horizon-label">เร็ว · 8 ผลล่าสุด</div><div class="horizon-value" id="horizon8">—</div><div class="horizon-note" id="horizon8Note">ผู้เชี่ยวชาญระยะสั้น</div></div>
+ <div class="horizon-card"><div class="horizon-label">กลาง · 24 ผลล่าสุด</div><div class="horizon-value" id="horizon24">—</div><div class="horizon-note" id="horizon24Note">ผู้เชี่ยวชาญระยะกลาง</div></div>
+ <div class="horizon-card"><div class="horizon-label">ยาว · 60 ผลล่าสุด</div><div class="horizon-value" id="horizon60">—</div><div class="horizon-note" id="horizon60Note">ผู้เชี่ยวชาญระยะยาว</div></div>
+</div>
+<div class="horizon-summary" id="horizonSummary">มุมมองแต่ละระยะอาจไม่ตรงกัน · ใช้ดูบริบท ไม่ใช่การยืนยันผล</div>
+<div class="split" style="margin-top:9px"><span class="mini-kpi" id="predictionBasis">ค่าฐานมาตรฐาน 8 สำรับ · ยังไม่มีข้อมูลเรียนรู้</span><span class="mini-kpi" id="predictionConfidence">ความต่างยังไม่ชัด</span></div>
+<div class="notice"><b>อ่านผลอย่างระมัดระวัง:</b> ระบบแสดงอันดับคาดการณ์ทุกตา แต่การแสดงอันดับไม่ได้แปลว่ามีความได้เปรียบ · NO SIGNAL หมายถึงยังไม่มีหลักฐานยืนยันที่เข้มงวด · มุมมอง 8/24/60 เป็นผู้เชี่ยวชาญจากหน้าต่างข้อมูลย้อนหลังและอาจสะท้อนความผันผวน ไม่ใช่ความน่าจะเป็นที่รับประกันหรือคำแนะนำเดิมพัน</div>
+</section>
+<section class="panel"><div class="section-head"><h2>ตารางบันทึกประวัติ</h2><small>บนลงล่าง · 6 ช่องต่อคอลัมน์</small></div><div class="history-wrap" id="historyArea"><div class="empty-state">ยังไม่มีประวัติ</div></div><div class="hint" style="margin-top:8px">ทุกผล B / P / T จะถูกบันทึกตามลำดับจากบนลงล่าง ครบ 6 ช่องแล้วขึ้นคอลัมน์ใหม่ทางขวา ประวัติรวมทุก Shoe ส่วน Road Map แสดงเฉพาะ Shoe ปัจจุบัน</div></section><div class="grid">
+<div>
+<section class="panel" style="margin-bottom:15px">
+<h2>บันทึกผลตาใหม่</h2>
+<div class="controls"><button class="entry-btn p" id="addP">P · PLAYER</button><button class="entry-btn b" id="addB">B · BANKER</button><button class="entry-btn t" id="addT">T · TIE</button><button class="action-btn" disabled="" id="undo">↶ ย้อนกลับ</button><button class="action-btn danger" disabled="" id="reset">รีเซ็ตทั้งหมด</button></div>
+<div class="input-row"><div class="field"><label for="cardInput">แต้มไพ่ที่เปิดในมือนี้ (ไม่บังคับ แต่จำเป็นต่อ Card Counting)</label><input id="cardInput" placeholder="ตัวอย่าง: A, 7, K, 4 หรือ 1, 7, 0, 4" type="text"/></div><div class="field compact"><label for="decks">จำนวนสำรับ</label><select id="decks"><option selected="" value="8">8 สำรับ</option><option value="6">6 สำรับ</option></select></div><button class="action-btn" id="newShoe">＋ เริ่ม Shoe ใหม่</button></div>
+<div class="input-row"><div class="field"><label for="burnInput">ไพ่ที่ถูกนำออกก่อนตาแรกของ Shoe (ถ้าทราบแต้มครบ)</label><input id="burnInput" placeholder="เช่น 7, 3, K · กรอกเฉพาะเมื่อทราบครบทุกใบ" type="text"/></div><label style="display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;max-width:300px"><input id="burnKnown" type="checkbox"/> ยืนยันว่าบันทึกไพ่ที่ถูกนำออกก่อนตาแรกครบแล้ว</label></div>
+<div class="hint" style="margin-top:7px">กรอกไพ่ทุกใบที่เปิดในมือนี้ (ปกติ 4–6 ใบ): A=1, 2–9 ตามแต้ม, 10/J/Q/K=0 · หากต้องการใช้ Shoe Simulation ต้องบันทึกไพ่ทุกมือ รวมถึงไพ่ที่ถูกนำออกก่อนเริ่มเล่น (Burn/Removed) ให้ครบและยืนยันช่องด้านบน หากไม่ทราบไพ่ Burn ครบ ระบบจะปิด Shoe Simulation แทนการสร้างตัวเลขจาก Shoe ที่ไม่ครบ · จำนวนสำรับจะถูกล็อกสำหรับ Shoe เมื่อบันทึกผลแรกแล้ว</div>
+<div class="controls" style="margin-top:12px"><button class="action-btn" id="exportBtn">ส่งออกข้อมูล JSON</button><button class="action-btn" id="importBtn">นำเข้า JSON</button><input accept="application/json,.json" class="hidden" id="importFile" type="file"/><span class="controls-hint" id="shoeLabel">Shoe #1</span></div>
+</section>
+<section class="panel" id="v9EvidencePanel" style="margin-bottom:15px">
+<div class="section-head"><h2>v11 · Continuous Outlook &amp; Evidence Gate</h2><small id="v9EngineStatus">กำลังตรวจสอบหลักฐาน</small></div>
+<div class="v9-kpis">
+ <div class="stat"><div class="stat-label">สถานะการคาดการณ์</div><div class="stat-value v9-status warn" id="v9GateStatus">NO SIGNAL</div><div class="stat-sub" id="v9GateSub">ยังไม่มีผลทดสอบเพียงพอ</div></div>
+ <div class="stat"><div class="stat-label">Prequential Test</div><div class="stat-value" id="v9TestN">0</div><div class="stat-sub" id="v9TestShoes">0 Shoe ที่ประเมินได้</div></div>
+ <div class="stat"><div class="stat-label">Δ Log Loss · Model − Base</div><div class="stat-value" id="v9LossDelta">—</div><div class="stat-sub" id="v9LossCI">ช่วงความไม่แน่นอนแบบจัดกลุ่ม Shoe</div></div>
+ <div class="stat"><div class="stat-label">Family Consensus</div><div class="stat-value" id="v9Consensus">—</div><div class="stat-sub" id="v9ConsensusSub">เปรียบเทียบกลุ่มวิธีที่ต่างกัน</div></div>
+</div>
+<div class="v9-subgrid">
+ <div class="v9-panel"><h3>Universal Pattern Discovery · ค้นหารูปแบบ 2–8 ผล</h3>
+  <div class="v9-table"><table class="table"><thead><tr><th>ชนิด</th><th>รูปแบบ</th><th>Shoe</th><th>B/P/T ถัดไป</th><th>สัดส่วนสูงสุด</th><th>99% CI</th><th>สถานะ</th></tr></thead><tbody id="v9PatternBody"><tr><td colspan="7">ยังไม่มีข้อมูลให้ค้นหา</td></tr></tbody></table></div>
+  <div class="v9-note" id="v9PatternNote">ค้นหารูปแบบทั้งแบบรวม Tie และแบบข้าม Tie โดยเก็บเหตุการณ์ล่าสุดไม่เกินหนึ่งรายการต่อ Shoe เพื่อลดการนับซ้ำ การค้นพบย้อนหลังเป็นสมมติฐาน ไม่ใช่หลักฐานยืนยันผลถัดไป</div>
+ </div>
+ <div class="v9-panel"><h3>Error Learning &amp; Data Quality</h3>
+  <div class="table-wrap"><table class="table"><tbody id="v9ErrorBody"><tr><td>ยังไม่มีชุดทดสอบ</td><td>—</td></tr></tbody></table></div>
+  <div class="v9-note" id="v9ErrorNote">แยกความผิดพลาดจากความมั่นใจสูง การพลาดเมื่ออันดับใกล้กัน และช่วงที่โมเดลแย่กว่าค่าฐาน</div>
+ </div>
+</div>
+<div class="notice" id="v9GateReasons">ระบบจะแสดงมุมมองคาดการณ์ทุกตา ส่วนสัญญาณยืนยันจะต้องมีการทดสอบแบบเรียงตามเวลาที่มีจำนวนตัวอย่างและจำนวน Shoe เพียงพอ โมเดลต้องดีกว่าค่าฐานอย่างมีหลักฐาน รูปแบบปัจจุบันต้องมีหลักฐานข้าม Shoe และผู้เชี่ยวชาญหลายกลุ่มต้องเห็นตรงกัน</div>
+</section>
+<section class="panel v11-panel" id="v11IntelligencePanel" style="margin-bottom:15px">
+ <div class="section-head"><h2>v11 · Intelligent Context Memory &amp; Research Bench</h2><small id="v11Status">รอข้อมูล</small></div>
+ <div class="v11-kpis">
+  <div class="stat"><div class="stat-label">บริบทปัจจุบัน</div><div class="stat-value v11-small" id="v11Regime">START</div><div class="stat-sub" id="v11RegimeSub">รอผลใน Shoe ปัจจุบัน</div></div>
+  <div class="stat"><div class="stat-label">Shoe ที่จำบริบทคล้ายกัน</div><div class="stat-value" id="v11MemoryN">0</div><div class="stat-sub">นับสูงสุดหนึ่งผลต่อบริบทต่อ Shoe</div></div>
+  <div class="stat"><div class="stat-label">ผู้เชี่ยวชาญ Context Memory</div><div class="stat-value v11-small" id="v11MemoryLeader">ยังไม่พร้อม</div><div class="stat-sub" id="v11MemoryProb">ใช้ค่าฐานเมื่อข้อมูลไม่พอ</div></div>
+  <div class="stat"><div class="stat-label">ผู้เชี่ยวชาญที่เทียบได้</div><div class="stat-value" id="v11ChallengerN">0</div><div class="stat-sub" id="v11ChallengerSub">ชุดทดสอบ 90 คำทายล่าสุด</div></div>
+ </div>
+ <div class="v11-grid">
+  <div class="v11-subpanel">
+   <h3>Context Memory · จดจำสถานการณ์ข้าม Shoe</h3>
+   <div class="prob-grid" style="margin-top:0">
+    <div class="prob-card"><strong style="color:var(--red)">BANKER</strong><div class="prob-value" id="v11MemB">—</div></div>
+    <div class="prob-card"><strong style="color:var(--blue)">PLAYER</strong><div class="prob-value" id="v11MemP">—</div></div>
+    <div class="prob-card"><strong style="color:var(--green)">TIE</strong><div class="prob-value" id="v11MemT">—</div></div>
+   </div>
+   <div class="v11-note" id="v11MemoryNote">สร้างบริบทจากรูปแบบสตรีค การสลับฝั่ง สัดส่วน B/P และความถี่ Tie แล้วค้นสถานการณ์ใน Shoe ก่อนหน้า โดยไม่นับหลายครั้งจาก Shoe เดียวกัน</div>
+  </div>
+  <div class="v11-subpanel">
+   <h3>Deep Error Analysis · ผลงานแยกตามสภาพเกม</h3>
+   <div class="v11-table"><table class="table"><thead><tr><th>บริบท</th><th>n</th><th>Accuracy</th><th>Model LL</th><th>Base LL</th><th>พลาดมั่นใจสูง</th></tr></thead><tbody id="v11ErrorRegimeBody"><tr><td colspan="6">รอชุดทดสอบหลัง Warm-up</td></tr></tbody></table></div>
+   <div class="v11-note" id="v11ErrorRegimeNote">จัดกลุ่มคำทายที่บันทึกก่อนรู้ผล เพื่อดูว่าระบบพลาดในบริบทแบบใด ไม่ถือว่าบริบทเป็นสาเหตุของผลสุ่ม</div>
+  </div>
+ </div>
+ <div class="v11-subpanel" style="margin-top:12px">
+  <div class="split"><h3 style="margin:0">Expert Research Bench · เปรียบเทียบผู้เชี่ยวชาญกับค่าฐาน</h3><span class="mini-kpi" id="v11ResearchSummary">ยังไม่มีชุดทดสอบ</span></div>
+  <div class="v11-table" style="margin-top:8px"><table class="table"><thead><tr><th>ผู้เชี่ยวชาญ</th><th>ตัวอย่าง</th><th>Shoe</th><th>Δ Log Loss</th><th>สถานะ</th></tr></thead><tbody id="v11ResearchBody"><tr><td colspan="5">รอข้อมูลทดสอบ</td></tr></tbody></table></div>
+  <div class="v11-note" id="v11ResearchNote">ใช้คำทำนายที่บันทึกไว้ก่อนผลจริง เปรียบเทียบกับค่าฐานบนรอบเดียวกัน และกำหนดขั้นต่ำทั้งจำนวนตัวอย่างและจำนวน Shoe · การจัดอันดับนี้เป็นการคัดกรองผู้สมัคร ไม่ใช่หลักฐานอิสระเพราะมีการเปรียบเทียบผู้เชี่ยวชาญหลายตัว</div>
+ </div>
+</section>
+<section class="panel v12-panel" id="historicalSolverPanel" style="margin-bottom:15px">
+ <div class="section-head"><h2>v14 · Context-Adaptive Historical Game Solver</h2><small id="hsStatus">กำลังอ่านประวัติ</small></div>
+ <div class="v12-kpis">
+  <div class="stat"><div class="stat-label">ข้อมูลทั้งหมด</div><div class="stat-value" id="hsRounds">0</div><div class="stat-sub" id="hsShoeCount">0 Shoe</div></div>
+  <div class="stat"><div class="stat-label">รูปแบบล่าสุด (B/P/T)</div><div class="stat-value v12-kpi-small" id="hsTail">—</div><div class="stat-sub" id="hsTailNote">รอข้อมูล</div></div>
+  <div class="stat"><div class="stat-label">สภาพเกมปัจจุบัน</div><div class="stat-value v12-kpi-small" id="hsRegime">—</div><div class="stat-sub" id="hsRegimeNote">รอข้อมูล</div></div>
+  <div class="stat"><div class="stat-label">หลักฐานข้าม Shoe</div><div class="stat-value" id="hsIndependent">0</div><div class="stat-sub" id="hsIndependentNote">ต้องมี Shoe อื่นที่ตรงบริบท</div></div>
+ </div>
+ <div class="v12-grid">
+  <div class="v12-subpanel">
+   <h3>Current Table Reading · อ่านบริบทปัจจุบัน</h3>
+   <div id="hsReadout" class="v12-note">ระบบจะสรุปสตรีค การสลับฝั่ง และรูปแบบที่ตรงกับประวัติ</div>
+   <div class="mini-kpi" style="margin-top:8px">ลำดับล่าสุด</div>
+   <div class="v12-sequence" id="hsSequence">—</div>
+   <div class="v12-note" id="hsCaution">มุมมองจากประวัติไม่ยืนยันผลครั้งถัดไป</div>
+  </div>
+  <div class="v12-subpanel">
+   <h3>Transition &amp; Run Evidence · ผลตามหลังสถานการณ์</h3>
+   <div class="v12-table"><table class="table"><thead><tr><th>บริบท</th><th>แหล่ง</th><th>n</th><th>ถัดไป B</th><th>ถัดไป P</th><th>ถัดไป T</th></tr></thead><tbody id="hsTransitionBody"><tr><td colspan="6">รอประวัติ</td></tr></tbody></table></div>
+   <div class="v12-note" id="hsTransitionNote">แยกการพบซ้ำใน Shoe เดียวออกจากหลักฐานข้าม Shoe · ข้อมูลใน Shoe เดียวเป็นเพียงการสำรวจ ไม่ใช่ตัวอย่างอิสระ</div>
+  </div>
+ </div>
+ <div class="v12-subpanel" style="margin-top:12px">
+  <div class="split"><h3 style="margin:0">Exact Historical Pattern Solver · ค้นหารูปแบบล่าสุดที่เคยเกิด</h3><span class="mini-kpi" id="hsPatternSummary">—</span></div>
+  <div class="v12-table" style="margin-top:8px"><table class="table"><thead><tr><th>Mode</th><th>Pattern</th><th>ใน Shoe นี้</th><th>ผลถัดไปใน Shoe นี้ B/P/T</th><th>ข้าม Shoe</th><th>ผลถัดไปข้าม Shoe B/P/T</th><th>ระดับหลักฐาน</th></tr></thead><tbody id="hsPatternBody"><tr><td colspan="7">รอข้อมูล</td></tr></tbody></table></div>
+  <div class="v12-note" id="hsPatternNote">ค้นหารูปแบบล่าสุด 2–8 ผล ทั้งแบบรวม Tie และแบบข้าม Tie · การพบหลายตำแหน่งใน Shoe เดียวกันไม่นับเป็นหลักฐานอิสระหลาย Shoe</div>
+ </div>
+ <div class="v12-grid">
+  <div class="v12-subpanel">
+   <h3>Similar Historical States · สถานการณ์คล้ายในอดีต</h3>
+   <div class="v12-table"><table class="table"><thead><tr><th>รอบเดิม</th><th>Shoe</th><th>ความคล้าย</th><th>ผลถัดไป</th><th>แหล่ง</th></tr></thead><tbody id="hsAnalogBody"><tr><td colspan="5">รอข้อมูล</td></tr></tbody></table></div>
+   <div class="v12-note" id="hsAnalogNote">เทียบผล 8 ตาล่าสุด สตรีค จำนวนการสลับ และสัดส่วน B/P · จำกัดหนึ่งสถานการณ์เด่นต่อ Shoe สำหรับหลักฐานข้าม Shoe</div>
+  </div>
+  <div class="v12-subpanel">
+   <h3>Solver Conclusion · สรุปวิธีอ่านเกมจากข้อมูล</h3>
+   <div id="hsConclusion" class="v12-note">รอประวัติ</div>
+   <div class="notice" id="hsActionNote" style="margin-top:10px">เพิ่มประวัติจากหลาย Shoe เพื่อแยกว่ารูปแบบใดเกิดซ้ำข้าม Shoe จริง</div>
+  </div>
+ </div>
+</section>
+
+<section class="panel v13-panel" id="fastRecognitionPanel" style="margin-bottom:15px">
+ <div class="section-head"><h2>Fast Recognition &amp; Error Response</h2><small id="fastStatus">รอข้อมูล</small></div>
+ <div class="v13-kpis">
+  <div class="stat"><div class="stat-label">สภาพเกมที่ตรวจได้ทันที</div><div class="stat-value v13-status" id="fastRegime">START</div><div class="stat-sub" id="fastRegimeSub">รอผลที่ตัดสินแล้ว</div></div>
+  <div class="stat"><div class="stat-label">ตรวจจับการเปลี่ยนรูปแบบ</div><div class="stat-value v13-status" id="fastShift">ยังไม่ประเมิน</div><div class="stat-sub" id="fastShiftSub">ใช้ 4 ต่อ 4 เพื่อเฝ้าดู และ 8 ต่อ 8 เพื่อยืนยันซ้ำ</div></div>
+  <div class="stat"><div class="stat-label">สุขภาพคำทายระยะสั้น</div><div class="stat-value v13-status" id="fastHealth">ยังไม่ประเมิน</div><div class="stat-sub" id="fastHealthSub">เทียบ Log Loss กับค่าฐาน</div></div>
+  <div class="stat"><div class="stat-label">คำทายล่าสุด</div><div class="stat-value v13-status" id="fastLastResult">—</div><div class="stat-sub" id="fastLastResultSub">รอผลจริง</div></div>
+ </div>
+ <div class="v13-grid">
+  <div class="v13-subpanel">
+   <h3>Instant Pattern Recognition · อ่านให้ไว แต่ไม่แต่งความมั่นใจ</h3>
+   <div class="split"><span class="badge gold" id="fastRegimeBadge">START</span><span class="mini-kpi" id="fastSampleCount">0 ผล B/P · 0 Tie</span></div>
+   <div class="v13-readout" id="fastReadout">เมื่อมีผลจริง ระบบจะแสดงรูปทรงของ Shoe ปัจจุบันโดยทันที</div>
+   <div class="v13-note" id="fastShiftReadout">การตรวจจับการเปลี่ยนรูปแบบเป็นเพียงสัญญาณเฝ้าดู ไม่ใช่หลักฐานว่าฝั่งถัดไปเปลี่ยนตาม</div>
+   <div class="v13-note" id="fastPatternEvidence">รอข้อมูลรูปแบบตรงกันจาก Shoe ก่อนหน้า</div>
+  </div>
+  <div class="v13-subpanel">
+   <h3>Immediate Error Diagnosis · ตรวจคำทายที่เพิ่งผิด</h3>
+   <div class="v13-readout" id="fastErrorDiagnosis">ยังไม่มีคำทายที่บันทึกไว้</div>
+   <div class="v13-note" id="fastErrorContext">ระบบจะเปรียบเทียบรูปแบบก่อนตานั้นกับผลจริงและผู้เชี่ยวชาญที่ให้โอกาสผลจริงต่ำ</div>
+   <div class="notice" id="fastErrorAction" style="margin-top:10px">เมื่อผลจริงออก ระบบจะอัปเดตน้ำหนักจาก Log Loss โดยไม่สลับไปอีกฝั่งอัตโนมัติ</div>
+  </div>
+ </div>
+ <div class="notice">หลักสำคัญ: ตรวจจับได้เร็วไม่เท่ากับทำนายได้แม่นขึ้น · RUN / CHOP / MIXED เป็นคำอธิบายผลที่เห็น ส่วนสัญญาณเปลี่ยนรูปแบบและการเตือนโมเดลเป็นเกณฑ์เฝ้าระวังเชิงพรรณนาเท่านั้น · หากหลักฐานไม่พอ ระบบต้องบอกว่าไม่ทราบ ไม่เดาผลเพื่อให้ดูมั่นใจ</div>
+</section>
+
+<section class="panel" id="legacySeedNotice" style="display:none;margin-bottom:15px;border-color:#8a6540">
+ <div class="section-head"><h2>ตรวจพบข้อมูลเริ่มต้นจากรุ่นก่อน</h2><small>ต้องยืนยันแหล่งที่มาก่อนใช้งาน</small></div>
+ <div class="notice" style="margin-top:0">รุ่น v13 เคยเติมผลตัวอย่าง 49 ตาให้อัตโนมัติเมื่อเปิดครั้งแรก หากข้อมูลประวัติของคุณขึ้นต้นด้วยชุดดังกล่าว ระบบจะพักประวัติทั้งหมดไว้ ไม่ใช้ฝึกหรือประเมินผล จนกว่าคุณจะยืนยันว่าข้อมูลนี้เป็นประวัติที่ต้องการเก็บไว้</div>
+ <div class="controls" style="margin-top:10px"><button class="action-btn" id="confirmLegacySeed">ยืนยันใช้ประวัตินี้</button><button class="action-btn danger" id="discardLegacySeed">ไม่ใช้ชุดข้อมูลนี้</button></div>
+</section>
+<section class="panel v14-panel" id="contextAdaptivePanel" style="margin-bottom:15px">
+ <div class="section-head"><h2>v14 · Context-Adaptive Learning &amp; Data Integrity</h2><small id="v14Status">กำลังประเมินบริบท</small></div>
+ <div class="v14-kpis">
+  <div class="stat"><div class="stat-label">สถานะเกมที่ใช้จริง</div><div class="stat-value v14-status" id="v14Regime">START</div><div class="stat-sub" id="v14RegimeSub">ตรวจ RUN ได้เมื่อมีสตรีค B/P อย่างน้อย 3 ผล</div></div>
+  <div class="stat"><div class="stat-label">หลักฐานในบริบทเดียวกัน</div><div class="stat-value v14-status" id="v14Support">0 / 0</div><div class="stat-sub" id="v14SupportSub">ตัวอย่าง / Shoe</div></div>
+  <div class="stat"><div class="stat-label">การปรับน้ำหนักเฉพาะบริบท</div><div class="stat-value v14-status" id="v14Adaptation">GLOBAL BASE</div><div class="stat-sub" id="v14AdaptationSub">ยังไม่ถึงขั้นต่ำ</div></div>
+  <div class="stat"><div class="stat-label">ผู้เชี่ยวชาญที่ร่วมรอบนี้</div><div class="stat-value v14-status" id="v14Active">0</div><div class="stat-sub" id="v14ActiveSub">ผ่านเกณฑ์ข้อมูล</div></div><div class="stat"><div class="stat-label">ความสมบูรณ์โครงสร้างข้อมูล</div><div class="stat-value v14-status" id="v14DataQuality">กำลังตรวจ</div><div class="stat-sub" id="v14DataQualitySub">ตรวจลำดับ Shoe และจำนวนสำรับ</div></div>
+ </div>
+ <div class="v14-grid">
+  <div class="v14-subpanel">
+   <h3>Regime-Specific Performance · ผลจริงแยกตามสภาพเกม</h3>
+   <div class="v14-table"><table class="table"><thead><tr><th>บริบท</th><th>n ทดสอบ</th><th>Shoe</th><th>Δ Log Loss</th><th>Accuracy</th><th>n เรียนรู้</th></tr></thead><tbody id="v14RegimeBody"><tr><td colspan="6">รอข้อมูลทดสอบ</td></tr></tbody></table></div>
+   <div class="v14-note" id="v14RegimeNote">ผลงานแยกบริบทใช้เฉพาะคำทายหลัง Warm-up และแสดงจำนวน Shoe เพื่อไม่ให้จำนวนตาใน Shoe เดียวสร้างภาพว่ามีหลักฐานอิสระมาก</div>
+  </div>
+  <div class="v14-subpanel">
+   <h3>Current Context Experts · ผู้เชี่ยวชาญที่ผ่านเกณฑ์</h3>
+   <div class="v14-table"><table class="table"><thead><tr><th>ผู้เชี่ยวชาญ</th><th>น้ำหนักในชุดที่ใช้</th><th>น้ำหนักเฉพาะบริบท</th></tr></thead><tbody id="v14ExpertBody"><tr><td colspan="3">รอข้อมูล</td></tr></tbody></table></div>
+   <div class="v14-note" id="v14ContextReadout">แยกการเรียนรู้ตาม RUN / CHOP / MIXED โดยผสมน้ำหนักเฉพาะบริบทกับน้ำหนักรวมเมื่อมีข้อมูลอย่างน้อย 15 ตัวอย่างและ 3 Shoe</div>
+  </div>
+ </div>
+ <div class="notice" id="v14AuditReadout" style="margin-top:12px">ผล B/P/T ยังคำนวณได้แม้ไม่มีแต้มไพ่ครบ · Shoe Simulation จะปิดเมื่อไพ่หรือ Burn/Removed ไม่ครบ เพื่อป้องกันการจำลองจากข้อมูลไม่สมบูรณ์</div>
+</section>
+
+<section class="panel" style="margin-bottom:15px"><div class="section-head"><h2>สถิติภาพรวม</h2><small id="totalRounds">0 ตา</small></div><div class="stats">
+<div class="stat"><div class="stat-label">BANKER (B)</div><div class="stat-value" id="countB">0</div><div class="stat-sub" id="rateB">0.0%</div></div>
+<div class="stat"><div class="stat-label">PLAYER (P)</div><div class="stat-value" id="countP">0</div><div class="stat-sub" id="rateP">0.0%</div></div>
+<div class="stat"><div class="stat-label">TIE (T)</div><div class="stat-value" id="countT">0</div><div class="stat-sub" id="rateT">0.0%</div></div>
+<div class="stat"><div class="stat-label">สตรีค B/P ล่าสุด</div><div class="stat-value" id="streak">—</div><div class="stat-sub" id="streakSub">รอผล</div></div>
+<div class="stat"><div class="stat-label">สลับฝั่ง 10 ตาล่าสุด</div><div class="stat-value" id="chopRate">—</div><div class="stat-sub" id="chopSub">รอผล</div></div>
+<div class="stat"><div class="stat-label">B ใน 20 ตาล่าสุด</div><div class="stat-value" id="rollingB">—</div><div class="stat-sub" id="rollingSub">รอข้อมูล</div></div>
+</div></section>
+</div>
+<div>
+<section class="panel" style="margin-bottom:15px"><div class="section-head"><h2>Pattern &amp; Road Context</h2><small>ตรวจจับรูปแบบย้อนหลัง</small></div><div class="tag-row" id="patternTags"><span class="tag">รอข้อมูล</span></div><div class="muted" id="patternExplain" style="margin-top:10px">ตรวจจับ Dragon, Chop, 2-2, 1-2 และรูปแบบผสม</div></section>
+<section class="panel" style="margin-bottom:15px"><div class="section-head"><h2>Transition Analysis</h2><small>ผลก่อนหน้า → ผลถัดไป</small></div><div class="table-wrap"><table class="table"><thead><tr><th>ผลก่อนหน้า</th><th>ถัดไป B</th><th>ถัดไป P</th><th>ถัดไป T</th><th>n</th></tr></thead><tbody id="transitionBody"><tr><td colspan="5">ต้องมีผลอย่างน้อย 2 ตา</td></tr></tbody></table></div><div class="hint" style="margin-top:7px">นับเฉพาะคู่ผลที่อยู่ใน Shoe เดียวกัน · สัดส่วนย้อนหลังเป็นคุณลักษณะ ไม่ใช่กฎบังคับผลถัดไป</div></section>
+<section class="panel"><div class="section-head"><h2>Walk-forward Backtest · Prequential</h2><small>ทายก่อนรู้ผล · ไม่รั่วไหลจากอนาคต</small></div><div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="stat"><div class="stat-label">จำนวนรอบที่ประเมิน</div><div class="stat-value" id="btN">0</div><div class="stat-sub" id="btCoverage">เริ่มประเมินหลัง Warm-up</div></div><div class="stat"><div class="stat-label">Top-1 Accuracy</div><div class="stat-value" id="btRate">—</div><div class="stat-sub" id="btCompare">ยังไม่มีชุดทดสอบ</div></div><div class="stat"><div class="stat-label">Log Loss · โมเดล</div><div class="stat-value" id="btLogLoss">—</div><div class="stat-sub">ยิ่งต่ำยิ่งดี</div></div><div class="stat"><div class="stat-label">Log Loss · ค่าฐาน</div><div class="stat-value" id="btBaseLoss">—</div><div class="stat-sub">ค่าฐานตามจำนวนสำรับในแต่ละ Shoe</div></div><div class="stat"><div class="stat-label">Top-label ECE · 5 bins</div><div class="stat-value" id="btCalibration">—</div><div class="stat-sub" id="btCalibrationNote">ตรวจการสอบเทียบความมั่นใจ</div></div><div class="stat"><div class="stat-label">ช่วงความเชื่อมั่น Accuracy</div><div class="stat-value" id="btAccuracyCI">—</div><div class="stat-sub">Wilson 95% interval · สมมติผลแต่ละตาอิสระ</div></div></div><div class="eyebrow" style="margin:12px 0 7px">Reliability table · ความมั่นใจเฉลี่ยเทียบกับความถูกต้องจริง</div><div class="table-wrap"><table class="table"><thead><tr><th>ช่วงความมั่นใจ</th><th>จำนวน</th><th>Confidence เฉลี่ย</th><th>Accuracy จริง</th></tr></thead><tbody id="calibrationBody"><tr><td colspan="4">รอชุดทดสอบ</td></tr></tbody></table></div><div class="disclaimer">Walk-forward / prequential test: สร้างคำทายก่อนเปิดเผยผล แล้วจึงนำผลนั้นไปอัปเดตโมเดลสำหรับตาถัดไป เริ่มประเมินหลัง Warm-up 50 ตา ตัวชี้วัดเป็นการทดสอบตามลำดับเวลา ไม่ใช่ชุดทดสอบอิสระที่กันไว้ถาวร ช่วง Wilson เป็นค่าประมาณแบบ binomial และอาจแคบเกินจริงเมื่อผลใน Shoe เดียวกันมีการพึ่งพากัน · ผลทดสอบไม่รับประกันอนาคต</div></section>
+</div></div><section class="panel" style="margin-bottom:15px"><div class="section-head"><h2>Strategy Selector · เลือกหลักการตามสถานการณ์</h2><small id="strategyStatus">รอข้อมูลเพื่อเปรียบเทียบ</small></div><div class="two-col"><div class="stat"><div class="stat-label">หลักการที่เหมาะที่สุดจากผลงานช่วงล่าสุด</div><div class="stat-value" id="selectedStrategy" style="font-size:16px">ยังไม่มีข้อมูล</div><div class="stat-sub" id="selectedStrategyNote">ต้องมีผลทดสอบเพียงพอก่อนเลือกหลักการ</div></div><div class="stat"><div class="stat-label">ทางเลือกสำรอง / เมื่อคำทายก่อนหน้าผิด</div><div class="stat-value" id="alternativeStrategy" style="font-size:16px">ยังไม่มีข้อมูล</div><div class="stat-sub" id="alternativeStrategyNote">ระบบจะเปรียบเทียบผู้เชี่ยวชาญอื่นจากผลย้อนหลัง</div></div></div><div class="hint" style="margin-top:9px">เลือกจาก Log Loss ของคำทายก่อนรู้ผลจริงในหน้าต่างย้อนหลัง 60 ตา ต้องมีตัวอย่างเปรียบเทียบอย่างน้อย 30 ตา และต้องดีกว่าค่าฐานอย่างมีระยะห่าง มิฉะนั้นจะแสดงว่าไม่มีหลักฐานพอ ไม่บังคับเลือกสูตร</div></section><section class="panel" id="dualEnginePanel" style="margin-bottom:15px">
+<div class="section-head"><h2>Dual Evidence Engine · วิเคราะห์สองแนวทางร่วมกัน</h2><small id="fusionStatus">รอข้อมูล</small></div>
+<div class="two-col">
+<div class="stat">
+<div class="eyebrow">Engine A · Historical Scenario Matching</div>
+<div style="font-weight:800;font-size:14px;margin-top:4px">ค้นหาเหตุการณ์เก่าที่คล้ายสถานการณ์ปัจจุบัน</div>
+<div class="engine-note">เทียบลำดับผลก่อนหน้า, Markov, Streak, Chop, Motif, Road Context, สัดส่วนผลช่วงล่าสุด และองค์ประกอบไพ่เมื่อมีข้อมูลครบ โดยจำกัดหนึ่งเหตุการณ์ต่อ Shoe เพื่อลดการนับซ้ำจากสถานการณ์ใน Shoe เดียวกัน</div>
+<div class="prob-grid engine-probs">
+<div class="prob-card"><strong style="color:var(--red)">BANKER</strong><div class="prob-value" id="histProbB">45.86%</div></div>
+<div class="prob-card"><strong style="color:var(--blue)">PLAYER</strong><div class="prob-value" id="histProbP">44.62%</div></div>
+<div class="prob-card"><strong style="color:var(--green)">TIE</strong><div class="prob-value" id="histProbT">9.52%</div></div>
+</div>
+<div class="engine-kpi">
+<div class="stat"><div class="stat-label">เหตุการณ์คล้ายที่พบ</div><div class="stat-value" id="histMatchCount">0</div></div>
+<div class="stat"><div class="stat-label">Strong Matches</div><div class="stat-value" id="histStrongCount">0</div></div>
+<div class="stat"><div class="stat-label">Effective N · Kish</div><div class="stat-value" id="histEffectiveN">0.00</div></div>
+</div>
+<div class="engine-note" id="historyEngineStatus">ยังไม่มีข้อมูลสำหรับค้นหาเหตุการณ์เปรียบเทียบ</div>
+<div class="eyebrow" style="margin:12px 0 6px">เหตุการณ์ย้อนหลังที่ใกล้เคียงที่สุด</div>
+<div class="engine-table"><table class="table"><thead><tr><th>ตาเดิม</th><th>Shoe</th><th>Similarity</th><th>ผลจริง</th></tr></thead><tbody id="histMatchBody"><tr><td colspan="4">ยังไม่มีข้อมูลเปรียบเทียบ</td></tr></tbody></table></div>
+</div>
+<div class="stat">
+<div class="eyebrow">Engine B · All-Method Cross-Check</div>
+<div style="font-weight:800;font-size:14px;margin-top:4px">ให้ทุกหลักการวิเคราะห์สถานการณ์เดียวกัน</div>
+<div class="engine-note">เปรียบเทียบค่าฐาน, Bayesian, Rolling, Markov 1–3, Streak, Chop, Motif, Derived Road และ Shoe Simulation (เมื่อข้อมูลไพ่ครบ) แล้วรวมความน่าจะเป็นโดยใช้น้ำหนักที่เรียนรู้จากผลจริง</div>
+<div class="prob-grid engine-probs">
+<div class="prob-card"><strong style="color:var(--red)">BANKER</strong><div class="prob-value" id="crossProbB">45.86%</div></div>
+<div class="prob-card"><strong style="color:var(--blue)">PLAYER</strong><div class="prob-value" id="crossProbP">44.62%</div></div>
+<div class="prob-card"><strong style="color:var(--green)">TIE</strong><div class="prob-value" id="crossProbT">9.52%</div></div>
+</div>
+<div class="engine-kpi">
+<div class="stat"><div class="stat-label">โมเดลที่ร่วมคำนวณ</div><div class="stat-value" id="crossActiveCount">0</div></div>
+<div class="stat"><div class="stat-label">เสียงอันดับหนึ่งตรงกัน</div><div class="stat-value" id="crossAgreeCount">—</div></div>
+<div class="stat"><div class="stat-label">Weighted Agreement</div><div class="stat-value" id="crossAgreement">—</div></div>
+</div>
+<div class="engine-note" id="crossAgreementText">รอผลวิเคราะห์จากผู้เชี่ยวชาญทุกโมเดล</div>
+</div>
+</div>
+<div class="stat" style="margin-top:12px">
+<div class="split"><div><div class="eyebrow">Final Fusion · รวมสองแนวทางก่อนออกคำคาดการณ์</div><div style="font-weight:800;font-size:14px;margin-top:4px">น้ำหนักของแต่ละ Engine ปรับจาก Log Loss ของตัวเอง</div></div><div class="mini-kpi" id="fusionReason">รอข้อมูล</div></div>
+<div class="two-col" style="margin-top:10px">
+<div><div class="split"><span class="mini-kpi">Historical Matching Weight</span><strong id="fusionWeightHistory">0%</strong></div><div class="progress"><span id="fusionBarHistory" style="width:0%"></span></div><div class="mini-kpi" style="margin-top:7px">Historical Log Loss (รอบที่เทียบได้)</div><strong id="historicalLoss">—</strong></div>
+<div><div class="split"><span class="mini-kpi">All-Method Cross-Check Weight</span><strong id="fusionWeightCross">100%</strong></div><div class="progress"><span id="fusionBarCross" style="width:100%"></span></div><div class="mini-kpi" style="margin-top:7px">Cross-Check Log Loss (รอบเดียวกัน)</div><strong id="crossLoss">—</strong></div>
+</div>
+<div class="engine-note">Engine A จะถูกนำมารวมเมื่อพบหลักฐานเปรียบเทียบเพียงพอเท่านั้น หากข้อมูลคล้ายกันน้อย ระบบจะไม่บังคับใช้ Engine A และจะใช้ Engine B เป็นหลัก เพื่อหลีกเลี่ยงการสร้างความมั่นใจจากตัวอย่างน้อยเกินไป</div>
+</div>
+</section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>Adaptive Learning · เรียนรู้และแก้ไขจากความผิดพลาด</h2><small id="learnStatus">รอข้อมูล</small></div>
+<div class="three-col"><div class="stat"><div class="stat-label">ผลทำนายผิด (หลัง Warm-up)</div><div class="stat-value" id="missCount">0</div><div class="stat-sub">ระบบใช้ Log Loss ปรับน้ำหนักรายโมเดลและราย Engine</div></div><div class="stat"><div class="stat-label">Brier Score · โมเดล</div><div class="stat-value" id="brierModel">—</div><div class="stat-sub" id="brierCompare">เทียบกับค่าฐาน</div></div><div class="stat"><div class="stat-label">โมเดลที่มีน้ำหนักสูงสุด</div><div class="stat-value" id="topExpert">—</div><div class="stat-sub" id="topExpertWeight">—</div></div></div>
+<div class="notice" id="diagnosisBox" style="margin-top:12px">เมื่อมีผลจริง ระบบจะเปรียบเทียบคำทายเดิมกับผลจริง วิเคราะห์ว่าโมเดลใดให้โอกาสผลจริงต่ำ และปรับน้ำหนักจากความผิดพลาดนั้น</div>
+<div class="two-col" style="margin-top:13px"><div><div class="eyebrow" style="margin:4px 0 7px">คะแนนและน้ำหนักของผู้เชี่ยวชาญแต่ละโมเดล</div><div class="table-wrap"><table class="table"><thead><tr><th>โมเดล</th><th>คำทาย</th><th>สถานะ</th><th>น้ำหนัก</th><th>Hit Rate</th><th>Log Loss</th></tr></thead><tbody id="expertBody"><tr><td colspan="6">ยังไม่มีข้อมูล</td></tr></tbody></table></div></div><div><div class="eyebrow" style="margin:4px 0 7px">บันทึกคำทายล่าสุด</div><div class="table-wrap"><table class="table"><thead><tr><th>ตา</th><th>คำทาย</th><th>ผลจริง</th><th>ผล</th><th>p(จริง)</th></tr></thead><tbody id="errorBody"><tr><td colspan="5">ยังไม่มีข้อมูล</td></tr></tbody></table></div></div></div>
+<div class="hint" style="margin-top:9px">วิธีเรียนรู้: Historical Matching ค้นเหตุการณ์เก่าที่คล้ายบริบทปัจจุบัน ส่วน All-Method Cross-Check รวมผู้เชี่ยวชาญทุกตัว → Final Fusion เรียนรู้น้ำหนักแยกของสอง Engine ด้วย Log Loss → เมื่อบันทึกผล ระบบปรับน้ำหนักรายโมเดลและราย Engine → Replay ประวัติทั้งหมดใหม่เมื่อย้อนกลับ/นำเข้า/รีเซ็ต เพื่อให้ผลทำซ้ำได้และไม่เกิดสถานะเรียนรู้ค้าง</div>
+</section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>Pattern Evidence Lab · ค้นหารูปแบบที่เคยเกิดจริง</h2><small id="patternEvidenceStatus">รอข้อมูล</small></div>
+<div class="pattern-evidence"><div class="pattern-card"><h3>รูปแบบปัจจุบันที่ตรวจพบ</h3><div id="patternCurrent" class="tag-row"><span class="tag">รอข้อมูล</span></div><p id="patternCurrentNote">ตรวจทั้งรูปแบบซ้ำ, ช่วงต่อเนื่อง, การสลับ และชุดย่อยที่ซ้อนกัน</p></div>
+<div class="pattern-card"><h3>ประวัติรูปแบบเดียวกันและผล B/P ถัดไป</h3><p>ค้นเหตุการณ์ก่อนหน้าเฉพาะจำนวนสำรับเดียวกัน แยกขอบเขต Shoe และนับผล B/P ถัดไปโดยข้าม Tie</p><div class="table-wrap"><table class="table"><thead><tr><th>รูปแบบล่าสุด</th><th>พบ</th><th>B ถัดไป</th><th>P ถัดไป</th><th>หมายเหตุ</th></tr></thead><tbody id="patternEvidenceBody"><tr><td colspan="5">ยังไม่มีข้อมูลเพียงพอ</td></tr></tbody></table></div></div></div><div class="pattern-card" style="margin-top:12px"><h3>Universal Exact Pattern 2–8 · หลักฐานที่ใช้ในโมเดลคาดการณ์ (รวม Tie)</h3><p>แสดงจำนวนเหตุการณ์ก่อนหน้าในบริบท 2–8 ผลล่าสุด และสัดส่วน Posterior หลังปรับด้วยค่าฐาน หากไม่พบตัวอย่าง ระดับนั้นจะไม่เพิ่มหลักฐานและไม่สร้างตัวเลขเฉพาะขึ้นมา</p><div class="table-wrap"><table class="table"><thead><tr><th>ความยาว</th><th>ลำดับล่าสุด</th><th>Shoe n</th><th>ผลจริง B/P/T</th><th>สถานะ</th><th>Posterior B/P/T</th></tr></thead><tbody id="pattern35EvidenceBody"><tr><td colspan="6">ยังไม่มีเหตุการณ์รูปแบบตรงกัน</td></tr></tbody></table></div></div>
+<div class="notice">ข้อควรอ่าน: ผู้เชี่ยวชาญ Universal Exact Pattern 2–8 ใช้ผลจริง 2–8 ตาล่าสุดรวม Tie โดยนับไม่เกินหนึ่งเหตุการณ์ต่อ Shoe และต้องผ่านจำนวน Shoe ขั้นต่ำตามความยาวรูปแบบ ส่วนตารางนี้เป็นการค้นหา motif เฉพาะ B/P โดยข้าม Tie แสดงความถี่ดิบ ไม่ใช่โอกาสที่รับประกัน รูปแบบที่มีตัวอย่างน้อยหรือทับซ้อนกันเป็นหลักฐานอ่อน</div></section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>เค้าไพ่ · Road Map</h2><small>คำนวณเฉพาะ Shoe ปัจจุบัน · Tie ไม่เปลี่ยนคอลัมน์ Big Road</small></div><div class="two-col">
+<div><div class="eyebrow">Big Road</div><div class="road-grid-wrap" id="bigRoad"><div class="empty-state">ยังไม่มีข้อมูล</div></div><div class="derived-info">แดง = Banker · น้ำเงิน = Player · Tie แสดงเป็นเครื่องหมายเขียวบนผลล่าสุด</div></div>
+<div><div class="eyebrow">Bead Plate</div><div class="road-grid-wrap" id="beadRoad"><div class="empty-state">ยังไม่มีข้อมูล</div></div><div class="derived-info">ทุกผลรวม Tie บันทึกตามลำดับ 6 แถว</div></div>
+<div><div class="eyebrow">Big Eye Boy</div><div class="road-grid-wrap" id="bigEye"><div class="empty-state">ข้อมูลยังไม่พอ</div></div><div class="derived-info">แดง = โครงสร้างเหมือนกัน · น้ำเงิน = ต่างกัน</div></div>
+<div><div class="eyebrow">Small Road</div><div class="road-grid-wrap" id="smallRoad"><div class="empty-state">ข้อมูลยังไม่พอ</div></div><div class="derived-info">Derived Road offset 2</div></div>
+<div><div class="eyebrow">Cockroach Pig</div><div class="road-grid-wrap" id="cockroach"><div class="empty-state">ข้อมูลยังไม่พอ</div></div><div class="derived-info">Derived Road offset 3</div></div>
+<div><div class="eyebrow">คำอธิบาย</div><div class="muted">Road Maps เป็นการจัดรูปแบบผลย้อนหลัง และเป็นคุณลักษณะให้ผู้วิเคราะห์ดูเท่านั้น ไม่ได้ยืนยันว่าฝั่งแดง/น้ำเงินจะออกตามสีของ Derived Road</div></div>
+</div></section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>Card Counting &amp; Shoe Composition</h2><small id="shoeStatus">ยังไม่มีข้อมูลไพ่</small></div><div class="three-col">
+<div class="stat"><div class="stat-label">Running Count</div><div class="stat-value" id="runningCount">—</div><div class="stat-sub">1–4: +1 · 5–8: −1 · 0/9: 0</div></div>
+<div class="stat"><div class="stat-label">ไพ่ที่บันทึกใน Shoe ปัจจุบัน</div><div class="stat-value" id="cardsSeen">0</div><div class="stat-sub" id="cardsRemain">เหลือ 416 ใบ (ค่าตั้งต้น 8 สำรับ)</div></div>
+<div class="stat"><div class="stat-label">True Count (ดัชนี)</div><div class="stat-value" id="trueCount">—</div><div class="stat-sub">Running Count ÷ สำรับโดยประมาณที่เหลือ</div></div>
+</div><div class="two-col" style="margin-top:12px"><div><div class="eyebrow" style="margin:4px 0 7px">สัดส่วนไพ่แต้มที่เหลือ</div><div class="method-list" id="cardRemainList"><div class="method"><strong>ยังไม่มีข้อมูลไพ่</strong><span>กรอกไพ่ที่เปิดในแต่ละมือให้ครบทุกมือของ Shoe</span></div></div></div><div><div class="eyebrow" style="margin:4px 0 7px">Monte Carlo · จำลองไพ่จาก Shoe ที่เหลือ</div><div class="prob-grid" style="margin-top:0"><div class="prob-card"><strong style="color:var(--red)">BANKER</strong><div class="prob-value" id="shoeProbB">—</div></div><div class="prob-card"><strong style="color:var(--blue)">PLAYER</strong><div class="prob-value" id="shoeProbP">—</div></div><div class="prob-card"><strong style="color:var(--green)">TIE</strong><div class="prob-value" id="shoeProbT">—</div></div></div><div class="muted" id="shoeSimNote" style="margin-top:8px">ต้องมีข้อมูลไพ่ครบทุกมือใน Shoe และไพ่ที่บันทึกอย่างน้อย 20 ใบ จึงเริ่มจำลองได้</div></div></div><div class="disclaimer">Card Counting และ Shoe Simulation ใช้ได้ต่อเมื่อป้อนแต้มไพ่ที่เปิดจริงครบถ้วนและ Shoe เดียวกันเท่านั้น หากขาดไพ่แม้แต่ตาเดียว ระบบปิดการจำลอง Shoe นั้นเพื่อไม่สร้างความแม่นยำลวง · Running Count เป็นระบบนับตัวอย่าง ไม่ใช่สูตรรับประกันความได้เปรียบ</div></section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>Probability, Expected Value &amp; Risk</h2><small id="edgeBasis">EV ต่อเงินเดิมพัน 1 หน่วย · ค่าฐานตามจำนวนสำรับ</small></div><div class="three-col">
+<div class="stat"><div class="stat-label">EV · Banker</div><div class="stat-value" id="edgeB">−1.06%</div><div class="stat-sub">คอมมิชชัน 5%</div></div><div class="stat"><div class="stat-label">EV · Player</div><div class="stat-value" id="edgeP">−1.24%</div><div class="stat-sub">จ่าย 1:1</div></div><div class="stat"><div class="stat-label">EV · Tie</div><div class="stat-value" id="edgeT">−14.36%</div><div class="stat-sub">จ่าย 8:1</div></div>
+</div><div class="hint" style="margin-top:9px">EV ใช้ความน่าจะเป็นจาก Shoe Simulation เมื่อข้อมูลครบ มิฉะนั้นใช้ค่าฐาน · ค่าจำลองมี Monte Carlo error และไม่ใช่คำแนะนำเดิมพัน · ระบบนี้ไม่แนะนำขนาดเดิมพันและไม่เปิด Martingale/Fibonacci/Paroli เป็นคำแนะนำ เพราะระบบเงินเดิมพันไม่เปลี่ยนโอกาสชนะหรือ House Edge</div></section><section class="panel" style="margin-top:15px"><div class="section-head"><h2>หลักการที่ระบบใช้และข้อจำกัด</h2><small>โปร่งใสว่าอะไรคำนวณได้จริง</small></div><div class="method-list">
+<div class="method"><strong>Adaptive Multi-Horizon Ensemble</strong><span>ผู้เชี่ยวชาญระยะสั้น 8 ผล, ระยะกลาง 24 ผล, ระยะยาว 60 ผล ร่วมกับค่าฐาน, Global Bayesian, Markov 1–3, Streak, Chop, Motif 2–3, Universal Exact Pattern Discovery 2–8, Cross-Shoe Context Memory และ Derived Road contexts · ปรับน้ำหนักจาก Log Loss หลังเห็นผลจริง</span></div>
+<div class="method"><strong>Statistical / Pattern Analysis</strong><span>Win Rate, Transition, Dragon, Chop, 2-2, 1-2, streak, rolling frequency, calibration-style Brier/Log Loss</span></div>
+<div class="method"><strong>Card Counting / Shoe Composition</strong><span>นับแต้มไพ่ที่เปิดจริง, Running Count, True Count และ Monte Carlo ตามกฎจั่ว Player/Banker เมื่อข้อมูลครบ</span></div>
+<div class="method"><strong>Backtesting / Error Diagnosis</strong><span>บันทึกคำทายก่อนรู้ผล, ประเมินทุกตาหลัง warm-up, เปรียบเทียบค่าฐาน, แสดงโมเดลที่พลาดและการปรับน้ำหนัก</span></div>
+<div class="method off"><strong>Shuffle Tracking / Edge Sorting · ไม่คำนวณ</strong><span>ต้องมีข้อมูลลำดับการสับไพ่หรือคุณลักษณะหลังไพ่จากโต๊ะจริง ซึ่งไม่สามารถอนุมานจากประวัติ B/P/T หรือแต้มไพ่ที่เปิดได้</span></div>
+<div class="method off"><strong>Machine Learning · ขอบเขต</strong><span>ใช้ Online Learning แบบถ่วงน้ำหนักผู้เชี่ยวชาญ พร้อม Walk-forward evaluation และ Top-label calibration ไม่ใช่ Neural Network และไม่ควรเรียกว่าระบบ AI ที่เรียนรู้กฎใหม่ได้โดยไร้ข้อจำกัด</span></div>
+</div><div class="disclaimer">ผลการเรียนรู้เป็นการปรับให้เหมาะกับประวัติที่ป้อน ไม่ใช่หลักฐานว่าเกมมีรูปแบบคงที่ หากข้อมูลมาจากหลาย Shoe, หลายโต๊ะ หรือหลายแพลตฟอร์ม ควรแยกชุดข้อมูลให้ตรงบริบท และผลจากอดีตไม่ยืนยันผลครั้งหน้า</div></section><div class="footer">Baccarat Insight Lab v14 · Context-Adaptive Historical Solver & Multi-Horizon Forecast · ข้อมูลอยู่ในเบราว์เซอร์นี้ · ไม่มีการส่งข้อมูลออกอินเทอร์เน็ต</div></div><div aria-live="polite" class="toast" id="toast" role="status"></div>
+<script>
+(()=>{'use strict';
+const STORAGE_KEY='baccaratInsightLab_v12';
+const PREVIOUS_KEYS=['baccaratInsightLab_v11','baccaratInsightLab_v10','baccaratInsightLab_v9','baccaratInsightLab_v8','baccaratInsightLab_v3','baccaratInsightHistory_v1'];
+const LEGACY_KEY='baccaratInsightHistory_v1';
+
+const BASE6={B:0.458652719,P:0.446278570,T:0.095068711};
+const BASE8={B:0.458597423,P:0.446246609,T:0.095155968};
+let calculationDecks=8; // Replay switches this per historical Shoe; UI selection remains in `decks`.
+const getBase=()=>calculationDecks===6?BASE6:BASE8;
+const OUTCOMES=['B','P','T'];
+const WARMUP=50, SIM_SAMPLES=4000, ETA=0.09, ENGINE_ETA=0.07, FORGET=0.996, REGIME_ETA=0.045, REGIME_FORGET=0.997;
+const EXPERTS=[
+  {id:'base',label:'ค่าฐานตามจำนวนสำรับ',strength:0},
+  {id:'global',label:'Global Bayesian',strength:65},
+  {id:'roll8',label:'Short Horizon · 8 Results',strength:24},
+  {id:'rolling',label:'Rolling Window · 24 Results',strength:24},
+  {id:'roll60',label:'Long Horizon · 60 Results',strength:48},
+  {id:'contextMem',label:'Cross-Shoe Context Memory',strength:18},
+  {id:'mk1',label:'Markov Order 1',strength:18},
+  {id:'mk2',label:'Markov Order 2',strength:24},
+  {id:'mk3',label:'Markov Order 3',strength:30},
+  {id:'streak',label:'Streak Context',strength:22},
+  {id:'chop',label:'Chop / Alternation',strength:22},
+  {id:'motif2',label:'Pattern Motif 2',strength:20},
+  {id:'motif3',label:'Pattern Motif 3',strength:26},
+  {id:'pattern35',label:'Universal Exact Pattern Discovery 2–8',strength:24},
+  {id:'bigEye',label:'Big Eye Boy Context',strength:22},
+  {id:'smallRoad',label:'Small Road Context',strength:24},
+  {id:'cockroach',label:'Cockroach Pig Context',strength:26},
+  {id:'analog',label:'Historical Analog Matching',strength:0},
+  {id:'shoe',label:'Shoe Composition MC',strength:0}
+];
+const $=id=>document.getElementById(id);
+let events=[],currentShoe=1,decks=8,storageAvailable=true,replayResult=null,toastTimer=null,migrationNotice='',pendingUnverifiedSeed=null,pendingSeedStorageKey=null;
+const shoeSimCache=new Map();
+const LEGACY_UNVERIFIED_SEED_SIGNATURE='PPBPBBBPBPBBBPBPPPBBPPBPPPBBPPBBBPPPPPPPPBBBBBPPB';
+const pct=x=>(100*x).toFixed(2)+'%';
+const cloneBase=()=>({...getBase()});
+const zeroCounts=()=>({B:0,P:0,T:0});
+const sumObj=o=>OUTCOMES.reduce((s,k)=>s+(o[k]||0),0);
+function safeEvents(v,defaultDecks=8){
+  if(!Array.isArray(v))return [];
+  const fallback=Number(defaultDecks)===6?6:8;
+  return v.map(x=>{
+    const raw=typeof x==='string'?{outcome:x}:((x&&typeof x==='object')?x:{});
+    const outcome=OUTCOMES.includes(raw.outcome)?raw.outcome:(OUTCOMES.includes(raw.side)?raw.side:null);
+    const shoeValid=raw.shoe===undefined||(Number.isInteger(raw.shoe)&&raw.shoe>0),deckValid=raw.decks===undefined||Number(raw.decks)===6||Number(raw.decks)===8;
+    const rawCards=Array.isArray(raw.cards)?raw.cards:null;
+    const parsedCards=rawCards?rawCards.map(Number):[];
+    const cardsValid=!!rawCards&&parsedCards.length>=4&&parsedCards.length<=6&&parsedCards.every(n=>Number.isInteger(n)&&n>=0&&n<=9);
+    const cards=cardsValid?parsedCards:[];
+    const rawRemoved=Array.isArray(raw.removedCards)?raw.removedCards:null;
+    const parsedRemoved=rawRemoved?rawRemoved.map(Number):[];
+    const removedValid=!!rawRemoved&&parsedRemoved.length<=52&&parsedRemoved.every(n=>Number.isInteger(n)&&n>=0&&n<=9);
+    const removedKnown=raw.removedKnown===true&&removedValid;
+    const removedCards=removedKnown?parsedRemoved:[];
+    return {outcome,cards,cardsQuality:raw.cardsQuality==='invalid'?'invalid':(cardsValid?'complete':(rawCards&&rawCards.length?'invalid':'missing')),shoe:Number.isInteger(raw.shoe)&&raw.shoe>0?raw.shoe:1,decks:Number(raw.decks)===6?6:(Number(raw.decks)===8?8:fallback),shoeQuality:raw.shoeQuality==='invalid'||!shoeValid?'invalid':'valid',deckQuality:raw.deckQuality==='invalid'||!deckValid?'invalid':'valid',removedCards,removedKnown};
+  }).filter(x=>OUTCOMES.includes(x.outcome));
+}
+function readStore(){
+  try{
+    let raw=localStorage.getItem(STORAGE_KEY),foundKey=STORAGE_KEY;
+    if(!raw){for(const key of PREVIOUS_KEYS){raw=localStorage.getItem(key);if(raw){foundKey=key;break;}}}
+    if(raw){
+      const v=JSON.parse(raw);decks=Number(v.decks)===6?6:8;
+      const rawEvents=Array.isArray(v.events)?v.events:[];
+      const legacyDecks=rawEvents.some(x=>typeof x==='string'||!x||!(Number(x.decks)===6||Number(x.decks)===8));
+      const firstByShoe=new Set();let lacksBurn=false;
+      for(const x of rawEvents){const shoe=x&&Number.isInteger(x.shoe)?x.shoe:1;if(!firstByShoe.has(shoe)){firstByShoe.add(shoe);if(!x||x.removedKnown!==true)lacksBurn=true;}}
+      const seedPrefix=rawEvents.length>=49&&rawEvents.slice(0,49).map(x=>typeof x==='string'?x:(x?.outcome||x?.side||'')).join('')===LEGACY_UNVERIFIED_SEED_SIGNATURE&&rawEvents.slice(0,49).every(x=>{
+        const o=typeof x==='string'?{outcome:x}:x||{};
+        return (Number(o.shoe)||1)===1&&(Number(o.decks)||8)===8&&(!Array.isArray(o.cards)||o.cards.length===0)&&o.removedKnown!==true;
+      });
+      if(seedPrefix){
+        // v13 auto-inserted this 49-result sequence on a fresh install. Keep the full
+        // history pending explicit user confirmation so it is never silently treated as real data.
+        pendingUnverifiedSeed=rawEvents;pendingSeedStorageKey=foundKey;events=[];currentShoe=1;
+        migrationNotice='ตรวจพบประวัติที่ขึ้นต้นด้วยชุด 49 ผลอัตโนมัติจากรุ่นก่อน · พักข้อมูลไว้จนกว่าจะยืนยันแหล่งที่มา';
+      }else{
+        events=safeEvents(rawEvents,decks);
+        if(foundKey!==STORAGE_KEY){migrationNotice='อัปเกรดประวัติเป็น v14 แล้ว · รักษาประวัติเดิมและเพิ่ม Historical Game Solver';}
+        else if(legacyDecks&&events.length){migrationNotice='ประวัติเดิมไม่มีจำนวนสำรับแยกราย Shoe · กำหนดประวัติเก่าตามจำนวนสำรับที่บันทึกไว้';}
+        else if(lacksBurn&&events.length){migrationNotice='โหลดประวัติแล้ว · Shoe ที่ไม่ยืนยันไพ่ Burn/Removed ครบจะไม่ใช้ Shoe Simulation';}
+        currentShoe=Math.max(1,Number(v.currentShoe)||1,...events.map(e=>e.shoe));
+      }
+    }
+    calculationDecks=decks;
+    if(raw&&foundKey!==STORAGE_KEY&&!pendingUnverifiedSeed)save();
+  }catch(e){storageAvailable=false;events=[];currentShoe=1;decks=8;calculationDecks=8;}
+}
+function confirmLegacySeed(){
+  if(!Array.isArray(pendingUnverifiedSeed))return;
+  const candidate=safeEvents(pendingUnverifiedSeed,decks);
+  const audit=auditEventStream(candidate);
+  if(audit.issueCount){toast('ยืนยันไม่ได้: ลำดับ Shoe หรือจำนวนสำรับในข้อมูลมีปัญหา');return;}
+  events=candidate;currentShoe=Math.max(1,...events.map(e=>e.shoe));pendingUnverifiedSeed=null;pendingSeedStorageKey=null;save();render();toast('ยืนยันนำเข้าประวัติเดิมแล้ว · ใช้เป็นข้อมูลที่คุณรับรอง');
+}
+function discardLegacySeed(){
+  const key=pendingSeedStorageKey||STORAGE_KEY;
+  try{localStorage.removeItem(key);}catch(e){}
+  pendingUnverifiedSeed=null;pendingSeedStorageKey=null;events=[];currentShoe=1;save();render();toast('พัก/ลบชุดข้อมูลอัตโนมัติแล้ว · เริ่มจากประวัติจริงที่คุณบันทึกเอง');
+}
+
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({events,currentShoe,decks,version:14}));storageAvailable=true;}catch(e){storageAvailable=false;toast('บันทึกถาวรไม่ได้: พื้นที่เก็บข้อมูลไม่พร้อมใช้งาน');}updateStorage();}
+function updateStorage(){$('storageStatus').textContent=storageAvailable?'LOCAL MODE · บันทึกในอุปกรณ์นี้':'SESSION MODE · บันทึกถาวรไม่ได้';$('storageStatus').style.borderColor=storageAvailable?'#43536a':'#8a6540';}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+function parseCardValues(raw){
+  if(!raw.trim())return [];
+  const tokens=raw.toUpperCase().trim().split(/[\s,;|]+/).filter(Boolean);const out=[];
+  for(const tok of tokens){if(tok==='A')out.push(1);else if(['10','J','Q','K','0'].includes(tok))out.push(0);else if(/^[2-9]$/.test(tok))out.push(Number(tok));else throw new Error('แต้มไพ่ไม่ถูกต้อง: '+tok+' · ใช้ A, 2–9, 10, J, Q, K หรือ 0');}
+  return out;
+}
+function parseCards(raw){const out=parseCardValues(raw);if(raw.trim()&&(out.length<4||out.length>6))throw new Error('โดยทั่วไปต้องกรอกไพ่ที่เปิดในมือนี้ 4–6 ใบ (ตอนนี้กรอก '+out.length+' ใบ)');return out;}
+function parseRemovedCards(raw){const out=parseCardValues(raw);if(out.length>52)throw new Error('ไพ่ Burn/Removed มีได้ไม่เกิน 52 ใบต่อการบันทึก');return out;}
+function subtractCards(counts,cards){const next=counts.slice();for(const c of cards){if(next[c]<=0)return null;next[c]--;}return next;}
+
+function initialCardCounts(d){const a=Array(10).fill(0);a[0]=16*d;for(let i=1;i<=9;i++)a[i]=4*d;return a;}
+function currentShoeEvents(){return events.filter(e=>e.shoe===currentShoe);}
+function validateNewCards(cards,removedCards=[],removedKnown=false){
+  const cur=currentShoeEvents();
+  const shoeDecks=cur.length?(cur[0].decks||decks):decks;
+  if(cur.some(e=>(e.decks||shoeDecks)!==shoeDecks))throw new Error('พบข้อมูลจำนวนสำรับไม่ตรงกันใน Shoe นี้ กรุณาแยกเป็น Shoe ใหม่');
+  if(cur.length&&shoeDecks!==decks)throw new Error('จำนวนสำรับของ Shoe ปัจจุบันถูกกำหนดไว้แล้ว กรุณาเริ่ม Shoe ใหม่ก่อนเปลี่ยนจำนวนสำรับ');
+  if(cur.length&&cur.some(e=>!e.cards||e.cards.length===0)&&cards.length)throw new Error('Shoe นี้มีตาก่อนหน้าที่ไม่ได้บันทึกแต้มไพ่ จึงนับไพ่ที่เหลือต่อไม่ได้ กรุณาเริ่ม Shoe ใหม่ก่อนใช้ Card Counting');
+  if(!cur.length){if(!removedKnown)return;let remain=subtractCards(initialCardCounts(shoeDecks),removedCards);if(!remain)throw new Error('ไพ่ Burn/Removed ที่กรอกมากกว่าจำนวนไพ่ใน Shoe');if(cards.length){remain=subtractCards(remain,cards);if(!remain)throw new Error('ไพ่ในมือนี้เกินจำนวนไพ่ที่เหลือใน Shoe');}return;}
+  if(cur[0].removedKnown!==true)return; // Historical Shoe has unknown removed cards; counting is already disabled.
+  let remain=subtractCards(initialCardCounts(shoeDecks),cur[0].removedCards||[]);
+  if(!remain)throw new Error('ข้อมูลไพ่ Burn/Removed ของ Shoe นี้ไม่ถูกต้อง');
+  for(const e of cur){remain=subtractCards(remain,e.cards||[]);if(!remain)throw new Error('ข้อมูลไพ่เดิมเกินจำนวนไพ่ใน Shoe นี้');}
+  if(cards.length){remain=subtractCards(remain,cards);if(!remain)throw new Error('จำนวนไพ่แต้มที่กรอกมากกว่าจำนวนที่เหลือใน Shoe นี้');}
+}
+function addOutcome(outcome){
+  let cards=[],removedCards=[],removedKnown=false;const firstOfShoe=currentShoeEvents().length===0;
+  try{cards=parseCards($('cardInput').value);if(firstOfShoe){removedCards=parseRemovedCards($('burnInput').value);removedKnown=$('burnKnown').checked;if(removedCards.length&&!removedKnown)throw new Error('กรุณายืนยันว่าบันทึกไพ่ Burn/Removed ครบแล้วก่อนใช้รายการที่กรอก');}validateNewCards(cards,removedCards,removedKnown);}catch(e){toast(e.message);return;}
+  events.push({outcome,cards,shoe:currentShoe,decks,removedCards:firstOfShoe?removedCards:[],removedKnown:firstOfShoe?removedKnown:null});$('cardInput').value='';if(firstOfShoe){$('burnInput').value='';$('burnKnown').checked=false;}save();render();toast('บันทึกผล '+outcome+' แล้ว · ระบบประเมินคำทายก่อนเห็นผลและอัปเดตการเรียนรู้');
+}
+function undo(){if(!currentShoeEvents().length){toast('Shoe ปัจจุบันยังไม่มีผลให้ย้อนกลับ · ไม่ลบผลจาก Shoe ก่อนหน้า');return;}const idx=events.length-1;if(events[idx]?.shoe!==currentShoe){toast('ไม่พบผลล่าสุดของ Shoe ปัจจุบันให้ย้อนกลับ');return;}events.pop();save();render();toast('ย้อนกลับ 1 รายการ · สร้างสถานะการเรียนรู้ใหม่จากประวัติ');}
+function resetAll(){if(!events.length&&currentShoe===1)return;if(!confirm('ยืนยันลบประวัติและสถานะการเรียนรู้ทั้งหมดหรือไม่?'))return;events=[];currentShoe=1;save();render();toast('รีเซ็ตประวัติและการเรียนรู้แล้ว');}
+function startShoe(){currentShoe=Math.max(currentShoe,...events.map(e=>e.shoe),0)+1;save();render();toast('เริ่ม Shoe ใหม่ #'+currentShoe+' · ตัวนับไพ่เริ่มใหม่');}
+function exportData(){const blob=new Blob([JSON.stringify({version:14,exportedAt:new Date().toISOString(),decks,currentShoe,events},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='baccarat-insight-v14-backup.json';a.click();URL.revokeObjectURL(url);}
+function importData(file){
+  const r=new FileReader();r.onload=()=>{
+    try{
+      const v=JSON.parse(r.result);
+      if(!v||!Array.isArray(v.events))throw new Error('ไม่พบ events ในไฟล์');
+      if(v.events.length>100000)throw new Error('ไฟล์มีรายการมากเกินไป');
+      if(v.decks!==undefined&&![6,8].includes(Number(v.decks)))throw new Error('จำนวนสำรับหลักของไฟล์ต้องเป็น 6 หรือ 8');
+      if(v.currentShoe!==undefined&&(!Number.isInteger(Number(v.currentShoe))||Number(v.currentShoe)<1))throw new Error('หมายเลข Shoe ปัจจุบันในไฟล์ไม่ถูกต้อง');
+      const invalidOutcomes=v.events.filter(x=>{
+        const o=typeof x==='string'?x:((x&&typeof x==='object')?(OUTCOMES.includes(x.outcome)?x.outcome:x.side):null);
+        return !OUTCOMES.includes(o);
+      }).length;
+      if(invalidOutcomes)throw new Error(`พบผลลัพธ์ B/P/T ไม่ถูกต้อง ${invalidOutcomes} รายการ · ข้อมูลเดิมไม่ได้ถูกแทนที่`);
+      const seedPrefix=v.events.length>=49&&v.events.slice(0,49).map(x=>typeof x==='string'?x:(x?.outcome||x?.side||'')).join('')===LEGACY_UNVERIFIED_SEED_SIGNATURE&&v.events.slice(0,49).every(x=>{
+        const o=typeof x==='string'?{outcome:x}:x||{};
+        return (Number(o.shoe)||1)===1&&(Number(o.decks)||8)===8&&(!Array.isArray(o.cards)||o.cards.length===0)&&o.removedKnown!==true;
+      });
+      if(seedPrefix)throw new Error('ไฟล์เริ่มต้นด้วยชุด 49 ผลอัตโนมัติจากรุ่นก่อน · v14 ไม่รับเป็นประวัติจริงโดยอัตโนมัติ กรุณาตรวจแหล่งที่มาและนำชุดตัวอย่างออกจาก JSON ก่อนนำเข้า');
+      const malformedIndex=v.events.findIndex(x=>x&&typeof x==='object'&&((x.shoe!==undefined&&(!Number.isInteger(x.shoe)||x.shoe<1))||(x.decks!==undefined&&Number(x.decks)!==6&&Number(x.decks)!==8)));
+      if(malformedIndex>=0)throw new Error(`ข้อมูล Shoe/จำนวนสำรับผิดรูปแบบที่รายการ ${malformedIndex+1} · ข้อมูลเดิมไม่ได้ถูกแทนที่`);
+      const impDecks=Number(v.decks)===6?6:8;
+      const imp=safeEvents(v.events,impDecks);
+      const seen=new Set();let lastShoe=0;const deckByShoe=new Map();
+      for(const e of imp){
+        if(e.shoe<lastShoe)throw new Error('ลำดับ Shoe ในไฟล์ย้อนกลับ · เรียงข้อมูลตามลำดับการเล่นก่อนนำเข้า');
+        if(e.shoe!==lastShoe&&seen.has(e.shoe))throw new Error(`พบ Shoe #${e.shoe} ซ้ำคนละช่วง · ไม่สามารถ replay ตามเวลาได้`);
+        if(!deckByShoe.has(e.shoe))deckByShoe.set(e.shoe,e.decks);
+        else if(deckByShoe.get(e.shoe)!==e.decks)throw new Error(`Shoe #${e.shoe} มีจำนวนสำรับไม่ตรงกัน`);
+        if(e.shoe!==lastShoe){if(lastShoe)seen.add(lastShoe);lastShoe=e.shoe;}
+      }
+      const invalidCardRounds=imp.filter(e=>e.cardsQuality==='invalid').length;
+      const missingCardRounds=imp.filter(e=>!e.cards.length).length;
+      const firstByShoe=new Set();let missingBurn=0;
+      for(const e of imp){if(!firstByShoe.has(e.shoe)){firstByShoe.add(e.shoe);if(!e.removedKnown)missingBurn++;}}
+      events=imp;pendingUnverifiedSeed=null;pendingSeedStorageKey=null;decks=impDecks;currentShoe=Math.max(1,Number(v.currentShoe)||1,...events.map(e=>e.shoe));
+      calculationDecks=decks;$('decks').value=String(decks);save();render();
+      const warnings=[];
+      if(invalidCardRounds)warnings.push(`ตัดข้อมูลไพ่ที่รูปแบบไม่ครบ/ผิด ${invalidCardRounds} ตา`);
+      if(missingCardRounds)warnings.push(`ไม่มีไพ่ครบ ${missingCardRounds} ตา`);
+      if(missingBurn)warnings.push(`ไม่ยืนยัน Burn/Removed ${missingBurn} Shoe`);
+      toast(`นำเข้า ${events.length} ตาแล้ว${warnings.length?' · '+warnings.join(' · '):' · โครงสร้างผลลัพธ์ผ่านตรวจสอบ'}`);
+    }catch(e){toast('นำเข้าไม่สำเร็จ: '+e.message);}
+  };r.readAsText(file);
+}
+
+function addMap(map,key,outcome){if(!key)return;let c=map.get(key);if(!c){c=zeroCounts();map.set(key,c);}c[outcome]++;}
+function smoothed(counts,strength){const c=counts||zeroCounts(),base=getBase(),den=sumObj(c)+strength;const s={};for(const k of OUTCOMES)s[k]=(c[k]+base[k]*strength)/Math.max(den,1e-12);return s;}
+function argmax(p){return OUTCOMES.reduce((a,k)=>p[k]>p[a]?k:a,OUTCOMES[0]);}
+function logLoss(p,y){return -Math.log(Math.max(1e-8,Math.min(1,p[y])));}
+function brier(p,y){return OUTCOMES.reduce((s,k)=>s+Math.pow(p[k]-(k===y?1:0),2),0);}
+function normaliseWeights(logW){const vals=EXPERTS.map(e=>Math.exp(Math.max(-30,Math.min(10,logW[e.id]))));const z=vals.reduce((a,b)=>a+b,0)||1;const o={};EXPERTS.forEach((e,i)=>o[e.id]=vals[i]/z);return o;}
+function blend(experts,weights,activeIds){
+  const ids=activeIds||EXPERTS.filter(e=>e.id!=='analog'&&e.id!=='shoe').map(e=>e.id);
+  const zWeight=ids.reduce((z,id)=>z+(weights[id]||0),0)||1;
+  const out=zeroCounts(),base=getBase();
+  for(const id of ids){const w=(weights[id]||0)/zWeight;for(const k of OUTCOMES)out[k]+=w*(experts[id]?.[k]??base[k]);}
+  for(const k of OUTCOMES)out[k]=0.88*out[k]+0.12*base[k];
+  const z=sumObj(out);for(const k of OUTCOMES)out[k]/=z;
+  return out;
+}
+function normaliseEngineWeights(logW,historicalReady){
+  if(!historicalReady)return {historical:0,crosscheck:1};
+  const a=Math.exp(Math.max(-30,Math.min(10,logW.historical||0)));
+  const b=Math.exp(Math.max(-30,Math.min(10,logW.crosscheck||0)));
+  const z=a+b||1;return {historical:a/z,crosscheck:b/z};
+}
+function fuseEngines(historical,crosscheck,weights){
+  const out={};for(const k of OUTCOMES)out[k]=(weights.historical||0)*(historical[k]||0)+(weights.crosscheck||0)*(crosscheck[k]||0);
+  const z=sumObj(out)||1;for(const k of OUTCOMES)out[k]/=z;return out;
+}
+function countInContext(map,key){return key?map.get(key):null;}
+function streakAndChop(decisive){
+  if(!decisive.length)return {streakKey:'START',chopKey:'START',streak:{side:null,n:0},alt:0};
+  const side=decisive[decisive.length-1];let n=1;for(let i=decisive.length-2;i>=0&&decisive[i]===side;i--)n++;
+  let alt=1;for(let i=decisive.length-1;i>0;i--){if(decisive[i]===decisive[i-1])break;alt++;}
+  const b=n===1?'1':n===2?'2':'3+';const ab=alt<=2?'1-2':alt<=4?'3-4':'5+';
+  return {streakKey:side+':'+b,chopKey:side+':'+ab,streak:{side,n},alt};
+}
+// Baccarat road geometry (ties are excluded from Big Road and derived roads).
+function buildBigRoad(arr){const occupied=new Map(),positions=[],runs=[];let lastSide=null,lastPos=null,run=null;for(let i=0;i<arr.length;i++){const side=arr[i];let logicalCol,logicalRow,visualCol,visualRow;if(i===0){run={index:0,side,length:0,visualStart:0};runs.push(run);logicalCol=0;logicalRow=0;visualCol=0;visualRow=0;}else if(side===lastSide){logicalCol=run.index;logicalRow=run.length;visualCol=lastPos.visualCol;visualRow=lastPos.visualRow+1;if(visualRow>=6||occupied.has(visualCol+','+visualRow)){visualRow=lastPos.visualRow;visualCol=lastPos.visualCol+1;while(occupied.has(visualCol+','+visualRow))visualCol++;}}else{run={index:runs.length,side,length:0,visualStart:runs[runs.length-1].visualStart+1};runs.push(run);logicalCol=run.index;logicalRow=0;visualCol=run.visualStart;visualRow=0;while(occupied.has(visualCol+',0'))visualCol++;run.visualStart=visualCol;}run.length++;const pos={side,i,logicalCol,logicalRow,visualCol,visualRow,ties:0};occupied.set(visualCol+','+visualRow,pos);positions.push(pos);lastPos=pos;lastSide=side;}return {occupied,positions,runs};}
+function deriveRoad(big,offset){const marks=[];for(const pos of big.positions){const c=pos.logicalCol,r=pos.logicalRow;let eligible=false,red=false;if(r===0&&c>=offset+1){eligible=true;red=big.runs[c-1].length===big.runs[c-offset-1].length;}else if(r>0&&c>=offset){eligible=true;const compareLength=big.runs[c-offset].length;const sameRow=compareLength>r,aboveRow=compareLength>(r-1);red=sameRow===aboveRow;}if(eligible)marks.push(red?'R':'L');}return marks;}
+function buildDisplayRoad(seq){const occupied=new Map(),positions=[];let last=null,lastPos=null,runStart=0;for(let i=0;i<seq.length;i++){const v=seq[i];let c,r;if(i===0){c=0;r=0;runStart=0;}else if(v===last){c=lastPos.c;r=lastPos.r+1;if(r>=6||occupied.has(c+','+r)){r=lastPos.r;c=lastPos.c+1;while(occupied.has(c+','+r))c++;}}else{c=runStart+1;r=0;while(occupied.has(c+',0'))c++;runStart=c;}const pos={value:v,i,c,r};occupied.set(c+','+r,pos);positions.push(pos);last=v;lastPos=pos;}return positions;}
+function roadKeys(decisive){const big=buildBigRoad(decisive.slice(-260));const result={};[['bigEye',1],['smallRoad',2],['cockroach',3]].forEach(([key,offset])=>{const m=deriveRoad(big,offset);result[key]=m.length?m.slice(-2).join(''):'START';});return result;}
+function distributionOf(arr){const c=zeroCounts();arr.forEach(x=>{if(OUTCOMES.includes(x))c[x]++;});const n=sumObj(c);return n?OUTCOMES.map(k=>c[k]/n):null;}
+function rollingWindowDist(arr,window,priorStrength){const tail=(arr||[]).slice(-window),c=zeroCounts();tail.forEach(x=>c[x]++);return smoothed(c,priorStrength);}
+function currentRollingDist(arr){return rollingWindowDist(arr,24,24);}
+function switchCount(seq){let n=0;for(let i=1;i<seq.length;i++)if(seq[i]!==seq[i-1])n++;return n;}
+function currentRunInfo(dec){if(!dec.length)return {side:'X',length:0};const side=dec[dec.length-1];let length=1;for(let i=dec.length-2;i>=0&&dec[i]===side;i--)length++;return {side,length};}
+function classifyRegime(hist,decisive){
+  const d=(decisive||[]).filter(x=>x==='B'||x==='P'),tail6=d.slice(-6),tail10=d.slice(-10),run=currentRunInfo(d);
+  const sw6=switchCount(tail6),sw10=switchCount(tail10),rate6=tail6.length>1?sw6/(tail6.length-1):0,rate10=tail10.length>1?sw10/(tail10.length-1):0;
+  let family='START',score=0;
+  if(d.length>=3){
+    if(run.length>=3){family='RUN';score=Math.min(0.95,0.56+0.07*(run.length-3)+0.025*Math.max(0,tail6.length-3));}
+    else if(tail6.length>=5&&sw6>=4&&rate6>=0.80){family='CHOP';score=Math.min(0.90,0.57+0.06*(sw6-4)+0.08*(rate6-0.8)/0.2);}
+    else{family='MIXED';score=tail6.length>=6?0.55:0.40;}
+  }
+  const recent=Array.isArray(hist)?hist.slice(-12):[],tieRate=recent.length?recent.filter(x=>x==='T').length/recent.length:0;
+  return {family,side:family==='RUN'?run.side:'X',run:run.length,switches6:sw6,switches10:sw10,switchRate6:rate6,switchRate10:rate10,structuralScore:score,tieRate,decisiveN:d.length};
+}
+function contextRegimeKey(hist,dec,streakInfo){
+  if(!hist.length)return 'START';
+  const d=(dec||[]).slice(-10),r=classifyRegime(hist,dec),balanceSeq=d.slice(-8),b=balanceSeq.filter(x=>x==='B').length,p=balanceSeq.filter(x=>x==='P').length;
+  const balance=b-p>=3?'B_LEAN':p-b>=3?'P_LEAN':'BALANCED';
+  const tieBand=r.tieRate<0.10?'LOW_TIE':r.tieRate<0.25?'MID_TIE':'HIGH_TIE';
+  return [r.family,r.side,balance,tieBand].join('|');
+}
+function makeFeatures(state){
+  const hist=state.shoeOutcomes,dec=state.decisive,sc=streakAndChop(dec),roads=roadKeys(dec);
+  const contextKey=contextRegimeKey(hist,dec,sc.streak);
+  const totalRemain=state.shoeCounts.reduce((a,b)=>a+b,0);
+  const shoeProfile=state.shoeValid&&state.shoeSeen>=20&&totalRemain>0?state.shoeCounts.map(x=>x/totalRemain):null;
+  const rolling=(state.rollingByDeck[state.shoeDecks]||[]).slice(-24);
+  return {
+    mk1:hist.length?hist[hist.length-1]:'START',
+    mk2:hist.length>=2?hist.slice(-2).join(''):'START',
+    mk3:hist.length>=3?hist.slice(-3).join(''):'START',
+    streak:sc.streakKey,chop:sc.chopKey,
+    motif2:dec.slice(-2).join('')||'START',motif3:dec.slice(-3).join('')||'START',
+    bigEye:roads.bigEye,smallRoad:roads.smallRoad,cockroach:roads.cockroach,
+    tail3:hist.slice(-3).join(''),tail4:hist.slice(-4).join(''),tail5:hist.slice(-5).join(''),tail6:hist.slice(-6).join(''),tail8:hist.slice(-8).join(''),
+    pattern2:hist.length>=2?hist.slice(-2).join(''):'',pattern3:hist.length>=3?hist.slice(-3).join(''):'',pattern4:hist.length>=4?hist.slice(-4).join(''):'',pattern5:hist.length>=5?hist.slice(-5).join(''):'',pattern6:hist.length>=6?hist.slice(-6).join(''):'',pattern7:hist.length>=7?hist.slice(-7).join(''):'',pattern8:hist.length>=8?hist.slice(-8).join(''):'',
+    rollingTail6:rolling.slice(-6).join(''),rollingDist:distributionOf(rolling),
+    shoeProfile,shoeSeen:state.shoeSeen,shoeDecks:state.shoeDecks,
+    contextKey,regimeFamily:contextKey.split('|')[0],regimeSide:contextKey.split('|')[1]||'X',regimeKey:contextKey.split('|')[0]==='RUN'?`RUN_${contextKey.split('|')[1]||'X'}`:contextKey.split('|')[0],
+    streakInfo:sc.streak,alt:sc.alt
+  };
+}
+function suffixSimilarity(a,b,maxLen){
+  if(!a||!b||Math.min(a.length,b.length)<2)return null;
+  const len=Math.min(maxLen,Math.max(a.length,b.length));let score=0,den=0;
+  for(let offset=1;offset<=len;offset++){const weight=1+(len-offset)*0.15;const ca=a[a.length-offset],cb=b[b.length-offset];den+=weight;if(ca!==undefined&&cb!==undefined&&ca===cb)score+=weight;}
+  return den?score/den:null;
+}
+function distributionSimilarity(a,b){
+  if(!Array.isArray(a)||!Array.isArray(b)||a.length!==b.length)return null;
+  const tv=a.reduce((sum,x,i)=>sum+Math.abs(x-b[i]),0)/2;
+  return Math.max(0,1-tv);
+}
+function fieldSimilarity(a,b,key){
+  const x=a[key],y=b[key];if(!x||!y||x==='START'||y==='START')return null;
+  if(x===y)return 1;
+  if((key==='streak'||key==='chop')&&String(x)[0]===String(y)[0])return 0.42;
+  return 0;
+}
+function historicalSimilarity(a,b){
+  const parts=[];
+  const categorical=[
+    ['mk1',1.0],['mk2',1.35],['mk3',1.6],['streak',1.1],['chop',1.1],
+    ['motif2',1.15],['motif3',1.45],['bigEye',0.65],['smallRoad',0.65],['cockroach',0.65]
+  ];
+  for(const [key,w] of categorical){const v=fieldSimilarity(a,b,key);if(v!==null)parts.push([v,w]);}
+  for(const [key,n,w] of [['tail3',3,1.15],['tail4',4,1.55],['tail5',5,1.45],['tail6',6,0.9],['tail8',8,0.55],['rollingTail6',6,0.65]]){const v=suffixSimilarity(a[key],b[key],n);if(v!==null)parts.push([v,w]);}
+  const rd=distributionSimilarity(a.rollingDist,b.rollingDist);if(rd!==null)parts.push([rd,0.9]);
+  if(a.shoeProfile&&b.shoeProfile&&a.shoeDecks===b.shoeDecks&&a.shoeSeen>=20&&b.shoeSeen>=20){const sd=distributionSimilarity(a.shoeProfile,b.shoeProfile);if(sd!==null)parts.push([sd,0.7]);}
+  const weight=parts.reduce((sum,x)=>sum+x[1],0);if(!weight)return 0;
+  return parts.reduce((sum,x)=>sum+x[0]*x[1],0)/weight;
+}
+function getHistoricalAnalog(state,features){
+  const base=getBase(),counts=zeroCounts(),bestByShoe=new Map();let weightSum=0,weightSqSum=0,strongMatches=0;
+  const history=state.predictions,historyStart=Math.max(0,history.length-900),historyLength=history.length-historyStart,shortlistByShoe=new Map();
+  // First stage: cheap fingerprint screening over the latest 900 historical predictions. Retain at most
+  // two diverse/high-scoring candidates per prior Shoe, then run the full similarity
+  // metric only on that shortlist. This preserves one final vote per Shoe and bounds
+  // replay cost without using any future outcomes.
+  for(let i=historyStart;i<history.length;i++){
+    const past=history[i],pf=past.features;if(!pf||!OUTCOMES.includes(past.actual))continue;
+    if(past.shoe===state.shoeId||pf.shoeDecks!==features.shoeDecks)continue;
+    let screen=0;
+    if(pf.regimeKey&&pf.regimeKey===features.regimeKey)screen+=5;
+    if(pf.contextKey&&pf.contextKey===features.contextKey)screen+=4;
+    if(pf.regimeFamily&&pf.regimeFamily===features.regimeFamily)screen+=2;
+    if(pf.mk3&&pf.mk3!=='START'&&pf.mk3===features.mk3)screen+=3;
+    if(pf.mk2&&pf.mk2!=='START'&&pf.mk2===features.mk2)screen+=2;
+    if(pf.mk1&&pf.mk1!=='START'&&pf.mk1===features.mk1)screen+=1;
+    if(pf.tail4&&pf.tail4===features.tail4)screen+=4;
+    if(pf.tail3&&pf.tail3===features.tail3)screen+=2;
+    if(pf.tail5&&pf.tail5===features.tail5)screen+=2;
+    const entry={past,index:i,screen};let bucket=shortlistByShoe.get(past.shoe);
+    if(!bucket){bucket=[];shortlistByShoe.set(past.shoe,bucket);}
+    bucket.push(entry);bucket.sort((a,b)=>b.screen-a.screen||b.index-a.index);if(bucket.length>2)bucket.length=2;
+  }
+  for(const bucket of shortlistByShoe.values())for(const entry of bucket){
+    const past=entry.past,similarity=historicalSimilarity(features,past.features);if(similarity<0.22)continue;
+    const recency=0.62+0.38*Math.sqrt((entry.index-historyStart+1)/Math.max(1,historyLength));
+    const weight=Math.pow(similarity,3.2)*recency;if(weight<0.006)continue;
+    const candidate={round:past.round,shoe:past.shoe,actual:past.actual,similarity,weight};
+    const old=bestByShoe.get(past.shoe);if(!old||candidate.weight>old.weight)bestByShoe.set(past.shoe,candidate);
+  }
+  const matches=[...bestByShoe.values()];
+  for(const m of matches){counts[m.actual]+=m.weight;weightSum+=m.weight;weightSqSum+=m.weight*m.weight;if(m.similarity>=0.48)strongMatches++;}
+  const effectiveN=weightSqSum>0?(weightSum*weightSum/weightSqSum):0;
+  const priorStrength=16,den=weightSum+priorStrength,prob={};
+  for(const k of OUTCOMES)prob[k]=(counts[k]+base[k]*priorStrength)/den;
+  const z=sumObj(prob)||1;for(const k of OUTCOMES)prob[k]/=z;
+  matches.sort((a,b)=>b.similarity-a.similarity||b.weight-a.weight);
+  return {prob,effectiveN,weightSum,matchCount:matches.length,strongMatches,distinctShoes:matches.length,ready:effectiveN>=2.25&&strongMatches>=3&&matches.length>=3,topMatches:matches.slice(0,5),counts};
+}
+function mulberry32(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};}
+function seededFromCounts(counts){let s=2166136261;for(let i=0;i<counts.length;i++){s^=(counts[i]+i*97);s=Math.imul(s,16777619);}return s>>>0;}
+function simulateShoe(counts,samples=SIM_SAMPLES){
+  if(counts.reduce((a,b)=>a+b,0)<8)return null;const rng=mulberry32(seededFromCounts(counts)+samples);const wins=zeroCounts();let done=0;
+  const draw=arr=>{let total=0;for(let i=0;i<10;i++)total+=arr[i];if(total<=0)return null;let r=Math.floor(rng()*total);for(let i=0;i<10;i++){r-=arr[i];if(r<0){arr[i]--;return i;}}return null;};
+  for(let n=0;n<samples;n++){const arr=counts.slice();const p1=draw(arr),b1=draw(arr),p2=draw(arr),b2=draw(arr);if([p1,b1,p2,b2].some(v=>v===null))continue;let pt=(p1+p2)%10,bt=(b1+b2)%10,p3=null;
+    if(pt<8&&bt<8){if(pt<=5){p3=draw(arr);if(p3===null)continue;pt=(pt+p3)%10;}
+      let bd=false;if(p3===null)bd=bt<=5;else if(bt<=2)bd=true;else if(bt===3&&p3!==8)bd=true;else if(bt===4&&p3>=2&&p3<=7)bd=true;else if(bt===5&&p3>=4&&p3<=7)bd=true;else if(bt===6&&p3>=6&&p3<=7)bd=true;
+      if(bd){const b3=draw(arr);if(b3===null)continue;bt=(bt+b3)%10;}}
+    wins[bt>pt?'B':pt>bt?'P':'T']++;done++;
+  }
+  if(!done)return null;const prob={B:wins.B/done,P:wins.P/done,T:wins.T/done};const mcError95=Math.max(...OUTCOMES.map(k=>1.96*Math.sqrt(prob[k]*(1-prob[k])/done)));return {...prob,samples:done,mcError95};
+}
+function simulateShoeCached(counts,samples=SIM_SAMPLES){
+  const key=samples+'|'+counts.join(',');
+  if(shoeSimCache.has(key)){const value=shoeSimCache.get(key);shoeSimCache.delete(key);shoeSimCache.set(key,value);return value;}
+  const value=simulateShoe(counts,samples);if(value){shoeSimCache.set(key,value);if(shoeSimCache.size>3000)shoeSimCache.delete(shoeSimCache.keys().next().value);}return value;
+}
+function patternShoeCounts(map,key,excludeShoe){const byShoe=map.get(key),counts=zeroCounts();if(byShoe)for(const [shoe,outcome] of byShoe.entries())if(shoe!==excludeShoe)counts[outcome]++;return counts;}
+function pattern35Prediction(state,features){
+  // Compare exact last 2–8 outcomes including Tie. One latest occurrence per prior Shoe
+  // is retained for each context; choose one best-supported specificity to avoid double counting
+  // the same historical events at nested 2–8-result levels.
+  const levels=[];
+  const thresholds={8:8,7:9,6:10,5:12,4:14,3:16,2:20};
+  const priors={8:12,7:14,6:16,5:18,4:22,3:26,2:30};
+  for(const len of [8,7,6,5,4,3,2]){
+    const key='pattern'+len,pattern=features[key];if(!pattern)continue;
+    const counts=patternShoeCounts(state.maps[key],state.shoeDecks+'|'+pattern,state.shoeId);
+    const n=sumObj(counts);if(n){levels.push({length:len,pattern,n,counts,prob:smoothed(counts,priors[len]),minShoes:thresholds[len],selected:false});}
+  }
+  const selected=levels.find(x=>x.n>=x.minShoes)||null;
+  if(selected)selected.selected=true;
+  return {prob:selected?selected.prob:cloneBase(),evidence:levels,selectedLength:selected?.length||null};
+}
+function contextMemoryPrediction(state,features){
+  const counts=zeroCounts(),memoryKey=state.shoeDecks+'|'+(features.contextKey||'START');
+  const byShoe=state.contextMemory.get(memoryKey),currentKey=state.shoeDecks+'|'+state.shoeId;
+  if(byShoe)for(const [shoeKey,outcome] of byShoe.entries())if(shoeKey!==currentKey&&OUTCOMES.includes(outcome))counts[outcome]++;
+  const n=sumObj(counts),prob=smoothed(counts,18);
+  return {prob,n,counts,ready:n>=4,contextKey:features.contextKey||'START'};
+}
+function getExpertPredictions(state,features,simSamples=SIM_SAMPLES){
+  const p={};p.base=cloneBase();p.global=smoothed(state.globalCountsByDeck[state.shoeDecks],65);p.roll8=rollingWindowDist(state.shortRollingByDeck[state.shoeDecks],8,24);p.rolling=currentRollingDist(state.rollingByDeck[state.shoeDecks]);p.roll60=rollingWindowDist(state.longRollingByDeck[state.shoeDecks],60,48);
+  const contextMemory=contextMemoryPrediction(state,features);p.contextMem=contextMemory.prob;
+  p.mk1=smoothed(countInContext(state.maps.mk1,state.shoeDecks+'|'+features.mk1),18);p.mk2=smoothed(countInContext(state.maps.mk2,state.shoeDecks+'|'+features.mk2),24);p.mk3=smoothed(countInContext(state.maps.mk3,state.shoeDecks+'|'+features.mk3),30);
+  p.streak=smoothed(countInContext(state.maps.streak,state.shoeDecks+'|'+features.streak),22);p.chop=smoothed(countInContext(state.maps.chop,state.shoeDecks+'|'+features.chop),22);
+  p.motif2=smoothed(countInContext(state.maps.motif2,state.shoeDecks+'|'+features.motif2),20);p.motif3=smoothed(countInContext(state.maps.motif3,state.shoeDecks+'|'+features.motif3),26);const pattern35=pattern35Prediction(state,features);p.pattern35=pattern35.prob;
+  p.bigEye=smoothed(countInContext(state.maps.bigEye,state.shoeDecks+'|'+features.bigEye),22);p.smallRoad=smoothed(countInContext(state.maps.smallRoad,state.shoeDecks+'|'+features.smallRoad),24);p.cockroach=smoothed(countInContext(state.maps.cockroach,state.shoeDecks+'|'+features.cockroach),26);
+  const analog=getHistoricalAnalog(state,features);p.analog=analog.prob;
+  const simEligible=state.shoeValid&&state.shoeSeen>=20;const sim=simEligible?simulateShoeCached(state.shoeCounts,simSamples):null;const shoeReady=!!sim;p.shoe=sim||cloneBase();
+  return {predictions:p,shoeReady,simulation:sim,analog,patternEvidence:pattern35.evidence,contextMemory};
+}
+function createState(){
+  const maps={};['mk1','mk2','mk3','streak','chop','motif2','motif3','pattern2','pattern3','pattern4','pattern5','pattern6','pattern7','pattern8','bigEye','smallRoad','cockroach'].forEach(k=>maps[k]=new Map());
+  const logW={},scores={},regimeLogW={},regimeMeta={};EXPERTS.forEach(e=>{logW[e.id]=0;scores[e.id]={n:0,hit:0,loss:0};});
+  for(const family of ['RUN_B','RUN_P','CHOP','MIXED']){regimeLogW[family]={};EXPERTS.forEach(e=>regimeLogW[family][e.id]=0);regimeMeta[family]={n:0,shoeCounts:new Map()};}
+  const engineScores={historical:{n:0,hit:0,loss:0,brier:0},crosscheck:{n:0,hit:0,loss:0,brier:0}};
+  return {maps,contextMemory:new Map(),contextSupportShoes:new Map(),logW,regimeLogW,regimeMeta,scores,engineLogW:{historical:0,crosscheck:0},engineScores,globalCountsByDeck:{6:zeroCounts(),8:zeroCounts()},rollingByDeck:{6:[],8:[]},shortRollingByDeck:{6:[],8:[]},longRollingByDeck:{6:[],8:[]},shoeOutcomes:[],decisive:[],shoeId:null,shoeDecks:calculationDecks,shoeCounts:initialCardCounts(calculationDecks),shoeSeen:0,shoeValid:true,predictions:[],tested:0,correct:0,baseCorrect:0,misses:0,modelLoss:0,baseLoss:0,modelBrier:0,baseBrier:0};
+}
+function regimeWeightContext(state,features){
+  const family=features?.regimeKey||features?.regimeFamily||'START',globalWeights=normaliseWeights(state.logW),meta=state.regimeMeta[family];
+  if(!meta)return {weights:globalWeights,alpha:0,n:0,shoeCount:0,family};
+  const shoeCount=meta.shoeCounts.size,shoeWeights=[...meta.shoeCounts.values()],sumShoes=shoeWeights.reduce((a,b)=>a+b,0),sumSqShoes=shoeWeights.reduce((a,b)=>a+b*b,0);
+  const effectiveShoes=sumSqShoes>0?(sumShoes*sumShoes/sumSqShoes):0;
+  // The local blend is limited by balanced cross-Shoe support, not raw rounds alone.
+  const alpha=(meta.n>=15&&shoeCount>=3)?Math.min(0.45,Math.min(meta.n/(meta.n+60),effectiveShoes/(effectiveShoes+4))*1.1):0;
+  if(alpha<=0)return {weights:globalWeights,alpha:0,n:meta.n,shoeCount,effectiveShoes,family};
+  const localWeights=normaliseWeights(state.regimeLogW[family]),weights={};
+  for(const e of EXPERTS)weights[e.id]=(1-alpha)*globalWeights[e.id]+alpha*localWeights[e.id];
+  const z=EXPERTS.reduce((a,e)=>a+weights[e.id],0)||1;for(const e of EXPERTS)weights[e.id]/=z;
+  return {weights,alpha,n:meta.n,shoeCount,effectiveShoes,family};
+}
+function updateRegimeLearning(state,family,shoeKey,expertRows){
+  const meta=state.regimeMeta[family],local=state.regimeLogW[family];if(!meta||!local)return;
+  const priorInShoe=meta.shoeCounts.get(shoeKey)||0,sampleScale=1/Math.sqrt(1+priorInShoe*0.25);
+  for(const row of expertRows){if(!row.active||!Number.isFinite(row.loss))continue;local[row.id]=REGIME_FORGET*local[row.id]-REGIME_ETA*sampleScale*Math.min(6,row.loss);}
+  meta.n++;meta.shoeCounts.set(shoeKey,priorInShoe+1);
+}
+function contextCount(map,key){return sumObj(map.get(key)||zeroCounts());}
+function getActiveExpertIds(state,features,got){
+  const deck=state.shoeDecks,ids=['base'];
+  if(sumObj(state.globalCountsByDeck[deck])>=6)ids.push('global');
+  if((state.shortRollingByDeck[deck]||[]).length>=4)ids.push('roll8');
+  if((state.rollingByDeck[deck]||[]).length>=8)ids.push('rolling');
+  if((state.longRollingByDeck[deck]||[]).length>=20)ids.push('roll60');
+  const thresholds={mk1:4,mk2:5,mk3:6,streak:4,chop:4,motif2:4,motif3:5,bigEye:5,smallRoad:5,cockroach:5};
+  for(const [id,minN] of Object.entries(thresholds)){
+    const key=deck+'|'+features[id],shoeSupport=state.contextSupportShoes.get(id+'|'+key)?.size||0;
+    if(contextCount(state.maps[id],key)>=minN&&shoeSupport>=2)ids.push(id);
+  }
+  if(got.patternEvidence.some(x=>x.selected))ids.push('pattern35');
+  if(got.contextMemory.ready)ids.push('contextMem');
+  if(got.shoeReady)ids.push('shoe');
+  return ids;
+}
+function resetShoeState(state,id,shoeDeckCount=calculationDecks){state.shoeId=id;state.shoeDecks=shoeDeckCount===6?6:8;state.shoeOutcomes=[];state.decisive=[];state.shoeCounts=initialCardCounts(state.shoeDecks);state.shoeSeen=0;state.shoeValid=true;}
+function updateContextMaps(state,features,outcome){
+  for(const k of ['mk1','mk2','mk3','streak','chop','motif2','motif3','bigEye','smallRoad','cockroach']){
+    const key=state.shoeDecks+'|'+features[k];
+    addMap(state.maps[k],key,outcome);
+    let support=state.contextSupportShoes.get(k+'|'+key);
+    if(!support){support=new Set();state.contextSupportShoes.set(k+'|'+key,support);}
+    support.add(state.shoeId);
+  }
+  // Cross-Shoe Context Memory: retain at most one latest outcome for each regime in each Shoe.
+  if(features.contextKey){const key=state.shoeDecks+'|'+features.contextKey;let byShoe=state.contextMemory.get(key);if(!byShoe){byShoe=new Map();state.contextMemory.set(key,byShoe);}byShoe.set(state.shoeDecks+'|'+state.shoeId,outcome);}
+  // Keep only the latest occurrence per pattern per Shoe. This limits pseudo-replication.
+  for(let len=2;len<=8;len++){const k='pattern'+len;if(features[k]){const key=state.shoeDecks+'|'+features[k];let byShoe=state.maps[k].get(key);if(!byShoe){byShoe=new Map();state.maps[k].set(key,byShoe);}byShoe.set(state.shoeId,outcome);}}
+}
+function applyAdaptiveSelector(state, expertPredictions, ensemble, currentActiveIds, family='MIXED'){
+  const activeNow=new Set(currentActiveIds||[]),recent=state.predictions.slice(WARMUP).slice(-180).filter(x=>(x.features?.regimeKey||x.features?.regimeFamily)===family),minN=25,minShoes=3;
+  const baseRows=recent.map(x=>({x,r:x.experts?.find(r=>r.id==='base'&&r.active)})).filter(v=>v.r&&Number.isFinite(v.r.loss));
+  if(baseRows.length<minN)return {prob:ensemble,selected:null,reason:`บริบท ${family} ยังมีผลทดสอบหลัง Warm-up ไม่ถึง ${minN} ตา`};
+  const candidates=EXPERTS.filter(e=>!['base','analog'].includes(e.id)&&activeNow.has(e.id)).map(e=>{
+    const rows=baseRows.map(v=>({round:v.x.round,shoe:(v.x.decks||8)+'|'+v.x.shoe,r:v.x.experts?.find(r=>r.id===e.id&&r.active),baseLoss:v.r.loss})).filter(v=>v.r&&Number.isFinite(v.r.loss));
+    const shoes=new Set(rows.map(v=>v.shoe));
+    const loss=rows.length?rows.reduce((sum,v)=>sum+v.r.loss,0)/rows.length:Infinity;
+    const baseLoss=rows.length?rows.reduce((sum,v)=>sum+v.baseLoss,0)/rows.length:Infinity;
+    return {id:e.id,label:e.label,n:rows.length,shoeCount:shoes.size,loss,baseLoss,delta:loss-baseLoss};
+  }).filter(x=>x.n>=minN&&x.shoeCount>=minShoes).sort((a,b)=>a.delta-b.delta);
+  const best=candidates[0];
+  if(!best||best.delta>=-0.015)return {prob:ensemble,selected:null,reason:`ยังไม่มีผู้เชี่ยวชาญที่ดีกว่าค่าฐานในบริบท ${family} อย่างมีระยะห่างและครอบคลุมหลาย Shoe`};
+  const specialist=expertPredictions[best.id],out={};
+  for(const k of OUTCOMES)out[k]=0.80*ensemble[k]+0.20*specialist[k];
+  const z=sumObj(out);for(const k of OUTCOMES)out[k]/=z;
+  return {prob:out,selected:{id:best.id,label:best.label,loss:best.loss,n:best.n,shoeCount:best.shoeCount,delta:best.delta,family},reason:`ผสมผู้เชี่ยวชาญที่ดีกว่าค่าฐานในบริบท ${family} จาก ${best.n} ตัวอย่างและ ${best.shoeCount} Shoe`};
+}
+function consensusSummary(expertPredictions,weights,activeIds){
+  const votes=zeroCounts(),weightedVotes=zeroCounts();let weightTotal=0;
+  for(const id of activeIds){const p=expertPredictions[id];if(!p)continue;const pick=argmax(p);votes[pick]++;weightedVotes[pick]+=weights[id]||0;weightTotal+=weights[id]||0;}
+  const leader=argmax(weightedVotes),share=weightTotal?weightedVotes[leader]/weightTotal:0;
+  return {votes,weightedVotes,leader,share,agree:votes[leader],total:activeIds.length};
+}
+function snapshotFeatures(features){
+  return {...features,rollingDist:features.rollingDist?[...features.rollingDist]:null,shoeProfile:features.shoeProfile?[...features.shoeProfile]:null};
+}
+function updateEngineScore(score,prob,y){score.n++;if(argmax(prob)===y)score.hit++;score.loss+=logLoss(prob,y);score.brier+=brier(prob,y);}
+function wilsonInterval(successes,total,z=1.96){if(!total)return null;const p=successes/total,z2=z*z,den=1+z2/total,center=(p+z2/(2*total))/den,half=z*Math.sqrt((p*(1-p)/total)+(z2/(4*total*total)))/den;return [Math.max(0,center-half),Math.min(1,center+half)];}
+function calibrationSummary(predictions){const test=predictions.slice(WARMUP),bins=Array.from({length:5},(_,i)=>({lo:i/5,hi:(i+1)/5,n:0,confidence:0,correct:0}));for(const item of test){const conf=item.prob[item.guess],idx=Math.min(4,Math.max(0,Math.floor(conf*5))),bin=bins[idx];bin.n++;bin.confidence+=conf;bin.correct+=item.correct?1:0;}let ece=0;for(const bin of bins){if(bin.n){bin.avgConfidence=bin.confidence/bin.n;bin.accuracy=bin.correct/bin.n;ece+=(bin.n/Math.max(1,test.length))*Math.abs(bin.avgConfidence-bin.accuracy);}else{bin.avgConfidence=null;bin.accuracy=null;}}const n=test.length,correct=test.filter(x=>x.correct).length;return {n,ece,meanConfidence:n?test.reduce((s,x)=>s+x.prob[x.guess],0)/n:null,accuracy:n?correct/n:null,interval:wilsonInterval(correct,n),bins};}
+function replay(allEvents){
+  const integrity=auditEventStream(allEvents);
+  if(integrity.issueCount)return blockedReplayState(allEvents,integrity);
+  const state=createState();
+  for(let i=0;i<allEvents.length;i++){
+    const ev=allEvents[i],eventDecks=ev.decks===6?6:8;
+    calculationDecks=eventDecks;
+    if(state.shoeId!==ev.shoe||state.shoeDecks!==eventDecks){resetShoeState(state,ev.shoe,eventDecks);if(ev.removedKnown===true){const afterRemoved=subtractCards(state.shoeCounts,ev.removedCards||[]);if(afterRemoved)state.shoeCounts=afterRemoved;else state.shoeValid=false;}else{state.shoeValid=false;}}
+    const features=makeFeatures(state),got=getExpertPredictions(state,features,SIM_SAMPLES);
+    const weightContext=regimeWeightContext(state,features),expertWeights=weightContext.weights;
+    const activeIds=getActiveExpertIds(state,features,got);
+    const crossRaw=blend(got.predictions,expertWeights,activeIds);
+    const selection=applyAdaptiveSelector(state,got.predictions,crossRaw,activeIds,features.regimeKey||features.regimeFamily),crossProb=selection.prob;
+    const engineWeights=normaliseEngineWeights(state.engineLogW,got.analog.ready);
+    const finalProb=fuseEngines(got.analog.prob,crossProb,engineWeights),guess=argmax(finalProb),y=ev.outcome;
+    const activeSet=new Set(activeIds);if(got.analog.ready)activeSet.add('analog');
+    const expertRows=EXPERTS.map(e=>{
+      const active=activeSet.has(e.id),p=got.predictions[e.id];
+      return {id:e.id,label:e.label,p,active,weight:expertWeights[e.id],loss:active?logLoss(p,y):null,guess:active?argmax(p):'—'};
+    });
+    const engineLoss={historical:got.analog.ready?logLoss(got.analog.prob,y):null,crosscheck:logLoss(crossProb,y)};
+    const baseNow=getBase(),ll=logLoss(finalProb,y),bl=logLoss(baseNow,y),bs=brier(finalProb,y),bbs=brier(baseNow,y);
+    const item={round:i+1,shoe:ev.shoe,decks:eventDecks,actual:y,prob:finalProb,guess,correct:guess===y,actualProb:finalProb[y],modelLoss:ll,baselineLoss:bl,lossDelta:ll-bl,experts:expertRows,weights:{...expertWeights},features:snapshotFeatures(features),weightContext:{alpha:weightContext.alpha,family:weightContext.family,n:weightContext.n,shoeCount:weightContext.shoeCount},globalWeights:{...normaliseWeights(state.logW)},analog:{...got.analog},engines:{historical:got.analog.prob,crosscheck:crossProb,final:finalProb,weights:{...engineWeights},historicalReady:got.analog.ready,consensus:consensusSummary(got.predictions,expertWeights,activeIds),loss:engineLoss},shoeReady:got.shoeReady,selectedStrategy:selection.selected};
+    state.predictions.push(item);
+    if(i>=WARMUP){
+      state.tested++;if(guess===y)state.correct++;else state.misses++;if(argmax(baseNow)===y)state.baseCorrect++;
+      state.modelLoss+=ll;state.baseLoss+=bl;state.modelBrier+=bs;state.baseBrier+=bbs;
+      if(got.analog.ready){
+        // Score both engines on the same eligible rounds for a fair comparison.
+        updateEngineScore(state.engineScores.crosscheck,crossProb,y);
+        updateEngineScore(state.engineScores.historical,got.analog.prob,y);
+      }
+    }
+    for(const r of expertRows){if(!r.active)continue;const sc=state.scores[r.id];sc.n++;if(r.guess===y)sc.hit++;sc.loss+=r.loss;}
+    for(const r of expertRows){if(r.active)state.logW[r.id]=FORGET*state.logW[r.id]-ETA*Math.min(6,r.loss);}
+    updateRegimeLearning(state,features.regimeKey||features.regimeFamily,(eventDecks+'|'+ev.shoe),expertRows);
+    if(got.analog.ready){
+      // Update the two engine weights only on rounds where both engines had usable inputs.
+      state.engineLogW.crosscheck=FORGET*state.engineLogW.crosscheck-ENGINE_ETA*Math.min(6,engineLoss.crosscheck);
+      state.engineLogW.historical=FORGET*state.engineLogW.historical-ENGINE_ETA*Math.min(6,engineLoss.historical);
+    }
+    updateContextMaps(state,features,y);state.globalCountsByDeck[state.shoeDecks][y]++;const deckRolling=state.rollingByDeck[state.shoeDecks];deckRolling.push(y);if(deckRolling.length>24)deckRolling.shift();const shortRolling=state.shortRollingByDeck[state.shoeDecks];shortRolling.push(y);if(shortRolling.length>8)shortRolling.shift();const longRolling=state.longRollingByDeck[state.shoeDecks];longRolling.push(y);if(longRolling.length>60)longRolling.shift();
+    state.shoeOutcomes.push(y);if(y!=='T')state.decisive.push(y);
+    if(ev.cards&&ev.cards.length){if(state.shoeValid){for(const c of ev.cards){if(state.shoeCounts[c]<=0){state.shoeValid=false;break;}state.shoeCounts[c]--;}}state.shoeSeen+=ev.cards.length;}else state.shoeValid=false;
+  }
+  calculationDecks=decks;
+  if(state.shoeId!==currentShoe||state.shoeDecks!==decks)resetShoeState(state,currentShoe,decks);
+  const features=makeFeatures(state),got=getExpertPredictions(state,features,SIM_SAMPLES),weightContext=regimeWeightContext(state,features),weights=weightContext.weights;
+  const activeIds=getActiveExpertIds(state,features,got);
+  const crossRaw=blend(got.predictions,weights,activeIds),selection=applyAdaptiveSelector(state,got.predictions,crossRaw,activeIds,features.regimeKey||features.regimeFamily),crossProb=selection.prob;
+  const engineWeights=normaliseEngineWeights(state.engineLogW,got.analog.ready),finalProb=fuseEngines(got.analog.prob,crossProb,engineWeights);
+  state.next={features,patternEvidence:got.patternEvidence||[],expertPredictions:got.predictions,contextMemory:got.contextMemory,weights,weightContext,activeExpertIds:activeIds.concat(got.analog.ready?['analog']:[]),crossActiveIds:activeIds,prob:finalProb,crossProb,historicalProb:got.analog.prob,analog:got.analog,engineWeights,consensus:consensusSummary(got.predictions,weights,activeIds),selectedStrategy:selection.selected,selectionReason:selection.reason,shoeReady:got.shoeReady,simulation:got.simulation};
+  return state;
+}
+function v9ClusteredValidation(predictions){
+  const tested=predictions.slice(WARMUP).filter(x=>Number.isFinite(x.lossDelta));
+  const byShoe=new Map();
+  for(const x of tested){const key=(x.decks||8)+'|'+x.shoe;let g=byShoe.get(key);if(!g){g={sum:0,n:0,shoe:x.shoe,decks:x.decks||8};byShoe.set(key,g);}g.sum+=x.lossDelta;g.n++;}
+  const means=[...byShoe.values()].map(g=>g.sum/g.n),k=means.length,n=tested.length;
+  const mean=k?means.reduce((a,b)=>a+b,0)/k:null;
+  const variance=k>1?means.reduce((a,x)=>a+(x-mean)**2,0)/(k-1):null;
+  const se=k>1?Math.sqrt(variance/k):null;
+  // Two-sided 95% Student-t critical values for small numbers of Shoe clusters.
+  const tCritical={8:2.365,9:2.306,10:2.262,11:2.228,12:2.201,13:2.179,14:2.160,15:2.145,16:2.131,17:2.120,18:2.110,19:2.101,20:2.093,21:2.086,22:2.080,23:2.074,24:2.069,25:2.064,26:2.060,27:2.056,28:2.052,29:2.048,30:2.045};
+  const critical=k>1?(tCritical[k-1]||1.96):null;
+  const margin=se===null?null:critical*se;
+  return {n,shoeCount:k,mean,lower:margin===null?null:mean-margin,upper:margin===null?null:mean+margin,shoeMeans:means};
+}
+function v9FamilyConsensus(state){
+  const p=state.next.expertPredictions,active=new Set(state.next.activeExpertIds||[]);
+  const definitions=[
+    ['ฐานและหน้าต่าง',['base','global','roll8','rolling','roll60']],
+    ['Cross-Shoe Context Memory',['contextMem']],
+    ['Markov',['mk1','mk2','mk3']],
+    ['Streak / Chop',['streak','chop']],
+    ['Motif / Exact Pattern',['motif2','motif3','pattern35']],
+    ['Derived Roads',['bigEye','smallRoad','cockroach']],
+    ['Historical Analogs',['analog']],
+    ['Shoe Composition',['shoe']]
+  ];
+  const families=[];
+  for(const [name,ids] of definitions){const use=ids.filter(id=>active.has(id)&&p[id]);if(!use.length)continue;const avg=zeroCounts();for(const id of use)for(const k of OUTCOMES)avg[k]+=p[id][k]/use.length;families.push({name,ids:use,prob:avg,pick:argmax(avg)});}
+  const votes=zeroCounts();families.forEach(f=>votes[f.pick]++);
+  const leader=argmax(votes),agree=votes[leader];
+  return {families,votes,leader,agree,total:families.length,share:families.length?agree/families.length:0};
+}
+function v9PatternDiscovery(){
+  const current=currentShoeEvents();
+  const modes=[
+    {id:'B/P/T',label:'รวม Tie',getSeq:a=>a.map(e=>e.outcome)},
+    {id:'B/P',label:'ข้าม Tie',getSeq:a=>a.filter(e=>e.outcome!=='T').map(e=>e.outcome)}
+  ];
+  const shoes=new Map();
+  for(const e of events){const d=e.decks===6?6:8;if(d!==decks||e.shoe===currentShoe)continue;const key=d+'|'+e.shoe;let arr=shoes.get(key);if(!arr){arr=[];shoes.set(key,arr);}arr.push(e);}
+  const rows=[];
+  for(const mode of modes){const cur=mode.getSeq(current);for(let len=2;len<=Math.min(8,cur.length);len++){
+    const pattern=cur.slice(-len).join('');if(pattern.length!==len)continue;
+    const counts=zeroCounts();
+    for(const past of shoes.values()){
+      const seq=mode.getSeq(past);let latest=null;
+      for(let i=0;i+len<seq.length;i++)if(seq.slice(i,i+len).join('')===pattern){latest=seq[i+len];}
+      if(latest)counts[latest]++;
+    }
+    const n=sumObj(counts);if(!n)continue;
+    const top=argmax(counts),interval=wilsonInterval(counts[top],n,2.576),baseline=(decks===6?BASE6:BASE8)[top];
+    const strong=n>=12&&interval&&interval[0]>baseline+0.01;
+    rows.push({mode:mode.id,label:mode.label,pattern,length:len,n,counts,top,share:counts[top]/n,lower:interval?interval[0]:null,upper:interval?interval[1]:null,baseline,strong,lift:counts[top]/n-baseline});
+  }}
+  rows.sort((a,b)=>(Number(b.strong)-Number(a.strong))||(b.lower??0)-(a.lower??0)||b.n-a.n||b.length-a.length);
+  return {rows:rows.slice(0,10),shoeCount:shoes.size,currentRounds:current.length};
+}
+function v9ErrorDiagnostics(state){
+  const test=state.predictions.slice(WARMUP),recent=test.slice(-60),misses=recent.filter(x=>!x.correct);
+  const overconfident=misses.filter(x=>x.prob[x.guess]>=0.58).length;
+  const weakGap=misses.filter(x=>{const r=OUTCOMES.slice().sort((a,b)=>x.prob[b]-x.prob[a]);return x.prob[r[0]]-x.prob[r[1]]<0.015;}).length;
+  const worse=recent.filter(x=>x.lossDelta>0).length;
+  const missingCards=events.filter(x=>!x.cards||x.cards.length===0).length;
+  const shoeIds=new Set(events.map(x=>(x.decks===6?6:8)+'|'+x.shoe));
+  let drift='ยังไม่มีข้อมูลพอสำหรับตรวจ Drift';
+  if(test.length>=60){const prev=test.slice(-60,-30),last=test.slice(-30);const avg=a=>a.reduce((s,x)=>s+x.modelLoss,0)/a.length;const diff=avg(last)-avg(prev);drift=diff>0.15?'พบสัญญาณคุณภาพโมเดลลดลงใน 30 ตาล่าสุด':diff< -0.15?'คุณภาพโมเดลช่วงล่าสุดดีขึ้นเมื่อเทียบ 30 ตาก่อน':'ยังไม่พบการเปลี่ยนแปลง Log Loss ที่เด่นชัด';}
+  const baseRows=recent.map(x=>x.baselineLoss).filter(Number.isFinite),modelRows=recent.map(x=>x.modelLoss).filter(Number.isFinite);
+  const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:null;
+  return {testN:test.length,recentN:recent.length,misses:misses.length,overconfident,weakGap,worse,worseRate:recent.length?worse/recent.length:0,missingCards,shoeCount:shoeIds.size,drift,modelLoss:avg(modelRows),baseLoss:avg(baseRows)};
+}
+function v9Assess(state,discovery){
+  const validation=v9ClusteredValidation(state.predictions),families=v9FamilyConsensus(state),errors=v9ErrorDiagnostics(state);
+  const pattern=(discovery.rows||[]).find(x=>x.strong)||null;
+  const ordered=OUTCOMES.slice().sort((a,b)=>state.next.prob[b]-state.next.prob[a]);
+  const gap=state.next.prob[ordered[0]]-state.next.prob[ordered[1]];
+  const ece=calibrationSummary(state.predictions).ece;
+  const recent=state.predictions.slice(WARMUP).slice(-120);
+  const recentShoes=new Set(recent.map(x=>(x.decks||8)+'|'+x.shoe));
+  const recentDelta=recent.length?recent.reduce((sum,x)=>sum+(Number.isFinite(x.lossDelta)?x.lossDelta:0),0)/recent.length:null;
+  const contextualChecks=[
+    {ok:recent.length>=30,label:'มีผลทดสอบล่าสุดอย่างน้อย 30 ตา',detail:`${recent.length} / 30`},
+    {ok:recentShoes.size>=3,label:'กระจายอยู่ในอย่างน้อย 3 Shoe',detail:`${recentShoes.size} / 3`},
+    {ok:recentDelta!==null&&recentDelta<0,label:'Log Loss ล่าสุดดีกว่าค่าฐานโดยเฉลี่ย',detail:recentDelta===null?'ยังคำนวณไม่ได้':`Δ ${recentDelta.toFixed(4)} (ต้องต่ำกว่า 0)`},
+    {ok:families.total>=3&&families.agree>=2&&families.share>=0.55,label:'มีอย่างน้อย 2 กลุ่มผู้เชี่ยวชาญเห็นตรงกัน',detail:`${families.agree}/${families.total} กลุ่ม`},
+    {ok:gap>=0.01,label:'ส่วนต่างอันดับหนึ่งอย่างน้อย 1 จุดเปอร์เซ็นต์',detail:`${(gap*100).toFixed(2)} pp`}
+  ];
+  const contextual=contextualChecks.every(x=>x.ok);
+  const checks=[
+    {ok:validation.n>=200,label:'มีผลทดสอบอย่างน้อย 200 ตา',detail:`${validation.n} / 200`},
+    {ok:validation.shoeCount>=8,label:'มีอย่างน้อย 8 Shoe ในชุดทดสอบ',detail:`${validation.shoeCount} / 8`},
+    {ok:validation.upper!==null&&validation.upper< -0.005,label:'Log Loss ดีกว่าค่าฐานโดยช่วงความไม่แน่นอนไม่คร่อมศูนย์',detail:validation.upper===null?'ยังคำนวณไม่ได้':`ขอบบน ${validation.upper.toFixed(4)} ต้องต่ำกว่า −0.005`},
+    {ok:ece!==null&&ece<=0.08,label:'Calibration ECE ไม่เกิน 0.08',detail:ece===null?'ยังคำนวณไม่ได้':`ECE ${ece.toFixed(4)}`},
+    {ok:!!pattern,label:'พบรูปแบบปัจจุบันที่มีหลักฐานย้อนหลังข้าม Shoe',detail:pattern?`${pattern.label} ${pattern.pattern} · ${pattern.n} Shoe`:'ยังไม่พบรูปแบบที่ผ่านเกณฑ์คัดกรอง'},
+    {ok:families.total>=4&&families.agree>=3&&families.share>=0.6,label:'กลุ่มผู้เชี่ยวชาญเห็นตรงกันอย่างน้อย 3 กลุ่ม',detail:`${families.agree}/${families.total} กลุ่ม`},
+    {ok:gap>=0.02,label:'ส่วนต่างอันดับหนึ่งอย่างน้อย 2 จุดเปอร์เซ็นต์',detail:`${(gap*100).toFixed(2)} pp`}
+  ];
+  const pass=checks.every(x=>x.ok);
+  const tier=pass?'verified':(contextual?'contextual':'early');
+  return {pass,contextual,tier,checks,contextualChecks,validation,families,errors,pattern,leader:ordered[0],gap,ece,recentDelta,recentShoes:recentShoes.size};
+}
+function v11ErrorByRegime(state){
+  const test=state.predictions.slice(WARMUP),groups=new Map();
+  for(const x of test){
+    const family=(x.features&&x.features.regimeFamily)||'UNKNOWN';
+    let g=groups.get(family);if(!g){g={family,n:0,hit:0,loss:0,baseLoss:0,highMiss:0,shoeSet:new Set()};groups.set(family,g);}
+    g.n++;if(x.correct)g.hit++;g.loss+=x.modelLoss;g.baseLoss+=x.baselineLoss;g.shoeSet.add((x.decks||8)+'|'+x.shoe);
+    if(!x.correct&&x.prob[x.guess]>=0.58)g.highMiss++;
+  }
+  return [...groups.values()].map(g=>({...g,accuracy:g.hit/g.n,modelLoss:g.loss/g.n,baseLoss:g.baseLoss/g.n,shoeCount:g.shoeSet.size})).sort((a,b)=>b.n-a.n);
+}
+function v11ExpertResearch(state){
+  const window=state.predictions.slice(-90),baseByRound=new Map();
+  for(const x of window){const base=x.experts?.find(r=>r.id==='base'&&r.active);if(base&&Number.isFinite(base.loss))baseByRound.set(x.round,base.loss);}
+  const rows=[];
+  for(const e of EXPERTS){if(e.id==='base'||e.id==='analog'||e.id==='shoe')continue;
+    let n=0,loss=0,base=0;const shoes=new Set();
+    for(const x of window){const r=x.experts?.find(y=>y.id===e.id&&y.active),b=baseByRound.get(x.round);if(!r||!Number.isFinite(r.loss)||!Number.isFinite(b))continue;n++;loss+=r.loss;base+=b;shoes.add((x.decks||8)+'|'+x.shoe);}
+    if(!n)continue;const delta=loss/n-base/n,eligible=n>=30&&shoes.size>=3;
+    rows.push({id:e.id,label:e.label,n,shoeCount:shoes.size,delta,eligible,champion:eligible&&delta<=-0.01});
+  }
+  rows.sort((a,b)=>a.delta-b.delta);return rows;
+}
+function renderV11Intelligence(state){
+  const mem=state.next.contextMemory||{n:0,ready:false,prob:cloneBase(),contextKey:'START'};
+  const leader=argmax(mem.prob),regime=mem.contextKey||'START';
+  $('v11Status').textContent=`วิเคราะห์ ${state.predictions.length} ตา · Context Memory ${mem.n} Shoe`;
+  $('v11Regime').textContent=regime.replaceAll('|',' · ');
+  $('v11RegimeSub').textContent=regime==='START'?'ยังไม่มีบริบทใน Shoe ปัจจุบัน':'จัดกลุ่มจาก Run / Chop / Balance / Tie Rate';
+  $('v11MemoryN').textContent=mem.n;
+  $('v11MemoryLeader').textContent=mem.ready?(leader==='B'?'Banker':leader==='P'?'Player':'Tie'):'ยังไม่พร้อม';
+  $('v11MemoryProb').textContent=mem.ready?`อันดับสูงสุด ${pct(mem.prob[leader])} · จาก Shoe ที่แตกต่างกัน`:'ต้องมีบริบทตรงกันอย่างน้อย 4 Shoe';
+  for(const k of OUTCOMES)$('v11Mem'+k).textContent=pct(mem.prob[k]);
+  $('v11MemoryNote').textContent=mem.ready?`พบสถานการณ์ ${regime} ใน ${mem.n} Shoe ก่อนหน้า · ใช้ 1 ผลล่าสุดต่อบริบทต่อ Shoe และปรับเรียบด้วยค่าฐาน · ผู้เชี่ยวชาญนี้จะร่วม Ensemble เมื่อผ่านขั้นต่ำ`:`บริบทปัจจุบัน ${regime} · พบเพียง ${mem.n} Shoe · จึงแสดงค่าที่ปรับด้วยค่าฐานและยังไม่เปิดผู้เชี่ยวชาญนี้เข้า Ensemble`;
+  const errRows=v11ErrorByRegime(state);
+  $('v11ErrorRegimeBody').innerHTML=errRows.length?errRows.map(g=>`<tr><td>${g.family}</td><td>${g.n}</td><td>${pct(g.accuracy)}</td><td>${g.modelLoss.toFixed(3)}</td><td>${g.baseLoss.toFixed(3)}</td><td>${g.highMiss}</td></tr>`).join(''):'<tr><td colspan="6">รอชุดทดสอบหลัง Warm-up</td></tr>';
+  $('v11ErrorRegimeNote').textContent=errRows.length?`วิเคราะห์ ${errRows.reduce((a,g)=>a+g.n,0)} คำทายหลัง Warm-up · ${errRows.length} บริบท · จัดกลุ่มจากข้อมูลก่อนผลจริง และเทียบ Log Loss กับค่าฐาน`:'ยังไม่มีข้อมูลทดสอบพอสำหรับสรุปความผิดพลาดแยกบริบท';
+  const research=v11ExpertResearch(state),qualified=research.filter(x=>x.eligible),best=qualified[0];
+  $('v11ChallengerN').textContent=qualified.length;
+  $('v11ChallengerSub').textContent=best?`ผู้สมัครอันดับแรก ${best.label}`:'ต้องมีอย่างน้อย 30 รอบและ 3 Shoe';
+  $('v11ResearchSummary').textContent=research.length?`${research.length} ผู้เชี่ยวชาญที่มีผลเปรียบเทียบ`:'ยังไม่มีชุดทดสอบ';
+  $('v11ResearchBody').innerHTML=research.length?research.slice(0,10).map(r=>`<tr><td>${r.label}</td><td>${r.n}</td><td>${r.shoeCount}</td><td class="${r.delta<0?'positive':'negative'}">${r.delta>0?'+':''}${r.delta.toFixed(4)}</td><td>${r.champion?'<span class="badge green">ผู้สมัครเด่น</span>':r.eligible?'<span class="badge gold">ผ่านขั้นต่ำ · ยังไม่เด่น</span>':'<span class="badge gold">ข้อมูลยังน้อย</span>'}</td></tr>`).join(''):'<tr><td colspan="5">รอข้อมูลทดสอบ</td></tr>';
+  $('v11ResearchNote').textContent=best?`ผู้สมัครที่มี Δ Log Loss ดีที่สุดคือ ${best.label} (${best.delta.toFixed(4)}) จาก ${best.n} รอบและ ${best.shoeCount} Shoe · เป็นการคัดกรองภายใน ไม่ใช่หลักฐานอิสระ และยังต้องยืนยันกับ Shoe ใหม่ที่ไม่เคยใช้เลือกผู้เชี่ยวชาญ`:'การทดลองยังไม่พบผู้เชี่ยวชาญที่ผ่านขั้นต่ำ 30 รอบและ 3 Shoe · ระบบไม่แต่งตั้งผู้ชนะจากตัวอย่างน้อย';
+}
+
+function renderV9(state){
+  const discovery=v9PatternDiscovery(),a=v9Assess(state,discovery),v=a.validation,f=a.families,e=a.errors;
+  $('v9EngineStatus').textContent=`ตรวจ ${discovery.currentRounds} ตาปัจจุบัน · ${discovery.shoeCount} Shoe ย้อนหลังที่ใช้เทียบ`;
+  $('v9GateStatus').textContent=a.pass?'VALIDATED SIGNAL':(a.contextual?'CONTEXT LEAN':'EARLY OUTLOOK');$('v9GateStatus').className='stat-value v9-status '+(a.pass?'good':'warn');
+  $('v9GateSub').textContent=a.pass?'ผ่านเกณฑ์ยืนยันเข้มงวดครบทุกข้อ':(a.contextual?'มีข้อมูลย้อนหลังและหลายกลุ่มสนับสนุน · ยังไม่ใช่สัญญาณยืนยัน':'แสดงอันดับสูงสุดทุกตา · ยังไม่มีหลักฐานยืนยันความได้เปรียบ');
+  $('v9TestN').textContent=v.n.toLocaleString('th-TH');$('v9TestShoes').textContent=v.shoeCount+' Shoe · prequential';
+  $('v9LossDelta').textContent=v.mean===null?'—':(v.mean>0?'+':'')+v.mean.toFixed(4);
+  $('v9LossCI').textContent=v.lower===null?'ยังมี Shoe ไม่พอคำนวณ CI':`95% cluster-t CI ${v.lower.toFixed(4)} ถึง ${v.upper.toFixed(4)} · ค่าเฉลี่ยราย Shoe`;
+  $('v9Consensus').textContent=f.total?`${f.agree}/${f.total}`:'—';$('v9ConsensusSub').textContent=f.total?`กลุ่มที่นำ: ${f.leader} · ${pct(f.share)}`:'ยังไม่มีกลุ่มที่พร้อม';
+  $('v9PatternBody').innerHTML=discovery.rows.length?discovery.rows.map(r=>`<tr><td>${r.label}</td><td><b>${r.pattern}</b> (${r.length})</td><td>${r.n}</td><td>B ${r.counts.B} · P ${r.counts.P} · T ${r.counts.T}</td><td>${pct(r.share)} ${r.top}</td><td>${r.lower===null?'—':pct(r.lower)+'–'+pct(r.upper)}</td><td>${r.strong?'<span class="badge green">ผู้สมัครเข้ม</span>':'<span class="badge gold">สำรวจ</span>'}</td></tr>`).join(''):'<tr><td colspan="7">ยังไม่พบรูปแบบซ้ำข้าม Shoe ที่มีผลถัดไปครบ · ต้องสะสมข้อมูลเพิ่ม</td></tr>';
+  $('v9PatternNote').textContent=`ค้นหาลำดับ 2–8 ผล ทั้งรวม Tie และข้าม Tie · ใช้ได้สูงสุดหนึ่งเหตุการณ์ต่อ Shoe ต่อรูปแบบ · พบ ${discovery.rows.length} รูปแบบที่มีข้อมูลจาก ${discovery.shoeCount} Shoe ก่อนหน้า · ช่วง 99% เป็น Wilson screening และยังมี selection bias จากการค้นหลายรูปแบบ จึงไม่ใช่การพิสูจน์ว่าทำนายได้`;
+  const errorRows=[
+    ['ผลทดสอบหลัง Warm-up',e.testN],['ทายผิดใน 60 ตัวอย่างล่าสุด',`${e.misses}/${e.recentN}`],['พลาดทั้งที่มั่นใจ ≥58%',e.overconfident],['พลาดเมื่อส่วนต่าง <1.5 pp',e.weakGap],['โมเดลแย่กว่าค่าฐานในรอบล่าสุด',`${e.worse}/${e.recentN}`],['ตาที่ไม่มีข้อมูลไพ่',`${e.missingCards}/${events.length}`],['Log Loss ล่าสุด / ฐาน',e.modelLoss===null?'—':`${e.modelLoss.toFixed(3)} / ${e.baseLoss.toFixed(3)}`]
+  ];
+  $('v9ErrorBody').innerHTML=errorRows.map(([k,val])=>`<tr><td>${k}</td><td style="text-align:right"><b>${val}</b></td></tr>`).join('');
+  $('v9ErrorNote').textContent=`Drift check (heuristic 30 vs 30): ${e.drift}. จำนวน Shoe ทั้งหมด ${e.shoeCount}. การไม่มีข้อมูลไพ่ไม่ใช่ข้อผิดพลาดของ B/P/T แต่ทำให้ Card Counting และ Shoe Simulation ใช้ไม่ได้`;
+  const failed=a.checks.filter(x=>!x.ok).map(x=>`<li><b>ยังไม่ผ่าน:</b> ${x.label} (${x.detail})</li>`).join('');
+  const passed=a.checks.filter(x=>x.ok).map(x=>`<li><b>ผ่าน:</b> ${x.label} (${x.detail})</li>`).join('');
+  const contextFailed=a.contextualChecks.filter(x=>!x.ok).map(x=>`<li>${x.label} (${x.detail})</li>`).join('');
+  const tierText=a.pass?'ผ่านเกณฑ์ยืนยันเข้มงวด':(a.contextual?'มีแนวโน้มเชิงบริบท แต่ยังไม่ยืนยัน':'มุมมองเบื้องต้นจากโมเดลหลายระยะ');
+  $('v9GateReasons').innerHTML=`<b>ระดับปัจจุบัน: ${tierText}</b><div style="margin-top:6px">มุมมองอันดับหนึ่ง: <b>${a.leader==='B'?'Banker':a.leader==='P'?'Player':'Tie'}</b> · ส่วนต่าง ${(a.gap*100).toFixed(2)} pp · Δ Log Loss ล่าสุด ${a.recentDelta===null?'—':a.recentDelta.toFixed(4)}</div><ul style="margin:7px 0 0;padding-left:18px">${a.pass?passed:failed}</ul>${!a.pass?`<div style="margin-top:7px"><b>เงื่อนไขของแนวโน้มเชิงบริบท</b><ul style="margin:5px 0 0;padding-left:18px">${contextFailed||'<li>ผ่านเงื่อนไขแนวโน้มเชิงบริบท</li>'}</ul></div>`:''}<div style="margin-top:7px">ระบบแสดงมุมมองทุกตาเพื่อไม่ให้การวิเคราะห์หยุดชะงัก แต่ระดับเบื้องต้นและเชิงบริบทไม่ใช่หลักฐานว่ามีความได้เปรียบ ไม่ใช่คำแนะนำเดิมพัน และไม่รับประกันผลถัดไป</div>`;
+  return a;
+}
+
+function renderHistory(){const area=$('historyArea');if(!events.length){area.innerHTML='<div class="empty-state">ยังไม่มีประวัติ กด P / B / T เพื่อเริ่ม</div>';return;}const cols=Math.ceil(events.length/6);let html='<table class="history-table"><thead><tr><th>แถว</th>';for(let c=0;c<cols;c++)html+='<th>'+(c+1)+'</th>';html+='</tr></thead><tbody>';for(let r=0;r<6;r++){html+='<tr><th>'+(r+1)+'</th>';for(let c=0;c<cols;c++){const i=c*6+r,e=events[i];html+=e?'<td class="'+e.outcome.toLowerCase()+'" title="ตาที่ '+(i+1)+' · Shoe '+e.shoe+' · '+e.outcome+(e.cards.length?' · ไพ่ '+e.cards.join(','):'')+'">'+e.outcome+'</td>':'<td class="empty">·</td>';}html+='</tr>';}html+='</tbody></table>';area.innerHTML=html;}
+function renderTransitions(arr){const counts={B:zeroCounts(),P:zeroCounts(),T:zeroCounts()};for(let i=1;i<arr.length;i++){if(arr[i-1].shoe!==arr[i].shoe||arr[i-1].decks!==arr[i].decks)continue;counts[arr[i-1].outcome][arr[i].outcome]++;}const rows=OUTCOMES.map(k=>{const c=counts[k],n=sumObj(c);return '<tr><td><span class="badge '+(k==='B'?'red':k==='P'?'blue':'green')+'">หลัง '+k+'</span></td>'+OUTCOMES.map(v=>'<td>'+(n?c[v]+' ('+pct(c[v]/n)+')':'—')+'</td>').join('')+'<td>'+n+'</td></tr>';}).join('');$('transitionBody').innerHTML=rows;}
+function patternInfo(arr){const d=arr.filter(e=>e.outcome!=='T').map(e=>e.outcome);if(d.length<3)return {tags:['ข้อมูลยังไม่พอ'],explain:'ต้องมีผล Banker/Player อย่างน้อย 3 ตาใน Shoe ปัจจุบัน'};let streak=1;for(let i=d.length-1;i>0&&d[i]===d[i-1];i--)streak++;let alt=1;for(let i=d.length-1;i>0&&d[i]!==d[i-1];i--)alt++;const tail=d.slice(-12).join(''),tags=[];if(streak>=4)tags.push('Dragon '+d[d.length-1]+' '+streak+' ตาติด');if(alt>=5)tags.push('Chop / Ping Pong '+alt+' ตา');if(/(?:BBPP){2,}$|(?:PPBB){2,}$/.test(tail))tags.push('2-2 pattern');if(/(?:BPP){2,}$|(?:PBB){2,}$/.test(tail))tags.push('1-2 pattern');if(/(?:BBBPP){2,}$|(?:PPPBB){2,}$/.test(tail))tags.push('3-2 pattern');if(!tags.length)tags.push('Mixed / ยังไม่พบรูปแบบเด่น');return {tags,explain:'ตรวจพบจากผลย้อนหลัง '+d.length+' ตาที่ไม่ใช่ Tie · ใช้เป็นคุณลักษณะให้โมเดลเรียนรู้ ไม่ใช่กฎบอกผลตาถัดไป'};}
+function renderRoad(target,positions,kind){const el=$(target);if(!positions.length){el.innerHTML='<div class="empty-state">'+(kind==='derived'?'ข้อมูลยังไม่พอสร้างเค้าไพ่':'ยังไม่มีข้อมูล')+'</div>';return;}const maxC=Math.max(...positions.map(x=>kind==='big'?x.visualCol:(x.c??x.visualCol)));const map=new Map(positions.map(x=>[`${kind==='big'?x.visualCol:(x.c??x.visualCol)},${kind==='big'?x.visualRow:(x.r??x.visualRow)}`,x]));let html=`<div class="road-grid" style="grid-template-columns:repeat(${maxC+1},25px)">`;for(let r=0;r<6;r++)for(let c=0;c<=maxC;c++){const x=map.get(c+','+r);if(!x){html+='<div class="dot blank"></div>';continue;}const derived=['bigEye','smallRoad','cockroach'].includes(kind);let cls,label='',shape='';if(derived){cls=x.value==='R'?'r':'bl';shape=kind==='bigEye'?'hollow':kind==='cockroach'?'slash':'';label=kind==='cockroach'?'╱':'';}else{const s=x.side||x.value;cls=s==='B'?'b':s==='P'?'p':'t';label=s;}const ties=x.ties?`<span class="tie-mark">${x.ties}T</span>`:'';html+=`<div class="dot ${cls} ${shape}" title="ลำดับ ${x.i+1}: ${x.side||x.value||''}">${label}${ties}</div>`;}html+='</div>';el.innerHTML=html;}
+function renderRoads(){const cur=currentShoeEvents(),dec=cur.filter(e=>e.outcome!=='T').map(e=>e.outcome);const big=buildBigRoad(dec);let leadingTies=0;
+  // Attach each Tie marker to the most recent resolved Big Road circle.
+  let di=0,lastPos=null;for(const ev of cur){if(ev.outcome==='T'){if(lastPos)lastPos.ties++;else leadingTies++;}else{lastPos=big.positions[di++];}}
+  renderRoad('bigRoad',big.positions,'big');const bead=cur.map((e,i)=>({value:e.outcome,i,c:Math.floor(i/6),r:i%6}));renderRoad('beadRoad',bead,'bead');renderRoad('bigEye',buildDisplayRoad(deriveRoad(big,1)),'bigEye');renderRoad('smallRoad',buildDisplayRoad(deriveRoad(big,2)),'smallRoad');renderRoad('cockroach',buildDisplayRoad(deriveRoad(big,3)),'cockroach');if(leadingTies){$('bigRoad').insertAdjacentHTML('afterbegin',`<div class="muted">Tie ก่อนผลตัดสินครั้งแรก: ${leadingTies}</div>`);}}
+function countTransPairs(arr){return arr;}
+function renderExperts(state){
+  const active=new Set(state.next.activeExpertIds||[]);
+  // Historical Analog is a separate engine, not a member of the Cross-Check blend.
+  const crossActive=[...active].filter(id=>id!=='analog');
+  const activeRawTotal=crossActive.reduce((sum,id)=>sum+(state.next.weights[id]||0),0)||1;
+  const effectiveWeights={};for(const id of crossActive)effectiveWeights[id]=(state.next.weights[id]||0)/activeRawTotal;
+  const rows=EXPERTS.map(e=>{
+    const isActive=active.has(e.id),s=state.scores[e.id],hit=s.n?s.hit/s.n:0,ll=s.n?s.loss/s.n:0,p=state.next.expertPredictions[e.id];
+    const pick=isActive?argmax(p):'—';
+    const weightLabel=e.id==='analog'?(isActive?pct(state.next.engineWeights?.historical||0):'—'):(isActive?pct(effectiveWeights[e.id]||0):'—');
+    const status=e.id==='analog'?(isActive?'<span class="badge gold">Historical Engine</span>':'<span class="badge gold">ยังไม่เข้าเงื่อนไข</span>'):(isActive?'<span class="badge green">ร่วม Cross-Check</span>':'<span class="badge gold">ยังไม่เข้าเงื่อนไข</span>');
+    return `<tr><td>${e.label}</td><td>${pick}</td><td>${status}</td><td>${weightLabel}</td><td>${s.n?pct(hit):'—'}</td><td>${s.n?ll.toFixed(3):'—'}</td></tr>`;
+  }).join('');
+  $('expertBody').innerHTML=rows;
+  const ranked=EXPERTS.filter(e=>crossActive.includes(e.id)).slice().sort((a,b)=>(effectiveWeights[b.id]||0)-(effectiveWeights[a.id]||0));
+  $('topExpert').textContent=ranked.length?ranked[0].label:'—';$('topExpertWeight').textContent=ranked.length?'น้ำหนัก Cross-Check ที่ใช้จริง '+pct(effectiveWeights[ranked[0].id]):'—';
+}
+function renderDiagnosis(state){
+  const latestError=[...state.predictions].reverse().find(x=>!x.correct),last=latestError||state.predictions[state.predictions.length-1];
+  if(!last){$('diagnosisBox').textContent='ยังไม่มีผลจริง เมื่อมีข้อมูล ระบบจะเปรียบเทียบคำทายก่อนหน้า แยกวิเคราะห์ Historical Matching, Cross-Check และผู้เชี่ยวชาญรายตัว';return;}
+  const engine=last.engines;
+  if(!latestError){
+    $('diagnosisBox').innerHTML=`คำทายล่าสุด #${last.round}: คาดการณ์ ${last.guess} และผลจริง ${last.actual} · p(ผลจริง) ${pct(last.actualProb)} · Historical ${engine.historicalReady?pct(engine.historical[last.actual]):'ยังไม่พร้อม'} · Cross-Check ${pct(engine.crosscheck[last.actual])} · ระบบบันทึกความผิดพลาดและปรับน้ำหนักรายส่วนแล้ว`;
+    return;
+  }
+  const sorted=last.experts.filter(x=>x.active).slice().sort((a,b)=>a.p[last.actual]-b.p[last.actual]);
+  const weakest=sorted.slice(0,2).map(x=>x.label+' ('+pct(x.p[last.actual])+')').join(' และ ');
+  const histP=engine.historicalReady?engine.historical[last.actual]:null,crossP=engine.crosscheck[last.actual];
+  let engineLine=engine.historicalReady?`Historical ให้ผลจริง ${pct(histP)}; Cross-Check ให้ ${pct(crossP)} · ${histP>crossP?'Historical ประเมินผลจริงสูงกว่า':'Cross-Check ประเมินผลจริงสูงกว่'}`:`Historical ยังมีตัวอย่างคล้ายไม่เพียงพอ; Cross-Check ให้ผลจริง ${pct(crossP)}`;
+  $('diagnosisBox').innerHTML=`<b>วิเคราะห์ความคลาดเคลื่อนล่าสุด ตา #${last.round}:</b> คำทายรวม ${last.guess} แต่ผลจริง ${last.actual} (โมเดลรวมให้โอกาสผลจริง ${pct(last.actualProb)}). ${engineLine}. ผู้เชี่ยวชาญรายตัวที่ให้โอกาสผลจริงต่ำสุดคือ ${weakest||'ยังไม่มีข้อมูลเพียงพอ'}. ระบบลดน้ำหนักให้ส่วนที่ประเมินผลจริงต่ำกว่าและเพิ่มน้ำหนักสัมพัทธ์ให้ส่วนที่ทำได้ดีกว่า · การวิเคราะห์นี้ชี้คุณภาพคำทาย ไม่ได้ระบุสาเหตุของผลสุ่ม`;
+}
+function renderDualEngine(state){
+  const n=state.predictions.length,a=state.next.analog,eW=state.next.engineWeights,cons=state.next.consensus;
+  for(const k of OUTCOMES){$('histProb'+k).textContent=pct(a.prob[k]);$('crossProb'+k).textContent=pct(state.next.crossProb[k]);}
+  $('histMatchCount').textContent=a.matchCount.toLocaleString('th-TH');$('histStrongCount').textContent=a.strongMatches.toLocaleString('th-TH');$('histEffectiveN').textContent=a.effectiveN.toFixed(2);
+  $('historyEngineStatus').textContent=a.ready?`พบ Shoe ที่ใช้เทียบได้ ${a.matchCount} รายการ · Strong Match ${a.strongMatches} Shoe · ใช้ผลจริงหลังเหตุการณ์เหล่านั้นรวมแบบถ่วงน้ำหนัก`:`ยังไม่มีหลักฐานเทียบที่แข็งแรงพอ (ต้องมี Effective N ≥ 2.25, Strong Match อย่างน้อย 3 และอย่างน้อย 3 Shoe) · ตอนนี้แสดงค่าเทียบเบื้องต้น แต่ยังไม่นำมารวมคำทาย`;
+  const mrows=a.topMatches.map(x=>`<tr><td>${x.round}</td><td>${x.shoe}</td><td>${pct(x.similarity)}</td><td><span class="badge ${x.actual==='B'?'red':x.actual==='P'?'blue':'green'}">${x.actual}</span></td></tr>`).join('');
+  $('histMatchBody').innerHTML=mrows||'<tr><td colspan="4">ยังไม่มีเหตุการณ์ที่คล้ายพอสำหรับเปรียบเทียบ</td></tr>';
+  $('crossActiveCount').textContent=cons.total;$('crossAgreeCount').textContent=cons.total?`${cons.agree}/${cons.total}`:'—';$('crossAgreement').textContent=cons.total?pct(cons.share):'—';
+  const leaderName=cons.leader==='B'?'Banker':cons.leader==='P'?'Player':'Tie';
+  $('crossAgreementText').textContent=cons.total?`เสียงอันดับหนึ่งแบบถ่วงน้ำหนักเอนมาทาง ${leaderName} · ${cons.agree} จาก ${cons.total} โมเดลจัด ${leaderName} เป็นอันดับหนึ่ง · การเห็นตรงกันเป็นเพียงฉันทามติของโมเดล ไม่ใช่การรับประกันผลจริง`:'ยังไม่มีโมเดลที่พร้อมร่วมคำนวณ';
+  $('fusionWeightHistory').textContent=pct(eW.historical);$('fusionWeightCross').textContent=pct(eW.crosscheck);
+  $('fusionBarHistory').style.width=(100*eW.historical)+'%';$('fusionBarCross').style.width=(100*eW.crosscheck)+'%';
+  $('fusionStatus').textContent=!n?'ยังไม่มีประวัติ':(a.ready?`ใช้ 2 Engine ร่วมกัน · ประวัติ ${n} ตา`:`ใช้ Cross-Check เท่านั้น · Historical ยังไม่ผ่านเกณฑ์ · ประวัติ ${n} ตา`);
+  $('fusionReason').textContent=a.ready?'มีหลักฐานประวัติคล้ายเพียงพอ · รวมสอง Engine':'ยังไม่เปิดใช้น้ำหนัก Historical · ใช้ Cross-Check เป็นหลัก';
+  const hs=state.engineScores.historical,cs=state.engineScores.crosscheck;
+  $('historicalLoss').textContent=hs.n?`${(hs.loss/hs.n).toFixed(4)} · ${hs.n} ตา`:'—';
+  $('crossLoss').textContent=cs.n?`${(cs.loss/cs.n).toFixed(4)} · ${cs.n} ตา`:'—';
+}
+
+function renderErrorHistory(state){const rows=state.predictions.slice(-12).reverse().map(x=>`<tr><td>${x.round}</td><td><span class="badge ${x.guess==='B'?'red':x.guess==='P'?'blue':'green'}">${x.guess}</span></td><td>${x.actual}</td><td class="${x.correct?'positive':'negative'}">${x.correct?'ถูก':'ผิด'}</td><td>${pct(x.actualProb)}</td></tr>`).join('');$('errorBody').innerHTML=rows||'<tr><td colspan="5">ยังไม่มีข้อมูล</td></tr>';}
+function renderShoe(state){const valid=state.shoeValid;const total=state.shoeCounts.reduce((a,b)=>a+b,0);const shoeEvents=currentShoeEvents();const cardsForCount=[...(shoeEvents[0]?.removedCards||[]),...shoeEvents.flatMap(e=>e.cards)];const rc=cardsForCount.reduce((s,v)=>s+(v>=1&&v<=4?1:v>=5&&v<=8?-1:0),0);const remainDecks=total/52;
+  const burnKnown=currentShoeEvents().length>0&&currentShoeEvents()[0].removedKnown===true;
+  $('shoeStatus').textContent=!valid?'ไพ่ไม่ครบหรือไม่ทราบ Burn/Removed หรือจำนวนไพ่ขัดกัน · ปิดการจำลอง':(state.shoeSeen>=20?'ติดตามไพ่ได้':'กำลังเก็บข้อมูลไพ่');$('runningCount').textContent=valid&&state.shoeSeen?String(rc):'—';$('cardsSeen').textContent=state.shoeSeen;$('cardsRemain').textContent=valid?('เหลือ '+total+' ใบ · '+decks+' สำรับตั้งต้น'):'ไม่คำนวณ · ข้อมูลไพ่/Burn ไม่ครบ';$('trueCount').textContent=valid&&state.shoeSeen&&remainDecks>0?(rc/remainDecks).toFixed(2):'—';
+  const labels=['0 / 10,J,Q,K','A','2','3','4','5','6','7','8','9'];const max=initialCardCounts(decks)[0];$('cardRemainList').innerHTML=valid&&state.shoeSeen?labels.map((l,i)=>`<div class="method"><strong>${l}</strong><span>${state.shoeCounts[i]} ใบเหลือ · ${pct(state.shoeCounts[i]/Math.max(1,total))} ของ Shoe ที่เหลือ</span><div class="progress"><span style="width:${100*state.shoeCounts[i]/Math.max(1,initialCardCounts(decks)[i])}%"></span></div></div>`).join(''):'<div class="method"><strong>'+(state.shoeSeen?'ข้อมูลไพ่ไม่สมบูรณ์':'ยังไม่มีข้อมูลไพ่')+'</strong><span>แสดงสัดส่วนไพ่คงเหลือเมื่อบันทึกไพ่ทุกใบและยืนยัน Burn/Removed ครบเท่านั้น</span></div>';
+  if(state.next.simulation){const s=state.next.simulation;$('shoeProbB').textContent=pct(s.B);$('shoeProbP').textContent=pct(s.P);$('shoeProbT').textContent=pct(s.T);$('shoeSimNote').textContent='จำลอง '+s.samples.toLocaleString('th-TH')+' มือ · ค่าคลาดเคลื่อน Monte Carlo โดยประมาณ 95% ไม่เกิน ±'+(s.mcError95*100).toFixed(2)+' จุดเปอร์เซ็นต์';}else{$('shoeProbB').textContent=$('shoeProbP').textContent=$('shoeProbT').textContent='—';$('shoeSimNote').textContent=!burnKnown?'ต้องยืนยันและบันทึกไพ่ Burn/Removed ก่อนตาแรกให้ครบ จึงจะใช้ Shoe Simulation ได้':!valid?'มีไพ่ในบางตาไม่ครบหรือข้อมูลแต้มเกินจำนวนไพ่ที่เหลือ จึงปิดการจำลอง':state.shoeSeen<20?'ต้องมีไพ่ที่บันทึกอย่างน้อย 20 ใบก่อนจำลอง':'จำนวนไพ่ที่เหลือไม่เพียงพอสำหรับจำลอง';}
+}
+function selectAdaptiveStrategy(state){
+  const window=state.predictions.slice(-60),minN=30;
+  const rows=EXPERTS.map(e=>{
+    const valid=window.filter(x=>x.experts&&x.experts.some(r=>r.id===e.id&&r.active));
+    const losses=valid.map(x=>x.experts.find(r=>r.id===e.id&&r.active).loss).filter(Number.isFinite);
+    const avg=losses.length?losses.reduce((a,b)=>a+b,0)/losses.length:Infinity;
+    return {id:e.id,label:e.label,n:losses.length,loss:avg};
+  }).filter(x=>x.n>=minN).sort((a,b)=>a.loss-b.loss);
+  const base=rows.find(x=>x.id==='base'),candidates=rows.filter(x=>!['base','analog'].includes(x.id));
+  const best=candidates[0]||null,second=candidates[1]||null,hasEdge=!!(best&&base&&best.loss<base.loss-0.015);
+  const latest=state.predictions[state.predictions.length-1],wasMiss=!!(latest&&!latest.correct);
+  return {best:hasEdge?best:null,second,base,wasMiss,latest,n:window.length};
+}
+function renderStrategy(state){
+  const pick=selectAdaptiveStrategy(state);
+  const best=state.next.selectedStrategy||pick.best, alt=pick.second;
+  $('strategyStatus').textContent=pick.n+' คำทายล่าสุด · ใช้ขั้นต่ำ 30 ตัวอย่างต่อหลักการ';
+  $('selectedStrategy').textContent=best?best.label:'ยังไม่มีหลักฐานพอ';
+  $('selectedStrategyNote').textContent=best?`Log Loss ${best.loss.toFixed(3)} จาก ${best.n} ตา · ระบบผสมหลักการนี้ในคำทายปัจจุบัน`:'ยังไม่พบผู้เชี่ยวชาญที่ชนะค่าฐานอย่างมีหลักฐาน · ใช้ Ensemble และแสดงความไม่แน่นอน';
+  $('alternativeStrategy').textContent=alt?alt.label:'ยังไม่มีตัวเลือกสำรอง';
+  $('alternativeStrategyNote').textContent=alt?`Log Loss ${alt.loss.toFixed(3)} จาก ${alt.n} ตา${pick.wasMiss?' · คำทายก่อนหน้าผิด จึงตรวจทางเลือกนี้เป็นพิเศษ':''}`:'ต้องมีข้อมูลทดสอบอย่างน้อย 30 ตาต่อหลักการ';
+  if(pick.wasMiss){$('alternativeStrategyNote').textContent+=' · ไม่สลับสูตรเพราะผิดเพียงครั้งเดียว แต่จัดอันดับใหม่จากผลงานย้อนหลัง';}
+}
+
+function patternLabel(seq){
+  const labels=[];if(!seq)return labels;
+  let run=1;for(let i=seq.length-1;i>0&&seq[i]===seq[i-1];i--)run++;
+  let alt=1;for(let i=seq.length-1;i>0&&seq[i]!==seq[i-1];i--)alt++;
+  if(run>=2)labels.push('Streak '+seq.at(-1)+'×'+run);
+  if(alt>=3)labels.push('Chop '+alt+' ผล');
+  for(let period=2;period<=5;period++){
+    if(seq.length>=period*2){const tail=seq.slice(-period*2);if(tail.slice(0,period)===tail.slice(period))labels.push('วงรอบ '+tail.slice(0,period)+' ซ้ำ 2 รอบ');}
+  }
+  const tail=seq.slice(-10).join('');
+  const motifs=[['2-2',/(?:BBPP){2,}$|(?:PPBB){2,}$/],['1-2',/(?:BPP){2,}$|(?:PBB){2,}$/],['3-2',/(?:BBBPP){2,}$|(?:PPPBB){2,}$/],['1-1',/(?:BP){3,}$|(?:PB){3,}$/],['3-1',/(?:BBBP){2,}$|(?:PPPB){2,}$/],['1-3',/(?:BPPP){2,}$|(?:PBBB){2,}$/],['4-1',/(?:BBBBP){2,}$|(?:PPPPB){2,}$/]];
+  for(const [name,re] of motifs)if(re.test(tail))labels.push('Motif '+name);
+  return [...new Set(labels)];
+}
+function scanPatternEvidence(){
+  const cur=currentShoeEvents().filter(e=>e.outcome!=='T').map(e=>e.outcome), rows=[];
+  const allByShoe=new Map();for(const e of events){if((e.decks===6?6:8)!==decks)continue;const group=(e.decks===6?6:8)+'|'+e.shoe;let a=allByShoe.get(group);if(!a){a=[];allByShoe.set(group,a);}if(e.outcome!=='T')a.push(e.outcome);}
+  for(let len=2;len<=Math.min(8,cur.length);len++){
+    const key=cur.slice(-len).join(''),counts=zeroCounts();let n=0;
+    for(const seq of allByShoe.values())for(let i=0;i+len<seq.length;i++){
+      if(seq.slice(i,i+len).join('')===key){counts[seq[i+len]]++;n++;}
+    }
+    if(n)rows.push({key,n,counts,share:Math.max(counts.B,counts.P,counts.T)/n});
+  }
+  rows.sort((a,b)=>b.n-a.n||b.key.length-a.key.length);
+  const labels=patternLabel(cur);
+  return {cur,labels,rows:rows.slice(0,7)};
+}
+function renderPatternEvidence(expertEvidence=[]){
+  const x=scanPatternEvidence();
+  $('patternEvidenceStatus').textContent=x.cur.length+' ผล B/P ใน Shoe ปัจจุบัน · '+x.rows.reduce((a,r)=>a+r.n,0)+' occurrence ที่ตรวจพบ';
+  $('patternCurrent').innerHTML=x.labels.length?x.labels.map(t=>'<span class="tag active">'+t+'</span>').join(''):'<span class="tag">ยังไม่พบรูปแบบเด่น</span>';
+  $('patternCurrentNote').textContent=x.cur.length<4?'ข้อมูลใน Shoe ปัจจุบันยังน้อยเกินไปสำหรับตรวจหลายรูปแบบ':('ลำดับล่าสุด: '+x.cur.slice(-12).join(' → ')+' · ตรวจทั้ง pattern ย่อยความยาว 2–8 ผล');
+  $('patternEvidenceBody').innerHTML=x.rows.length?x.rows.map(r=>`<tr><td><b>${r.key}</b> (${r.key.length})</td><td>${r.n}</td><td>${r.counts.B} (${pct(r.n?r.counts.B/r.n:0)})</td><td>${r.counts.P} (${pct(r.n?r.counts.P/r.n:0)})</td><td>นับผล B/P ถัดไป โดยข้าม Tie</td></tr>`).join(''):'<tr><td colspan="5">ยังไม่พบรูปแบบตรงกันในประวัติที่มีผลถัดไป · ต้องสะสมข้อมูลเพิ่ม</td></tr>';
+  $('pattern35EvidenceBody').innerHTML=expertEvidence.length?expertEvidence.map(r=>`<tr><td>${r.length} ตา</td><td><b>${r.pattern}</b></td><td>${r.n}</td><td>B ${r.counts.B} · P ${r.counts.P} · T ${r.counts.T}</td><td>${r.selected?'เลือกใช้':'ยังไม่ถึงขั้นต่ำ '+r.minShoes+' Shoe'}</td><td>B ${pct(r.prob.B)} · P ${pct(r.prob.P)} · T ${pct(r.prob.T)}</td></tr>`).join(''):'<tr><td colspan="6">ไม่พบเหตุการณ์ 2–8 ตาล่าสุดที่ตรงกัน · ใช้ค่าฐาน/หลักฐานระดับอื่นเท่านั้น</td></tr>';
+}
+
+
+function hsSequenceFor(group,mode){
+  return mode==='B/P'?group.events.filter(e=>e.outcome!=='T').map(e=>e.outcome):group.events.map(e=>e.outcome);
+}
+function hsOutcomeCounts(arr){const c=zeroCounts();for(const x of arr||[])if(OUTCOMES.includes(x))c[x]++;return c;}
+function hsCountsCell(c){return `B ${c.B} · P ${c.P} · T ${c.T}`;}
+function hsRunInfo(seq){
+  const dec=(seq||[]).filter(x=>x==='B'||x==='P');
+  if(!dec.length)return {side:'—',length:0,bucket:'0',switches:0,alt:0};
+  const side=dec[dec.length-1];let length=0;for(let i=dec.length-1;i>=0&&dec[i]===side;i--)length++;
+  const tail=dec.slice(-8);let switches=0;for(let i=1;i<tail.length;i++)if(tail[i]!==tail[i-1])switches++;
+  return {side,length,bucket:length===1?'1':length===2?'2':'3+',switches,alt:switches+1};
+}
+function hsCurrentRegime(seq){
+  const r=hsRunInfo(seq),d=seq.filter(x=>x==='B'||x==='P'),diagnostic=classifyRegime(seq,d),recent=seq.slice(-12);
+  return {family:diagnostic.family,run:r,tieRate:recent.length?recent.filter(x=>x==='T').length/recent.length:0,switches:diagnostic.switches6,structuralScore:diagnostic.structuralScore};
+}
+function hsGroups(){
+  const map=new Map();
+  for(const ev of events){const deck=ev.decks===6?6:8,key=deck+'|'+ev.shoe;let g=map.get(key);if(!g){g={key,deck,shoe:ev.shoe,events:[]};map.set(key,g);}g.events.push(ev);}
+  return [...map.values()];
+}
+function hsPatternCounts(pattern,mode,groups,currentKey){
+  const same=zeroCounts(),crossByShoe=new Map();let sameN=0;
+  for(const g of groups){const seq=hsSequenceFor(g,mode);let latest=null;
+    for(let i=0;i+pattern.length<seq.length;i++){
+      if(seq.slice(i,i+pattern.length).join('')===pattern){const next=seq[i+pattern.length];if(g.key===currentKey){same[next]++;sameN++;}else{latest=next;}}
+    }
+    if(g.key!==currentKey&&latest)crossByShoe.set(g.key,latest);
+  }
+  const cross=zeroCounts();for(const y of crossByShoe.values())cross[y]++;
+  return {same,sameN,cross,crossN:sumObj(cross),crossShoes:crossByShoe.size};
+}
+function hsSimilarity(a,b){
+  if(!a.length||!b.length)return 0;
+  const common=Math.min(8,a.length,b.length);if(common<3)return 0;
+  let hit=0,den=0;for(let off=1;off<=common;off++){const w=1+(common-off)*0.12;den+=w;if(a[a.length-off]===b[b.length-off])hit+=w;}
+  const suffix=den?hit/den:0,coverage=common/8;
+  const ra=hsRunInfo(a),rb=hsRunInfo(b);
+  const run=(ra.side===rb.side?(ra.bucket===rb.bucket?1:0.55):0);
+  const sw=Math.max(0,1-Math.abs(ra.switches-rb.switches)/7);
+  const lastA=a.slice(-8),lastB=b.slice(-8);
+  const bpA=lastA.filter(x=>x==='B'||x==='P'),bpB=lastB.filter(x=>x==='B'||x==='P');
+  const balA=bpA.length?bpA.filter(x=>x==='B').length/bpA.length:0.5,balB=bpB.length?bpB.filter(x=>x==='B').length/bpB.length:0.5;
+  const balance=1-Math.abs(balA-balB),tieA=lastA.length?lastA.filter(x=>x==='T').length/lastA.length:0,tieB=lastB.length?lastB.filter(x=>x==='T').length/lastB.length:0;
+  const tie=1-Math.abs(tieA-tieB);
+  return Math.max(0,Math.min(1,(0.62*suffix+0.14*run+0.09*sw+0.10*balance+0.05*tie)*(0.72+0.28*coverage)));
+}
+function hsSimilarStates(groups,currentKey,currentSeq){
+  const same=[],bestCross=new Map();
+  for(const g of groups){const seq=hsSequenceFor(g,'B/P/T');
+    for(let i=3;i<seq.length;i++){
+      const prior=seq.slice(0,i),next=seq[i],sim=hsSimilarity(currentSeq,prior);
+      if(sim<0.48)continue;
+      const item={round:i+1,shoe:g.shoe,key:g.key,similarity:sim,next,tail:prior.slice(-8).join('')};
+      if(g.key===currentKey)same.push(item);
+      else {const old=bestCross.get(g.key);if(!old||item.similarity>old.similarity)bestCross.set(g.key,item);}
+    }
+  }
+  same.sort((a,b)=>b.similarity-a.similarity);const cross=[...bestCross.values()].sort((a,b)=>b.similarity-a.similarity);
+  return {same:same.slice(0,5),cross:cross.slice(0,5),crossShoes:bestCross.size};
+}
+function hsTransitionEvidence(side,groups,currentKey){
+  const same=zeroCounts(),crossByShoe=new Map();let sameN=0;
+  for(const g of groups){const seq=hsSequenceFor(g,'B/P/T');let latest=null;
+    for(let i=0;i+1<seq.length;i++)if(seq[i]===side){if(g.key===currentKey){same[seq[i+1]]++;sameN++;}else latest=seq[i+1];}
+    if(g.key!==currentKey&&latest)crossByShoe.set(g.key,latest);
+  }
+  const cross=zeroCounts();for(const v of crossByShoe.values())cross[v]++;
+  return {same,sameN,cross,crossN:sumObj(cross)};
+}
+function hsRunEvidence(run,groups,currentKey){
+  const same=zeroCounts(),crossByShoe=new Map();let sameN=0;
+  for(const g of groups){const seq=hsSequenceFor(g,'B/P');let latest=null,i=0;
+    while(i<seq.length){let j=i+1;while(j<seq.length&&seq[j]===seq[i])j++;
+      if(seq[i]===run.side&&j-i===run.length&&j<seq.length){if(g.key===currentKey){same[seq[j]]++;sameN++;}else latest=seq[j];}
+      i=j;
+    }
+    if(g.key!==currentKey&&latest)crossByShoe.set(g.key,latest);
+  }
+  const cross=zeroCounts();for(const v of crossByShoe.values())cross[v]++;
+  return {same,sameN,cross,crossN:sumObj(cross)};
+}
+function renderHistoricalSolver(){
+  const groups=hsGroups().filter(g=>g.deck===(decks===6?6:8)),currentKey=(decks===6?6:8)+'|'+currentShoe,currentGroup=groups.find(g=>g.key===currentKey);
+  const seq=currentGroup?hsSequenceFor(currentGroup,'B/P/T'):[],reg=hsCurrentRegime(seq),run=reg.run;
+  const total=events.length,shoeCount=groups.length;
+  $('hsRounds').textContent=total.toLocaleString('th-TH');$('hsShoeCount').textContent=shoeCount+' Shoe';$('hsTail').textContent=seq.length?seq.slice(-8).join(''):'—';$('hsTailNote').textContent=seq.length?`ล่าสุด ${seq.length} ตา · รวม Tie`:'ยังไม่มีผล';
+  $('hsRegime').textContent=seq.length?(reg.family==='RUN'?'RUN '+run.side:reg.family==='CHOP'?'CHOP':'MIXED'):'—';$('hsRegimeNote').textContent=seq.length?`สตรีค ${run.side} ${run.length} · สลับ ${run.switches} ครั้งใน 8 ผลที่ตัดสินแล้ว`:'รอข้อมูล';
+  $('hsSequence').textContent=seq.slice(-16).join(' · ')||'—';
+  const distinctShoes=new Set(groups.map(g=>g.key));$('hsIndependent').textContent=Math.max(0,distinctShoes.size-1);$('hsIndependentNote').textContent=distinctShoes.size>1?`${distinctShoes.size-1} Shoe อื่น · ใช้เป็นหลักฐานเทียบได้`:'ยังไม่มี Shoe อื่น · หลักฐานข้าม Shoe = 0';
+  const tieCount=seq.filter(x=>x==='T').length,b=seq.filter(x=>x==='B').length,p=seq.filter(x=>x==='P').length;
+  $('hsReadout').textContent=seq.length?`ข้อมูล Shoe ปัจจุบัน: Banker ${b} (${pct(b/seq.length)}) · Player ${p} (${pct(p/seq.length)}) · Tie ${tieCount} (${pct(tieCount/seq.length)}). สภาพล่าสุด ${reg.family}; สตรีคฝั่ง ${run.side} ยาว ${run.length} ผล; การสลับในหน้าต่างล่าสุด ${run.switches} ครั้ง.`:'บันทึกผลจริงเพื่อเริ่มอ่านบริบท';
+  const cardRounds=events.filter(e=>Array.isArray(e.cards)&&e.cards.length>0).length;
+  $('hsCaution').textContent=(shoeCount<=1?'มีเพียง Shoe เดียว: รูปแบบซ้ำด้านล่างเป็นการสำรวจภายใน Shoe ไม่ใช่การยืนยันว่าทำนายซ้ำข้าม Shoe ได้. ':'แยกผลซ้ำภายใน Shoe ออกจากข้อมูลข้าม Shoe โดยใช้ไม่เกินหนึ่งเหตุการณ์ต่อ Shoe ในสรุปข้าม Shoe. ')+`ข้อมูลไพ่มี ${cardRounds}/${total} ตาที่บันทึกแต้มไพ่${tieCount===0?' และไม่พบ Tie ในประวัติชุดนี้ · ตรวจว่าบันทึกผลครบหรือไม่':''}`;
+  const trans=seq.length?hsTransitionEvidence(seq[seq.length-1],groups,currentGroup?.key||currentKey):{same:zeroCounts(),sameN:0,cross:zeroCounts(),crossN:0};
+  const runEv=run.length?hsRunEvidence(run,groups,currentGroup?.key||currentKey):{same:zeroCounts(),sameN:0,cross:zeroCounts(),crossN:0};
+  const transitionRows=[
+    [`หลัง ${seq[seq.length-1]||'—'}`,'ใน Shoe นี้',trans.sameN,trans.same],
+    [`หลัง ${seq[seq.length-1]||'—'}`,'ข้าม Shoe',trans.crossN,trans.cross],
+    [`${run.side} ต่อเนื่อง ${run.length}`,'ใน Shoe นี้',runEv.sameN,runEv.same],
+    [`${run.side} ต่อเนื่อง ${run.length}`,'ข้าม Shoe',runEv.crossN,runEv.cross]
+  ];
+  $('hsTransitionBody').innerHTML=transitionRows.map(([label,source,n,c])=>`<tr><td>${label}</td><td>${source}</td><td>${n}</td><td>${c.B}</td><td>${c.P}</td><td>${c.T}</td></tr>`).join('');
+  $('hsTransitionNote').textContent=`การเปลี่ยนหลัง ${seq[seq.length-1]||'—'}: ใน Shoe เดียวมี ${trans.sameN} คู่; ข้าม Shoe มี ${trans.crossN} Shoe. สตรีค ${run.side} ยาว ${run.length}: ใน Shoe เดียวมี ${runEv.sameN} เหตุการณ์ที่จบด้วยผลถัดไป; ข้าม Shoe มี ${runEv.crossN} Shoe. ตัวเลขเป็นสถิติย้อนหลัง ไม่ใช่โอกาสที่รับประกัน.`;
+
+  const patterns=[];
+  if(seq.length){
+    for(const mode of (seq.includes('T')?['B/P/T','B/P']:['B/P/T'])){
+      const series=mode==='B/P'?seq.filter(x=>x!=='T'):seq;
+      for(let len=2;len<=Math.min(8,series.length);len++){
+        const pattern=series.slice(-len).join('');
+        const stat=hsPatternCounts(pattern,mode,groups,currentGroup?.key||currentKey);
+        if(stat.sameN||stat.crossN)patterns.push({mode,pattern,len,...stat});
+      }
+    }
+  }
+  patterns.sort((a,b)=>b.crossN-a.crossN||b.sameN-a.sameN||b.len-a.len);
+  $('hsPatternSummary').textContent=`พบ ${patterns.length} บริบทที่มีเหตุการณ์ถัดไป`;
+  $('hsPatternBody').innerHTML=patterns.length?patterns.map(r=>{
+    const level=r.crossN>=3?'มีตัวอย่างข้าม Shoe':r.crossN>0?'ข้าม Shoe น้อย':r.sameN>0?'พบซ้ำใน Shoe เดียว':'ไม่พบ';
+    return `<tr><td>${r.mode}</td><td><b>${r.pattern}</b> (${r.len})</td><td>${r.sameN}</td><td>${hsCountsCell(r.same)}</td><td>${r.crossN}</td><td>${hsCountsCell(r.cross)}</td><td>${r.crossN>=3?'<span class="badge green">มีหลาย Shoe</span>':r.crossN>0?'<span class="badge gold">หลักฐานจำกัด</span>':'<span class="badge gold">สำรวจเท่านั้น</span>'}</td></tr>`;
+  }).join(''):'<tr><td colspan="7">ยังไม่มีรูปแบบล่าสุดที่พบก่อนหน้าและมีผลถัดไป</td></tr>';
+  $('hsPatternNote').textContent=`ค้นหารูปแบบท้ายสุด 2–8 ผล · “ใน Shoe นี้” นับเหตุการณ์ย้อนหลังทั้งหมดแบบสำรวจ; “ข้าม Shoe” เก็บไม่เกินหนึ่ง occurrence ล่าสุดต่อ Shoe. ${seq.includes('T')?'แสดงทั้งโหมดรวม Tie และข้าม Tie':'ไม่พบ Tie ในชุดนี้ จึงแสดงโหมดรวม Tie เพียงชุดเดียวเพื่อไม่ให้รูปแบบซ้ำซ้อน'}`;
+
+  const analog=seq.length?hsSimilarStates(groups,currentGroup?.key||currentKey,seq):{same:[],cross:[],crossShoes:0};
+  const analogRows=[...analog.same.map(x=>({...x,source:'Shoe เดียวกัน'})),...analog.cross.map(x=>({...x,source:'Shoe อื่น'}))].sort((a,b)=>b.similarity-a.similarity).slice(0,8);
+  $('hsAnalogBody').innerHTML=analogRows.length?analogRows.map(x=>`<tr><td>${x.round}</td><td>${x.shoe}</td><td>${pct(x.similarity)}</td><td><span class="badge ${x.next==='B'?'red':x.next==='P'?'blue':'green'}">${x.next}</span></td><td>${x.source}</td></tr>`).join(''):'<tr><td colspan="5">ยังไม่พบสถานการณ์ที่คล้ายตามเกณฑ์ขั้นต่ำ</td></tr>';
+  $('hsAnalogNote').textContent=`พบสถานการณ์คล้ายใน Shoe ปัจจุบัน ${analog.same.length} รายการที่แสดง และข้าม Shoe ${analog.crossShoes} Shoe · คัดกรอง similarity ≥48% และจำกัดหนึ่งสถานการณ์ต่อ Shoe สำหรับหลักฐานข้าม Shoe`;
+  const bestCross=patterns.filter(x=>x.crossN>=3).sort((a,b)=>b.crossN-a.crossN||b.len-a.len)[0];
+  const recentPattern=seq.slice(-3).join('');
+  const samePatternTypes=patterns.filter(x=>x.sameN>0).length;
+  $('hsConclusion').textContent=!seq.length?'ยังไม่มีข้อมูลประวัติ':bestCross?`รูปแบบ ${bestCross.pattern} (${bestCross.mode}) มีตัวอย่างข้าม ${bestCross.crossN} Shoe. ผลถัดไปที่พบ: ${hsCountsCell(bestCross.cross)}. จัดเป็นรูปแบบที่ควรเฝ้าดูและทดสอบต่อ ไม่ใช่สูตรชนะ.`: `บริบทล่าสุดคือ ${recentPattern} · พบรูปแบบท้ายที่เคยเกิดซ้ำ ${samePatternTypes} แบบใน Shoe ปัจจุบัน แต่ยังไม่มีรูปแบบใดมีตัวอย่างข้ามอย่างน้อย 3 Shoe. จึงยังสรุป “ทางแก้เกม” ที่ใช้ซ้ำได้ไม่ได้.`;
+  $('hsActionNote').textContent=shoeCount<3?`ต้องเก็บข้อมูลอีกอย่างน้อย ${3-shoeCount} Shoe ที่ตรงกติกาและแพลตฟอร์ม เพื่อเริ่มเปรียบเทียบข้าม Shoe อย่างมีความหมาย. ตอนนี้ควรใช้ผลนี้เป็นแผนที่สังเกตการณ์ ไม่ใช่คำสั่งเดิมพัน.`:'มีหลาย Shoe แล้ว · เพิ่มข้อมูลต่อและให้ระบบทดสอบแบบ walk-forward โดยไม่เอาผลในอนาคตมาเลือกสูตรย้อนหลัง';
+  $('hsStatus').textContent=`${total} ตา · ${shoeCount} Shoe · ${patterns.length} รูปแบบที่ตรวจพบ`;
+}
+
+
+function auditEventStream(list){
+  const groups=new Map(),seen=new Set(),issues=[];let last=null,issueCount=0,invalidCardRounds=0,missingCardRounds=0,completeCardRounds=0;
+  const addIssue=msg=>{issueCount++;if(issues.length<5)issues.push(msg);};
+  for(let i=0;i<list.length;i++){
+    const e=list[i];
+    if(e.shoeQuality==='invalid'||!Number.isInteger(e.shoe)||e.shoe<1)addIssue(`เลข Shoe ไม่ถูกต้องที่ตา ${i+1}`);
+    if(e.deckQuality==='invalid'||(e.decks!==6&&e.decks!==8))addIssue(`จำนวนสำรับไม่ถูกต้องที่ตา ${i+1}`);
+    if(!OUTCOMES.includes(e.outcome))addIssue(`ผล B/P/T ไม่ถูกต้องที่ตา ${i+1}`);
+    if(last!==null&&e.shoe<last)addIssue(`ลำดับข้อมูลย้อนจาก Shoe #${last} ไป #${e.shoe} ที่ตา ${i+1}`);
+    if(last!==null&&e.shoe!==last&&seen.has(e.shoe))addIssue(`Shoe #${e.shoe} ปรากฏซ้ำหลังจากเริ่ม Shoe อื่น`);
+    if(last!==null&&e.shoe!==last)seen.add(last);
+    last=e.shoe;
+    let g=groups.get(e.shoe);if(!g){g={deck:e.decks,rounds:0,first:e,cardRounds:0,invalidCards:0,cards:[],structureBad:false};groups.set(e.shoe,g);}
+    if(g.deck!==e.decks){if(!g.structureBad)addIssue(`Shoe #${e.shoe} มีจำนวนสำรับปะปน`);g.structureBad=true;}
+    g.rounds++;
+    const valid=Array.isArray(e.cards)&&e.cards.length>=4&&e.cards.length<=6&&e.cards.every(n=>Number.isInteger(n)&&n>=0&&n<=9);
+    if(valid){completeCardRounds++;g.cardRounds++;g.cards.push(...e.cards);}
+    else{missingCardRounds++;if(e.cardsQuality==='invalid'){invalidCardRounds++;g.invalidCards++;}}
+  }
+  let cardReadyShoes=0,cardCountIssues=0;
+  for(const g of groups.values()){
+    if(g.rounds!==g.cardRounds||g.first.removedKnown!==true||g.structureBad)continue;
+    const d=g.deck===6?6:8,remain=initialCardCounts(d);
+    const removed=Array.isArray(g.first.removedCards)?g.first.removedCards:[];
+    let valid=true;
+    for(const c of removed){if(!Number.isInteger(c)||c<0||c>9||remain[c]<=0){valid=false;break;}remain[c]--;}
+    if(valid)for(const c of g.cards){if(remain[c]<=0){valid=false;break;}remain[c]--;}
+    if(valid)cardReadyShoes++;else cardCountIssues++;
+  }
+  return {rounds:list.length,shoeCount:groups.size,issues,issueCount,invalidCardRounds,missingCardRounds,completeCardRounds,cardReadyShoes,cardCountIssues};
+}
+function blockedReplayState(allEvents,audit){
+  const state=createState();calculationDecks=decks;resetShoeState(state,currentShoe,decks);state.shoeValid=false;
+  const features=makeFeatures(state),got=getExpertPredictions(state,features,SIM_SAMPLES),weights=normaliseWeights(state.logW),base=cloneBase();
+  const activeIds=['base'];
+  state.dataIntegrityError={issues:audit.issues,issueCount:audit.issueCount};
+  state.next={features,patternEvidence:[],expertPredictions:got.predictions,contextMemory:got.contextMemory,weights,weightContext:regimeWeightContext(state,features),activeExpertIds:['base'],crossActiveIds:activeIds,prob:base,crossProb:base,historicalProb:base,analog:got.analog,engineWeights:{historical:0,crosscheck:1},consensus:consensusSummary(got.predictions,weights,activeIds),selectedStrategy:null,selectionReason:'ระงับการคาดการณ์เพราะข้อมูลเรียงลำดับไม่ถูกต้อง',shoeReady:false,simulation:null};
+  return state;
+}
+
+function renderV14Adaptive(state){
+  const f=state.next.features,adapt=state.next.weightContext||{family:f.regimeKey||f.regimeFamily,alpha:0,n:0,shoeCount:0},diag=classifyRegime(currentShoeEvents().map(e=>e.outcome),currentShoeEvents().filter(e=>e.outcome!=='T').map(e=>e.outcome));
+  const audit=auditEventStream(events),family=diag.family,regimeKey=family==='RUN'?`RUN_${diag.side}`:family;
+  $('v14Regime').textContent=family==='RUN'?`RUN · ${diag.side}`:family;
+  $('v14RegimeSub').textContent=`คะแนนความตรงรูปแบบ ${diag.structuralScore?Math.round(diag.structuralScore*100)+' / 100':'ยังไม่ประเมิน'} · ${diag.decisiveN} ผล B/P`;
+  $('v14Support').textContent=`${adapt.n} / ${adapt.shoeCount}`;
+  $('v14SupportSub').textContent=`ตัวอย่าง / Shoe · ESS Shoe ${adapt.effectiveShoes?.toFixed(1)||'0.0'}`;
+  $('v14Adaptation').textContent=adapt.alpha>0?`ADAPTIVE ${pct(adapt.alpha)}`:'GLOBAL BASE';
+  $('v14AdaptationSub').textContent=adapt.alpha>0?'ผสมน้ำหนักเฉพาะบริบทกับน้ำหนักรวม':'ยังไม่ถึงขั้นต่ำ 15 ตัวอย่างและ 3 Shoe';
+    $('v14Status').textContent=`บริบท ${family} · ${state.predictions.length} ตา · ${adapt.alpha>0?'เปิด Context Learning':'ใช้ Global Learning'}`;
+  const test=state.predictions.slice(WARMUP),contexts=[['RUN_B','RUN · Banker'],['RUN_P','RUN · Player'],['CHOP','CHOP'],['MIXED','MIXED']];
+  const rows=contexts.map(([key,label])=>{
+    const arr=test.filter(x=>(x.features?.regimeKey||x.features?.regimeFamily)===key),shoes=new Set(arr.map(x=>(x.decks||8)+'|'+x.shoe));
+    const avg=arr.length?arr.reduce((a,x)=>a+x.lossDelta,0)/arr.length:null,hit=arr.length?arr.filter(x=>x.correct).length/arr.length:null;
+    const metaN=state.regimeMeta[key]?.n||0;
+    return `<tr><td>${label}</td><td>${arr.length}</td><td>${shoes.size}</td><td>${avg===null?'—':(avg>0?'+':'')+avg.toFixed(4)}</td><td>${hit===null?'—':pct(hit)}</td><td>${metaN}</td></tr>`;
+  }).join('');
+  $('v14RegimeBody').innerHTML=rows;
+  $('v14RegimeNote').textContent='ตัวเลขผลงานคำนวณจากคำทายหลัง Warm-up ที่บันทึกก่อนเห็นผลจริง · ตัวอย่างหลายตาใน Shoe เดียวกันไม่ใช่ตัวอย่างอิสระ · ระบบจึงแสดงจำนวน Shoe แยกด้วย';
+  const active=new Set(state.next.crossActiveIds),total=state.next.crossActiveIds.reduce((a,id)=>a+(state.next.weights[id]||0),0)||1;
+  const localAll=normaliseWeights(state.regimeLogW[regimeKey]||state.logW),localTotal=state.next.crossActiveIds.reduce((a,id)=>a+(localAll[id]||0),0)||1;
+  const expertRows=EXPERTS.filter(e=>active.has(e.id)).map(e=>({label:e.label,id:e.id,w:(state.next.weights[e.id]||0)/total,local:adapt.alpha>0?(localAll[e.id]||0)/localTotal:null})).sort((a,b)=>b.w-a.w);
+  $('v14ExpertBody').innerHTML=expertRows.slice(0,8).map(x=>`<tr><td>${x.label}</td><td>${pct(x.w)}</td><td>${x.local===null?'ยังไม่เปิด':pct(x.local)}</td></tr>`).join('')||'<tr><td colspan="3">ยังไม่มีผู้เชี่ยวชาญที่ผ่านเกณฑ์</td></tr>';
+  const structureOK=audit.issueCount===0;
+  $('v14DataQuality').textContent=!audit.rounds?'NO DATA':(structureOK?'OUTCOME DATA CHECKED':'CHECK DATA');
+  $('v14DataQuality').className='stat-value v14-status '+(!audit.rounds?'':structureOK?'positive':'negative');
+  $('v14DataQualitySub').textContent=audit.rounds?`${audit.rounds} ตา · ${audit.shoeCount} Shoe · ปัญหาโครงสร้าง ${audit.issueCount}`:'ยังไม่มีผลจริงให้ตรวจสอบ';
+  $('v14Active').textContent=state.next.crossActiveIds.length+(state.next.analog?.ready?1:0);$('v14ActiveSub').textContent='ผ่านเกณฑ์ข้อมูลและพร้อมคำนวณ';
+  const cardReady=state.shoeValid&&state.shoeSeen>=20;
+  const cardMessage=cardReady?`Shoe ปัจจุบันมีข้อมูลไพ่ครบตามรายการที่บันทึก (${state.shoeSeen} ใบ) และยืนยัน Burn/Removed แล้ว`: `Shoe Simulation ปิดอยู่ · ข้อมูลไพ่ไม่ครบ ${audit.missingCardRounds} ตา · ไพ่ผิดรูปแบบ ${audit.invalidCardRounds} ตา · Shoe ที่ไพ่ครบและยืนยัน Burn ${audit.cardReadyShoes} · Shoe ที่มีการนับไพ่เกิน ${audit.cardCountIssues}`;
+  $('v14AuditReadout').textContent=(audit.issues.length?audit.issues.join(' · ')+' · ':'')+cardMessage;
+  $('v14ContextReadout').textContent=`ระบบจัดสถานะด้วยผล B/P ที่ตัด Tie ออก: RUN เมื่อผลล่าสุดต่อเนื่องอย่างน้อย 3, CHOP เมื่อหน้าต่าง 6 ผลมีการสลับอย่างน้อย 4 ครั้งและอัตราสลับ ≥80%, นอกนั้นเป็น MIXED; มีข้อมูล B/P ไม่ถึง 3 ผลเป็น START. ผู้เชี่ยวชาญบริบท Markov/Streak/Chop/Motif/Road ต้องมีตัวอย่างเฉพาะ 4–6 ครั้งจากอย่างน้อย 2 Shoe จึงเข้าร่วม; รูปแบบ Exact ใช้เกณฑ์ข้าม Shoe แยกตามความยาว. สถานะใช้เลือกวิธีอ่านและแบ่งการเรียนรู้ ไม่ใช่กฎทำนายผลถัดไป. ${adapt.alpha>0?`มีข้อมูล ${adapt.n} ตัวอย่างจาก ${adapt.shoeCount} Shoe จึงผสมน้ำหนักเฉพาะบริบท ${pct(adapt.alpha)}.`:'ข้อมูลเฉพาะบริบทยังไม่พอ ระบบจึงไม่ปรับตามกลุ่มนี้และใช้ global weights แทน.'}`;
+}
+
+function fastRegimeDiagnostics(state){
+  const shoe=currentShoeEvents(),full=shoe.map(e=>e.outcome),dec=full.filter(x=>x==='B'||x==='P');
+  const tail=dec.slice(-8),lastSide=tail.length?tail[tail.length-1]:null;
+  let run=0;for(let i=dec.length-1;i>=0&&dec[i]===lastSide;i--)run++;
+  let switches=0;for(let i=1;i<tail.length;i++)if(tail[i]!==tail[i-1])switches++;
+  const regime=classifyRegime(full,dec),family=regime.family;
+  const ties=full.slice(-12).filter(x=>x==='T').length,tieWindow=full.slice(-12);
+  let shift=null;
+  if(dec.length>=8){
+    const previous=dec.slice(-8,-4),recent4=dec.slice(-4);
+    const rateB=a=>a.filter(x=>x==='B').length/a.length;
+    const rateSwitch=a=>a.length>1?switchCount(a)/(a.length-1):0;
+    const prevB=rateB(previous),recentB=rateB(recent4),prevSwitch=rateSwitch(previous),recentSwitch=rateSwitch(recent4);
+    const distributionChange=Math.abs(recentB-prevB),rhythmChange=Math.abs(recentSwitch-prevSwitch);
+    const quickFlag=distributionChange>=0.50||rhythmChange>=0.50;
+    let confirmed=false,longDistributionChange=null,longRhythmChange=null;
+    if(dec.length>=16){
+      const old8=dec.slice(-16,-8),new8=dec.slice(-8);
+      longDistributionChange=Math.abs(rateB(old8)-rateB(new8));longRhythmChange=Math.abs(rateSwitch(old8)-rateSwitch(new8));
+      const oldReg=classifyRegime(old8,old8),newReg=classifyRegime(new8,new8);
+      const oldKey=oldReg.family==='RUN'?`RUN_${oldReg.side}`:oldReg.family,newKey=newReg.family==='RUN'?`RUN_${newReg.side}`:newReg.family;
+      const regimeChanged=oldKey!==newKey;
+      confirmed=(regimeChanged&&(longDistributionChange>=0.25||longRhythmChange>=0.30))||longDistributionChange>=0.50||longRhythmChange>=0.50;
+    }
+    shift={flagged:quickFlag||confirmed,quickFlag,confirmed,distributionChange,rhythmChange,prevB,recentB,prevSwitch,recentSwitch,longDistributionChange,longRhythmChange};
+  }
+  const exact=state.next?.patternEvidence||[];
+  const selected=exact.find(x=>x.selected)||null;
+  const closest=selected||(exact.slice().sort((a,b)=>b.n-a.n||b.length-a.length)[0]||null);
+  const recent=state.predictions.slice(WARMUP).slice(-8);
+  const worse=recent.filter(x=>x.lossDelta>0).length;
+  const avgDelta=recent.length?recent.reduce((s,x)=>s+x.lossDelta,0)/recent.length:null;
+  const healthWarning=recent.length>=6&&worse>=5&&avgDelta>=0.10;
+  const healthGood=recent.length>=6&&worse<=2&&avgDelta<=-0.05;
+  const last=state.predictions.length?state.predictions[state.predictions.length-1]:null;
+  let error=null;
+  if(last){
+    const rank=OUTCOMES.slice().sort((a,b)=>last.prob[b]-last.prob[a]);
+    const gap=last.prob[rank[0]]-last.prob[rank[1]];
+    const active=(last.experts||[]).filter(x=>x.active&&x.p);
+    const weakest=active.slice().sort((a,b)=>(a.p[last.actual]??1)-(b.p[last.actual]??1)).slice(0,2);
+    const priorSame=state.predictions.slice(0,-1).filter(x=>
+      x.decks===last.decks&&(x.features?.regimeKey||x.features?.regimeFamily)===(last.features?.regimeKey||last.features?.regimeFamily)&&x.round>WARMUP
+    );
+    const priorAccuracy=priorSame.length?priorSame.filter(x=>x.correct).length/priorSame.length:null;
+    const priorLoss=priorSame.length?priorSame.reduce((s,x)=>s+x.modelLoss,0)/priorSame.length:null;
+    const priorBase=priorSame.length?priorSame.reduce((s,x)=>s+x.baselineLoss,0)/priorSame.length:null;
+    error={last,gap,weakest,priorN:priorSame.length,priorAccuracy,priorLoss,priorBase,consensus:last.engines?.consensus?.share??null};
+  }
+  return {full,dec,tail,lastSide,run,switches,family,ties,tieWindow,shift,closest,selected,recent,worse,avgDelta,healthWarning,healthGood,error};
+}
+function renderFastRecognition(state){
+  const d=fastRegimeDiagnostics(state),name=d.family==='RUN'?'RUN · สตรีค':d.family==='CHOP'?'CHOP · สลับฝั่ง':d.family==='MIXED'?'MIXED · ผสม':'START · เริ่มต้น';
+  $('fastRegime').textContent=name;$('fastRegimeBadge').textContent=name;
+  $('fastRegimeBadge').className='badge '+(d.family==='RUN'?'red':d.family==='CHOP'?'blue':'gold');
+  $('fastStatus').textContent=`Shoe #${currentShoe} · อ่านจากผลจริง ${d.full.length} ตา`;
+  $('fastSampleCount').textContent=`${d.dec.length} ผล B/P · ${d.full.filter(x=>x==='T').length} Tie`;
+  if(d.dec.length<3){
+    $('fastRegimeSub').textContent='ยังเร็วเกินไปสำหรับจำแนกรูปแบบ';
+    $('fastReadout').textContent=`มีผล B/P ${d.dec.length} ผลใน Shoe นี้ · ยังไม่ควรตั้งชื่อรูปแบบจากตัวอย่างน้อย`;
+  }else{
+    $('fastRegimeSub').textContent=d.family==='RUN'?`${d.lastSide} ต่อเนื่อง ${d.run} ผล`:d.family==='CHOP'?`สลับ ${d.switches} ครั้งใน ${d.tail.length} ผลล่าสุด`:'ยังไม่เข้าเกณฑ์ RUN หรือ CHOP';
+    const guide=d.family==='RUN'
+      ? 'แนวทางอ่าน: ตรวจ Streak, Markov และ Exact Pattern ข้าม Shoe ก่อนพิจารณาว่ารูปแบบนี้เคยมีผลต่อเนื่องจริงหรือไม่ · ห้ามสรุปว่าต้องตามหรือสวนสตรีค'
+      : d.family==='CHOP'
+      ? 'แนวทางอ่าน: ตรวจ Chop, Motif และสถิติการสลับใน Shoe อื่น · ห้ามสมมติว่าผลถัดไปต้องสลับฝั่ง'
+      : 'แนวทางอ่าน: ยังไม่บังคับเข้ารูปแบบเฉพาะ ให้ค่าฐานและภาพรวมหลายระยะเป็นตัวคุมความมั่นใจ';
+    $('fastReadout').textContent=`ลำดับ B/P ล่าสุด: ${d.tail.join(' → ')}. สตรีคปัจจุบัน ${d.lastSide||'—'} ${d.run} ผล · การสลับ ${d.switches} ครั้งในหน้าต่าง ${d.tail.length} ผล · Tie ${d.ties}/${d.tieWindow.length} ตาล่าสุด. จัดเป็น ${name} ตามเกณฑ์ของระบบ v14; เป็นการบรรยายข้อมูล ไม่ใช่ทิศทางผลถัดไป. ${d.shift?.flagged?'ตรวจพบความเปลี่ยนแปลงของหน้าต่างล่าสุด: ลดการยึดรูปแบบเก่าก่อน และตรวจข้อมูลใหม่ซ้ำ':' '}${guide}`;
+  }
+  if(!d.shift){
+    $('fastShift').textContent='รอ 8 ผล';
+    $('fastShiftSub').textContent=`มี ${d.dec.length}/8 ผล B/P สำหรับเทียบ 4 กับ 4`;
+    $('fastShiftReadout').textContent='ยังไม่มีข้อมูล B/P 8 ผลสำหรับเทียบหน้าต่างก่อนหน้า 4 ผลกับล่าสุด 4 ผล · จึงยังไม่ติดธงการเปลี่ยนรูปแบบ';
+  }else{
+    $('fastShift').textContent=d.shift.confirmed?'มีสัญญาณเปลี่ยนหลายหน้าต่าง':d.shift.flagged?'WATCH · อาจเปลี่ยน':'ไม่พบจุดเปลี่ยนเด่น';
+    $('fastShiftSub').textContent=`สัดส่วน B เปลี่ยน ${(d.shift.distributionChange*100).toFixed(0)} pp`;
+    $('fastShiftReadout').textContent=`เทียบ B/P 4 ผลก่อนหน้ากับ 4 ผลล่าสุด: B เปลี่ยนจาก ${pct(d.shift.prevB)} เป็น ${pct(d.shift.recentB)} · อัตราสลับเปลี่ยน ${(d.shift.rhythmChange*100).toFixed(0)} pp · ${d.shift.confirmed?'หน้าต่าง 8 ต่อ 8 สนับสนุนการเปลี่ยนแปลงเพิ่มเติม':'ยังเป็นเพียงการเฝ้าดู ไม่ยืนยันการเปลี่ยนสถานะ'}. ตัวอย่างสั้นอาจเกิดจากความผันผวนสุ่มและไม่บอกผลถัดไป`;
+  }
+  if(d.closest){
+    const p=d.closest,counts=p.counts;
+    $('fastPatternEvidence').textContent=`รูปแบบตรงกันข้าม Shoe ที่ใกล้สุด: ${p.pattern} (${p.length} ผล) · พบ ${p.n} Shoe · ผลถัดไป B ${counts.B}, P ${counts.P}, T ${counts.T} · ${p.selected?'ถึงเกณฑ์ขั้นต่ำของผู้เชี่ยวชาญ Pattern 2–8':'ยังไม่ถึงขั้นต่ำ '+p.minShoes+' Shoe'} · ใช้เป็นหลักฐานย้อนหลัง ไม่ใช่คำยืนยัน`;
+  }else{
+    $('fastPatternEvidence').textContent='ยังไม่พบรูปแบบ 2–8 ผลที่ตรงกับ Shoe ก่อนหน้า · ใช้ค่าฐานและผู้เชี่ยวชาญที่ยังมีข้อมูลได้แทน โดยไม่สร้างสถิติขึ้นเอง';
+  }
+  if(d.healthWarning){
+    $('fastHealth').textContent='EARLY WARNING';
+    $('fastHealthSub').textContent=`โมเดลแย่กว่าฐาน ${d.worse}/${d.recent.length} ผล`;
+  }else if(d.healthGood){
+    $('fastHealth').textContent='RECENT BETTER';
+    $('fastHealthSub').textContent='ช่วงสั้นดีกว่าฐาน · ยังไม่ใช่การยืนยัน';
+  }else{
+    $('fastHealth').textContent=d.recent.length?'NO ALARM':'NOT TESTED';
+    $('fastHealthSub').textContent=d.recent.length?`เทียบได้ ${d.recent.length}/8 ผลทดสอบหลัง Warm-up`:'ยังไม่มีผลทดสอบหลัง Warm-up 50 ตา';
+  }
+  $('fastHealth').className='stat-value v13-status '+(d.healthWarning?'negative':d.healthGood?'positive':'');
+  if(d.recent.length){
+    $('fastHealthSub').title=`เฉลี่ย Δ Log Loss = ${d.avgDelta.toFixed(4)} · ค่าบวกหมายถึงโมเดลแย่กว่าค่าฐาน`;
+  }
+  if(!d.error){
+    $('fastLastResult').textContent='—';$('fastLastResultSub').textContent='รอผลจริง';
+    $('fastErrorDiagnosis').textContent='ยังไม่มีคำทายที่บันทึกไว้';
+    $('fastErrorContext').textContent='หลังบันทึกผล ระบบจะแสดงคำทายก่อนหน้า ผลจริง ช่องว่างความน่าจะเป็น และผู้เชี่ยวชาญที่ให้โอกาสผลจริงต่ำ';
+    $('fastErrorAction').textContent='ยังไม่มีข้อมูลสำหรับวินิจฉัย · อย่าคาดเดาสาเหตุล่วงหน้า';
+    return;
+  }
+  const e=d.error,x=e.last;
+  $('fastLastResult').textContent=x.correct?'HIT · ถูก':'MISS · พลาด';
+  $('fastLastResultSub').textContent=`ทาย ${x.guess} · จริง ${x.actual} · p(ผลจริง) ${pct(x.actualProb)}`;
+  const flags=[];
+  if(!x.correct){
+    if(x.prob[x.guess]>=0.58)flags.push('พลาดทั้งที่โมเดลให้น้ำหนักฝั่งที่ทาย ≥58%');
+    if(e.gap<0.015)flags.push('อันดับ 1–2 ใกล้กัน (<1.5 pp)');
+    if(e.consensus!==null&&e.consensus<0.55)flags.push('ผู้เชี่ยวชาญมีความเห็นแตกกัน');
+    if(x.lossDelta>0)flags.push('ตานี้ Log Loss แย่กว่าค่าฐาน');
+    if(!flags.length)flags.push('ไม่พบลักษณะเด่นจากเกณฑ์ที่กำหนด · อาจเป็นผลที่โมเดลให้โอกาสต่ำแต่ยังเกิดขึ้นได้');
+    $('fastErrorDiagnosis').textContent=`คำทายก่อนเปิดผล: ${x.guess} (${pct(x.prob[x.guess])}) · ผลจริง: ${x.actual} (${pct(x.actualProb)} จากโมเดล). ลักษณะที่ตรวจพบ: ${flags.join(' / ')}.`;
+    const weak=e.weakest.map(r=>`${r.label} ให้โอกาสผลจริง ${pct(r.p[x.actual])}`).join(' · ');
+    $('fastErrorContext').textContent=`บริบทก่อนตานั้น: ${x.features?.contextKey||'ไม่ระบุ'} · ${weak||'ไม่มีผู้เชี่ยวชาญที่ใช้เปรียบเทียบได้'}. ${e.priorN>=3?`บริบทครอบครัวเดียวกันในอดีต ${e.priorN} คำทาย: ถูก ${pct(e.priorAccuracy)} · Model LL ${e.priorLoss.toFixed(3)} · Base LL ${e.priorBase.toFixed(3)}.`:'บริบทเดียวกันยังมีคำทายย้อนหลังน้อยกว่า 3 ครั้ง จึงยังสรุปผลงานเฉพาะบริบทไม่ได้'}`;
+    $('fastErrorAction').textContent='การตอบสนอง: ระบบได้บันทึกผลจริงและปรับน้ำหนักจาก Log Loss แล้วตามลำดับเวลา · ไม่ควรสวนไปอีกฝั่งโดยอัตโนมัติหรือเพิ่มเดิมพันชดเชย · ตรวจว่าความผิดพลาดซ้ำในบริบทเดียวกันหรือไม่ก่อนเปลี่ยนวิธีอ่าน';
+  }else{
+    $('fastErrorDiagnosis').textContent=`คำทาย ${x.guess} ถูกต้อง · ความน่าจะเป็นที่ระบบให้แก่ผลจริง ${pct(x.actualProb)} · การถูกหนึ่งตาไม่ใช่หลักฐานว่าพบความได้เปรียบ`;
+    const weak=e.weakest.map(r=>`${r.label}: ${pct(r.p[x.actual])}`).join(' · ');
+    $('fastErrorContext').textContent=`บริบทก่อนตานั้น: ${x.features?.contextKey||'ไม่ระบุ'} · ${e.priorN>=3?`บริบทเดียวกันในอดีต ${e.priorN} คำทาย ถูก ${pct(e.priorAccuracy)}.`:'ยังมีตัวอย่างบริบทเดียวกันน้อย' } ${weak?`· ค่าความน่าจะเป็นจากผู้เชี่ยวชาญ: ${weak}`:''}`;
+    $('fastErrorAction').textContent='การตอบสนอง: เก็บผลที่ถูกไว้ประเมินต่อเหมือนผลที่ผิด · ไม่เพิ่มความมั่นใจจากการถูกเพียงครั้งเดียว และไม่ถือว่าเป็นการยืนยันรูปแบบ';
+  }
+}
+
+function render(){
+  const pendingSeed=Array.isArray(pendingUnverifiedSeed);$('legacySeedNotice').style.display=pendingSeed?'block':'none';
+  for(const id of ['addP','addB','addT','newShoe'])$(id).disabled=pendingSeed;
+  $('decks').disabled=pendingSeed;
+  $('decks').value=String(decks);$('shoeLabel').textContent='Shoe ปัจจุบัน #'+currentShoe;$('undo').disabled=!currentShoeEvents().length;$('reset').disabled=!events.length&&currentShoe===1;
+  const n=events.length,counts=zeroCounts();events.forEach(e=>counts[e.outcome]++);$('totalRounds').textContent=n.toLocaleString('th-TH')+' ตา';for(const k of OUTCOMES){$('count'+k).textContent=counts[k].toLocaleString('th-TH');$('rate'+k).textContent=pct(n?counts[k]/n:0)+' ของประวัติทั้งหมด';}
+  const cur=currentShoeEvents(),dec=cur.filter(e=>e.outcome!=='T').map(e=>e.outcome);let st={side:null,n:0};if(dec.length){st.side=dec[dec.length-1];for(let i=dec.length-1;i>=0&&dec[i]===st.side;i--)st.n++;}$('streak').textContent=st.n?st.n+' '+st.side:'—';$('streakSub').textContent=st.n?(st.side==='B'?'Banker ต่อเนื่อง':'Player ต่อเนื่อง'):'รอผล';const tail=dec.slice(-10);let changes=0;for(let i=1;i<tail.length;i++)if(tail[i]!==tail[i-1])changes++;$('chopRate').textContent=tail.length>1?changes+'/'+(tail.length-1):'—';$('chopSub').textContent=tail.length>1?pct(changes/(tail.length-1)):'รอผล';const rb=dec.slice(-20),rbn=rb.filter(x=>x==='B').length;$('rollingB').textContent=rb.length?rbn+'/'+rb.length:'—';$('rollingSub').textContent=rb.length?'B '+pct(rbn/rb.length)+' ใน 20 ตาล่าสุด':'รอข้อมูล';
+  renderHistory();renderTransitions(events);const pat=patternInfo(cur);$('patternTags').innerHTML=pat.tags.map(x=>'<span class="tag active">'+x+'</span>').join('');$('patternExplain').textContent=pat.explain;renderRoads();
+  const state=replay(events);replayResult=state;renderPatternEvidence(state.next.patternEvidence);const gate=renderV9(state);renderV11Intelligence(state);renderHistoricalSolver();renderFastRecognition(state);renderV14Adaptive(state);const pred=state.next.prob,best=argmax(pred),rank=OUTCOMES.slice().sort((a,b)=>pred[b]-pred[a]),gap=pred[rank[0]]-pred[rank[1]];
+  $('forecastToken').className='forecast-token '+best.toLowerCase();$('forecastToken').textContent=best;$('forecastTitle').textContent=(best==='B'?'Banker':best==='P'?'Player':'Tie')+' · '+(gate.pass?'ผ่านการยืนยันเข้มงวด':gate.contextual?'แนวโน้มเชิงบริบท':'มุมมองเบื้องต้น');$('forecastDesc').textContent=n?`อันดับสูงสุดจาก Dual Evidence Engine · ${EXPERTS.length} ผู้เชี่ยวชาญ · ${n} ตาก่อนหน้า · ส่วนต่างอันดับหนึ่ง ${pct(gap)} · ${gate.pass?'ผ่านการตรวจสอบเข้มงวด':gate.contextual?'มีผลทดสอบและความเห็นหลายกลุ่มสนับสนุน แต่ยังไม่ยืนยัน':'ยังแสดงเป็นมุมมองเบื้องต้น ไม่ใช่สัญญาณเดิมพัน'}`:'แสดงค่าฐานเป็นจุดเริ่มต้น · เพิ่มข้อมูลจริงเพื่อให้ผู้เชี่ยวชาญเรียนรู้';$('signalStrength').textContent=n?(gap*100).toFixed(2)+' pp':'—';$('modelStatus').textContent=n?`Replay เรียนรู้ ${n} ตา · Shoe #${currentShoe} · ${gate.pass?'VALIDATED':gate.contextual?'CONTEXT LEAN':'EARLY OUTLOOK'}`:'รอข้อมูล';
+  const horizonRows=[['horizon8','horizon8Note',state.next.expertPredictions.roll8,8,state.shortRollingByDeck[decks]],['horizon24','horizon24Note',state.next.expertPredictions.rolling,24,state.rollingByDeck[decks]],['horizon60','horizon60Note',state.next.expertPredictions.roll60,60,state.longRollingByDeck[decks]]];
+  const horizonLeaders=[];
+  for(const [valueId,noteId,dist,window,buffer] of horizonRows){const pick=argmax(dist);horizonLeaders.push(pick);$(valueId).textContent=(pick==='B'?'B · Banker':pick==='P'?'P · Player':'T · Tie')+' '+pct(dist[pick]);const used=Math.min(window,(buffer||[]).length);$(noteId).textContent=`ใช้ข้อมูล ${used}/${window} ผลล่าสุด · โมเดลระยะนี้`;}
+  const uniqueLeaders=new Set(horizonLeaders);$('horizonSummary').textContent=uniqueLeaders.size===1?`มุมมอง 8/24/60 ผลสอดคล้องกันที่ ${horizonLeaders[0]} · เป็นความสอดคล้องของโมเดล ไม่ใช่การยืนยันผลจริง`:`มุมมองหลายระยะยังไม่ตรงกัน (${horizonLeaders.join(' / ')}) · ใช้เป็นข้อมูลประกอบและลดความมั่นใจในการตีความ`;
+  for(const k of OUTCOMES){$('prob'+k).textContent=pct(pred[k]);$('probFill'+k).style.width=(pred[k]*100)+'%';}const baseNow=getBase(),evDist=state.next.simulation||baseNow,evB=evDist.B*0.95-evDist.P,evP=evDist.P-evDist.B,evT=evDist.T*8-(1-evDist.T);$('edgeB').textContent=(evB*100).toFixed(2)+'%';$('edgeP').textContent=(evP*100).toFixed(2)+'%';$('edgeT').textContent=(evT*100).toFixed(2)+'%';$('predictionBasis').textContent=`ค่าฐาน ${decks} สำรับ · B ${pct(baseNow.B)} · P ${pct(baseNow.P)} · T ${pct(baseNow.T)} · น้ำหนักปรับตาม Log Loss`;$('edgeBasis').textContent=state.next.simulation?`Shoe MC ${state.next.simulation.samples.toLocaleString('th-TH')} มือ · ประมาณการไม่ใช่การรับประกัน`:`ค่าฐาน ${decks} สำรับ · ยังไม่มี Shoe Simulation ที่ใช้ได้`; $('predictionConfidence').textContent=gap>=.04?'อันดับนำต่างชัดในคะแนนโมเดลเท่านั้น':gap>=.015?'มีความต่างระดับเล็กน้อยในคะแนนโมเดล':'ความต่างของอันดับใกล้กัน · ยังไม่มีหลักฐานแยกฝั่ง';
+  $('btN').textContent=state.tested;$('btCoverage').textContent=n>WARMUP?`ทดสอบ ${state.tested} จาก ${n-WARMUP} ตาหลัง Warm-up`:'เริ่มประเมินหลังมีข้อมูล '+WARMUP+' ตา';$('btRate').textContent=state.tested?pct(state.correct/state.tested):'—';const accCI=wilsonInterval(state.correct,state.tested);$('btAccuracyCI').textContent=accCI?`${pct(accCI[0])}–${pct(accCI[1])}`:'—';$('btCompare').textContent=state.tested?`ฐาน Banker ${pct(state.baseCorrect/state.tested)} · ผิด ${state.misses} ตา`:'ยังไม่มีชุดทดสอบ';$('btLogLoss').textContent=state.tested?(state.modelLoss/state.tested).toFixed(4):'—';$('btBaseLoss').textContent=state.tested?(state.baseLoss/state.tested).toFixed(4):'—';const cal=calibrationSummary(state.predictions);$('btCalibration').textContent=cal.n?cal.ece.toFixed(4):'—';$('btCalibrationNote').textContent=cal.n?`เฉลี่ย ${pct(cal.meanConfidence)} · ถูกจริง ${pct(cal.accuracy)}`:'ต้องมีผลทดสอบหลัง Warm-up';$('calibrationBody').innerHTML=cal.n?cal.bins.map(b=>`<tr><td>${pct(b.lo)}–${pct(b.hi)}</td><td>${b.n}</td><td>${b.n?pct(b.avgConfidence):'—'}</td><td>${b.n?pct(b.accuracy):'—'}</td></tr>`).join(''):'<tr><td colspan="4">รอชุดทดสอบหลัง Warm-up</td></tr>';
+  $('missCount').textContent=state.misses;$('brierModel').textContent=state.tested?(state.modelBrier/state.tested).toFixed(4):'—';$('brierCompare').textContent=state.tested?'ค่าฐาน '+(state.baseBrier/state.tested).toFixed(4)+' · ค่าต่ำดีกว่า':'รอชุดทดสอบ';$('learnStatus').textContent=state.predictions.length?'ปรับน้ำหนักแบบ online จากผล '+state.predictions.length+' ตา':'รอข้อมูล';renderExperts(state);renderDiagnosis(state);renderDualEngine(state);renderErrorHistory(state);renderStrategy(state);renderShoe(state);updateStorage();
+  if(state.dataIntegrityError){
+    $('forecastToken').className='forecast-token none';$('forecastToken').textContent='—';
+    $('forecastTitle').textContent='ระงับการคาดการณ์ · โครงสร้างประวัติมีปัญหา';
+    $('forecastDesc').textContent=`ตรวจพบปัญหาโครงสร้าง ${state.dataIntegrityError.issueCount} จุด (${state.dataIntegrityError.issues.join(' · ')||'ดูรายละเอียดใน Data Integrity panel'}) · ระบบไม่ใช้ประวัติชุดนี้เรียนรู้หรือออกมุมมองเฉพาะข้อมูล`;
+    $('signalStrength').textContent='BLOCK';$('modelStatus').textContent='DATA INTEGRITY BLOCK';$('predictionConfidence').textContent='พักการวิเคราะห์จนกว่าจะแก้ลำดับ Shoe / สำรับ';
+  }
+}
+
+$('confirmLegacySeed').addEventListener('click',confirmLegacySeed);$('discardLegacySeed').addEventListener('click',discardLegacySeed);
+$('addP').addEventListener('click',()=>addOutcome('P'));$('addB').addEventListener('click',()=>addOutcome('B'));$('addT').addEventListener('click',()=>addOutcome('T'));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',resetAll);$('newShoe').addEventListener('click',startShoe);$('exportBtn').addEventListener('click',exportData);$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',e=>{if(e.target.files&&e.target.files[0])importData(e.target.files[0]);e.target.value='';});$('decks').addEventListener('change',e=>{const d=Number(e.target.value);if(d!==6&&d!==8)return;if(currentShoeEvents().length){toast('เปลี่ยนจำนวนสำรับกลาง Shoe ไม่ได้ · กรุณาเริ่ม Shoe ใหม่ก่อน');$('decks').value=String(decks);return;}decks=d;calculationDecks=d;save();render();});
+document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;const tag=(document.activeElement?.tagName||'').toLowerCase();if(['input','textarea','select','button'].includes(tag))return;const k=e.key.toLowerCase();if(k==='p')addOutcome('P');else if(k==='b')addOutcome('B');else if(k==='t')addOutcome('T');else if(k==='backspace'){e.preventDefault();undo();}});
+window.addEventListener('storage',e=>{if(e.key!==STORAGE_KEY)return;try{const v=JSON.parse(e.newValue||'{}');pendingUnverifiedSeed=null;pendingSeedStorageKey=null;decks=Number(v.decks)===6?6:8;events=safeEvents(v.events,decks);currentShoe=Math.max(1,Number(v.currentShoe)||1,...events.map(x=>x.shoe));calculationDecks=decks;render();toast('อัปเดตประวัติจากแท็บอื่นแล้ว');}catch(err){toast('อ่านข้อมูลจากแท็บอื่นไม่สำเร็จ');}});
+readStore();updateStorage();render();if(migrationNotice)toast(migrationNotice);
+})();
+</script>
+</body></html>
